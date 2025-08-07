@@ -2,73 +2,118 @@
 <html>
 <head>
   <title>CustomPC.tech – Built for You</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: sans-serif;
-      background: #f2f2f2;
-      text-align: center;
-      padding: 40px;
+      font-family: 'Inter', sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 0;
     }
 
-    h1 {
-      color: #333;
+    header {
+      background: #111827;
+      color: #fff;
+      padding: 20px 0;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.2em;
+    }
+
+    main {
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    p {
+      max-width: 600px;
+      margin: auto;
+      color: #444;
+      font-size: 1.1em;
     }
 
     form {
-      max-width: 400px;
-      margin: auto;
-      text-align: left;
+      max-width: 500px;
+      margin: 40px auto;
       background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      text-align: left;
+    }
+
+    form label {
+      font-weight: bold;
+      display: block;
+      margin: 10px 0 5px;
     }
 
     input, textarea {
       width: 100%;
-      margin-bottom: 10px;
-      padding: 10px;
-      border-radius: 5px;
+      padding: 12px;
+      margin-bottom: 15px;
       border: 1px solid #ccc;
+      border-radius: 6px;
       font-size: 16px;
     }
 
     button {
-      background: #3366cc;
+      background: #3b82f6;
       color: white;
-      padding: 10px 20px;
+      font-size: 16px;
+      padding: 12px 24px;
       border: none;
-      border-radius: 5px;
+      border-radius: 6px;
       cursor: pointer;
+      transition: background 0.2s ease;
     }
 
     button:hover {
-      background: #254a99;
+      background: #2563eb;
+    }
+
+    footer {
+      text-align: center;
+      color: #888;
+      font-size: 14px;
+      margin: 40px 0 10px;
     }
   </style>
 </head>
 <body>
 
-  <h1>Welcome to CustomPC.tech</h1>
-  <p>I build PCs custom-tailored to you — whether you're gaming, editing, or just want max speed.</p>
+  <header>
+    <h1>CustomPC.tech</h1>
+  </header>
 
-  <h2>🛠️ Get a Custom PC Quote</h2>
+  <main>
+    <p>I build powerful, affordable, and custom-tailored PCs for gamers, creators, and professionals. Just tell me what you need — and I’ll build the perfect machine for you.</p>
 
-  <form action="https://formspree.io/f/xrblokly" method="POST">
-    <label>Your Name:</label>
-    <input type="text" name="name" required>
+    <h2>🛠️ Get a Custom PC Quote</h2>
 
-    <label>Your Email:</label>
-    <input type="email" name="email" required>
+    <form action="https://formspree.io/f/xrblokly" method="POST">
+      <label>Your Name:</label>
+      <input type="text" name="name" required>
 
-    <label>What's your budget? ($):</label>
-    <input type="number" name="budget" required>
+      <label>Your Email:</label>
+      <input type="email" name="email" required>
 
-    <label>What will you use the PC for?</label>
-    <textarea name="use_case" rows="4" required></textarea>
+      <label>Your Budget ($):</label>
+      <input type="number" name="budget" required>
 
-    <button type="submit">Send My Request</button>
-  </form>
+      <label>What will you use the PC for?</label>
+      <textarea name="use_case" rows="4" required></textarea>
+
+      <button type="submit">Send My Request</button>
+    </form>
+  </main>
+
+  <footer>
+    &copy; 2025 CustomPC.tech – Built by you, for you.
+  </footer>
 
 </body>
 </html>
