@@ -1,10 +1,37 @@
+
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Custom PC</title>
+  <title>CustomPC.tech – Built for You</title>
+  <style>
+    body { font-family: sans-serif; background: #f2f2f2; text-align: center; padding: 40px; }
+    h1 { color: #333; }
+    form { max-width: 400px; margin: auto; text-align: left; background: white; padding: 20px; border-radius: 8px; }
+    input, textarea { width: 100%; margin-bottom: 10px; padding: 10px; border-radius: 5px; border: 1px solid #ccc; }
+    button { background: #3366cc; color: white; padding: 10px 20px; border: none; border-radius: 5px; }
+  </style>
 </head>
 <body>
-  <h1>Welcome to CustomPC.tech!</h1>
-  <p>This site is built and owned by me!</p>
+
+  <h1>Welcome to CustomPC.tech</h1>
+  <p>I build PCs custom to you — for gaming, content creation, school, or anything else!</p>
+
+  <h2>🛠️ Get a Custom PC Quote</h2>
+  <form action="https://formspree.io/f/YOUR_CODE_HERE" method="POST">
+    <label>Name:</label>
+    <input type="text" name="name" required>
+    
+    <label>Email:</label>
+    <input type="email" name="email" required>
+    
+    <label>Budget ($):</label>
+    <input type="number" name="budget" required>
+    
+    <label>What will you use the PC for?</label>
+    <textarea name="use_case" rows="4" required></textarea>
+    
+    <button type="submit">Send Request</button>
+  </form>
+
 </body>
 </html>
