@@ -1,15 +1,7 @@
-<nav style="background:#111; padding:15px; text-align:center;">
-  <a href="index.html" style="color:white; margin:10px;">Home</a>
-  <a href="about.html" style="color:white; margin:10px;">About</a>
-  <a href="builds.html" style="color:white; margin:10px;">Builds</a>
-  <a href="gallery.html" style="color:white; margin:10px;">Gallery</a>
-  <a href="track.html" style="color:white; margin:10px;">Track Order</a>
-</nav>
-
 <!DOCTYPE html>
 <html>
 <head>
-  <title>CustomPC.tech – Built for You</title>
+  <title>Contact – CustomPC.tech</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
@@ -24,15 +16,16 @@
       color: white;
     }
 
-    header {
-      background: rgba(0, 0, 0, 0.8);
-      padding: 20px 0;
+    nav {
+      background: #111;
+      padding: 15px;
       text-align: center;
     }
 
-    header h1 {
-      margin: 0;
-      font-size: 2.2em;
+    nav a {
+      color: white;
+      margin: 10px;
+      text-decoration: none;
     }
 
     main {
@@ -43,9 +36,9 @@
       border-radius: 12px;
     }
 
-    p {
-      font-size: 1.1em;
-      color: #ccc;
+    h1 {
+      color: #3b82f6;
+      text-align: center;
     }
 
     form {
@@ -53,16 +46,16 @@
       text-align: left;
     }
 
-    form label {
-      font-weight: bold;
+    label {
       display: block;
-      margin: 10px 0 5px;
+      margin-top: 15px;
+      font-weight: bold;
     }
 
     input, textarea {
       width: 100%;
       padding: 12px;
-      margin-bottom: 15px;
+      margin-top: 5px;
       border: none;
       border-radius: 6px;
       font-size: 16px;
@@ -76,125 +69,44 @@
       border: none;
       border-radius: 6px;
       cursor: pointer;
+      margin-top: 20px;
     }
 
     button:hover {
       background: #2563eb;
     }
-
-    #build-picker button {
-      margin: 5px;
-    }
-
-    footer {
-      text-align: center;
-      color: #aaa;
-      font-size: 14px;
-      margin: 30px 0 10px;
-    }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>CustomPC.tech</h1>
-  </header>
+<nav>
+  <a href="index.html">Contact</a>
+  <a href="about.html">About</a>
+  <a href="builds.html">Builds</a>
+  <a href="track.html">Track Order</a>
+</nav>
 
-  <main>
-    <p>I build powerful, affordable, and custom-tailored PCs for gamers, creators, and professionals. Just tell me what you need — and I’ll build the perfect machine for you.</p>
+<main>
+  <h1>Contact Us</h1>
+  <p style="text-align:center; color:#ccc;">Tell us what kind of PC you need. We’ll design a build just for you.</p>
 
-    <h2>🛠️ Get a Custom PC Quote</h2>
+  <form action="https://formspree.io/f/xrblokly" method="POST">
+    <label>Your Name:</label>
+    <input type="text" name="name" required>
 
-    <form action="https://formspree.io/f/xrblokly" method="POST">
-      <label>Your Name:</label>
-      <input type="text" name="name" required>
+    <label>Your Email:</label>
+    <input type="email" name="email" required>
 
-      <label>Your Email:</label>
-      <input type="email" name="email" required>
+    <label>Your Budget ($):</label>
+    <input type="number" name="budget" required>
 
-      <label>Your Budget ($):</label>
-      <input type="number" name="budget" required>
+    <label>What will you use the PC for?</label>
+    <textarea name="use_case" rows="4" required></textarea>
 
-      <label>What will you use the PC for?</label>
-      <textarea name="use_case" rows="4" required></textarea>
-
-      <button type="submit">Send My Request</button>
-    </form>
-
-    <hr style="margin: 50px 0; border: none; border-top: 2px solid #444;">
-
-    <h2>💻 Example Builds</h2>
-    <div id="build-picker">
-      <button onclick="showBuild('gaming')">Gaming PC</button>
-      <button onclick="showBuild('editing')">Editing PC</button>
-      <button onclick="showBuild('budget')">Budget PC</button>
-    </div>
-    <div id="build-output" style="margin-top: 20px;"></div>
-
-    <h2 style="margin-top:60px;">📸 PC Gallery</h2>
-    <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 20px;">
-      <img src="https://i.imgur.com/k3nF5Nx.jpeg" alt="PC 1" width="250" style="border-radius: 10px;">
-      <img src="https://i.imgur.com/2Wn0Bze.jpeg" alt="PC 2" width="250" style="border-radius: 10px;">
-      <img src="https://i.imgur.com/I3LR3NY.jpeg" alt="PC 3" width="250" style="border-radius: 10px;">
-    </div>
-
-  </main>
-
-  <footer>
-    &copy; 2025 CustomPC.tech – Powered by your imagination.
-  </footer>
-
-  <!-- Build Picker Script -->
-  <script>
-    function showBuild(type) {
-      let builds = {
-        gaming: `
-          <h3>🎮 Gaming PC</h3>
-          <ul>
-            <li>CPU: Ryzen 5 7600X</li>
-            <li>GPU: RTX 4070 SUPER</li>
-            <li>RAM: 32GB DDR5</li>
-            <li>Storage: 1TB NVMe SSD</li>
-            <li>Case: Lian Li Air Mini</li>
-          </ul>
-        `,
-        editing: `
-          <h3>🎥 Content Creator PC</h3>
-          <ul>
-            <li>CPU: Ryzen 9 7950X</li>
-            <li>GPU: RTX 4080</li>
-            <li>RAM: 64GB DDR5</li>
-            <li>Storage: 2TB Samsung 990 PRO</li>
-            <li>Case: Fractal Define 7</li>
-          </ul>
-        `,
-        budget: `
-          <h3>💰 Budget PC</h3>
-          <ul>
-            <li>CPU: Intel i5-12400F</li>
-            <li>GPU: RX 6600</li>
-            <li>RAM: 16GB DDR4</li>
-            <li>Storage: 500GB SSD</li>
-            <li>Case: NZXT H510</li>
-          </ul>
-        `
-      };
-      document.getElementById("build-output").innerHTML = builds[type];
-    }
-  </script>
-
-  <!-- Tawk.to Live Chat -->
-  <script type="text/javascript">
-    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-    (function(){
-      var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-      s1.async=true;
-      s1.src='https://embed.tawk.to/6895040bea5b0a1926912936/1j231fjbt';
-      s1.charset='UTF-8';
-      s1.setAttribute('crossorigin','*');
-      s0.parentNode.insertBefore(s1,s0);
-    })();
-  </script>
+    <button type="submit">Send My Request</button>
+  </form>
+</main>
 
 </body>
 </html>
+.
