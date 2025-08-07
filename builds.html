@@ -12,9 +12,7 @@
     }
     nav { background: rgba(17,17,17,.85); padding: 15px; text-align: center; }
     nav a { color: white; margin: 10px; text-decoration: none; }
-
     h1 { text-align: center; color: #3b82f6; margin: 30px 0 10px; }
-
     .product-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -29,20 +27,15 @@
       transition: transform .25s ease, box-shadow .25s ease;
     }
     .card:hover { transform: translateY(-6px); box-shadow: 0 10px 26px rgba(0,0,0,.55); }
-
     .card img { width: 100%; height: 210px; object-fit: cover; display:block; }
-
     .card-content { padding: 18px 18px 20px; }
     .card h2 { color: #e5e7eb; margin: 0 0 6px; font-size: 1.25rem; }
     .tag { display:inline-block; font-size:.8rem; color:#a5b4fc; background:#1f2937; padding:3px 8px; border-radius:999px; margin-bottom:10px; }
-
     .desc { color:#bdbdbd; font-size:.95rem; margin: 8px 0 10px; }
     .specs { list-style:none; padding:0; margin:0 0 12px; color:#c9c9c9; }
     .specs li { font-size:.92rem; margin:4px 0; }
-
     .row { display:flex; align-items:center; justify-content:space-between; gap:10px; }
     .price { color:#60a5fa; font-weight:700; font-size:1.15rem; }
-
     .btn {
       background:#3b82f6; color:white; border:none; border-radius:8px;
       padding:10px 14px; cursor:pointer; font-size:.98rem;
@@ -69,16 +62,16 @@
     <div class="card-content">
       <span class="tag">4K Gaming</span>
       <h2>4K Gaming PC</h2>
-      <p class="desc">Built to push ultra settings at 4K with smooth frame rates and quiet cooling.</p>
+      <p class="desc">Play AAA titles at max settings in stunning 4K resolution with next-gen RTX 50 series performance.</p>
       <ul class="specs">
         <li>CPU: Ryzen 7 7800X3D</li>
-        <li>GPU: GeForce RTX 4080 SUPER</li>
+        <li>GPU: NVIDIA GeForce RTX 5080</li>
         <li>RAM: 32GB DDR5-6000</li>
         <li>Storage: 2TB NVMe (Gen4)</li>
       </ul>
       <div class="row">
-        <span class="price">$2,499</span>
-        <button class="btn" onclick="addToCart('4K Gaming PC', 2499)">Add to Cart</button>
+        <span class="price">$2,599</span>
+        <button class="btn" onclick="addToCart('4K Gaming PC', 2599)">Add to Cart</button>
       </div>
     </div>
   </div>
@@ -89,16 +82,16 @@
     <div class="card-content">
       <span class="tag">Extreme</span>
       <h2>Overkill PC</h2>
-      <p class="desc">No compromises. Max cores, max GPU, premium cooling—built to flex and stay cool.</p>
+      <p class="desc">Ultimate power for 8K gaming, extreme 3D rendering, and AI workloads.</p>
       <ul class="specs">
-        <li>CPU: Ryzen 9 7950X / i9-14900K (your pick)</li>
-        <li>GPU: GeForce RTX 4090</li>
-        <li>RAM: 64GB DDR5</li>
+        <li>CPU: Ryzen 9 7950X</li>
+        <li>GPU: NVIDIA GeForce RTX 5090</li>
+        <li>RAM: 64GB DDR5-6400</li>
         <li>Storage: 2TB NVMe + 4TB NVMe</li>
       </ul>
       <div class="row">
-        <span class="price">$3,999</span>
-        <button class="btn" onclick="addToCart('Overkill PC', 3999)">Add to Cart</button>
+        <span class="price">$4,499</span>
+        <button class="btn" onclick="addToCart('Overkill PC', 4499)">Add to Cart</button>
       </div>
     </div>
   </div>
@@ -107,38 +100,38 @@
   <div class="card">
     <img src="images/budget-gaming.png" alt="Budget Gaming PC">
     <div class="card-content">
-      <span class="tag">Budget</span>
+      <span class="tag">Best Value</span>
       <h2>Budget Gaming PC</h2>
-      <p class="desc">Great frame rates for esports and popular titles without breaking the bank.</p>
+      <p class="desc">Great frame rates for esports and popular titles, with excellent price-to-performance value.</p>
       <ul class="specs">
         <li>CPU: Intel i5-12400F</li>
-        <li>GPU: Radeon RX 6600 / RTX 3060</li>
+        <li>GPU: NVIDIA GeForce RTX 5060</li>
         <li>RAM: 16GB DDR4</li>
         <li>Storage: 1TB SSD</li>
       </ul>
       <div class="row">
-        <span class="price">$699</span>
-        <button class="btn" onclick="addToCart('Budget Gaming PC', 699)">Add to Cart</button>
+        <span class="price">$749</span>
+        <button class="btn" onclick="addToCart('Budget Gaming PC (RTX 5060)', 749)">Add to Cart</button>
       </div>
     </div>
   </div>
 
-  <!-- Creator PC (kept for your lineup) -->
+  <!-- Creator PC -->
   <div class="card">
     <img src="images/creator-pc.png" alt="Creator PC">
     <div class="card-content">
       <span class="tag">Creator</span>
       <h2>Creator PC</h2>
-      <p class="desc">Fast renders, smooth timelines, and reliable multitasking for creators.</p>
+      <p class="desc">Optimized for editing, rendering, and creative workloads with RTX 50 AI acceleration.</p>
       <ul class="specs">
         <li>CPU: Ryzen 9 7950X</li>
-        <li>GPU: GeForce RTX 4080</li>
-        <li>RAM: 64GB DDR5</li>
+        <li>GPU: NVIDIA GeForce RTX 5080</li>
+        <li>RAM: 64GB DDR5-6000</li>
         <li>Storage: 2TB Samsung 990 PRO</li>
       </ul>
       <div class="row">
-        <span class="price">$2,599</span>
-        <button class="btn" onclick="addToCart('Creator PC', 2599)">Add to Cart</button>
+        <span class="price">$2,999</span>
+        <button class="btn" onclick="addToCart('Creator PC', 2999)">Add to Cart</button>
       </div>
     </div>
   </div>
@@ -146,7 +139,6 @@
 </div>
 
 <script>
-  // Simple cart stored in localStorage
   function addToCart(name, price) {
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
     cart.push({ name, price });
@@ -157,3 +149,4 @@
 
 </body>
 </html>
+
