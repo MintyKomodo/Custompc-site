@@ -7,7 +7,7 @@
     body {
       font-family: 'Inter', sans-serif;
       background-color: #000;
-      background-image: url('https://cdn.discordapp.com/attachments/1166478080057913395/1215894253041795133/pcsetup.png'); /* You can replace this URL */
+      background-image: url('https://cdn.discordapp.com/attachments/1166478080057913395/1215894253041795133/pcsetup.png');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -17,7 +17,7 @@
     }
 
     header {
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0, 0, 0, 0.8);
       padding: 20px 0;
       text-align: center;
     }
@@ -29,8 +29,8 @@
 
     main {
       padding: 40px 20px;
-      background: rgba(0, 0, 0, 0.7);
-      max-width: 600px;
+      background: rgba(0, 0, 0, 0.8);
+      max-width: 700px;
       margin: 40px auto;
       border-radius: 12px;
     }
@@ -74,6 +74,10 @@
       background: #2563eb;
     }
 
+    #build-picker button {
+      margin: 5px;
+    }
+
     footer {
       text-align: center;
       color: #aaa;
@@ -108,29 +112,81 @@
 
       <button type="submit">Send My Request</button>
     </form>
+
+    <hr style="margin: 50px 0; border: none; border-top: 2px solid #444;">
+
+    <h2>💻 Example Builds</h2>
+    <div id="build-picker">
+      <button onclick="showBuild('gaming')">Gaming PC</button>
+      <button onclick="showBuild('editing')">Editing PC</button>
+      <button onclick="showBuild('budget')">Budget PC</button>
+    </div>
+    <div id="build-output" style="margin-top: 20px;"></div>
+
+    <h2 style="margin-top:60px;">📸 PC Gallery</h2>
+    <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 20px;">
+      <img src="https://i.imgur.com/k3nF5Nx.jpeg" alt="PC 1" width="250" style="border-radius: 10px;">
+      <img src="https://i.imgur.com/2Wn0Bze.jpeg" alt="PC 2" width="250" style="border-radius: 10px;">
+      <img src="https://i.imgur.com/I3LR3NY.jpeg" alt="PC 3" width="250" style="border-radius: 10px;">
+    </div>
+
   </main>
 
   <footer>
     &copy; 2025 CustomPC.tech – Powered by your imagination.
   </footer>
-  <!-- ... your existing HTML ... -->
 
-  <!--Start of Tawk.to Script-->
-  <script type="text/javascript">
-  var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-  (function(){
-    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-    s1.async=true;
-    s1.src='https://embed.tawk.to/6895040bea5b0a1926912936/1j231fjbt';
-    s1.charset='UTF-8';
-    s1.setAttribute('crossorigin','*');
-    s0.parentNode.insertBefore(s1,s0);
-  })();
+  <!-- Build Picker Script -->
+  <script>
+    function showBuild(type) {
+      let builds = {
+        gaming: `
+          <h3>🎮 Gaming PC</h3>
+          <ul>
+            <li>CPU: Ryzen 5 7600X</li>
+            <li>GPU: RTX 4070 SUPER</li>
+            <li>RAM: 32GB DDR5</li>
+            <li>Storage: 1TB NVMe SSD</li>
+            <li>Case: Lian Li Air Mini</li>
+          </ul>
+        `,
+        editing: `
+          <h3>🎥 Content Creator PC</h3>
+          <ul>
+            <li>CPU: Ryzen 9 7950X</li>
+            <li>GPU: RTX 4080</li>
+            <li>RAM: 64GB DDR5</li>
+            <li>Storage: 2TB Samsung 990 PRO</li>
+            <li>Case: Fractal Define 7</li>
+          </ul>
+        `,
+        budget: `
+          <h3>💰 Budget PC</h3>
+          <ul>
+            <li>CPU: Intel i5-12400F</li>
+            <li>GPU: RX 6600</li>
+            <li>RAM: 16GB DDR4</li>
+            <li>Storage: 500GB SSD</li>
+            <li>Case: NZXT H510</li>
+          </ul>
+        `
+      };
+      document.getElementById("build-output").innerHTML = builds[type];
+    }
   </script>
-  <!--End of Tawk.to Script-->
 
-</body>
-</html>
+  <!-- Tawk.to Live Chat -->
+  <script type="text/javascript">
+    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    (function(){
+      var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+      s1.async=true;
+      s1.src='https://embed.tawk.to/6895040bea5b0a1926912936/1j231fjbt';
+      s1.charset='UTF-8';
+      s1.setAttribute('crossorigin','*');
+      s0.parentNode.insertBefore(s1,s0);
+    })();
+  </script>
 
 </body>
 </html>
