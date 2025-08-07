@@ -5,15 +5,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: 'Inter', sans-serif;
-      background: #000;
+      background: linear-gradient(to bottom, #000000, #1e3a8a);
       color: white;
+      font-family: 'Inter', sans-serif;
       margin: 0;
       padding: 0;
     }
 
     nav {
-      background: #111;
+      background-color: rgba(17, 17, 17, 0.8);
       padding: 15px;
       text-align: center;
     }
@@ -24,52 +24,86 @@
       text-decoration: none;
     }
 
-    main {
-      padding: 40px;
-      max-width: 1000px;
-      margin: auto;
-    }
-
     h1 {
       text-align: center;
       color: #3b82f6;
+      margin-top: 30px;
     }
 
     .product-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 30px;
-      margin-top: 30px;
+      padding: 40px;
+      max-width: 1200px;
+      margin: auto;
     }
 
     .card {
       background: #111;
       border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+    }
+
+    .card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .card-content {
       padding: 20px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
 
     .card h2 {
       color: #3b82f6;
-      margin-top: 0;
+      margin: 0 0 10px;
     }
 
-    .card ul {
-      padding-left: 20px;
-      margin: 10px 0;
+    .card p {
+      color: #bbb;
+      margin: 0 0 10px;
+      font-size: 0.95em;
     }
 
-    .card button {
+    .specs {
+      list-style: none;
+      padding-left: 0;
+      color: #ccc;
+      margin: 0 0 10px;
+    }
+
+    .specs li {
+      font-size: 0.9em;
+      margin-bottom: 5px;
+    }
+
+    .price {
+      font-weight: bold;
+      font-size: 1.1em;
+      color: #3b82f6;
+    }
+
+    .add-btn {
+      margin-top: 10px;
+      display: block;
+      width: 100%;
       background: #3b82f6;
       color: white;
+      padding: 10px;
       border: none;
-      padding: 10px 20px;
-      font-size: 16px;
+      font-size: 1em;
       border-radius: 6px;
       cursor: pointer;
     }
 
-    .card button:hover {
+    .add-btn:hover {
       background: #2563eb;
     }
   </style>
@@ -77,58 +111,74 @@
 <body>
 
 <nav>
-  <a href="index.html">Home</a>
+  <a href="index.html">Contact</a>
   <a href="about.html">About</a>
   <a href="builds.html">Builds</a>
-  <a href="track.html">Track Order</a>
+  <a href="cart.html">Cart</a>
 </nav>
 
-<main>
-  <h1>Choose Your PC</h1>
+<h1>Custom PC Builds</h1>
 
-  <div class="product-grid">
+<div class="product-grid">
 
-    <div class="card">
+  <div class="card">
+    <img src="https://i.imgur.com/I3LR3NY.jpeg" alt="Gaming PC">
+    <div class="card-content">
       <h2>🎮 Gaming PC</h2>
-      <p>Perfect for high FPS in Fortnite, Valorant, and AAA titles at 1080p/1440p.</p>
-      <ul>
+      <p>Crush Fortnite, Valorant, and any AAA title at 1080p/1440p high settings.</p>
+      <ul class="specs">
         <li>Ryzen 5 7600X</li>
         <li>RTX 4070 SUPER</li>
         <li>32GB DDR5 RAM</li>
         <li>1TB NVMe SSD</li>
       </ul>
-      <p><strong>Price:</strong> $1,399</p>
-      <button onclick="window.location.href='index.html#quote'">Order This Build</button>
+      <p class="price">$1,399</p>
+      <button class="add-btn" onclick="addToCart('Gaming PC', 1399)">Add to Cart</button>
     </div>
+  </div>
 
-    <div class="card">
+  <div class="card">
+    <img src="https://i.imgur.com/2Wn0Bze.jpeg" alt="Creator PC">
+    <div class="card-content">
       <h2>🎥 Creator PC</h2>
-      <p>Great for video editing, rendering, streaming, and multitasking heavy apps.</p>
-      <ul>
+      <p>Designed for editing, 3D rendering, and professional content creation.</p>
+      <ul class="specs">
         <li>Ryzen 9 7950X</li>
         <li>RTX 4080</li>
         <li>64GB DDR5 RAM</li>
         <li>2TB Samsung 990 PRO</li>
       </ul>
-      <p><strong>Price:</strong> $2,599</p>
-      <button onclick="window.location.href='index.html#quote'">Order This Build</button>
+      <p class="price">$2,599</p>
+      <button class="add-btn" onclick="addToCart('Creator PC', 2599)">Add to Cart</button>
     </div>
+  </div>
 
-    <div class="card">
+  <div class="card">
+    <img src="https://i.imgur.com/k3nF5Nx.jpeg" alt="Budget PC">
+    <div class="card-content">
       <h2>💰 Budget PC</h2>
-      <p>Entry-level build for Minecraft, Roblox, and school — quiet, compact, and clean.</p>
-      <ul>
+      <p>Perfect for Minecraft, Roblox, school work, and casual browsing.</p>
+      <ul class="specs">
         <li>Intel i5-12400F</li>
         <li>Radeon RX 6600</li>
         <li>16GB DDR4 RAM</li>
         <li>500GB SSD</li>
       </ul>
-      <p><strong>Price:</strong> $799</p>
-      <button onclick="window.location.href='index.html#quote'">Order This Build</button>
+      <p class="price">$799</p>
+      <button class="add-btn" onclick="addToCart('Budget PC', 799)">Add to Cart</button>
     </div>
-
   </div>
-</main>
+
+</div>
+
+<script>
+function addToCart(name, price) {
+  const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+  cart.push({ name, price });
+  localStorage.setItem('cart', JSON.stringify(cart));
+  alert(name + " added to cart!");
+}
+</script>
 
 </body>
 </html>
