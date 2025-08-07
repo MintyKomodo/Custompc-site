@@ -11,36 +11,66 @@
       margin: 0;
       padding: 0;
     }
+
     nav {
       background: #111;
       padding: 15px;
       text-align: center;
     }
+
     nav a {
       color: white;
       margin: 10px;
       text-decoration: none;
     }
+
     main {
       padding: 40px;
-      max-width: 700px;
+      max-width: 1000px;
       margin: auto;
     }
+
     h1 {
+      text-align: center;
       color: #3b82f6;
     }
-    button {
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      margin-top: 30px;
+    }
+
+    .card {
+      background: #111;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    .card h2 {
+      color: #3b82f6;
+      margin-top: 0;
+    }
+
+    .card ul {
+      padding-left: 20px;
+      margin: 10px 0;
+    }
+
+    .card button {
       background: #3b82f6;
       color: white;
-      font-size: 16px;
-      padding: 10px 20px;
       border: none;
+      padding: 10px 20px;
+      font-size: 16px;
       border-radius: 6px;
-      margin: 5px;
       cursor: pointer;
     }
-    ul {
-      padding-left: 20px;
+
+    .card button:hover {
+      background: #2563eb;
     }
   </style>
 </head>
@@ -50,61 +80,55 @@
   <a href="index.html">Home</a>
   <a href="about.html">About</a>
   <a href="builds.html">Builds</a>
-  <a href="gallery.html">Gallery</a>
   <a href="track.html">Track Order</a>
 </nav>
 
 <main>
-  <h1>Explore Our PC Builds</h1>
-  <p>Select a build type to see example specs:</p>
+  <h1>Choose Your PC</h1>
 
-  <div>
-    <button onclick="showBuild('gaming')">Gaming PC</button>
-    <button onclick="showBuild('editing')">Editing PC</button>
-    <button onclick="showBuild('budget')">Budget PC</button>
+  <div class="product-grid">
+
+    <div class="card">
+      <h2>🎮 Gaming PC</h2>
+      <p>Perfect for high FPS in Fortnite, Valorant, and AAA titles at 1080p/1440p.</p>
+      <ul>
+        <li>Ryzen 5 7600X</li>
+        <li>RTX 4070 SUPER</li>
+        <li>32GB DDR5 RAM</li>
+        <li>1TB NVMe SSD</li>
+      </ul>
+      <p><strong>Price:</strong> $1,399</p>
+      <button onclick="window.location.href='index.html#quote'">Order This Build</button>
+    </div>
+
+    <div class="card">
+      <h2>🎥 Creator PC</h2>
+      <p>Great for video editing, rendering, streaming, and multitasking heavy apps.</p>
+      <ul>
+        <li>Ryzen 9 7950X</li>
+        <li>RTX 4080</li>
+        <li>64GB DDR5 RAM</li>
+        <li>2TB Samsung 990 PRO</li>
+      </ul>
+      <p><strong>Price:</strong> $2,599</p>
+      <button onclick="window.location.href='index.html#quote'">Order This Build</button>
+    </div>
+
+    <div class="card">
+      <h2>💰 Budget PC</h2>
+      <p>Entry-level build for Minecraft, Roblox, and school — quiet, compact, and clean.</p>
+      <ul>
+        <li>Intel i5-12400F</li>
+        <li>Radeon RX 6600</li>
+        <li>16GB DDR4 RAM</li>
+        <li>500GB SSD</li>
+      </ul>
+      <p><strong>Price:</strong> $799</p>
+      <button onclick="window.location.href='index.html#quote'">Order This Build</button>
+    </div>
+
   </div>
-
-  <div id="build-output" style="margin-top: 20px;"></div>
 </main>
-
-<script>
-  function showBuild(type) {
-    const builds = {
-      gaming: `
-        <h2>🎮 Gaming PC</h2>
-        <ul>
-          <li>CPU: Ryzen 5 7600X</li>
-          <li>GPU: RTX 4070 SUPER</li>
-          <li>RAM: 32GB DDR5</li>
-          <li>Storage: 1TB NVMe SSD</li>
-          <li>Case: Lian Li Air Mini</li>
-        </ul>
-      `,
-      editing: `
-        <h2>🎥 Editing PC</h2>
-        <ul>
-          <li>CPU: Ryzen 9 7950X</li>
-          <li>GPU: RTX 4080</li>
-          <li>RAM: 64GB DDR5</li>
-          <li>Storage: 2TB Samsung 990 PRO</li>
-          <li>Case: Fractal Define 7</li>
-        </ul>
-      `,
-      budget: `
-        <h2>💰 Budget PC</h2>
-        <ul>
-          <li>CPU: Intel i5-12400F</li>
-          <li>GPU: RX 6600</li>
-          <li>RAM: 16GB DDR4</li>
-          <li>Storage: 500GB SSD</li>
-          <li>Case: NZXT H510</li>
-        </ul>
-      `
-    };
-    document.getElementById("build-output").innerHTML = builds[type];
-  }
-</script>
 
 </body>
 </html>
-
