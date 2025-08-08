@@ -10,12 +10,10 @@
     * { box-sizing: border-box; }
     body { margin:0; font-family: Inter, system-ui, Arial, sans-serif; background:#000; color:#fff; }
 
-    /* Nav */
     nav { position:sticky; top:0; z-index:10; background:rgba(17,17,17,.9); border-bottom:1px solid #111; padding:14px 16px; text-align:center; }
     nav a { display:inline-block; margin:0 10px; padding:8px 10px; border-radius:8px; color:#e5e7eb; text-decoration:none; }
     nav a:hover { background:#1f2937; }
 
-    /* Full-width layout */
     .wrap { width:100%; padding:26px 18px 40px; }
     h1 { text-align:center; color:#60a5fa; margin:8px 0 18px; }
 
@@ -23,17 +21,16 @@
     .toggle button { min-width:140px; padding:10px 14px; border:0; border-radius:10px; background:var(--blue); color:#fff; font-weight:700; cursor:pointer; }
     .toggle .active { background:#1f6fe0; box-shadow: inset 0 0 0 2px #93c5fd33; }
 
-    /* Grid: 3 columns desktop, 2 tablet, 1 mobile */
     .product-grid { display:grid; gap:26px; grid-template-columns:repeat(3, 1fr); }
     @media (max-width:1024px){ .product-grid{ grid-template-columns:repeat(2,1fr);} }
     @media (max-width:640px){ .product-grid{ grid-template-columns:1fr;} }
 
-    /* Cards */
     .card { width:100%; height:100%; background:var(--panel); border:1px solid var(--line); border-radius:14px; overflow:hidden;
             box-shadow:0 6px 24px rgba(0,0,0,.45); transition:transform .18s ease, box-shadow .18s ease; }
     .card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(0,0,0,.6); }
 
-    .card img { width:100%; height:240px; object-fit:cover; display:block; background:#0b0d12; filter: contrast(1.05) saturate(1.05); }
+    .imgbox { width:100%; height:240px; background:#0b0d12; display:block; }
+    .card img { width:100%; height:240px; object-fit:cover; display:block; filter: contrast(1.05) saturate(1.05); }
 
     .content { padding:16px; }
     .tag { display:inline-block; font-size:.78rem; color:#a5b4fc; background:#111827; padding:3px 10px; border-radius:999px; margin-bottom:10px; }
@@ -68,7 +65,7 @@
     <!-- ================= AMD (6) ================= -->
     <div id="amd-builds" class="product-grid">
       <div class="card">
-        <img src="https://picsum.photos/seed/amd1/1200/800" alt="4K Gaming PC (AMD)" onerror="imgFallback(this)">
+        <img src="https://images.pexels.com/photos/7915355/pexels-photo-7915355.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="4K Gaming PC (AMD)" onerror="imgFallback(this)">
         <div class="content">
           <span class="tag">4K Gaming</span><h2>4K Gaming PC (AMD)</h2>
           <p class="desc">Max settings at 4K with quiet thermals.</p>
@@ -78,7 +75,7 @@
       </div>
 
       <div class="card">
-        <img src="https://picsum.photos/seed/amd2/1200/800" alt="Overkill PC (AMD)" onerror="imgFallback(this)">
+        <img src="https://images.pexels.com/photos/5553050/pexels-photo-5553050.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Overkill PC (AMD)" onerror="imgFallback(this)">
         <div class="content">
           <span class="tag">Extreme</span><h2>Overkill PC (AMD)</h2>
           <p class="desc">8K gaming, 3D, and AI—no compromises.</p>
@@ -88,7 +85,7 @@
       </div>
 
       <div class="card">
-        <img src="https://picsum.photos/seed/amd3/1200/800" alt="Creator Pro (AMD)" onerror="imgFallback(this)">
+        <img src="https://images.pexels.com/photos/5777692/pexels-photo-5777692.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Creator Pro (AMD)" onerror="imgFallback(this)">
         <div class="content">
           <span class="tag">Creator</span><h2>Creator Pro (AMD)</h2>
           <p class="desc">Faster renders & timelines with RTX 50 AI accel.</p>
@@ -98,7 +95,7 @@
       </div>
 
       <div class="card">
-        <img src="https://picsum.photos/seed/amd4/1200/800" alt="Budget Gaming (AMD)" onerror="imgFallback(this)">
+        <img src="https://images.pexels.com/photos/1148820/pexels-photo-1148820.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Budget Gaming (AMD)" onerror="imgFallback(this)">
         <div class="content">
           <span class="tag">Best Value</span><h2>Budget Gaming (AMD)</h2>
           <p class="desc">Great FPS in esports at a friendly price.</p>
@@ -108,7 +105,7 @@
       </div>
 
       <div class="card">
-        <img src="https://picsum.photos/seed/amd5/1200/800" alt="Budget Creator (AMD)" onerror="imgFallback(this)">
+        <img src="https://images.pexels.com/photos/97077/pexels-photo-97077.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Budget Creator (AMD)" onerror="imgFallback(this)">
         <div class="content">
           <span class="tag">Budget Creator</span><h2>Budget Creator (AMD)</h2>
           <p class="desc">School, streaming & light editing without lag.</p>
@@ -118,7 +115,7 @@
       </div>
 
       <div class="card">
-        <img src="https://picsum.photos/seed/amd6/1200/800" alt="Esports Pro (AMD)" onerror="imgFallback(this)">
+        <img src="https://images.pexels.com/photos/8166086/pexels-photo-8166086.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Esports Pro (AMD)" onerror="imgFallback(this)">
         <div class="content">
           <span class="tag">Esports</span><h2>Esports Pro (AMD)</h2>
           <p class="desc">High FPS for Valorant / Fortnite / CS2.</p>
@@ -131,7 +128,7 @@
     <!-- =============== INTEL (6) =============== -->
     <div id="intel-builds" class="product-grid" style="display:none;">
       <div class="card">
-        <img src="https://picsum.photos/seed/intel1/1200/800" alt="4K Gaming PC (Intel)" onerror="imgFallback(this)">
+        <img src="https://images.pexels.com/photos/3861956/pexels-photo-3861956.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="4K Gaming PC (Intel)" onerror="imgFallback(this)">
         <div class="content">
           <span class="tag">4K Gaming</span><h2>4K Gaming PC (Intel)</h2>
           <p class="desc">Ultra settings at 4K with smooth frame times.</p>
@@ -141,7 +138,7 @@
       </div>
 
       <div class="card">
-        <img src="https://picsum.photos/seed/intel2/1200/800" alt="Overkill PC (Intel)" onerror="imgFallback(this)">
+        <img src="https://images.pexels.com/photos/907173/pexels-photo-907173.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Overkill PC (Intel)" onerror="imgFallback(this)">
         <div class="content">
           <span class="tag">Extreme</span><h2>Overkill PC (Intel)</h2>
           <p class="desc">Peak performance for 8K gaming & AI.</p>
@@ -151,7 +148,7 @@
       </div>
 
       <div class="card">
-        <img src="https://picsum.photos/seed/intel3/1200/800" alt="Creator Pro (Intel)" onerror="imgFallback(this)">
+        <img src="https://images.pexels.com/photos/218863/pexels-photo-218863.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Creator Pro (Intel)" onerror="imgFallback(this)">
         <div class="content">
           <span class="tag">Creator</span><h2>Creator Pro (Intel)</h2>
           <p class="desc">Premiere/Blender power w/ RTX 50 AI tools.</p>
@@ -161,7 +158,7 @@
       </div>
 
       <div class="card">
-        <img src="https://picsum.photos/seed/intel4/1200/800" alt="Budget Gaming (Intel)" onerror="imgFallback(this)">
+        <img src="https://images.pexels.com/photos/538062/pexels-photo-538062.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Budget Gaming (Intel)" onerror="imgFallback(this)">
         <div class="content">
           <span class="tag">Best Value</span><h2>Budget Gaming (Intel)</h2>
           <p class="desc">Great FPS for competitive titles.</p>
@@ -171,17 +168,17 @@
       </div>
 
       <div class="card">
-        <img src="https://picsum.photos/seed/intel5/1200/800" alt="Budget Creator (Intel)" onerror="imgFallback(this)">
+        <img src="https://images.pexels.com/photos/1144176/pexels-photo-1144176.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Budget Creator (Intel)" onerror="imgFallback(this)">
         <div class="content">
           <span class="tag">Budget Creator</span><h2>Budget Creator (Intel)</h2>
-        <p class="desc">School, streaming & light editing—smooth.</p>
+          <p class="desc">School, streaming & light editing—smooth.</p>
           <ul class="specs"><li>Intel i5-13400F</li><li>RTX 3050</li><li>16GB DDR4</li><li>512GB SSD</li></ul>
           <div class="row"><div class="price">$619</div><button class="btn" onclick="addToCart('Budget Creator (Intel, 3050)', 619)">Add to Cart</button></div>
         </div>
       </div>
 
       <div class="card">
-        <img src="https://picsum.photos/seed/intel6/1200/800" alt="Esports Pro (Intel)" onerror="imgFallback(this)">
+        <img src="https://images.pexels.com/photos/1800205/pexels-photo-1800205.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Esports Pro (Intel)" onerror="imgFallback(this)">
         <div class="content">
           <span class="tag">Esports</span><h2>Esports Pro (Intel)</h2>
           <p class="desc">High FPS for competitive shooters.</p>
