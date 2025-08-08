@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Your Cart – CustomPC.tech</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <script src="script.js" defer></script>
+</head>
+<body onload="loadCart()">
+
+<nav>
+  <a href="index.html">Contact</a>
+  <a href="about.html">About</a>
+  <a href="builds.html">Builds</a>
+  <a href="cart.html">Cart</a>
+</nav>
+
+<div class="container">
+  <h1>Your Cart</h1>
+  <div class="panel">
+    <div id="cart-items"></div>
+    <div id="total" class="total"></div>
+    <div style="display:flex; gap:10px; margin-top:16px;">
+      <button onclick="goCheckout()">Checkout</button>
+      <button onclick="localStorage.removeItem('cart'); loadCart();">Clear Cart</button>
+    </div>
+  </div>
+</div>
+
+<footer>Need help? Use the Contact page and we’ll reply fast.</footer>
+
+</body>
+</html>
