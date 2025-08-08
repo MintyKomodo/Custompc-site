@@ -1,6 +1,52 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updateProfile } 
+    from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
+
+  // Your config:
+  const firebaseConfig = {
+    apiKey: "AIzaSyANB6z6rM3lb2GZc3wTO5767fO1jB-PUjM",
+    authDomain: "custompc-website.firebaseapp.com",
+    projectId: "custompc-website",
+    storageBucket: "custompc-website.firebasestorage.app",
+    messagingSenderId: "1043646914253",
+    appId: "1:1043646914253:web:aa1479531bc12745e65384",
+    measurementId: "G-80H4HHCKE5"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // Example: watch login state
+  onAuthStateChanged(auth, user => {
+    if (user) {
+      console.log("Logged in as", user.email);
+    } else {
+      console.log("Logged out");
+    }
+  });
+
+  // Functions to log in / sign up
+  window.signup = async function(name, email, pass) {
+    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+    if (name) await updateProfile(cred.user, { displayName: name });
+    alert("Signed up!");
+  };
+
+  window.login = async function(email, pass) {
+    await signInWithEmailAndPassword(auth, email, pass);
+    alert("Logged in!");
+  };
+
+  window.logout = async function() {
+    await signOut(auth);
+    alert("Logged out");
+  };
+</script>
+
   <meta charset="utf-8" />
   <title>Contact – CustomPC.tech</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
