@@ -1,16 +1,16 @@
 /* Global */
 * { box-sizing: border-box; }
 body {
-  font-family: Inter, sans-serif;
-  margin: 0;
   background: linear-gradient(
     to bottom,
-    rgba(0,0,0,1) 0%,
-    rgba(0,0,0,0.9) 25%,
-    rgba(30,58,138,0.9) 75%,
-    rgba(30,58,138,1) 100%
+    #000000 0%,
+    #0a0f2d 40%,
+    #11215b 80%,
+    #1e3a8a 100%
   );
   color: white;
+  margin: 0;
+  font-family: Inter, sans-serif;
 }
 
 
