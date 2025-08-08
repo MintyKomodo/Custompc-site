@@ -38,8 +38,22 @@ button:hover { background: #2563eb; }
 .product-grid {
   display: grid;
   gap: 26px;
-  grid-template-columns: repeat(3, 1fr); /* 3 equal-width columns */
+  grid-template-columns: repeat(3, 1fr); /* Desktop: 3 columns */
 }
+
+@media (max-width: 1024px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr); /* Tablets: 2 columns */
+  }
+}
+
+@media (max-width: 640px) {
+  .product-grid {
+    grid-template-columns: 1fr; /* Phones: 1 column */
+  }
+}
+
+
 
 
 .card {
