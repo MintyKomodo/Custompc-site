@@ -38,22 +38,9 @@ button:hover { background: #2563eb; }
 .product-grid {
   display: grid;
   gap: 26px;
-  grid-template-columns: repeat(3, minmax(0, 1fr)); /* 3 across on desktop */
+  grid-template-columns: repeat(3, 1fr); /* 3 equal-width columns */
 }
 
-/* 2 across on tablets */
-@media (max-width: 1024px) {
-  .product-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-/* 1 across on phones */
-@media (max-width: 640px) {
-  .product-grid {
-    grid-template-columns: 1fr;
-  }
-}
 
 .card {
   background: #0f1115; border: 1px solid #1f2937; border-radius: 14px; overflow: hidden;
