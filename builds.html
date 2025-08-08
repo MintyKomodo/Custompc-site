@@ -8,11 +8,41 @@
       background: linear-gradient(to bottom, #000000, #1e3a8a);
       color: white;
       font-family: 'Inter', sans-serif;
-      margin: 0; padding: 0;
+      margin: 0;
+      padding: 0;
     }
-    nav { background: rgba(17,17,17,.85); padding: 15px; text-align: center; }
-    nav a { color: white; margin: 10px; text-decoration: none; }
-    h1 { text-align: center; color: #3b82f6; margin: 30px 0 10px; }
+    nav {
+      background: rgba(17,17,17,.85);
+      padding: 15px;
+      text-align: center;
+    }
+    nav a {
+      color: white;
+      margin: 10px;
+      text-decoration: none;
+    }
+    h1 {
+      text-align: center;
+      color: #3b82f6;
+      margin: 30px 0 10px;
+    }
+    .toggle-buttons {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .toggle-buttons button {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin: 5px;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .toggle-buttons button:hover {
+      background: #2563eb;
+    }
     .product-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -22,25 +52,77 @@
       margin: 0 auto 60px;
     }
     .card {
-      background: #111; border-radius: 14px; overflow: hidden;
+      background: #111;
+      border-radius: 14px;
+      overflow: hidden;
       box-shadow: 0 6px 20px rgba(0,0,0,.45);
       transition: transform .25s ease, box-shadow .25s ease;
     }
-    .card:hover { transform: translateY(-6px); box-shadow: 0 10px 26px rgba(0,0,0,.55); }
-    .card img { width: 100%; height: 210px; object-fit: cover; display:block; }
-    .card-content { padding: 18px 18px 20px; }
-    .card h2 { color: #e5e7eb; margin: 0 0 6px; font-size: 1.25rem; }
-    .tag { display:inline-block; font-size:.8rem; color:#a5b4fc; background:#1f2937; padding:3px 8px; border-radius:999px; margin-bottom:10px; }
-    .desc { color:#bdbdbd; font-size:.95rem; margin: 8px 0 10px; }
-    .specs { list-style:none; padding:0; margin:0 0 12px; color:#c9c9c9; }
-    .specs li { font-size:.92rem; margin:4px 0; }
-    .row { display:flex; align-items:center; justify-content:space-between; gap:10px; }
-    .price { color:#60a5fa; font-weight:700; font-size:1.15rem; }
-    .btn {
-      background:#3b82f6; color:white; border:none; border-radius:8px;
-      padding:10px 14px; cursor:pointer; font-size:.98rem;
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 10px 26px rgba(0,0,0,.55);
     }
-    .btn:hover { background:#2563eb; }
+    .card img {
+      width: 100%;
+      height: 210px;
+      object-fit: cover;
+      display: block;
+    }
+    .card-content {
+      padding: 18px 18px 20px;
+    }
+    .card h2 {
+      color: #e5e7eb;
+      margin: 0 0 6px;
+      font-size: 1.25rem;
+    }
+    .tag {
+      display:inline-block;
+      font-size:.8rem;
+      color:#a5b4fc;
+      background:#1f2937;
+      padding:3px 8px;
+      border-radius:999px;
+      margin-bottom:10px;
+    }
+    .desc {
+      color:#bdbdbd;
+      font-size:.95rem;
+      margin: 8px 0 10px;
+    }
+    .specs {
+      list-style:none;
+      padding:0;
+      margin:0 0 12px;
+      color:#c9c9c9;
+    }
+    .specs li {
+      font-size:.92rem;
+      margin:4px 0;
+    }
+    .row {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .price {
+      color:#60a5fa;
+      font-weight:700;
+      font-size:1.15rem;
+    }
+    .btn {
+      background:#3b82f6;
+      color:white;
+      border:none;
+      border-radius:8px;
+      padding:10px 14px;
+      cursor:pointer;
+      font-size:.98rem;
+    }
+    .btn:hover {
+      background:#2563eb;
+    }
   </style>
 </head>
 <body>
@@ -54,99 +136,71 @@
 
 <h1>Custom PC Builds</h1>
 
-<div class="product-grid">
+<div class="toggle-buttons">
+  <button onclick="showBuilds('amd')">AMD Builds</button>
+  <button onclick="showBuilds('intel')">Intel Builds</button>
+</div>
 
-  <!-- 4K Gaming PC -->
+<!-- AMD Builds -->
+<div id="amd-builds" class="product-grid">
+  <!-- Repeat for 6 AMD PCs -->
   <div class="card">
-    <img src="images/4k-gaming.png" alt="4K Gaming PC">
+    <img src="images/amd1.png" alt="AMD Build 1">
     <div class="card-content">
-      <span class="tag">4K Gaming</span>
-      <h2>4K Gaming PC</h2>
-      <p class="desc">Play AAA titles at max settings in stunning 4K resolution with next-gen RTX 50 series performance.</p>
+      <span class="tag">AMD</span>
+      <h2>AMD Gaming Beast</h2>
+      <p class="desc">High FPS gaming with the latest AMD CPU & GPU.</p>
       <ul class="specs">
         <li>CPU: Ryzen 7 7800X3D</li>
-        <li>GPU: NVIDIA GeForce RTX 5080</li>
-        <li>RAM: 32GB DDR5-6000</li>
-        <li>Storage: 2TB NVMe (Gen4)</li>
+        <li>GPU: RTX 5080</li>
+        <li>RAM: 32GB DDR5</li>
+        <li>Storage: 2TB NVMe</li>
       </ul>
       <div class="row">
         <span class="price">$2,599</span>
-        <button class="btn" onclick="addToCart('4K Gaming PC', 2599)">Add to Cart</button>
+        <button class="btn" onclick="addToCart('AMD Gaming Beast', 2599)">Add to Cart</button>
       </div>
     </div>
   </div>
+  <!-- Add 5 more AMD builds here -->
+</div>
 
-  <!-- Overkill PC -->
+<!-- Intel Builds -->
+<div id="intel-builds" class="product-grid" style="display:none;">
+  <!-- Repeat for 6 Intel PCs -->
   <div class="card">
-    <img src="images/overkill-pc.png" alt="Overkill PC">
+    <img src="images/intel1.png" alt="Intel Build 1">
     <div class="card-content">
-      <span class="tag">Extreme</span>
-      <h2>Overkill PC</h2>
-      <p class="desc">Ultimate power for 8K gaming, extreme 3D rendering, and AI workloads.</p>
+      <span class="tag">Intel</span>
+      <h2>Intel Gaming Pro</h2>
+      <p class="desc">Top-tier Intel CPU with high-end RTX 50 GPU.</p>
       <ul class="specs">
-        <li>CPU: Ryzen 9 7950X</li>
-        <li>GPU: NVIDIA GeForce RTX 5090</li>
-        <li>RAM: 64GB DDR5-6400</li>
-        <li>Storage: 2TB NVMe + 4TB NVMe</li>
+        <li>CPU: Intel i7-14700K</li>
+        <li>GPU: RTX 5080</li>
+        <li>RAM: 32GB DDR5</li>
+        <li>Storage: 2TB NVMe</li>
       </ul>
       <div class="row">
-        <span class="price">$4,499</span>
-        <button class="btn" onclick="addToCart('Overkill PC', 4499)">Add to Cart</button>
+        <span class="price">$2,699</span>
+        <button class="btn" onclick="addToCart('Intel Gaming Pro', 2699)">Add to Cart</button>
       </div>
     </div>
   </div>
-
-  <!-- Budget Gaming PC -->
-  <div class="card">
-    <img src="images/budget-gaming.png" alt="Budget Gaming PC">
-    <div class="card-content">
-      <span class="tag">Best Value</span>
-      <h2>Budget Gaming PC</h2>
-      <p class="desc">Great frame rates for esports and popular titles, with excellent price-to-performance value.</p>
-      <ul class="specs">
-        <li>CPU: Intel i5-12400F</li>
-        <li>GPU: NVIDIA GeForce RTX 5060</li>
-        <li>RAM: 16GB DDR4</li>
-        <li>Storage: 1TB SSD</li>
-      </ul>
-      <div class="row">
-        <span class="price">$749</span>
-        <button class="btn" onclick="addToCart('Budget Gaming PC (RTX 5060)', 749)">Add to Cart</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Creator PC -->
-  <div class="card">
-    <img src="images/creator-pc.png" alt="Creator PC">
-    <div class="card-content">
-      <span class="tag">Creator</span>
-      <h2>Creator PC</h2>
-      <p class="desc">Optimized for editing, rendering, and creative workloads with RTX 50 AI acceleration.</p>
-      <ul class="specs">
-        <li>CPU: Ryzen 9 7950X</li>
-        <li>GPU: NVIDIA GeForce RTX 5080</li>
-        <li>RAM: 64GB DDR5-6000</li>
-        <li>Storage: 2TB Samsung 990 PRO</li>
-      </ul>
-      <div class="row">
-        <span class="price">$2,999</span>
-        <button class="btn" onclick="addToCart('Creator PC', 2999)">Add to Cart</button>
-      </div>
-    </div>
-  </div>
-
+  <!-- Add 5 more Intel builds here -->
 </div>
 
 <script>
-  function addToCart(name, price) {
-    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    cart.push({ name, price });
-    localStorage.setItem('cart', JSON.stringify(cart));
-    alert(name + " added to cart!");
-  }
+function showBuilds(type) {
+  document.getElementById('amd-builds').style.display = (type === 'amd') ? 'grid' : 'none';
+  document.getElementById('intel-builds').style.display = (type === 'intel') ? 'grid' : 'none';
+}
+function addToCart(name, price) {
+  const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+  cart.push({ name, price });
+  localStorage.setItem('cart', JSON.stringify(cart));
+  alert(name + " added to cart!");
+}
 </script>
 
 </body>
 </html>
-
