@@ -6,24 +6,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    /* ---- Minimal page styles (self-contained) ---- */
     :root { --blue:#3b82f6; --blueDark:#2563eb; --panel:#0f1115; --line:#1f2937; }
     * { box-sizing: border-box; }
     body { margin:0; font-family: Inter, system-ui, Arial, sans-serif; background:#000; color:#fff; }
-    a { color:inherit; text-decoration:none; }
+
+    /* Nav */
     nav { position:sticky; top:0; z-index:10; background:rgba(17,17,17,.9); border-bottom:1px solid #111; padding:14px 16px; text-align:center; }
-    nav a { display:inline-block; margin:0 10px; padding:8px 10px; border-radius:8px; color:#e5e7eb; }
+    nav a { display:inline-block; margin:0 10px; padding:8px 10px; border-radius:8px; color:#e5e7eb; text-decoration:none; }
     nav a:hover { background:#1f2937; }
-    .container { max-width:1200px; margin:0 auto; padding:26px 18px 40px; }
+
+    /* Full-width layout */
+    .wrap { width:100%; padding:26px 18px 40px; } /* no max-width! */
+
     h1 { text-align:center; color:#60a5fa; margin:8px 0 18px; }
+
     .toggle { display:flex; justify-content:center; gap:10px; margin:2px 0 18px; }
     .toggle button { min-width:140px; padding:10px 14px; border:0; border-radius:10px; background:var(--blue); color:#fff; font-weight:700; cursor:pointer; }
     .toggle .active { background:#1f6fe0; box-shadow: inset 0 0 0 2px #93c5fd33; }
-    .product-grid { display:grid; gap:26px; grid-template-columns: repeat(3, 1fr); }
+
+    /* >>> Grid fills full width: 3 columns desktop, 2 tablet, 1 mobile */
+    .product-grid { display:grid; gap:26px; grid-template-columns:repeat(3, 1fr); }
     @media (max-width:1024px){ .product-grid{ grid-template-columns:repeat(2,1fr);} }
     @media (max-width:640px){ .product-grid{ grid-template-columns:1fr;} }
-    .card { background:var(--panel); border:1px solid var(--line); border-radius:14px; overflow:hidden; box-shadow:0 6px 20px rgba(0,0,0,.45); }
-    .card img { width:100%; height:220px; object-fit:cover; display:block; }
+
+    /* Cards stretch to fill their grid cell */
+    .card { width:100%; height:100%; background:var(--panel); border:1px solid var(--line); border-radius:14px; overflow:hidden; box-shadow:0 6px 20px rgba(0,0,0,.45); }
+    .card img { width:100%; height:240px; object-fit:cover; display:block; }
     .content { padding:16px; }
     .tag { display:inline-block; font-size:.78rem; color:#a5b4fc; background:#111827; padding:3px 10px; border-radius:999px; margin-bottom:10px; }
     .desc { color:#cbd5e1; font-size:.95rem; margin:6px 0 10px; }
@@ -33,6 +41,7 @@
     .price { color:#93c5fd; font-weight:800; font-size:1.05rem; }
     .btn { background:var(--blue); color:#fff; border:0; border-radius:10px; padding:10px 14px; cursor:pointer; font-weight:700; }
     .btn:hover { background:var(--blueDark); }
+
     footer { text-align:center; color:#9ca3af; padding:26px 0 36px; }
   </style>
 </head>
@@ -45,7 +54,7 @@
     <a href="cart.html">Cart</a>
   </nav>
 
-  <div class="container">
+  <div class="wrap">
     <h1>Custom PC Builds</h1>
 
     <div class="toggle">
@@ -55,246 +64,128 @@
 
     <!-- ================= AMD (6) ================= -->
     <div id="amd-builds" class="product-grid">
-      <!-- AMD 1 -->
       <div class="card">
-        <img src="https://picsum.photos/seed/amd1/800/600" alt="4K Gaming PC (AMD)">
+        <img src="https://picsum.photos/seed/amd1/1200/800" alt="4K Gaming PC (AMD)">
         <div class="content">
           <span class="tag">4K Gaming</span>
           <h2>4K Gaming PC (AMD)</h2>
           <p class="desc">Max settings at 4K with quiet thermals.</p>
-          <ul class="specs">
-            <li>CPU: Ryzen 7 7800X3D</li>
-            <li>GPU: GeForce RTX 5080</li>
-            <li>RAM: 32GB DDR5-6000</li>
-            <li>Storage: 2TB NVMe Gen4</li>
-          </ul>
-          <div class="row">
-            <div class="price">$2,599</div>
-            <button class="btn" onclick="addToCart('4K Gaming PC (AMD, 5080)', 2599)">Add to Cart</button>
-          </div>
+          <ul class="specs"><li>Ryzen 7 7800X3D</li><li>RTX 5080</li><li>32GB DDR5-6000</li><li>2TB NVMe Gen4</li></ul>
+          <div class="row"><div class="price">$2,599</div><button class="btn" onclick="addToCart('4K Gaming PC (AMD, 5080)', 2599)">Add to Cart</button></div>
         </div>
       </div>
-
-      <!-- AMD 2 -->
       <div class="card">
-        <img src="https://picsum.photos/seed/amd2/800/600" alt="Overkill PC (AMD)">
+        <img src="https://picsum.photos/seed/amd2/1200/800" alt="Overkill PC (AMD)">
         <div class="content">
           <span class="tag">Extreme</span>
           <h2>Overkill PC (AMD)</h2>
           <p class="desc">8K gaming, 3D, and AI—no compromises.</p>
-          <ul class="specs">
-            <li>CPU: Ryzen 9 7950X</li>
-            <li>GPU: GeForce RTX 5090</li>
-            <li>RAM: 64GB DDR5-6400</li>
-            <li>Storage: 2TB + 4TB NVMe</li>
-          </ul>
-          <div class="row">
-            <div class="price">$4,499</div>
-            <button class="btn" onclick="addToCart('Overkill PC (AMD, 5090)', 4499)">Add to Cart</button>
-          </div>
+          <ul class="specs"><li>Ryzen 9 7950X</li><li>RTX 5090</li><li>64GB DDR5-6400</li><li>2TB + 4TB NVMe</li></ul>
+          <div class="row"><div class="price">$4,499</div><button class="btn" onclick="addToCart('Overkill PC (AMD, 5090)', 4499)">Add to Cart</button></div>
         </div>
       </div>
-
-      <!-- AMD 3 -->
       <div class="card">
-        <img src="https://picsum.photos/seed/amd3/800/600" alt="Creator Pro (AMD)">
+        <img src="https://picsum.photos/seed/amd3/1200/800" alt="Creator Pro (AMD)">
         <div class="content">
           <span class="tag">Creator</span>
           <h2>Creator Pro (AMD)</h2>
           <p class="desc">Faster renders & timelines with RTX 50 AI accel.</p>
-          <ul class="specs">
-            <li>CPU: Ryzen 9 7950X</li>
-            <li>GPU: GeForce RTX 5080</li>
-            <li>RAM: 64GB DDR5-6000</li>
-            <li>Storage: 2TB Samsung 990 PRO</li>
-          </ul>
-          <div class="row">
-            <div class="price">$2,999</div>
-            <button class="btn" onclick="addToCart('Creator Pro (AMD, 5080)', 2999)">Add to Cart</button>
-          </div>
+          <ul class="specs"><li>Ryzen 9 7950X</li><li>RTX 5080</li><li>64GB DDR5-6000</li><li>2TB 990 PRO</li></ul>
+          <div class="row"><div class="price">$2,999</div><button class="btn" onclick="addToCart('Creator Pro (AMD, 5080)', 2999)">Add to Cart</button></div>
         </div>
       </div>
-
-      <!-- AMD 4 -->
       <div class="card">
-        <img src="https://picsum.photos/seed/amd4/800/600" alt="Budget Gaming (AMD)">
+        <img src="https://picsum.photos/seed/amd4/1200/800" alt="Budget Gaming (AMD)">
         <div class="content">
           <span class="tag">Best Value</span>
           <h2>Budget Gaming (AMD)</h2>
           <p class="desc">Great FPS in esports at a friendly price.</p>
-          <ul class="specs">
-            <li>CPU: Ryzen 5 5600</li>
-            <li>GPU: GeForce RTX 5060</li>
-            <li>RAM: 16GB DDR4</li>
-            <li>Storage: 1TB SSD</li>
-          </ul>
-          <div class="row">
-            <div class="price">$699</div>
-            <button class="btn" onclick="addToCart('Budget Gaming (AMD, 5060)', 699)">Add to Cart</button>
-          </div>
+          <ul class="specs"><li>Ryzen 5 5600</li><li>RTX 5060</li><li>16GB DDR4</li><li>1TB SSD</li></ul>
+          <div class="row"><div class="price">$699</div><button class="btn" onclick="addToCart('Budget Gaming (AMD, 5060)', 699)">Add to Cart</button></div>
         </div>
       </div>
-
-      <!-- AMD 5 -->
       <div class="card">
-        <img src="https://picsum.photos/seed/amd5/800/600" alt="Budget Creator (AMD)">
+        <img src="https://picsum.photos/seed/amd5/1200/800" alt="Budget Creator (AMD)">
         <div class="content">
           <span class="tag">Budget Creator</span>
           <h2>Budget Creator (AMD)</h2>
           <p class="desc">School, streaming & light editing without lag.</p>
-          <ul class="specs">
-            <li>CPU: Ryzen 5 5600G</li>
-            <li>GPU: GeForce RTX 3050</li>
-            <li>RAM: 16GB DDR4</li>
-            <li>Storage: 512GB SSD</li>
-          </ul>
-          <div class="row">
-            <div class="price">$599</div>
-            <button class="btn" onclick="addToCart('Budget Creator (AMD, 3050)', 599)">Add to Cart</button>
-          </div>
+          <ul class="specs"><li>Ryzen 5 5600G</li><li>RTX 3050</li><li>16GB DDR4</li><li>512GB SSD</li></ul>
+          <div class="row"><div class="price">$599</div><button class="btn" onclick="addToCart('Budget Creator (AMD, 3050)', 599)">Add to Cart</button></div>
         </div>
       </div>
-
-      <!-- AMD 6 -->
       <div class="card">
-        <img src="https://picsum.photos/seed/amd6/800/600" alt="Esports Pro (AMD)">
+        <img src="https://picsum.photos/seed/amd6/1200/800" alt="Esports Pro (AMD)">
         <div class="content">
           <span class="tag">Esports</span>
           <h2>Esports Pro (AMD)</h2>
           <p class="desc">High FPS for Valorant / Fortnite / CS2.</p>
-          <ul class="specs">
-            <li>CPU: Ryzen 5 7600</li>
-            <li>GPU: GeForce RTX 4060</li>
-            <li>RAM: 16GB DDR5</li>
-            <li>Storage: 1TB SSD</li>
-          </ul>
-          <div class="row">
-            <div class="price">$799</div>
-            <button class="btn" onclick="addToCart('Esports Pro (AMD, 4060)', 799)">Add to Cart</button>
-          </div>
+          <ul class="specs"><li>Ryzen 5 7600</li><li>RTX 4060</li><li>16GB DDR5</li><li>1TB SSD</li></ul>
+          <div class="row"><div class="price">$799</div><button class="btn" onclick="addToCart('Esports Pro (AMD, 4060)', 799)">Add to Cart</button></div>
         </div>
       </div>
     </div>
 
     <!-- =============== INTEL (6) =============== -->
     <div id="intel-builds" class="product-grid" style="display:none;">
-      <!-- Intel 1 -->
       <div class="card">
-        <img src="https://picsum.photos/seed/intel1/800/600" alt="4K Gaming PC (Intel)">
+        <img src="https://picsum.photos/seed/intel1/1200/800" alt="4K Gaming PC (Intel)">
         <div class="content">
           <span class="tag">4K Gaming</span>
           <h2>4K Gaming PC (Intel)</h2>
           <p class="desc">Ultra settings at 4K with smooth frame times.</p>
-          <ul class="specs">
-            <li>CPU: Intel i7-14700K</li>
-            <li>GPU: GeForce RTX 5080</li>
-            <li>RAM: 32GB DDR5-6000</li>
-            <li>Storage: 2TB NVMe Gen4</li>
-          </ul>
-          <div class="row">
-            <div class="price">$2,699</div>
-            <button class="btn" onclick="addToCart('4K Gaming PC (Intel, 5080)', 2699)">Add to Cart</button>
-          </div>
+          <ul class="specs"><li>Intel i7-14700K</li><li>RTX 5080</li><li>32GB DDR5-6000</li><li>2TB NVMe Gen4</li></ul>
+          <div class="row"><div class="price">$2,699</div><button class="btn" onclick="addToCart('4K Gaming PC (Intel, 5080)', 2699)">Add to Cart</button></div>
         </div>
       </div>
-
-      <!-- Intel 2 -->
       <div class="card">
-        <img src="https://picsum.photos/seed/intel2/800/600" alt="Overkill PC (Intel)">
+        <img src="https://picsum.photos/seed/intel2/1200/800" alt="Overkill PC (Intel)">
         <div class="content">
           <span class="tag">Extreme</span>
           <h2>Overkill PC (Intel)</h2>
           <p class="desc">Peak performance for 8K gaming & AI.</p>
-          <ul class="specs">
-            <li>CPU: Intel i9-14900K</li>
-            <li>GPU: GeForce RTX 5090</li>
-            <li>RAM: 64GB DDR5-6400</li>
-            <li>Storage: 2TB + 4TB NVMe</li>
-          </ul>
-          <div class="row">
-            <div class="price">$4,599</div>
-            <button class="btn" onclick="addToCart('Overkill PC (Intel, 5090)', 4599)">Add to Cart</button>
-          </div>
+          <ul class="specs"><li>Intel i9-14900K</li><li>RTX 5090</li><li>64GB DDR5-6400</li><li>2TB + 4TB NVMe</li></ul>
+          <div class="row"><div class="price">$4,599</div><button class="btn" onclick="addToCart('Overkill PC (Intel, 5090)', 4599)">Add to Cart</button></div>
         </div>
       </div>
-
-      <!-- Intel 3 -->
       <div class="card">
-        <img src="https://picsum.photos/seed/intel3/800/600" alt="Creator Pro (Intel)">
+        <img src="https://picsum.photos/seed/intel3/1200/800" alt="Creator Pro (Intel)">
         <div class="content">
           <span class="tag">Creator</span>
           <h2>Creator Pro (Intel)</h2>
           <p class="desc">Premiere/Blender power w/ RTX 50 AI tools.</p>
-          <ul class="specs">
-            <li>CPU: Intel i9-14900K</li>
-            <li>GPU: GeForce RTX 5080</li>
-            <li>RAM: 64GB DDR5-6000</li>
-            <li>Storage: 2TB Samsung 990 PRO</li>
-          </ul>
-          <div class="row">
-            <div class="price">$3,099</div>
-            <button class="btn" onclick="addToCart('Creator Pro (Intel, 5080)', 3099)">Add to Cart</button>
-          </div>
+          <ul class="specs"><li>Intel i9-14900K</li><li>RTX 5080</li><li>64GB DDR5-6000</li><li>2TB 990 PRO</li></ul>
+          <div class="row"><div class="price">$3,099</div><button class="btn" onclick="addToCart('Creator Pro (Intel, 5080)', 3099)">Add to Cart</button></div>
         </div>
       </div>
-
-      <!-- Intel 4 -->
       <div class="card">
-        <img src="https://picsum.photos/seed/intel4/800/600" alt="Budget Gaming (Intel)">
+        <img src="https://picsum.photos/seed/intel4/1200/800" alt="Budget Gaming (Intel)">
         <div class="content">
           <span class="tag">Best Value</span>
           <h2>Budget Gaming (Intel)</h2>
           <p class="desc">Great FPS for competitive titles.</p>
-          <ul class="specs">
-            <li>CPU: Intel i3-14100F</li>
-            <li>GPU: GeForce RTX 5060</li>
-            <li>RAM: 16GB DDR4</li>
-            <li>Storage: 1TB SSD</li>
-          </ul>
-          <div class="row">
-            <div class="price">$729</div>
-            <button class="btn" onclick="addToCart('Budget Gaming (Intel, 5060)', 729)">Add to Cart</button>
-          </div>
+          <ul class="specs"><li>Intel i3-14100F</li><li>RTX 5060</li><li>16GB DDR4</li><li>1TB SSD</li></ul>
+          <div class="row"><div class="price">$729</div><button class="btn" onclick="addToCart('Budget Gaming (Intel, 5060)', 729)">Add to Cart</button></div>
         </div>
       </div>
-
-      <!-- Intel 5 -->
       <div class="card">
-        <img src="https://picsum.photos/seed/intel5/800/600" alt="Budget Creator (Intel)">
+        <img src="https://picsum.photos/seed/intel5/1200/800" alt="Budget Creator (Intel)">
         <div class="content">
           <span class="tag">Budget Creator</span>
           <h2>Budget Creator (Intel)</h2>
           <p class="desc">School, streaming & light editing—smooth.</p>
-          <ul class="specs">
-            <li>CPU: Intel i5-13400F</li>
-            <li>GPU: GeForce RTX 3050</li>
-            <li>RAM: 16GB DDR4</li>
-            <li>Storage: 512GB SSD</li>
-          </ul>
-          <div class="row">
-            <div class="price">$619</div>
-            <button class="btn" onclick="addToCart('Budget Creator (Intel, 3050)', 619)">Add to Cart</button>
-          </div>
+          <ul class="specs"><li>Intel i5-13400F</li><li>RTX 3050</li><li>16GB DDR4</li><li>512GB SSD</li></ul>
+          <div class="row"><div class="price">$619</div><button class="btn" onclick="addToCart('Budget Creator (Intel, 3050)', 619)">Add to Cart</button></div>
         </div>
       </div>
-
-      <!-- Intel 6 -->
       <div class="card">
-        <img src="https://picsum.photos/seed/intel6/800/600" alt="Esports Pro (Intel)">
+        <img src="https://picsum.photos/seed/intel6/1200/800" alt="Esports Pro (Intel)">
         <div class="content">
           <span class="tag">Esports</span>
           <h2>Esports Pro (Intel)</h2>
           <p class="desc">High FPS for competitive shooters.</p>
-          <ul class="specs">
-            <li>CPU: Intel i5-14500</li>
-            <li>GPU: GeForce RTX 4060</li>
-            <li>RAM: 16GB DDR5</li>
-            <li>Storage: 1TB SSD</li>
-          </ul>
-          <div class="row">
-            <div class="price">$829</div>
-            <button class="btn" onclick="addToCart('Esports Pro (Intel, 4060)', 829)">Add to Cart</button>
-          </div>
+          <ul class="specs"><li>Intel i5-14500</li><li>RTX 4060</li><li>16GB DDR5</li><li>1TB SSD</li></ul>
+          <div class="row"><div class="price">$829</div><button class="btn" onclick="addToCart('Esports Pro (Intel, 4060)', 829)">Add to Cart</button></div>
         </div>
       </div>
     </div>
@@ -303,7 +194,6 @@
   <footer>Prices are examples; final quotes depend on market availability.</footer>
 
   <script>
-    // Toggle AMD/Intel sections
     function showBuilds(type) {
       const amd = document.getElementById('amd-builds');
       const intel = document.getElementById('intel-builds');
@@ -311,10 +201,9 @@
       const btnIntel = document.getElementById('btn-intel');
       amd.style.display = (type === 'amd') ? 'grid' : 'none';
       intel.style.display = (type === 'intel') ? 'grid' : 'none';
-      btnAMD.classList.toggle('active', type === 'amd');
-      btnIntel.classList.toggle('active', type === 'intel');
+      btnAMD?.classList.toggle('active', type === 'amd');
+      btnIntel?.classList.toggle('active', type === 'intel');
     }
-    // Simple cart using localStorage
     function addToCart(name, price) {
       const cart = JSON.parse(localStorage.getItem('cart') || '[]');
       cart.push({ name, price });
