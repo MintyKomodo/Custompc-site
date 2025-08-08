@@ -1,17 +1,22 @@
+
+
 /* Global */
-* { box-sizing: border-box; }
 body {
-  background: linear-gradient(
-    to bottom,
-    #000000 0%,
-    #0a0f2d 40%,
-    #11215b 80%,
-    #1e3a8a 100%
-  );
-  color: white;
   margin: 0;
   font-family: Inter, sans-serif;
+  background: linear-gradient(
+    to bottom,
+    #000000 0%,      /* deep black at the very top */
+    #0a0f2d 40%,     /* dark navy blue in the middle */
+    #11215b 80%,     /* richer blue lower down */
+    #1e3a8a 100%     /* dark blue at the bottom */
+  );
+  background-attachment: fixed; /* optional: makes gradient stay fixed while scrolling */
+  background-repeat: no-repeat;
+  background-size: cover;
+  color: white; /* ensures text stays readable */
 }
+
 
 
 /* Nav */
