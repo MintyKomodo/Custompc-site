@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <title>Builds – CustomPC.tech</title>
@@ -16,22 +16,22 @@
     nav a:hover { background:#1f2937; }
 
     /* Full-width layout */
-    .wrap { width:100%; padding:26px 18px 40px; } /* no max-width! */
-
+    .wrap { width:100%; padding:26px 18px 40px; } /* full-bleed */
     h1 { text-align:center; color:#60a5fa; margin:8px 0 18px; }
 
     .toggle { display:flex; justify-content:center; gap:10px; margin:2px 0 18px; }
     .toggle button { min-width:140px; padding:10px 14px; border:0; border-radius:10px; background:var(--blue); color:#fff; font-weight:700; cursor:pointer; }
     .toggle .active { background:#1f6fe0; box-shadow: inset 0 0 0 2px #93c5fd33; }
 
-    /* >>> Grid fills full width: 3 columns desktop, 2 tablet, 1 mobile */
+    /* Grid: 3 columns desktop, 2 tablet, 1 mobile */
     .product-grid { display:grid; gap:26px; grid-template-columns:repeat(3, 1fr); }
     @media (max-width:1024px){ .product-grid{ grid-template-columns:repeat(2,1fr);} }
     @media (max-width:640px){ .product-grid{ grid-template-columns:1fr;} }
 
-    /* Cards stretch to fill their grid cell */
-    .card { width:100%; height:100%; background:var(--panel); border:1px solid var(--line); border-radius:14px; overflow:hidden; box-shadow:0 6px 20px rgba(0,0,0,.45); }
-    .card img { width:100%; height:240px; object-fit:cover; display:block; }
+    /* Cards */
+    .card { width:100%; height:100%; background:var(--panel); border:1px solid var(--line); border-radius:14px; overflow:hidden; box-shadow:0 6px 24px rgba(0,0,0,.45); transition:transform .18s ease, box-shadow .18s ease; }
+    .card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(0,0,0,.6); }
+    .card img { width:100%; height:240px; object-fit:cover; display:block; filter: contrast(1.05) saturate(1.05); }
     .content { padding:16px; }
     .tag { display:inline-block; font-size:.78rem; color:#a5b4fc; background:#111827; padding:3px 10px; border-radius:999px; margin-bottom:10px; }
     .desc { color:#cbd5e1; font-size:.95rem; margin:6px 0 10px; }
@@ -64,8 +64,9 @@
 
     <!-- ================= AMD (6) ================= -->
     <div id="amd-builds" class="product-grid">
+      <!-- AMD 1 -->
       <div class="card">
-        <img src="https://picsum.photos/seed/amd1/1200/800" alt="4K Gaming PC (AMD)">
+        <img src="https://source.unsplash.com/featured/1200x800?gaming-pc,rtx,setup" alt="4K Gaming PC (AMD)">
         <div class="content">
           <span class="tag">4K Gaming</span>
           <h2>4K Gaming PC (AMD)</h2>
@@ -74,8 +75,9 @@
           <div class="row"><div class="price">$2,599</div><button class="btn" onclick="addToCart('4K Gaming PC (AMD, 5080)', 2599)">Add to Cart</button></div>
         </div>
       </div>
+      <!-- AMD 2 -->
       <div class="card">
-        <img src="https://picsum.photos/seed/amd2/1200/800" alt="Overkill PC (AMD)">
+        <img src="https://source.unsplash.com/featured/1200x800?rtx-4090,custom-pc,liquid-cooling" alt="Overkill PC (AMD)">
         <div class="content">
           <span class="tag">Extreme</span>
           <h2>Overkill PC (AMD)</h2>
@@ -84,8 +86,9 @@
           <div class="row"><div class="price">$4,499</div><button class="btn" onclick="addToCart('Overkill PC (AMD, 5090)', 4499)">Add to Cart</button></div>
         </div>
       </div>
+      <!-- AMD 3 -->
       <div class="card">
-        <img src="https://picsum.photos/seed/amd3/1200/800" alt="Creator Pro (AMD)">
+        <img src="https://source.unsplash.com/featured/1200x800?workstation-pc,creator,editing" alt="Creator Pro (AMD)">
         <div class="content">
           <span class="tag">Creator</span>
           <h2>Creator Pro (AMD)</h2>
@@ -94,8 +97,9 @@
           <div class="row"><div class="price">$2,999</div><button class="btn" onclick="addToCart('Creator Pro (AMD, 5080)', 2999)">Add to Cart</button></div>
         </div>
       </div>
+      <!-- AMD 4 -->
       <div class="card">
-        <img src="https://picsum.photos/seed/amd4/1200/800" alt="Budget Gaming (AMD)">
+        <img src="https://source.unsplash.com/featured/1200x800?budget-gaming-pc,pc-build" alt="Budget Gaming (AMD)">
         <div class="content">
           <span class="tag">Best Value</span>
           <h2>Budget Gaming (AMD)</h2>
@@ -104,8 +108,9 @@
           <div class="row"><div class="price">$699</div><button class="btn" onclick="addToCart('Budget Gaming (AMD, 5060)', 699)">Add to Cart</button></div>
         </div>
       </div>
+      <!-- AMD 5 -->
       <div class="card">
-        <img src="https://picsum.photos/seed/amd5/1200/800" alt="Budget Creator (AMD)">
+        <img src="https://source.unsplash.com/featured/1200x800?small-form-factor,pc-case" alt="Budget Creator (AMD)">
         <div class="content">
           <span class="tag">Budget Creator</span>
           <h2>Budget Creator (AMD)</h2>
@@ -114,8 +119,9 @@
           <div class="row"><div class="price">$599</div><button class="btn" onclick="addToCart('Budget Creator (AMD, 3050)', 599)">Add to Cart</button></div>
         </div>
       </div>
+      <!-- AMD 6 -->
       <div class="card">
-        <img src="https://picsum.photos/seed/amd6/1200/800" alt="Esports Pro (AMD)">
+        <img src="https://source.unsplash.com/featured/1200x800?esports,gaming-setup" alt="Esports Pro (AMD)">
         <div class="content">
           <span class="tag">Esports</span>
           <h2>Esports Pro (AMD)</h2>
@@ -128,8 +134,9 @@
 
     <!-- =============== INTEL (6) =============== -->
     <div id="intel-builds" class="product-grid" style="display:none;">
+      <!-- Intel 1 -->
       <div class="card">
-        <img src="https://picsum.photos/seed/intel1/1200/800" alt="4K Gaming PC (Intel)">
+        <img src="https://source.unsplash.com/featured/1200x800?4k-gaming,high-end-pc" alt="4K Gaming PC (Intel)">
         <div class="content">
           <span class="tag">4K Gaming</span>
           <h2>4K Gaming PC (Intel)</h2>
@@ -138,8 +145,9 @@
           <div class="row"><div class="price">$2,699</div><button class="btn" onclick="addToCart('4K Gaming PC (Intel, 5080)', 2699)">Add to Cart</button></div>
         </div>
       </div>
+      <!-- Intel 2 -->
       <div class="card">
-        <img src="https://picsum.photos/seed/intel2/1200/800" alt="Overkill PC (Intel)">
+        <img src="https://source.unsplash.com/featured/1200x800?extreme-pc,watercooling" alt="Overkill PC (Intel)">
         <div class="content">
           <span class="tag">Extreme</span>
           <h2>Overkill PC (Intel)</h2>
@@ -148,8 +156,9 @@
           <div class="row"><div class="price">$4,599</div><button class="btn" onclick="addToCart('Overkill PC (Intel, 5090)', 4599)">Add to Cart</button></div>
         </div>
       </div>
+      <!-- Intel 3 -->
       <div class="card">
-        <img src="https://picsum.photos/seed/intel3/1200/800" alt="Creator Pro (Intel)">
+        <img src="https://source.unsplash.com/featured/1200x800?creator-pc,rendering,studio" alt="Creator Pro (Intel)">
         <div class="content">
           <span class="tag">Creator</span>
           <h2>Creator Pro (Intel)</h2>
@@ -158,8 +167,9 @@
           <div class="row"><div class="price">$3,099</div><button class="btn" onclick="addToCart('Creator Pro (Intel, 5080)', 3099)">Add to Cart</button></div>
         </div>
       </div>
+      <!-- Intel 4 -->
       <div class="card">
-        <img src="https://picsum.photos/seed/intel4/1200/800" alt="Budget Gaming (Intel)">
+        <img src="https://source.unsplash.com/featured/1200x800?budget-pc,gaming" alt="Budget Gaming (Intel)">
         <div class="content">
           <span class="tag">Best Value</span>
           <h2>Budget Gaming (Intel)</h2>
@@ -168,8 +178,9 @@
           <div class="row"><div class="price">$729</div><button class="btn" onclick="addToCart('Budget Gaming (Intel, 5060)', 729)">Add to Cart</button></div>
         </div>
       </div>
+      <!-- Intel 5 -->
       <div class="card">
-        <img src="https://picsum.photos/seed/intel5/1200/800" alt="Budget Creator (Intel)">
+        <img src="https://source.unsplash.com/featured/1200x800?productivity-pc,mini-itx" alt="Budget Creator (Intel)">
         <div class="content">
           <span class="tag">Budget Creator</span>
           <h2>Budget Creator (Intel)</h2>
@@ -178,8 +189,9 @@
           <div class="row"><div class="price">$619</div><button class="btn" onclick="addToCart('Budget Creator (Intel, 3050)', 619)">Add to Cart</button></div>
         </div>
       </div>
+      <!-- Intel 6 -->
       <div class="card">
-        <img src="https://picsum.photos/seed/intel6/1200/800" alt="Esports Pro (Intel)">
+        <img src="https://source.unsplash.com/featured/1200x800?competitive-gaming,setup" alt="Esports Pro (Intel)">
         <div class="content">
           <span class="tag">Esports</span>
           <h2>Esports Pro (Intel)</h2>
@@ -199,11 +211,14 @@
       const intel = document.getElementById('intel-builds');
       const btnAMD = document.getElementById('btn-amd');
       const btnIntel = document.getElementById('btn-intel');
+
       amd.style.display = (type === 'amd') ? 'grid' : 'none';
       intel.style.display = (type === 'intel') ? 'grid' : 'none';
+
       btnAMD?.classList.toggle('active', type === 'amd');
       btnIntel?.classList.toggle('active', type === 'intel');
     }
+
     function addToCart(name, price) {
       const cart = JSON.parse(localStorage.getItem('cart') || '[]');
       cart.push({ name, price });
