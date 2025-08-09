@@ -6,11 +6,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <style>
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    @media (max-width:980px){.grid{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:640px){.grid{grid-template-columns:1fr}}
+    .card-pc{border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden;background:rgba(0,0,0,.28)}
+    .card-pc img{display:block;width:100%;height:180px;object-fit:cover;cursor:pointer}
+    .card-pc .content{padding:12px}
+    .tag{font-size:12px;opacity:.75}
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:16px;z-index:90}
+    .modal.open{display:flex}
+    .modal-card{max-width:880px;width:100%;background:#0d1016;border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;box-shadow:0 18px 60px rgba(0,0,0,.45)}
+    .modal-media{width:100%;height:320px;background:#000;object-fit:cover;display:block}
+    .modal-body{padding:16px}
+    .specs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .spec{border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:8px;background:rgba(255,255,255,.02)}
+    @media (max-width:760px){.specs{grid-template-columns:1fr}}
+  </style>
 </head>
 <body onload="showBuilds('amd')">
   <nav>
-    <a href="custom.html">Custom PC</a>
     <a href="index.html">Contact</a>
+    <a href="custom.html">Custom PC</a>
     <a href="about.html">About</a>
     <a href="builds.html">Builds</a>
     <a href="cart.html">Cart</a>
@@ -22,141 +39,181 @@
 
   <div class="container">
     <h1>Custom PC Builds</h1>
-
     <div style="display:flex; justify-content:center; gap:10px; margin:10px 0 20px;">
       <button id="btn-amd" class="btn" onclick="showBuilds('amd')">AMD Builds</button>
       <button id="btn-intel" class="btn" onclick="showBuilds('intel')">Intel Builds</button>
     </div>
 
-    <!-- AMD -->
-    <div id="amd-builds" class="product-grid">
-      <div class="card">
-        <img src="https://images.pexels.com/photos/7915355/pexels-photo-7915355.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="AMD 4K Gaming" onerror="imgFallback(this)">
-        <div class="content"><span class="tag">4K Gaming</span><h3>4K Gaming PC (AMD)</h3><p class="desc">Ryzen 7 7800X3D • RTX 5080 • 32GB • 2TB NVMe</p>
-          <div class="row"><div class="price">$2,599</div><button class="btn" onclick="addToCart('4K Gaming PC (AMD)', 2599)">Add</button></div></div></div>
-      <div class="card">
-        <img src="https://images.pexels.com/photos/5553050/pexels-photo-5553050.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="AMD Overkill" onerror="imgFallback(this)">
-        <div class="content"><span class="tag">Extreme</span><h3>Overkill PC (AMD)</h3><p class="desc">Ryzen 9 7950X • RTX 5090 • 64GB • 2TB+4TB</p>
-          <div class="row"><div class="price">$4,499</div><button class="btn" onclick="addToCart('Overkill PC (AMD)', 4499)">Add</button></div></div></div>
-      <div class="card">
-        <img src="https://images.pexels.com/photos/5777692/pexels-photo-5777692.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="AMD Creator" onerror="imgFallback(this)">
-        <div class="content"><span class="tag">Creator</span><h3>Creator Pro (AMD)</h3><p class="desc">Ryzen 9 7950X • RTX 5080 • 64GB • 2TB 990 PRO</p>
-          <div class="row"><div class="price">$2,999</div><button class="btn" onclick="addToCart('Creator Pro (AMD)', 2999)">Add</button></div></div></div>
-      <div class="card">
-        <img src="https://images.pexels.com/photos/1148820/pexels-photo-1148820.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Budget Gaming (AMD)" onerror="imgFallback(this)">
-        <div class="content"><span class="tag">Best Value</span><h3>Budget Gaming (AMD)</h3><p class="desc">Ryzen 5 5600 • RTX 4060 • 16GB • 1TB SSD</p>
-          <div class="row"><div class="price">$899</div><button class="btn" onclick="addToCart('Budget Gaming (AMD)', 899)">Add</button></div></div></div>
-      <div class="card">
-        <img src="https://images.pexels.com/photos/97077/pexels-photo-97077.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Budget Creator (AMD)" onerror="imgFallback(this)">
-        <div class="content"><span class="tag">Creator</span><h3>Budget Creator (AMD)</h3><p class="desc">Ryzen 5 5600G • RTX 3050 • 16GB • 512GB SSD</p>
-          <div class="row"><div class="price">$699</div><button class="btn" onclick="addToCart('Budget Creator (AMD)', 699)">Add</button></div></div></div>
-      <div class="card">
-        <img src="https://images.pexels.com/photos/8166086/pexels-photo-8166086.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Esports Pro (AMD)" onerror="imgFallback(this)">
-        <div class="content"><span class="tag">Esports</span><h3>Esports Pro (AMD)</h3><p class="desc">Ryzen 5 7600 • RTX 4060 • 16GB • 1TB SSD</p>
-          <div class="row"><div class="price">$999</div><button class="btn" onclick="addToCart('Esports Pro (AMD)', 999)">Add</button></div></div></div>
-    </div>
+    <div id="amd-builds" class="grid"></div>
+    <div id="intel-builds" class="grid" style="display:none;"></div>
+  </div>
 
-    <!-- Intel -->
-    <div id="intel-builds" class="product-grid" style="display:none;">
-      <div class="card">
-        <img src="https://images.pexels.com/photos/3861956/pexels-photo-3861956.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Intel 4K Gaming" onerror="imgFallback(this)">
-        <div class="content"><span class="tag">4K Gaming</span><h3>4K Gaming PC (Intel)</h3><p class="desc">i7-14700K • RTX 5080 • 32GB • 2TB NVMe</p>
-          <div class="row"><div class="price">$2,699</div><button class="btn" onclick="addToCart('4K Gaming PC (Intel)', 2699)">Add</button></div></div></div>
-      <div class="card">
-        <img src="https://images.pexels.com/photos/907173/pexels-photo-907173.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Intel Overkill" onerror="imgFallback(this)">
-        <div class="content"><span class="tag">Extreme</span><h3>Overkill PC (Intel)</h3><p class="desc">i9-14900K • RTX 5090 • 64GB • 2TB+4TB</p>
-          <div class="row"><div class="price">$4,599</div><button class="btn" onclick="addToCart('Overkill PC (Intel)', 4599)">Add</button></div></div></div>
-      <div class="card">
-        <img src="https://images.pexels.com/photos/218863/pexels-photo-218863.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Intel Creator" onerror="imgFallback(this)">
-        <div class="content"><span class="tag">Creator</span><h3>Creator Pro (Intel)</h3><p class="desc">i9-14900K • RTX 5080 • 64GB • 2TB 990 PRO</p>
-          <div class="row"><div class="price">$3,099</div><button class="btn" onclick="addToCart('Creator Pro (Intel)', 3099)">Add</button></div></div></div>
-      <div class="card">
-        <img src="https://images.pexels.com/photos/538062/pexels-photo-538062.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Budget Gaming (Intel)" onerror="imgFallback(this)">
-        <div class="content"><span class="tag">Best Value</span><h3>Budget Gaming (Intel)</h3><p class="desc">i5-12400F • RTX 4060 • 16GB • 1TB SSD</p>
-          <div class="row"><div class="price">$929</div><button class="btn" onclick="addToCart('Budget Gaming (Intel)', 929)">Add</button></div></div></div>
-      <div class="card">
-        <img src="https://images.pexels.com/photos/1144176/pexels-photo-1144176.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Budget Creator (Intel)" onerror="imgFallback(this)">
-        <div class="content"><span class="tag">Creator</span><h3>Budget Creator (Intel)</h3><p class="desc">i5-13400F • RTX 3050 • 16GB • 512GB SSD</p>
-          <div class="row"><div class="price">$719</div><button class="btn" onclick="addToCart('Budget Creator (Intel)', 719)">Add</button></div></div></div>
-      <div class="card">
-        <img src="https://images.pexels.com/photos/1800205/pexels-photo-1800205.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Esports Pro (Intel)" onerror="imgFallback(this)">
-        <div class="content"><span class="tag">Esports</span><h3>Esports Pro (Intel)</h3><p class="desc">i5-14500 • RTX 4060 • 16GB • 1TB SSD</p>
-          <div class="row"><div class="price">$1,049</div><button class="btn" onclick="addToCart('Esports Pro (Intel)', 1049)">Add</button></div></div></div>
+  <!-- Modal -->
+  <div class="modal" id="pcModal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="pcTitle">
+      <img id="pcImg" class="modal-media" alt="PC build preview">
+      <div class="modal-body">
+        <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <h2 id="pcTitle" style="margin:0"></h2>
+          <div id="pcPrice" class="price"></div>
+        </div>
+        <div id="pcTag" class="tag" style="margin:-6px 0 10px;"></div>
+        <div class="specs" id="pcSpecs"></div>
+        <div style="margin-top:12px;" id="pcDesc"></div>
+        <div class="row" style="gap:10px;margin-top:12px;">
+          <button class="btn" id="pcAddBtn">Add to cart</button>
+          <button class="btn secondary" id="pcCloseBtn">Close</button>
+        </div>
+      </div>
     </div>
   </div>
 
   <script>
+    const AMD_BUILDS = [
+      { id:'amd-4k', title:'4K Gaming PC (AMD)', tag:'4K Gaming', price:2599, img:'https://images.pexels.com/photos/7915355/pexels-photo-7915355.jpeg?auto=compress&cs=tinysrgb&w=1600',
+        desc:'High-refresh 4K with frame-gen/upscaling. Quiet curves, excellent temps.',
+        specs:[['CPU','Ryzen 7 7800X3D'],['GPU','GeForce RTX 5080'],['RAM','32GB DDR5-6000'],['Storage','2TB NVMe Gen4'],['Cooling','360mm AIO'],['PSU','850W Gold'],['Case','Airflow chassis']]},
+      { id:'amd-over', title:'Overkill PC (AMD)', tag:'Extreme', price:4499, img:'https://images.pexels.com/photos/5553050/pexels-photo-5553050.jpeg?auto=compress&cs=tinysrgb&w=1600',
+        desc:'4K RT & heavy creator workloads. Top-tier thermals & acoustics.',
+        specs:[['CPU','Ryzen 9 7950X'],['GPU','GeForce RTX 5090'],['RAM','64GB DDR5-6000'],['Storage','2TB + 4TB NVMe'],['Cooling','360mm AIO'],['PSU','1000W Gold'],['Case','Premium airflow']]},
+      { id:'amd-creator', title:'Creator Pro (AMD)', tag:'Creator', price:2999, img:'https://images.pexels.com/photos/5777692/pexels-photo-5777692.jpeg?auto=compress&cs=tinysrgb&w=1600',
+        desc:'Premiere/Resolve/Blender tuned. Fast cache disks & drivers.',
+        specs:[['CPU','Ryzen 9 7950X'],['GPU','GeForce RTX 5080'],['RAM','64GB DDR5-6000'],['Storage','2TB 990 PRO'],['Cooling','360mm AIO'],['Scratch','Separate cache/scratch']]},
+      { id:'amd-budget', title:'Budget Gaming (AMD)', tag:'Best Value', price:899, img:'https://images.pexels.com/photos/1148820/pexels-photo-1148820.jpeg?auto=compress&cs=tinysrgb&w=1600',
+        desc:'1080p high settings. Easy upgrade path.',
+        specs:[['CPU','Ryzen 5 5600'],['GPU','GeForce RTX 4060'],['RAM','16GB DDR4'],['Storage','1TB NVMe'],['Cooling','Tower Air'],['PSU','650W Bronze']]},
+      { id:'amd-creator-budget', title:'Budget Creator (AMD)', tag:'Creator', price:699, img:'https://images.pexels.com/photos/97077/pexels-photo-97077.jpeg?auto=compress&cs=tinysrgb&w=1600',
+        desc:'Starter for light editing with GPU acceleration.',
+        specs:[['CPU','Ryzen 5 5600G'],['GPU','GeForce RTX 3050'],['RAM','16GB DDR4'],['Storage','512GB NVMe']]},
+      { id:'amd-esports', title:'Esports Pro (AMD)', tag:'Esports', price:999, img:'https://images.pexels.com/photos/8166086/pexels-photo-8166086.jpeg?auto=compress&cs=tinysrgb&w=1600',
+        desc:'Esports tuning: low input lag, high FPS.',
+        specs:[['CPU','Ryzen 5 7600'],['GPU','GeForce RTX 4060'],['RAM','16GB DDR5'],['Storage','1TB NVMe']]}
+    ];
+    const INTEL_BUILDS = [
+      { id:'intel-4k', title:'4K Gaming PC (Intel)', tag:'4K Gaming', price:2699, img:'https://images.pexels.com/photos/3861956/pexels-photo-3861956.jpeg?auto=compress&cs=tinysrgb&w=1600',
+        desc:'Great 4K gaming with frame-gen. Quiet and fast.',
+        specs:[['CPU','Core i7-14700K'],['GPU','GeForce RTX 5080'],['RAM','32GB DDR5-6000'],['Storage','2TB NVMe'],['Cooling','360mm AIO'],['PSU','850W Gold']]},
+      { id:'intel-over', title:'Overkill PC (Intel)', tag:'Extreme', price:4599, img:'https://images.pexels.com/photos/907173/pexels-photo-907173.jpeg?auto=compress&cs=tinysrgb&w=1600',
+        desc:'Maxed settings, creators & AI. Top-tier performance.',
+        specs:[['CPU','Core i9-14900K'],['GPU','GeForce RTX 5090'],['RAM','64GB DDR5-6000'],['Storage','2TB + 4TB NVMe'],['Cooling','360mm AIO'],['PSU','1000W Gold']]},
+      { id:'intel-creator', title:'Creator Pro (Intel)', tag:'Creator', price:3099, img:'https://images.pexels.com/photos/218863/pexels-photo-218863.jpeg?auto=compress&cs=tinysrgb&w=1600',
+        desc:'Adobe/Resolve tuned with fast scratch disks.',
+        specs:[['CPU','Core i9-14900K'],['GPU','GeForce RTX 5080'],['RAM','64GB DDR5-6000'],['Storage','2TB 990 PRO']]},
+      { id:'intel-budget', title:'Budget Gaming (Intel)', tag:'Best Value', price:929, img:'https://images.pexels.com/photos/538062/pexels-photo-538062.jpeg?auto=compress&cs=tinysrgb&w=1600',
+        desc:'Solid 1080p with future GPU upgrade path.',
+        specs:[['CPU','Core i5-12400F'],['GPU','GeForce RTX 4060'],['RAM','16GB DDR4'],['Storage','1TB NVMe']]},
+      { id:'intel-creator-budget', title:'Budget Creator (Intel)', tag:'Creator', price:719, img:'https://images.pexels.com/photos/1144176/pexels-photo-1144176.jpeg?auto=compress&cs=tinysrgb&w=1600',
+        desc:'Entry creative rig; upgrade storage/RAM later.',
+        specs:[['CPU','Core i5-13400F'],['GPU','GeForce RTX 3050'],['RAM','16GB DDR4'],['Storage','512GB NVMe']]},
+      { id:'intel-esports', title:'Esports Pro (Intel)', tag:'Esports', price:1049, img:'https://images.pexels.com/photos/1800205/pexels-photo-1800205.jpeg?auto=compress&cs=tinysrgb&w=1600',
+        desc:'High-FPS esports with stable frame times.',
+        specs:[['CPU','Core i5-14500'],['GPU','GeForce RTX 4060'],['RAM','16GB DDR5'],['Storage','1TB NVMe']]}
+    ];
+
     function showBuilds(type){
-      document.getElementById('amd-builds').style.display   = (type==='amd') ? 'grid' : 'none';
-      document.getElementById('intel-builds').style.display = (type==='intel')? 'grid' : 'none';
+      const amd = document.getElementById('amd-builds');
+      const intel = document.getElementById('intel-builds');
+      amd.style.display = (type==='amd') ? 'grid' : 'none';
+      intel.style.display = (type==='intel') ? 'grid' : 'none';
       document.getElementById('btn-amd')?.classList.toggle('active', type==='amd');
       document.getElementById('btn-intel')?.classList.toggle('active', type==='intel');
+      render(type==='amd' ? AMD_BUILDS : INTEL_BUILDS, type==='amd'? amd : intel);
     }
 
-    function imgFallback(el){ el.onerror=null; el.src="https://placehold.co/1200x800/png?text=CustomPC.tech"; }
+    function render(arr, root){
+      root.innerHTML = '';
+      arr.forEach(b=>{
+        const card = document.createElement('div'); card.className='card-pc';
+        const img = document.createElement('img'); img.src=b.img; img.alt=b.title;
+        img.addEventListener('click', ()=>openModal(b));
+        const ctn = document.createElement('div'); ctn.className='content';
+        ctn.innerHTML = `
+          <div class="tag">${b.tag}</div>
+          <h3 style="margin:4px 0 6px">${b.title}</h3>
+          <div class="row" style="justify-content:space-between;align-items:center;">
+            <div class="price">$${b.price.toLocaleString()}</div>
+            <button class="btn" onclick="addToCart('${b.title.replace(/'/g,"\\'")}', ${b.price})">Add</button>
+          </div>
+          <div style="opacity:.8;font-size:12px;margin-top:6px;cursor:pointer" onclick="openModalFromId('${b.id}')">More details</div>`;
+        card.appendChild(img); card.appendChild(ctn);
+        root.appendChild(card);
+      });
+    }
 
+    // Modal
+    const modal = document.getElementById('pcModal');
+    const mImg  = document.getElementById('pcImg');
+    const mTitle= document.getElementById('pcTitle');
+    const mPrice= document.getElementById('pcPrice');
+    const mTag  = document.getElementById('pcTag');
+    const mSpecs= document.getElementById('pcSpecs');
+    const mDesc = document.getElementById('pcDesc');
+    const mClose= document.getElementById('pcCloseBtn');
+    const mAdd  = document.getElementById('pcAddBtn');
+    let currentBuild = null;
+
+    function openModalFromId(id){
+      const b = [...AMD_BUILDS, ...INTEL_BUILDS].find(x=>x.id===id);
+      if (b) openModal(b);
+    }
+    function openModal(b){
+      currentBuild = b;
+      mImg.src = b.img; mTitle.textContent = b.title;
+      mPrice.textContent = '$' + b.price.toLocaleString();
+      mTag.textContent = b.tag;
+      mSpecs.innerHTML = b.specs.map(([k,v])=>`<div class="spec"><strong>${k}:</strong> ${v}</div>`).join('');
+      mDesc.textContent = b.desc || '';
+      modal.classList.add('open'); modal.setAttribute('aria-hidden','false');
+    }
+    function closeModal(){ modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); currentBuild=null; }
+    mClose.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e)=>{ if(e.target===modal) closeModal(); });
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && modal.classList.contains('open')) closeModal(); });
+    mAdd.addEventListener('click', ()=>{ if(currentBuild){ addToCart(currentBuild.title, currentBuild.price); closeModal(); } });
+
+    // Cart helpers (reuse your qty-aware flow; local fallback + sync)
     async function waitAuthReady(ms=4000){
-      try {
-        await Promise.race([
-          (window.__authReady ?? Promise.resolve()),
-          new Promise((_,rej)=>setTimeout(()=>rej(new Error('auth-timeout')), ms))
-        ]);
-      } catch {}
+      try { await Promise.race([ (window.__authReady ?? Promise.resolve()), new Promise((_,rej)=>setTimeout(()=>rej(new Error('auth-timeout')), ms)) ]); } catch {}
     }
-
     function localAdd(item){
       const cart = JSON.parse(localStorage.getItem('cart')||'[]');
-      // qty-aware merge locally
       const key = `${item.name}::${item.price}`;
-      let found = false;
-      const out = [];
       const map = new Map();
-      for (const it of cart) {
-        const k = `${it.name}::${Number(it.price)}`;
-        map.set(k, (map.get(k)||0) + Number(it.qty || 1));
-      }
-      map.set(key, (map.get(key)||0) + 1);
-      for (const [k,q] of map.entries()){
-        const [name, price] = k.split('::');
-        out.push({ name, price: Number(price), qty: q });
-      }
-      localStorage.setItem('cart', JSON.stringify(out));
-      return out;
+      for (const it of cart){ const k = `${it.name}::${Number(it.price)}`; map.set(k,(map.get(k)||0)+Number(it.qty||1)); }
+      map.set(key,(map.get(key)||0)+1);
+      const out=[]; for (const [k,q] of map.entries()){ const [n,p]=k.split('::'); out.push({name:n,price:Number(p),qty:q}); }
+      localStorage.setItem('cart', JSON.stringify(out)); return out;
     }
-
     async function syncLocalToCloud(){
       if (!(window.isLoggedIn && window.currentUser && window.__cartAPI)) return false;
-      try {
+      try{
         const { getCloudCart, setCloudCart, mergeCarts } = window.__cartAPI;
-        const uid   = window.currentUser.uid;
+        const uid = window.currentUser.uid;
         const local = JSON.parse(localStorage.getItem('cart')||'[]');
-        if (!local.length) return true;
-        const cloud  = await getCloudCart(uid);
+        if(!local.length) return true;
+        const cloud = await getCloudCart(uid);
         const merged = mergeCarts(cloud, local);
         await setCloudCart(uid, merged);
-        localStorage.removeItem('cart');
-        return true;
-      } catch(e){ console.warn('[cart] sync local->cloud failed:', e); return false; }
+        localStorage.removeItem('cart'); return true;
+      }catch(e){ console.warn('[cart] sync local->cloud failed:', e); return false; }
     }
-
     async function addToCart(name, price){
-      const item = { name, price, qty: 1 };
-
+      const item = { name, price, qty:1 };
       await waitAuthReady();
-
-      if (window.isLoggedIn && window.currentUser && window.__cartAPI) {
-        try {
+      if (window.isLoggedIn && window.currentUser && window.__cartAPI){
+        try{
           const { addItemToCloud } = window.__cartAPI;
           await addItemToCloud(window.currentUser.uid, item);
-          alert(`${name} added to your account cart!`);
-          return;
-        } catch (e) { console.warn('[cart] cloud add failed, fallback to local:', e); }
+          alert(`${name} added to your account cart!`); return;
+        }catch(e){ console.warn('[cart] cloud add failed, fallback to local', e); }
       }
-
       localAdd(item);
-      const synced = await syncLocalToCloud(); // in case login completed meanwhile
+      const synced = await syncLocalToCloud();
       alert(name + (synced ? ' added to your account cart!' : ' added locally (offline).'));
     }
+
+    // init first view
+    render(AMD_BUILDS, document.getElementById('amd-builds'));
   </script>
 
   <script type="module" src="nav-auth.js"></script>
