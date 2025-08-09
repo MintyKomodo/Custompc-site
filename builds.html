@@ -165,9 +165,31 @@
       document.getElementById('btn-amd')?.classList.toggle('active', type==='amd');
       document.getElementById('btn-intel')?.classList.toggle('active', type==='intel');
     }
-    function addToCart(name, price){
-      const cart = JSON.parse(localStorage.getItem('cart')||'[]'); cart.push({name,price});
-      localStorage.setItem('cart', JSON.stringify(cart)); alert(name+" added to cart!");
+   <script>
+  async function addToCart(name, price){
+    const item = { name, price };
+    // Logged in? Write to Firestore
+    if (window.isLoggedIn && window.currentUser && window.__cartAPI) {
+      try {
+        const { getCloudCart, setCloudCart } = window.__cartAPI;
+        const uid = window.currentUser.uid;
+        const existing = await getCloudCart(uid);
+        existing.push(item);
+        await setCloudCart(uid, existing);
+        alert(name + " added to your account cart!");
+        return;
+      } catch (e) {
+        console.warn("Cloud cart failed, falling back to local:", e);
+      }
+    }
+    // Fallback: localStorage
+    const cart = JSON.parse(localStorage.getItem('cart')||'[]');
+    cart.push(item);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    alert(name + " added to cart!");
+</script>
+<script type="module" src="nav-auth.js"></script>
+
     }
     function imgFallback(el){ el.onerror=null; el.src="https://placehold.co/1200x800/png?text=CustomPC.tech"; }
   </script>
