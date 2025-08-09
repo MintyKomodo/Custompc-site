@@ -154,80 +154,82 @@
     </div>
   </div>
 
-<script>
-  function showBuilds(type){
-    document.getElementById('amd-builds').style.display = (type==='amd')?'grid':'none';
-    document.getElementById('intel-builds').style.display = (type==='intel')?'grid':'none';
-    document.getElementById('btn-amd')?.classList.toggle('active', type==='amd');
-    document.getElementById('btn-intel')?.classList.toggle('active', type==='intel');
-  }
-
-  async function syncLocalToCloud(){
-    if (!(window.isLoggedIn && window.currentUser && window.__cartAPI)) return false;
-    try {
-      const { getCloudCart, setCloudCart, mergeCarts } = window.__cartAPI;
-      const uid = window.currentUser.uid;
-      const local = JSON.parse(localStorage.getItem('cart')||'[]');
-      if (!local.length) return true;
-      const cloud = await getCloudCart(uid);
-      const merged = (mergeCarts || ((a,b)=>[...a,...b]))(cloud, local);
-      await setCloudCart(uid, merged);
-      localStorage.removeItem('cart');
-      console.log('[cart] synced local->cloud OK');
-      return true;
-    } catch(e){
-      console.warn('[cart] syncLocalToCloud failed:', e);
-      return false;
+  <script>
+    function showBuilds(type){
+      document.getElementById('amd-builds').style.display = (type==='amd')?'grid':'none';
+      document.getElementById('intel-builds').style.display = (type==='intel')?'grid':'none';
+      document.getElementById('btn-amd')?.classList.toggle('active', type==='amd');
+      document.getElementById('btn-intel')?.classList.toggle('active', type==='intel');
     }
-  }
 
-  // NEW: wait until nav-auth has reported the auth state at least once
-  async function waitAuthReady(timeoutMs = 4000){
-    try {
-      await Promise.race([
-        (window.__authReady ?? Promise.resolve()),
-        new Promise((_,rej)=>setTimeout(()=>rej(new Error('auth-timeout')), timeoutMs))
-      ]);
-    } catch(e){
-      console.warn('[auth] waitAuthReady:', e.message);
-    }
-  }
-
-  async function addToCart(name, price){
-    const item = { name, price };
-
-    // Ensure auth state is known before deciding cloud vs local
-    await waitAuthReady();
-
-    if (window.isLoggedIn && window.currentUser && window.__cartAPI) {
+    // Push any local cart into cloud if logged in
+    async function syncLocalToCloud(){
+      if (!(window.isLoggedIn && window.currentUser && window.__cartAPI)) return false;
       try {
-        const { getCloudCart, setCloudCart } = window.__cartAPI;
+        const { getCloudCart, setCloudCart, mergeCarts } = window.__cartAPI;
         const uid = window.currentUser.uid;
-        console.log('[cart] attempting cloud add for uid', uid, item);
-        const existing = await getCloudCart(uid);
-        existing.push(item);
-        await setCloudCart(uid, existing);
-        console.log('[cart] cloud add OK');
-        alert(name + ' added to your account cart!');
-        return;
-      } catch (e) {
-        console.warn('[cart] cloud add failed, fallback to local:', e);
+        const local = JSON.parse(localStorage.getItem('cart')||'[]');
+        if (!local.length) return true;
+        const cloud = await getCloudCart(uid);
+        const merged = (mergeCarts || ((a,b)=>[...a,...b]))(cloud, local);
+        await setCloudCart(uid, merged);
+        localStorage.removeItem('cart');
+        console.log('[cart] synced local->cloud OK');
+        return true;
+      } catch(e){
+        console.warn('[cart] syncLocalToCloud failed:', e);
+        return false;
       }
-    } else {
-      console.log('[cart] not logged in (or auth not ready) -> using localStorage');
     }
 
-    // Local fallback + try to push to cloud if user actually is logged in by then
-    const cart = JSON.parse(localStorage.getItem('cart')||'[]');
-    cart.push(item);
-    localStorage.setItem('cart', JSON.stringify(cart));
-    const synced = await syncLocalToCloud();
-    alert(name + (synced ? ' added to your account cart!' : ' added locally (offline).'));
-  }
+    // Wait until nav-auth reports auth state at least once
+    async function waitAuthReady(timeoutMs = 4000){
+      try {
+        await Promise.race([
+          (window.__authReady ?? Promise.resolve()),
+          new Promise((_,rej)=>setTimeout(()=>rej(new Error('auth-timeout')), timeoutMs))
+        ]);
+      } catch(e){
+        console.warn('[auth] waitAuthReady:', e.message);
+      }
+    }
 
-  function imgFallback(el){ el.onerror=null; el.src="https://placehold.co/1200x800/png?text=CustomPC.tech"; }
-</script>
-<script type="module" src="nav-auth.js"></script>
+    async function addToCart(name, price){
+      const item = { name, price };
 
+      // Ensure auth state is known before deciding cloud vs local
+      await waitAuthReady();
+
+      if (window.isLoggedIn && window.currentUser && window.__cartAPI) {
+        try {
+          const { getCloudCart, setCloudCart } = window.__cartAPI;
+          const uid = window.currentUser.uid;
+          console.log('[cart] attempting cloud add for uid', uid, item);
+          const existing = await getCloudCart(uid);
+          existing.push(item);
+          await setCloudCart(uid, existing);
+          console.log('[cart] cloud add OK');
+          alert(name + ' added to your account cart!');
+          return;
+        } catch (e) {
+          console.warn('[cart] cloud add failed, fallback to local:', e);
+        }
+      } else {
+        console.log('[cart] not logged in (or auth not ready) -> using localStorage');
+      }
+
+      // Local fallback + try to push to cloud
+      const cart = JSON.parse(localStorage.getItem('cart')||'[]');
+      cart.push(item);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      const synced = await syncLocalToCloud();
+      alert(name + (synced ? ' added to your account cart!' : ' added locally (offline).'));
+    }
+
+    function imgFallback(el){ el.onerror=null; el.src="https://placehold.co/1200x800/png?text=CustomPC.tech"; }
+  </script>
+
+  <!-- This must be last so __authReady + __cartAPI are defined -->
+  <script type="module" src="nav-auth.js"></script>
 </body>
 </html>
