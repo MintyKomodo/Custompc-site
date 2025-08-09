@@ -1,5 +1,5 @@
-// nav-auth.js (ES module)
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+// Initializes Firebase once and controls the nav (login/signup/logout visibility)
+import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
 
 const firebaseConfig = {
@@ -12,9 +12,11 @@ const firebaseConfig = {
   measurementId: "G-80H4HHCKE5"
 };
 
-const app = initializeApp(firebaseConfig);
+// Avoid duplicate init if script loads twice
+const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
+// Nav elements (present on every page)
 const loginLink  = document.getElementById("nav-login");
 const signupLink = document.getElementById("nav-signup");
 const logoutLink = document.getElementById("nav-logout");
@@ -22,17 +24,14 @@ const userBadge  = document.getElementById("nav-user");
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    // Show name/email + Log Out
     const name = user.displayName || user.email || "Account";
     if (userBadge) { userBadge.textContent = `Hi, ${name}`; userBadge.classList.remove("hidden"); }
     loginLink?.classList.add("hidden");
     signupLink?.classList.add("hidden");
     logoutLink?.classList.remove("hidden");
-    // Let other scripts know user is logged in
     window.isLoggedIn = true;
     window.currentUser = user;
   } else {
-    // Show Log In / Sign Up links
     userBadge?.classList.add("hidden");
     loginLink?.classList.remove("hidden");
     signupLink?.classList.remove("hidden");
@@ -45,7 +44,6 @@ onAuthStateChanged(auth, (user) => {
 logoutLink?.addEventListener("click", async () => {
   try {
     await signOut(auth);
-    // Optional: take them to homepage after logout
     window.location.href = "index.html";
   } catch (e) {
     alert("Could not log out. Try again.");
