@@ -30,24 +30,54 @@
   </div>
 
   <script>
-    function renderCart(){
-      const cart = JSON.parse(localStorage.getItem('cart')||'[]');
-      const list = document.getElementById('cart-list');
-      if(!cart.length){ list.innerHTML='<p>Your cart is empty.</p>'; document.getElementById('cart-total').textContent=''; return; }
-      list.innerHTML = cart.map(i=>`<div class="row"><div>${i.name}</div><div>$${i.price.toFixed(2)}</div></div>`).join('');
-      const total = cart.reduce((s,i)=>s+i.price,0);
-      document.getElementById('cart-total').textContent = "Total: $" + total.toFixed(2);
+<script type="module">
+  // Uses nav-auth.js exports
+  const renderList = (items) => {
+    const list = document.getElementById('cart-list');
+    if(!items.length){ list.innerHTML='<p>Your cart is empty.</p>'; document.getElementById('cart-total').textContent=''; return; }
+    list.innerHTML = items.map(i=>`<div class="row"><div>${i.name}</div><div>$${Number(i.price).toFixed(2)}</div></div>`).join('');
+    const total = items.reduce((s,i)=>s+Number(i.price||0),0);
+    document.getElementById('cart-total').textContent = "Total: $" + total.toFixed(2);
+  };
+
+  // Realtime for logged-in users
+  import { onSnapshot, doc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+  const waitForNav = () => new Promise(r => {
+    if (window.__cartAPI) r();
+    else document.addEventListener('DOMContentLoaded', r);
+  });
+
+  await waitForNav(); // ensure nav-auth initialized
+  const { db } = window.__cartAPI || {};
+
+  function renderLocal(){
+    const local = JSON.parse(localStorage.getItem('cart')||'[]');
+    renderList(local);
+  }
+
+  if (window.isLoggedIn && window.currentUser && db) {
+    const uid = window.currentUser.uid;
+    const ref = doc(db, "carts", uid);
+    onSnapshot(ref, (snap)=>{
+      const items = snap.exists() ? (snap.data().items || []) : [];
+      renderList(items);
+    }, (err)=>{ console.warn("Cart listener error:", err); renderLocal(); });
+  } else {
+    renderLocal();
+  }
+
+  window.checkout = function(){
+    if(!window.isLoggedIn){
+      alert("Please log in first.");
+      window.location.href = "login.html";
+      return;
     }
-    function checkout(){
-      if(!window.isLoggedIn){
-        alert("Please log in first.");
-        window.location.href = "login.html";
-        return;
-      }
-      alert("This is where you'd redirect to Stripe/PayPal.");
-      // window.location.href = "https://buy.stripe.com/your_payment_link";
-    }
-    renderCart();
+    // TODO: Redirect to Stripe/PayPal link or checkout page
+    alert("Proceeding to payment…");
+  }
+</script>
+<script type="module" src="nav-auth.js"></script>
+
   </script>
   <script type="module" src="nav-auth.js"></script>
 </body>
