@@ -6,11 +6,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <style>
+    .cart-card{ padding:16px; max-width:980px; margin:0 auto; }
+    .row.head{ font-weight:600; opacity:.9; border-bottom:1px solid rgba(255,255,255,.08); padding-bottom:8px; }
+    .row.item{ border-bottom:1px solid rgba(255,255,255,.06); padding:10px 0; }
+    .row.item:last-child{ border-bottom:none; }
+    .item-name{ flex: 2 1 auto; }
+    .item-actions{ display:flex; gap:8px; align-items:center; }
+    .btn.small{ padding:6px 10px; border-radius:8px; font-size:14px; }
+    .empty{ opacity:.8; padding:8px 0; }
+    .total{ text-align:right; margin-top:10px; font-weight:700; }
+    .cta{ display:flex; justify-content:flex-end; gap:10px; margin-top:12px; }
+    @media (max-width:640px){
+      .row.head{ display:none; }
+      .row.item{ flex-direction:column; align-items:flex-start; gap:6px; }
+      .item-meta{ opacity:.85; }
+      .total, .cta{ text-align:left; justify-content:flex-start; }
+    }
+  </style>
 </head>
 <body>
   <nav>
-    <a href="custom.html">Custom PC</a>
     <a href="index.html">Contact</a>
+    <a href="custom.html">Custom PC</a>
     <a href="about.html">About</a>
     <a href="builds.html">Builds</a>
     <a href="cart.html">Cart</a>
@@ -22,90 +40,194 @@
 
   <div class="container">
     <h1>Your Cart</h1>
-    <div id="cart-list"></div>
-    <div class="row" style="margin-top:16px;">
-      <div id="cart-total" class="price"></div>
-      <button class="btn" onclick="checkout()">Checkout</button>
+
+    <div class="card cart-card">
+      <!-- Header -->
+      <div class="row head" style="justify-content:space-between;">
+        <div class="item-name">Item</div>
+        <div style="width:160px; text-align:right;">Qty</div>
+        <div style="width:160px; text-align:right;">Price</div>
+        <div style="width:120px; text-align:right;">Actions</div>
+      </div>
+
+      <div id="cart-list"></div>
+      <div id="cart-total" class="total"></div>
+
+      <div class="cta">
+        <a class="btn secondary" href="builds.html">Continue browsing</a>
+        <!-- Checkout goes to Contact page -->
+        <a class="btn" href="index.html">Checkout → Contact</a>
+      </div>
     </div>
   </div>
 
   <script type="module">
-  import { onSnapshot, doc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+    import { onSnapshot, doc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
 
-  const listEl  = document.getElementById('cart-list');
-  const totalEl = document.getElementById('cart-total');
+    const listEl  = document.getElementById('cart-list');
+    const totalEl = document.getElementById('cart-total');
 
-  const renderList = (items=[]) => {
-    if(!items.length){
-      listEl.innerHTML = '<p>Your cart is empty.</p>';
-      totalEl.textContent = '';
-      return;
+    function fmt(n){ return Number(n).toFixed(2); }
+
+    function computeTotal(items){
+      return items.reduce((s,i)=> s + Number(i.price)*Number(i.qty||1), 0);
     }
-    listEl.innerHTML = items.map(i=>`
-      <div class="row">
-        <div>${i.name} <span style="opacity:.7">× ${Number(i.qty||1)}</span></div>
-        <div>$${(Number(i.price)*Number(i.qty||1)).toFixed(2)}</div>
-      </div>`).join('');
-    const total = items.reduce((s,i)=>s + Number(i.price)*Number(i.qty||1), 0);
-    totalEl.textContent = "Total: $" + total.toFixed(2);
-  };
 
-  function renderLocal(){
-    const local = JSON.parse(localStorage.getItem('cart')||'[]');
-    renderList(local);
-  }
+    function renderList(items = []){
+      if (!items.length){
+        listEl.innerHTML = '<div class="empty">Your cart is empty.</div>';
+        totalEl.textContent = '';
+        return;
+      }
 
-  async function syncLocalToCloudOnce(){
-    if (!(window.isLoggedIn && window.currentUser && window.__cartAPI)) return;
-    const local = JSON.parse(localStorage.getItem('cart')||'[]');
-    if (!local.length) return;
-    try{
-      const { getCloudCart, setCloudCart, mergeCarts } = window.__cartAPI;
-      const uid = window.currentUser.uid;
-      const cloud = await getCloudCart(uid);
-      const merged = mergeCarts(cloud, local);
-      await setCloudCart(uid, merged);
-      localStorage.removeItem('cart');
-    }catch(e){ console.warn("syncLocalToCloudOnce failed:", e); }
-  }
+      listEl.innerHTML = items.map((i, idx) => {
+        const qty = Number(i.qty || 1);
+        const line = Number(i.price) * qty;
+        return `
+          <div class="row item" style="justify-content:space-between; align-items:center;">
+            <div class="item-name">
+              ${i.name}
+              <div class="item-meta" style="font-size:12px; opacity:.7;">Unit: $${fmt(i.price)}</div>
+            </div>
+            <div style="width:160px; text-align:right;">× ${qty}</div>
+            <div style="width:160px; text-align:right;">$${fmt(line)}</div>
+            <div style="width:120px; text-align:right;" class="item-actions">
+              <button class="btn secondary small" onclick="decrementItem(${idx})">−</button>
+              <button class="btn secondary small" onclick="incrementItem(${idx})">+</button>
+              <button class="btn small" onclick="removeFromCart(${idx})">Remove</button>
+            </div>
+          </div>`;
+      }).join('');
 
-  // ✅ Wait for nav-auth.js to load AND for auth state to resolve
-  const waitForNav = () => new Promise(res => {
-    if (window.__cartAPI !== undefined) res(); else document.addEventListener('DOMContentLoaded', res);
-  });
-  await waitForNav();
-  if (window.__authReady) { try { await window.__authReady; } catch {} }
+      const total = computeTotal(items);
+      totalEl.textContent = "Total: $" + fmt(total);
+    }
 
-  // Now decide cloud vs local using the *final* auth state
-  if (window.isLoggedIn && window.currentUser && window.__cartAPI?.db) {
-    const { db } = window.__cartAPI;
-    const uid = window.currentUser.uid;
-    const ref = doc(db, "carts", uid);
+    function getLocal(){
+      return JSON.parse(localStorage.getItem('cart') || '[]');
+    }
+    function setLocal(items){
+      localStorage.setItem('cart', JSON.stringify(items));
+    }
 
-    onSnapshot(ref, async (snap)=>{
-      const items = snap.exists() ? (snap.data().items || []) : [];
-      if (items.length) {
-        renderList(items);
+    function mergeLocal(items){
+      // compact by name+price to keep qty stable
+      const map = new Map();
+      for (const it of items){
+        const key = `${it.name}::${Number(it.price)}`;
+        map.set(key, (map.get(key)||0) + Number(it.qty||1));
+      }
+      return [...map.entries()].map(([k,q])=>{
+        const [n,p] = k.split('::');
+        return { name:n, price:Number(p), qty:q };
+      });
+    }
+
+    // Local render helpers (when logged out)
+    function renderLocal(){
+      const local = mergeLocal(getLocal());
+      renderList(local);
+    }
+
+    // Local operations
+    window.incrementItem = function(index){
+      if (window.isLoggedIn && window.currentUser && window.__cartAPI) { return updateCloudQty(index, +1); }
+      const items = mergeLocal(getLocal());
+      if (items[index]) items[index].qty = Number(items[index].qty||1)+1;
+      setLocal(items); renderLocal();
+    };
+    window.decrementItem = function(index){
+      if (window.isLoggedIn && window.currentUser && window.__cartAPI) { return updateCloudQty(index, -1); }
+      const items = mergeLocal(getLocal());
+      if (items[index]){
+        items[index].qty = Math.max(1, Number(items[index].qty||1)-1);
+      }
+      setLocal(items); renderLocal();
+    };
+    window.removeFromCart = async function(index){
+      // Cloud path if logged in
+      if (window.isLoggedIn && window.currentUser && window.__cartAPI){
+        const { getCloudCart, setCloudCart } = window.__cartAPI;
+        try{
+          const uid = window.currentUser.uid;
+          const cloud = await getCloudCart(uid);
+          if (Array.isArray(cloud) && cloud[index] !== undefined){
+            cloud.splice(index, 1);
+            await setCloudCart(uid, cloud);
+          }
+        }catch(e){ console.warn("removeFromCart cloud error:", e); }
+        return;
+      }
+      // Local path
+      const items = mergeLocal(getLocal());
+      items.splice(index, 1);
+      setLocal(items);
+      renderLocal();
+    };
+
+    async function updateCloudQty(index, delta){
+      try{
+        const { getCloudCart, setCloudCart } = window.__cartAPI;
+        const uid = window.currentUser.uid;
+        const cloud = await getCloudCart(uid);
+        if (!Array.isArray(cloud) || cloud[index] === undefined) return;
+        const item = cloud[index];
+        const nextQty = Math.max(1, Number(item.qty||1) + delta);
+        cloud[index] = { ...item, qty: nextQty };
+        await setCloudCart(uid, cloud);
+      }catch(e){ console.warn("updateCloudQty error:", e); }
+    }
+
+    // One-time sync of local cart into cloud after login
+    async function syncLocalToCloudOnce(){
+      if (!(window.isLoggedIn && window.currentUser && window.__cartAPI)) return;
+      try{
+        const { getCloudCart, setCloudCart, mergeCarts } = window.__cartAPI;
+        const uid = window.currentUser.uid;
+        const local = mergeLocal(getLocal());
+        if (!local.length) return;
+        const cloud = await getCloudCart(uid);
+        const merged = mergeCarts(cloud, local);
+        await setCloudCart(uid, merged);
+        localStorage.removeItem('cart');
+      }catch(e){ console.warn("syncLocalToCloudOnce failed:", e); }
+    }
+
+    // Wait for auth to be ready before deciding which cart to use
+    const waitForNav = () => new Promise(res => {
+      if (window.__cartAPI !== undefined) res(); else document.addEventListener('DOMContentLoaded', res);
+    });
+
+    (async function init(){
+      await waitForNav();
+      if (window.__authReady) { try { await window.__authReady; } catch {} }
+
+      // If logged in, attach listener to cloud cart; otherwise, render local
+      if (window.isLoggedIn && window.currentUser && window.__cartAPI?.db) {
+        const { db } = window.__cartAPI;
+        const uid = window.currentUser.uid;
+        const ref = doc(db, "carts", uid);
+
+        // First-time sync of any local cart into cloud
+        await syncLocalToCloudOnce();
+
+        onSnapshot(ref, (snap)=>{
+          const items = snap.exists() ? (snap.data().items || []) : [];
+          if (Array.isArray(items) && items.length){
+            renderList(items);
+          }else{
+            // fallback to local render if cloud empty
+            renderLocal();
+          }
+        }, (err)=>{
+          console.warn("Cart listener error:", err);
+          renderLocal();
+        });
       } else {
-        const local = JSON.parse(localStorage.getItem('cart')||'[]');
-        if (local.length) await syncLocalToCloudOnce();
         renderLocal();
       }
-    }, (err)=>{ console.warn("Cart listener error:", err); renderLocal(); });
-  } else {
-    renderLocal();
-  }
-
-  window.checkout = function(){
-    if(!window.isLoggedIn){
-      alert("Please log in first.");
-      window.location.href = "login.html";
-      return;
-    }
-    alert("Proceeding to payment…");
-  };
-</script>
-
+    })();
+  </script>
 
   <script type="module" src="nav-auth.js"></script>
 </body>
