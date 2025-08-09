@@ -6,6 +6,47 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Contact-only small tweaks */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .form-grid .full { grid-column: 1 / -1; }
+    .input, textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(0,0,0,0.35);
+      color: #e9eefc;
+      outline: none;
+    }
+    textarea { min-height: 140px; resize: vertical; }
+    .hint { font-size: 12px; opacity: .75; margin-top: 6px; }
+    .status {
+      display: none;
+      margin-top: 16px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(0, 140, 60, .15);
+      border: 1px solid rgba(0, 140, 60, .35);
+      color: #8ff5b4;
+    }
+    .status.error {
+      background: rgba(160, 30, 30, .15);
+      border-color: rgba(160, 30, 30, .4);
+      color: #ffb4b4;
+    }
+    .row.gap { gap: 10px; }
+    .btn.secondary { background: rgba(255,255,255,0.05); }
+    .btn.secondary:hover { background: rgba(255,255,255,0.09); }
+    .sr-only { position:absolute; left:-10000px; top:auto; width:1px; height:1px; overflow:hidden; }
+    @media (max-width: 720px) {
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
   <nav>
@@ -20,10 +61,149 @@
   </nav>
 
   <div class="container">
-    <h1>Contact Us</h1>
-    <p>Tell us what you want in your custom PC and we’ll get back with a build plan.</p>
-    <!-- Your Formspree or contact form goes here -->
+    <h1>Tell us what you need</h1>
+    <p style="opacity:.85;margin:-6px 0 18px">
+      We’ll reply fast with a tailored parts list, pricing, and timeline.
+    </p>
+
+    <form id="contactForm" class="card" style="padding:18px; max-width:880px; margin:0 auto;">
+      <!-- Honeypot -->
+      <input type="text" name="_gotcha" autocomplete="off" class="sr-only" tabindex="-1">
+
+      <div class="form-grid">
+        <div>
+          <label for="name">Your Name</label>
+          <input id="name" name="name" class="input" type="text" autocomplete="name" required>
+        </div>
+        <div>
+          <label for="email">Email</label>
+          <input id="email" name="email" class="input" type="email" autocomplete="email" required>
+        </div>
+
+        <div>
+          <label for="budget">Budget (USD)</label>
+          <input id="budget" name="budget" class="input" type="number" min="300" step="1" placeholder="e.g., 1500" required>
+        </div>
+        <div>
+          <label for="usecase">Primary Use</label>
+          <select id="usecase" name="usecase" class="input" required>
+            <option value="" disabled selected>Select one…</option>
+            <option>Gaming (1080p)</option>
+            <option>Gaming (1440p)</option>
+            <option>Gaming (4K)</option>
+            <option>Streaming</option>
+            <option>Video Editing</option>
+            <option>3D / CAD</option>
+            <option>Software/AI</option>
+            <option>General Productivity</option>
+          </select>
+        </div>
+
+        <div class="full">
+          <label for="message">What do you want this PC to crush?</label>
+          <textarea id="message" name="message" placeholder="Tell us any requirements, favorite cases, upgrades, or deadlines…" required></textarea>
+          <div class="hint">We read everything. More detail = better recommendations.</div>
+        </div>
+      </div>
+
+      <div class="row gap" style="margin-top:12px;">
+        <button id="submitBtn" class="btn" type="submit">Send Request</button>
+        <button id="resetBtn" class="btn secondary" type="button">Reset</button>
+      </div>
+      <div id="statusOk" class="status">Thanks! Your request was sent. We’ll email you shortly.</div>
+      <div id="statusErr" class="status error">Hmm, that didn’t send. Please try again in a moment.</div>
+    </form>
+
+    <!-- Optional: quick FedEx tracking helper -->
+    <div class="card" style="padding:18px; max-width:880px; margin:16px auto 0;">
+      <h3 style="margin:0 0 10px;">Track a shipment</h3>
+      <div class="row gap">
+        <input id="fedex" class="input" placeholder="Enter FedEx tracking number">
+        <button class="btn" type="button" onclick="trackFedEx()">Track</button>
+      </div>
+      <div class="hint">Opens FedEx in a new tab with your tracking number.</div>
+    </div>
   </div>
+
+  <script>
+    // Prefill name/email if logged in
+    (async () => {
+      // Wait for nav-auth to load (it sets window.__authReady)
+      if (window.__authReady) { try { await window.__authReady; } catch {} }
+      if (window.currentUser) {
+        const u = window.currentUser;
+        const name = u.displayName || '';
+        const email = u.email || '';
+        if (name) document.getElementById('name').value = name;
+        if (email) document.getElementById('email').value = email;
+      }
+    })();
+
+    // Contact form submit via Formspree
+    const FORM_ENDPOINT = "https://formspree.io/f/xrblokly"; // your endpoint
+    const form = document.getElementById('contactForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const ok = document.getElementById('statusOk');
+    const err = document.getElementById('statusErr');
+
+    function show(el){ el.style.display = 'block'; }
+    function hide(el){ el.style.display = 'none'; }
+
+    resetBtn.addEventListener('click', () => {
+      form.reset();
+      hide(ok); hide(err);
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hide(ok); hide(err);
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Sending…";
+
+      // Attach some meta for you:
+      const payload = new FormData(form);
+      payload.append("_subject", "New CustomPC.tech inquiry");
+      payload.append("source", "custompc.tech/contact");
+      if (window.currentUser?.uid) payload.append("firebase_uid", window.currentUser.uid);
+
+      try {
+        const res = await fetch(FORM_ENDPOINT, { method: "POST", body: payload, headers: { "Accept": "application/json" } });
+        if (res.ok) {
+          show(ok);
+          form.reset();
+        } else {
+          show(err);
+        }
+      } catch (e) {
+        show(err);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Send Request";
+      }
+    });
+
+    // FedEx tracking helper
+    function trackFedEx(){
+      const code = document.getElementById('fedex').value.trim();
+      if(!code){ alert("Enter a tracking number"); return; }
+      const url = `https://www.fedex.com/fedextrack/?trknbr=${encodeURIComponent(code)}`;
+      window.open(url, "_blank", "noopener");
+    }
+    window.trackFedEx = trackFedEx;
+  </script>
+
+  <!-- Your live chat (optional) -->
+  <!--
+  <script type="text/javascript">
+  var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+  (function(){
+    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+    s1.async=true; s1.src='https://embed.tawk.to/6895040bea5b0a1926912936/1j231fjbt';
+    s1.charset='UTF-8'; s1.setAttribute('crossorigin','*'); s0.parentNode.insertBefore(s1,s0);
+  })();
+  </script>
+  -->
 
   <script type="module" src="nav-auth.js"></script>
 </body>
