@@ -156,40 +156,53 @@
     </div>
   </div>
 
-  <script>
-    function showBuilds(type){
-      document.getElementById('amd-builds').style.display = (type==='amd')?'grid':'none';
-      document.getElementById('intel-builds').style.display = (type==='intel')?'grid':'none';
-      document.getElementById('btn-amd')?.classList.toggle('active', type==='amd');
-      document.getElementById('btn-intel')?.classList.toggle('active', type==='intel');
+<script>
+  async function syncLocalToCloud(){
+    if (!(window.isLoggedIn && window.currentUser && window.__cartAPI)) return false;
+    try {
+      const { getCloudCart, setCloudCart } = window.__cartAPI;
+      const uid = window.currentUser.uid;
+      const local = JSON.parse(localStorage.getItem('cart')||'[]');
+      if (!local.length) return true;
+      const cloud = await getCloudCart(uid);
+      const merged = (window.__cartAPI.mergeCarts || ((a,b)=>[...a,...b]))(cloud, local);
+      await setCloudCart(uid, merged);
+      localStorage.removeItem('cart');
+      return true;
+    } catch(e){
+      console.warn("syncLocalToCloud failed:", e);
+      return false;
     }
+  }
 
-    async function addToCart(name, price){
-      const item = { name, price };
-      // If logged in, write to Firestore
-      if (window.isLoggedIn && window.currentUser && window.__cartAPI) {
-        try {
-          const { getCloudCart, setCloudCart } = window.__cartAPI;
-          const uid = window.currentUser.uid;
-          const existing = await getCloudCart(uid);
-          existing.push(item);
-          await setCloudCart(uid, existing);
-          alert(name + " added to your account cart!");
-          return;
-        } catch (e) {
-          console.warn("Cloud cart failed, falling back to local:", e);
-        }
+  async function addToCart(name, price){
+    const item = { name, price };
+    // Try cloud first if logged in
+    if (window.isLoggedIn && window.currentUser && window.__cartAPI) {
+      try {
+        const { getCloudCart, setCloudCart } = window.__cartAPI;
+        const uid = window.currentUser.uid;
+        const existing = await getCloudCart(uid);
+        existing.push(item);
+        await setCloudCart(uid, existing);
+        alert(name + " added to your account cart!");
+        return;
+      } catch (e) {
+        console.warn("Cloud cart add failed, saving local and syncing…", e);
       }
-      // Fallback to local
-      const cart = JSON.parse(localStorage.getItem('cart')||'[]');
-      cart.push(item);
-      localStorage.setItem('cart', JSON.stringify(cart));
-      alert(name + " added to cart!");
     }
+    // Save local, then try to sync to cloud (so cart page shows it)
+    const cart = JSON.parse(localStorage.getItem('cart')||'[]');
+    cart.push(item);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    // If logged in, try to push local->cloud now:
+    const synced = await syncLocalToCloud();
+    alert(name + (synced ? " added to your account cart!" : " added locally (offline)."));
+  }
 
-    function imgFallback(el){ el.onerror=null; el.src="https://placehold.co/1200x800/png?text=CustomPC.tech"; }
-  </script>
+  function imgFallback(el){ el.onerror=null; el.src="https://placehold.co/1200x800/png?text=CustomPC.tech"; }
+</script>
+<script type="module" src="nav-auth.js"></script>
 
-  <script type="module" src="nav-auth.js"></script>
 </body>
 </html>
