@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Custom PC – Tailored Build | CustomPC.tech</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Page-specific helpers */
+    .kicker { letter-spacing:.12em; text-transform:uppercase; font-size:12px; opacity:.75; }
+    .feature-grid { display:grid; gap:12px; grid-template-columns:repeat(3,1fr); }
+    .feature {
+      background:rgba(0,0,0,.35); border:1px solid rgba(255,255,255,.08);
+      border-radius:14px; padding:14px;
+    }
+    .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .form-grid .full { grid-column:1 / -1; }
+    .input, textarea {
+      width:100%; padding:10px 12px; border-radius:10px;
+      border:1px solid rgba(255,255,255,0.08); background:rgba(0,0,0,0.35); color:#e9eefc; outline:none;
+    }
+    textarea{ min-height:140px; resize:vertical; }
+    .hint{ font-size:12px; opacity:.75; margin-top:6px; }
+    .status{ display:none; margin-top:16px; padding:10px 12px; border-radius:10px; background:rgba(0,140,60,.15); border:1px solid rgba(0,140,60,.35); color:#8ff5b4; }
+    .status.error{ background:rgba(160,30,30,.15); border-color:rgba(160,30,30,.4); color:#ffb4b4; }
+    .row.gap{ gap:10px; }
+    .btn.secondary{ background:rgba(255,255,255,0.05); }
+    .btn.secondary:hover{ background:rgba(255,255,255,0.09); }
+    .sr-only{ position:absolute; left:-10000px; top:auto; width:1px; height:1px; overflow:hidden; }
+    @media (max-width:900px){ .feature-grid{ grid-template-columns:1fr; } }
+    @media (max-width:720px){ .form-grid{ grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html">Contact</a>
+    <a href="custom.html">Custom PC</a>
+    <a href="about.html">About</a>
+    <a href="builds.html">Builds</a>
+    <a href="cart.html">Cart</a>
+    <span id="nav-user" class="hidden"></span>
+    <a id="nav-login" href="login.html">Log In</a>
+    <a id="nav-signup" href="signup.html">Sign Up</a>
+    <a id="nav-logout" class="hidden" href="javascript:void(0)">Log Out</a>
+  </nav>
+
+  <div class="container">
+    <h1>Custom PC — Built for You</h1>
+    <p style="opacity:.85;margin:-6px 0 18px">
+      Tell us what you play or create. We’ll design, assemble, stress-test, and ship your perfect system.
+    </p>
+
+    <!-- Explainer -->
+    <div class="card" style="padding:18px; max-width:980px; margin:0 auto 18px;">
+      <div class="kicker">How it works</div>
+      <div class="feature-grid" style="margin-top:10px;">
+        <div class="feature">
+          <h4 style="margin:0 0 6px;">1) Tell us your goals</h4>
+          <p style="opacity:.85;margin:0">Games/resolution, editing/AI workloads, silence vs airflow, aesthetics.</p>
+        </div>
+        <div class="feature">
+          <h4 style="margin:0 0 6px;">2) We propose your build</h4>
+          <p style="opacity:.85;margin:0">You’ll get a tuned parts list with options (NVIDIA/AMD, looks, storage).</p>
+        </div>
+        <div class="feature">
+          <h4 style="margin:0 0 6px;">3) We build & ship</h4>
+          <p style="opacity:.85;margin:0">Cable-managed, updated BIOS, burn-in tested. FedEx tracking included.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Request form -->
+    <form id="customPCForm" class="card" style="padding:18px; max-width:980px; margin:0 auto;">
+      <input type="text" name="_gotcha" autocomplete="off" class="sr-only" tabindex="-1">
+      <div class="kicker">Request a tailored build</div>
+
+      <div class="form-grid" style="margin-top:10px;">
+        <div>
+          <label for="c_name">Your Name</label>
+          <input id="c_name" name="name" class="input" type="text" required>
+        </div>
+        <div>
+          <label for="c_email">Email</label>
+          <input id="c_email" name="email" class="input" type="email" required>
+        </div>
+        <div>
+          <label for="c_budget">Budget (USD)</label>
+          <input id="c_budget" name="budget" class="input" type="number" min="300" step="1" placeholder="e.g., 1500" required>
+        </div>
+        <div>
+          <label for="c_use">Primary Use</label>
+          <select id="c_use" name="usecase" class="input" required>
+            <option value="" disabled selected>Select one…</option>
+            <option>Gaming (1080p)</option>
+            <option>Gaming (1440p)</option>
+            <option>Gaming (4K)</option>
+            <option>Streaming</option>
+            <option>Video Editing</option>
+            <option>3D / CAD</option>
+            <option>Software/AI</option>
+            <option>General Productivity</option>
+          </select>
+        </div>
+        <div class="full">
+          <label for="c_notes">What do you want this PC to crush?</label>
+          <textarea id="c_notes" name="notes" placeholder="Games/apps, favorite case, RGB/no RGB, silence vs airflow, deadlines…" required></textarea>
+          <div class="hint">More detail = better recommendations.</div>
+        </div>
+      </div>
+
+      <div class="row gap" style="margin-top:12px;">
+        <button id="customBtn" class="btn" type="submit">Request My Custom PC</button>
+        <a class="btn secondary" href="builds.html" role="button">See sample builds</a>
+      </div>
+      <div id="customOk" class="status">Thanks! We’ll reply with a tailored spec and quote.</div>
+      <div id="customErr" class="status error">Couldn’t send right now. Please try again.</div>
+    </form>
+  </div>
+
+  <script>
+    // Prefill from login
+    (async () => {
+      if (window.__authReady) { try { await window.__authReady; } catch {} }
+      const u = window.currentUser;
+      if (u) {
+        const name = u.displayName || '';
+        const email = u.email || '';
+        if (name)  document.getElementById('c_name').value  = name;
+        if (email) document.getElementById('c_email').value = email;
+      }
+    })();
+
+    const CUSTOM_ENDPOINT = "https://formspree.io/f/xrblokly"; // your Formspree endpoint
+    const cForm = document.getElementById('customPCForm');
+    const cBtn  = document.getElementById('customBtn');
+    const cOk   = document.getElementById('customOk');
+    const cErr  = document.getElementById('customErr');
+    const show = el => el.style.display = 'block';
+    const hide = el => el.style.display = 'none';
+
+    cForm.addEventListener('submit', async (e) => {
+      e.preventDefault(); hide(cOk); hide(cErr);
+      cBtn.disabled = true; cBtn.textContent = "Sending…";
+      try {
+        const fd = new FormData(cForm);
+        fd.append("_subject", "CustomPC.tech – Custom PC Request");
+        fd.append("type", "custom_pc"); // tag it
+        if (window.currentUser?.uid) fd.append("firebase_uid", window.currentUser.uid);
+
+        const res = await fetch(CUSTOM_ENDPOINT, {
+          method: "POST", body: fd, headers: { "Accept": "application/json" }
+        });
+        if (res.ok) { show(cOk); cForm.reset(); }
+        else { show(cErr); }
+      } catch {
+        show(cErr);
+      } finally {
+        cBtn.disabled = false; cBtn.textContent = "Request My Custom PC";
+      }
+    });
+  </script>
+
+  <script type="module" src="nav-auth.js"></script>
+</body>
+</html>
