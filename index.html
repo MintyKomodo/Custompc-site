@@ -1,97 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updateProfile } 
-    from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
-
-  // Your config:
-  const firebaseConfig = {
-    apiKey: "AIzaSyANB6z6rM3lb2GZc3wTO5767fO1jB-PUjM",
-    authDomain: "custompc-website.firebaseapp.com",
-    projectId: "custompc-website",
-    storageBucket: "custompc-website.firebasestorage.app",
-    messagingSenderId: "1043646914253",
-    appId: "1:1043646914253:web:aa1479531bc12745e65384",
-    measurementId: "G-80H4HHCKE5"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-
-  // Example: watch login state
-  onAuthStateChanged(auth, user => {
-    if (user) {
-      console.log("Logged in as", user.email);
-    } else {
-      console.log("Logged out");
-    }
-  });
-
-  // Functions to log in / sign up
-  window.signup = async function(name, email, pass) {
-    const cred = await createUserWithEmailAndPassword(auth, email, pass);
-    if (name) await updateProfile(cred.user, { displayName: name });
-    alert("Signed up!");
-  };
-
-  window.login = async function(email, pass) {
-    await signInWithEmailAndPassword(auth, email, pass);
-    alert("Logged in!");
-  };
-
-  window.logout = async function() {
-    await signOut(auth);
-    alert("Logged out");
-  };
-</script>
-
   <meta charset="utf-8" />
   <title>Contact – CustomPC.tech</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <nav>
+    <a href="index.html">Contact</a>
+    <a href="about.html">About</a>
+    <a href="builds.html">Builds</a>
+    <a href="cart.html">Cart</a>
+    <span id="nav-user" class="hidden"></span>
+    <a id="nav-login" href="login.html">Log In</a>
+    <a id="nav-signup" href="signup.html">Sign Up</a>
+    <a id="nav-logout" class="hidden" href="javascript:void(0)">Log Out</a>
+  </nav>
 
-<nav>
-  <a href="index.html">Contact</a>
-  <a href="about.html">About</a>
-  <a href="builds.html">Builds</a>
-  <a href="cart.html">Cart</a>
-  <span style="flex:1"></span> <!-- pushes login to right -->
-  <a id="nav-login" href="javascript:void(0)">Log In</a>
-  <a id="nav-signup" href="javascript:void(0)">Sign Up</a>
-  <a id="nav-logout" class="hidden" href="javascript:void(0)">Log Out</a>
-</nav>
-
-
-<div class="container">
-  <h1>Contact Us</h1>
-  <div class="panel" id="quote">
-    <p style="color:#cbd5e1; margin-top:0;">
-      Tell us what kind of PC you need—gaming, creator, school, or pro workstation—and we’ll design a build just for you.
-    </p>
-    <form action="https://formspree.io/f/xrblokly" method="POST">
-      <label>Your Name</label>
-      <input type="text" name="name" required />
-
-      <label>Your Email</label>
-      <input type="email" name="email" required />
-
-      <label>Your Budget ($)</label>
-      <input type="number" name="budget" min="200" step="50" required />
-
-      <label>What will you use the PC for?</label>
-      <textarea name="use_case" rows="4" required></textarea>
-
-      <button type="submit" style="margin-top:14px;">Send My Request</button>
-    </form>
+  <div class="container">
+    <h1>Contact Us</h1>
+    <p>Tell us what you want in your custom PC and we’ll get back with a build plan.</p>
+    <!-- Your Formspree or contact form goes here -->
   </div>
-</div>
 
-<footer>© 2025 CustomPC.tech — Built for you.</footer>
-
+  <script type="module" src="nav-auth.js"></script>
 </body>
 </html>
