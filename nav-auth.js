@@ -12,6 +12,30 @@ const firebaseConfig = {
   appId: "1:1043646914253:web:aa1479531bc12745e65384",
   measurementId: "G-80H4HHCKE5"
 };
+// ... existing imports & firebaseConfig ...
+
+const app  = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+// === Add this: a promise that resolves once we know auth state ===
+let _resolveAuthReady;
+window.__authReady = new Promise((res) => { _resolveAuthReady = res; });
+
+// ... (cloud cart helpers + window.__cartAPI as you already have) ...
+
+onAuthStateChanged(auth, async (user) => {
+  // resolve the ready promise the first time we get a state
+  if (_resolveAuthReady) { _resolveAuthReady(); _resolveAuthReady = null; }
+
+  if (user) {
+    // ... your existing logged-in UI code ...
+    // (merge local→cloud stays the same)
+  } else {
+    // ... your existing logged-out UI code ...
+  }
+});
+
 
 // Avoid duplicate init
 const app  = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
