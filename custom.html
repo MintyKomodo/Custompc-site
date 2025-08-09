@@ -182,6 +182,32 @@
     <div class="faq-a">We offer equivalent alternatives and confirm with you before proceeding. If you prefer to wait for a part, we’ll hold your spot in the queue.</div>
   </div>
 </div>
+<script>
+  // FAQ accordion: independent toggles + hash support
+  function toggleItem(item, open) {
+    item.classList.toggle('open', open ?? !item.classList.contains('open'));
+    const btn = item.querySelector('.faq-q');
+    if (btn) btn.setAttribute('aria-expanded', item.classList.contains('open'));
+  }
+
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.faq-q');
+    if (!btn) return;
+    const item = btn.closest('.faq-item');
+    toggleItem(item);
+  });
+
+  // Optional: open a question via URL hash (#faq-q-3)
+  window.addEventListener('load', () => {
+    const hash = location.hash.slice(1);
+    if (!hash) return;
+    const target = document.getElementById(hash) || document.querySelector(`[data-faq="${hash}"]`);
+    if (target && target.classList.contains('faq-item')) {
+      toggleItem(target, true);
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+</script>
 
 
   <script>
