@@ -27,9 +27,8 @@
       <button id="btn-intel" class="btn" onclick="showBuilds('intel')">Intel Builds</button>
     </div>
 
-    <!-- AMD -->
+    <!-- ================= AMD ================= -->
     <div id="amd-builds" class="product-grid">
-      <!-- 3 example cards; duplicate to make 6 -->
       <div class="card">
         <img src="https://images.pexels.com/photos/7915355/pexels-photo-7915355.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="AMD 4K Gaming" onerror="imgFallback(this)">
         <div class="content">
@@ -39,6 +38,7 @@
           <div class="row"><div class="price">$2,599</div><button class="btn" onclick="addToCart('4K Gaming PC (AMD)', 2599)">Add</button></div>
         </div>
       </div>
+
       <div class="card">
         <img src="https://images.pexels.com/photos/5553050/pexels-photo-5553050.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="AMD Overkill" onerror="imgFallback(this)">
         <div class="content">
@@ -48,6 +48,7 @@
           <div class="row"><div class="price">$4,499</div><button class="btn" onclick="addToCart('Overkill PC (AMD)', 4499)">Add</button></div>
         </div>
       </div>
+
       <div class="card">
         <img src="https://images.pexels.com/photos/5777692/pexels-photo-5777692.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="AMD Creator" onerror="imgFallback(this)">
         <div class="content">
@@ -57,45 +58,41 @@
           <div class="row"><div class="price">$2,999</div><button class="btn" onclick="addToCart('Creator Pro (AMD)', 2999)">Add</button></div>
         </div>
       </div>
-      <!-- duplicate 3 more as needed -->
- <!-- AMD 4 -->
-<div class="card">
-  <img src="https://images.pexels.com/photos/1148820/pexels-photo-1148820.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Budget Gaming (AMD)" onerror="imgFallback(this)">
-  <div class="content">
-    <span class="tag">Best Value</span>
-    <h3>Budget Gaming (AMD)</h3>
-    <p class="desc">Ryzen 5 5600 • RTX 4060 • 16GB • 1TB SSD</p>
-    <div class="row"><div class="price">$899</div><button class="btn" onclick="addToCart('Budget Gaming (AMD)', 899)">Add</button></div>
-  </div>
-</div>
 
-<!-- AMD 5 -->
-<div class="card">
-  <img src="https://images.pexels.com/photos/97077/pexels-photo-97077.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Budget Creator (AMD)" onerror="imgFallback(this)">
-  <div class="content">
-    <span class="tag">Creator</span>
-    <h3>Budget Creator (AMD)</h3>
-    <p class="desc">Ryzen 5 5600G • RTX 3050 • 16GB • 512GB SSD</p>
-    <div class="row"><div class="price">$699</div><button class="btn" onclick="addToCart('Budget Creator (AMD)', 699)">Add</button></div>
-  </div>
-</div>
+      <!-- Extra AMD builds you added -->
+      <div class="card">
+        <img src="https://images.pexels.com/photos/1148820/pexels-photo-1148820.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Budget Gaming (AMD)" onerror="imgFallback(this)">
+        <div class="content">
+          <span class="tag">Best Value</span>
+          <h3>Budget Gaming (AMD)</h3>
+          <p class="desc">Ryzen 5 5600 • RTX 4060 • 16GB • 1TB SSD</p>
+          <div class="row"><div class="price">$899</div><button class="btn" onclick="addToCart('Budget Gaming (AMD)', 899)">Add</button></div>
+        </div>
+      </div>
 
-<!-- AMD 6 -->
-<div class="card">
-  <img src="https://images.pexels.com/photos/8166086/pexels-photo-8166086.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Esports Pro (AMD)" onerror="imgFallback(this)">
-  <div class="content">
-    <span class="tag">Esports</span>
-    <h3>Esports Pro (AMD)</h3>
-    <p class="desc">Ryzen 5 7600 • RTX 4060 • 16GB • 1TB SSD</p>
-    <div class="row"><div class="price">$999</div><button class="btn" onclick="addToCart('Esports Pro (AMD)', 999)">Add</button></div>
-  </div>
-</div>
+      <div class="card">
+        <img src="https://images.pexels.com/photos/97077/pexels-photo-97077.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Budget Creator (AMD)" onerror="imgFallback(this)">
+        <div class="content">
+          <span class="tag">Creator</span>
+          <h3>Budget Creator (AMD)</h3>
+          <p class="desc">Ryzen 5 5600G • RTX 3050 • 16GB • 512GB SSD</p>
+          <div class="row"><div class="price">$699</div><button class="btn" onclick="addToCart('Budget Creator (AMD)', 699)">Add</button></div>
+        </div>
+      </div>
 
+      <div class="card">
+        <img src="https://images.pexels.com/photos/8166086/pexels-photo-8166086.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Esports Pro (AMD)" onerror="imgFallback(this)">
+        <div class="content">
+          <span class="tag">Esports</span>
+          <h3>Esports Pro (AMD)</h3>
+          <p class="desc">Ryzen 5 7600 • RTX 4060 • 16GB • 1TB SSD</p>
+          <div class="row"><div class="price">$999</div><button class="btn" onclick="addToCart('Esports Pro (AMD)', 999)">Add</button></div>
+        </div>
+      </div>
+    </div>
 
-    <!-- Intel -->
-    
-      <!-- duplicate 3 more as needed -->
-      <div id="intel-builds" class="product-grid" style="display:none;">
+    <!-- ================= INTEL ================= -->
+    <div id="intel-builds" class="product-grid" style="display:none;">
       <div class="card">
         <img src="https://images.pexels.com/photos/3861956/pexels-photo-3861956.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Intel 4K Gaming" onerror="imgFallback(this)">
         <div class="content">
@@ -105,6 +102,7 @@
           <div class="row"><div class="price">$2,699</div><button class="btn" onclick="addToCart('4K Gaming PC (Intel)', 2699)">Add</button></div>
         </div>
       </div>
+
       <div class="card">
         <img src="https://images.pexels.com/photos/907173/pexels-photo-907173.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Intel Overkill" onerror="imgFallback(this)">
         <div class="content">
@@ -114,6 +112,7 @@
           <div class="row"><div class="price">$4,599</div><button class="btn" onclick="addToCart('Overkill PC (Intel)', 4599)">Add</button></div>
         </div>
       </div>
+
       <div class="card">
         <img src="https://images.pexels.com/photos/218863/pexels-photo-218863.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Intel Creator" onerror="imgFallback(this)">
         <div class="content">
@@ -123,39 +122,38 @@
           <div class="row"><div class="price">$3,099</div><button class="btn" onclick="addToCart('Creator Pro (Intel)', 3099)">Add</button></div>
         </div>
       </div>
-    <!-- Intel 4 -->
-<div class="card">
-  <img src="https://images.pexels.com/photos/538062/pexels-photo-538062.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Budget Gaming (Intel)" onerror="imgFallback(this)">
-  <div class="content">
-    <span class="tag">Best Value</span>
-    <h3>Budget Gaming (Intel)</h3>
-    <p class="desc">i5-12400F • RTX 4060 • 16GB • 1TB SSD</p>
-    <div class="row"><div class="price">$929</div><button class="btn" onclick="addToCart('Budget Gaming (Intel)', 929)">Add</button></div>
-  </div>
-</div>
 
-<!-- Intel 5 -->
-<div class="card">
-  <img src="https://images.pexels.com/photos/1144176/pexels-photo-1144176.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Budget Creator (Intel)" onerror="imgFallback(this)">
-  <div class="content">
-    <span class="tag">Creator</span>
-    <h3>Budget Creator (Intel)</h3>
-    <p class="desc">i5-13400F • RTX 3050 • 16GB • 512GB SSD</p>
-    <div class="row"><div class="price">$719</div><button class="btn" onclick="addToCart('Budget Creator (Intel)', 719)">Add</button></div>
-  </div>
-</div>
+      <!-- Extra Intel builds you added -->
+      <div class="card">
+        <img src="https://images.pexels.com/photos/538062/pexels-photo-538062.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Budget Gaming (Intel)" onerror="imgFallback(this)">
+        <div class="content">
+          <span class="tag">Best Value</span>
+          <h3>Budget Gaming (Intel)</h3>
+          <p class="desc">i5-12400F • RTX 4060 • 16GB • 1TB SSD</p>
+          <div class="row"><div class="price">$929</div><button class="btn" onclick="addToCart('Budget Gaming (Intel)', 929)">Add</button></div>
+        </div>
+      </div>
 
-<!-- Intel 6 -->
-<div class="card">
-  <img src="https://images.pexels.com/photos/1800205/pexels-photo-1800205.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Esports Pro (Intel)" onerror="imgFallback(this)">
-  <div class="content">
-    <span class="tag">Esports</span>
-    <h3>Esports Pro (Intel)</h3>
-    <p class="desc">i5-14500 • RTX 4060 • 16GB • 1TB SSD</p>
-    <div class="row"><div class="price">$1,049</div><button class="btn" onclick="addToCart('Esports Pro (Intel)', 1049)">Add</button></div>
-  </div>
-</div>
+      <div class="card">
+        <img src="https://images.pexels.com/photos/1144176/pexels-photo-1144176.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Budget Creator (Intel)" onerror="imgFallback(this)">
+        <div class="content">
+          <span class="tag">Creator</span>
+          <h3>Budget Creator (Intel)</h3>
+          <p class="desc">i5-13400F • RTX 3050 • 16GB • 512GB SSD</p>
+          <div class="row"><div class="price">$719</div><button class="btn" onclick="addToCart('Budget Creator (Intel)', 719)">Add</button></div>
+        </div>
+      </div>
 
+      <div class="card">
+        <img src="https://images.pexels.com/photos/1800205/pexels-photo-1800205.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Esports Pro (Intel)" onerror="imgFallback(this)">
+        <div class="content">
+          <span class="tag">Esports</span>
+          <h3>Esports Pro (Intel)</h3>
+          <p class="desc">i5-14500 • RTX 4060 • 16GB • 1TB SSD</p>
+          <div class="row"><div class="price">$1,049</div><button class="btn" onclick="addToCart('Esports Pro (Intel)', 1049)">Add</button></div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -165,34 +163,33 @@
       document.getElementById('btn-amd')?.classList.toggle('active', type==='amd');
       document.getElementById('btn-intel')?.classList.toggle('active', type==='intel');
     }
-   <script>
-  async function addToCart(name, price){
-    const item = { name, price };
-    // Logged in? Write to Firestore
-    if (window.isLoggedIn && window.currentUser && window.__cartAPI) {
-      try {
-        const { getCloudCart, setCloudCart } = window.__cartAPI;
-        const uid = window.currentUser.uid;
-        const existing = await getCloudCart(uid);
-        existing.push(item);
-        await setCloudCart(uid, existing);
-        alert(name + " added to your account cart!");
-        return;
-      } catch (e) {
-        console.warn("Cloud cart failed, falling back to local:", e);
-      }
-    }
-    // Fallback: localStorage
-    const cart = JSON.parse(localStorage.getItem('cart')||'[]');
-    cart.push(item);
-    localStorage.setItem('cart', JSON.stringify(cart));
-    alert(name + " added to cart!");
-</script>
-<script type="module" src="nav-auth.js"></script>
 
+    async function addToCart(name, price){
+      const item = { name, price };
+      // If logged in, write to Firestore
+      if (window.isLoggedIn && window.currentUser && window.__cartAPI) {
+        try {
+          const { getCloudCart, setCloudCart } = window.__cartAPI;
+          const uid = window.currentUser.uid;
+          const existing = await getCloudCart(uid);
+          existing.push(item);
+          await setCloudCart(uid, existing);
+          alert(name + " added to your account cart!");
+          return;
+        } catch (e) {
+          console.warn("Cloud cart failed, falling back to local:", e);
+        }
+      }
+      // Fallback to local
+      const cart = JSON.parse(localStorage.getItem('cart')||'[]');
+      cart.push(item);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      alert(name + " added to cart!");
     }
+
     function imgFallback(el){ el.onerror=null; el.src="https://placehold.co/1200x800/png?text=CustomPC.tech"; }
   </script>
+
   <script type="module" src="nav-auth.js"></script>
 </body>
 </html>
