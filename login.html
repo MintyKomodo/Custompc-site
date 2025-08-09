@@ -5,27 +5,7 @@
   <title>Log In – CustomPC.tech</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-  <script type="module" src="nav-auth.js"></script>
-    body {
-      margin:0; font-family:Inter,system-ui,Arial,sans-serif; color:#fff;
-      background: linear-gradient(to bottom,#000 0%,#0a0f2d 40%,#11215b 80%,#1e3a8a 100%);
-      background-attachment: fixed;
-    }
-    nav { display:flex; align-items:center; justify-content:flex-start;
-      padding:14px; background:rgba(17,17,17,.9); border-bottom:1px solid #111; }
-    nav a { color:#e5e7eb; text-decoration:none; margin:0 8px; padding:8px 10px; border-radius:8px; }
-    nav a:hover { background:#1f2937; }
-    .hidden{display:none!important;}
-    .wrap{max-width:420px;margin:40px auto;padding:20px;background:#0f1115;border:1px solid #1f2937;border-radius:14px;}
-    h1{margin:0 0 10px;color:#60a5fa;text-align:center;}
-    label{display:block;margin:12px 0 6px;font-weight:700;}
-    input{width:100%;padding:12px;border-radius:10px;border:1px solid #374151;background:#0b0d12;color:#e5e7eb;}
-    .row{margin-top:16px;display:flex;gap:10px;justify-content:space-between;align-items:center;}
-    .btn{background:#3b82f6;color:#fff;border:0;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer;}
-    .btn.alt{background:#1f2937;}
-    .err{color:#fda4af;min-height:1.25rem;margin-top:8px;}
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <nav>
@@ -33,14 +13,13 @@
     <a href="about.html">About</a>
     <a href="builds.html">Builds</a>
     <a href="cart.html">Cart</a>
-    <span style="flex:1"></span>
-    <span id="nav-user" class="hidden" style="margin-right:10px; color:#93c5fd;"></span>
+    <span id="nav-user" class="hidden"></span>
     <a id="nav-login" href="login.html">Log In</a>
     <a id="nav-signup" href="signup.html">Sign Up</a>
     <a id="nav-logout" class="hidden" href="javascript:void(0)">Log Out</a>
   </nav>
 
-  <div class="wrap">
+  <div class="formwrap">
     <h1>Log In</h1>
     <form id="login-form">
       <label>Email</label>
@@ -50,46 +29,26 @@
       <div class="err" id="err"></div>
       <div class="row">
         <button class="btn" type="submit">Log In</button>
-        <a class="btn alt" href="signup.html">Need an account?</a>
+        <a class="btn" style="background:#1f2937" href="signup.html">Need an account?</a>
       </div>
     </form>
   </div>
 
-  <!-- Nav auth (toggles links, handles logout) -->
   <script type="module" src="nav-auth.js"></script>
-
-  <!-- Page-specific login logic -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyANB6z6rM3lb2GZc3wTO5767fO1jB-PUjM",
-      authDomain: "custompc-website.firebaseapp.com",
-      projectId: "custompc-website",
-      storageBucket: "custompc-website.firebasestorage.app",
-      messagingSenderId: "1043646914253",
-      appId: "1:1043646914253:web:aa1479531bc12745e65384",
-      measurementId: "G-80H4HHCKE5"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    const auth = getAuth();
     const form = document.getElementById('login-form');
     const err = document.getElementById('err');
-
-    form.addEventListener('submit', async (e) => {
+    form.addEventListener('submit', async (e)=>{
       e.preventDefault();
-      err.textContent = '';
+      err.textContent='';
       const email = document.getElementById('email').value.trim();
       const pass  = document.getElementById('pass').value;
-      try {
+      try{
         await signInWithEmailAndPassword(auth, email, pass);
-        // Redirect after login
         window.location.href = "builds.html";
-      } catch (e) {
-        err.textContent = e.message || "Login failed.";
-      }
+      }catch(e){ err.textContent = e.message || "Login failed."; }
     });
   </script>
 </body>
