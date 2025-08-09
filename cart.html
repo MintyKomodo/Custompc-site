@@ -29,79 +29,82 @@
   </div>
 
   <script type="module">
-    import { onSnapshot, doc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+  import { onSnapshot, doc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
 
-    const listEl  = document.getElementById('cart-list');
-    const totalEl = document.getElementById('cart-total');
+  const listEl  = document.getElementById('cart-list');
+  const totalEl = document.getElementById('cart-total');
 
-    const renderList = (items=[]) => {
-      if(!items.length){
-        listEl.innerHTML = '<p>Your cart is empty.</p>';
-        totalEl.textContent = '';
-        return;
-      }
-      listEl.innerHTML = items.map(i=>`
-        <div class="row">
-          <div>${i.name} <span style="opacity:.7">× ${Number(i.qty||1)}</span></div>
-          <div>$${(Number(i.price)*Number(i.qty||1)).toFixed(2)}</div>
-        </div>`).join('');
-      const total = items.reduce((s,i)=>s + Number(i.price)*Number(i.qty||1), 0);
-      totalEl.textContent = "Total: $" + total.toFixed(2);
-    };
-
-    function renderLocal(){
-      const local = JSON.parse(localStorage.getItem('cart')||'[]');
-      renderList(local);
+  const renderList = (items=[]) => {
+    if(!items.length){
+      listEl.innerHTML = '<p>Your cart is empty.</p>';
+      totalEl.textContent = '';
+      return;
     }
+    listEl.innerHTML = items.map(i=>`
+      <div class="row">
+        <div>${i.name} <span style="opacity:.7">× ${Number(i.qty||1)}</span></div>
+        <div>$${(Number(i.price)*Number(i.qty||1)).toFixed(2)}</div>
+      </div>`).join('');
+    const total = items.reduce((s,i)=>s + Number(i.price)*Number(i.qty||1), 0);
+    totalEl.textContent = "Total: $" + total.toFixed(2);
+  };
 
-    async function syncLocalToCloudOnce(){
-      if (!(window.isLoggedIn && window.currentUser && window.__cartAPI)) return;
-      const local = JSON.parse(localStorage.getItem('cart')||'[]');
-      if (!local.length) return;
-      try{
-        const { getCloudCart, setCloudCart, mergeCarts } = window.__cartAPI;
-        const uid = window.currentUser.uid;
-        const cloud = await getCloudCart(uid);
-        const merged = mergeCarts(cloud, local);
-        await setCloudCart(uid, merged);
-        localStorage.removeItem('cart');
-      }catch(e){ console.warn("syncLocalToCloudOnce failed:", e); }
-    }
+  function renderLocal(){
+    const local = JSON.parse(localStorage.getItem('cart')||'[]');
+    renderList(local);
+  }
 
-    // Wait for nav-auth globals
-    const ready = () => new Promise(res => {
-      if (window.__cartAPI !== undefined) res();
-      else document.addEventListener('DOMContentLoaded', res);
-    });
-    await ready();
-
-    if (window.isLoggedIn && window.currentUser && window.__cartAPI?.db) {
-      const { db } = window.__cartAPI;
+  async function syncLocalToCloudOnce(){
+    if (!(window.isLoggedIn && window.currentUser && window.__cartAPI)) return;
+    const local = JSON.parse(localStorage.getItem('cart')||'[]');
+    if (!local.length) return;
+    try{
+      const { getCloudCart, setCloudCart, mergeCarts } = window.__cartAPI;
       const uid = window.currentUser.uid;
-      const ref = doc(db, "carts", uid);
-      onSnapshot(ref, async (snap)=>{
-        const items = snap.exists() ? (snap.data().items || []) : [];
-        if (items.length) {
-          renderList(items);
-        } else {
-          const local = JSON.parse(localStorage.getItem('cart')||'[]');
-          if (local.length) await syncLocalToCloudOnce();
-          renderLocal();
-        }
-      }, (err)=>{ console.warn("Cart listener error:", err); renderLocal(); });
-    } else {
-      renderLocal();
-    }
+      const cloud = await getCloudCart(uid);
+      const merged = mergeCarts(cloud, local);
+      await setCloudCart(uid, merged);
+      localStorage.removeItem('cart');
+    }catch(e){ console.warn("syncLocalToCloudOnce failed:", e); }
+  }
 
-    window.checkout = function(){
-      if(!window.isLoggedIn){
-        alert("Please log in first.");
-        window.location.href = "login.html";
-        return;
+  // ✅ Wait for nav-auth.js to load AND for auth state to resolve
+  const waitForNav = () => new Promise(res => {
+    if (window.__cartAPI !== undefined) res(); else document.addEventListener('DOMContentLoaded', res);
+  });
+  await waitForNav();
+  if (window.__authReady) { try { await window.__authReady; } catch {} }
+
+  // Now decide cloud vs local using the *final* auth state
+  if (window.isLoggedIn && window.currentUser && window.__cartAPI?.db) {
+    const { db } = window.__cartAPI;
+    const uid = window.currentUser.uid;
+    const ref = doc(db, "carts", uid);
+
+    onSnapshot(ref, async (snap)=>{
+      const items = snap.exists() ? (snap.data().items || []) : [];
+      if (items.length) {
+        renderList(items);
+      } else {
+        const local = JSON.parse(localStorage.getItem('cart')||'[]');
+        if (local.length) await syncLocalToCloudOnce();
+        renderLocal();
       }
-      alert("Proceeding to payment…");
-    };
-  </script>
+    }, (err)=>{ console.warn("Cart listener error:", err); renderLocal(); });
+  } else {
+    renderLocal();
+  }
+
+  window.checkout = function(){
+    if(!window.isLoggedIn){
+      alert("Please log in first.");
+      window.location.href = "login.html";
+      return;
+    }
+    alert("Proceeding to payment…");
+  };
+</script>
+
 
   <script type="module" src="nav-auth.js"></script>
 </body>
