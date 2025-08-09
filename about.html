@@ -6,11 +6,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <style>
+    .kicker{letter-spacing:.12em;text-transform:uppercase;font-size:12px;opacity:.75}
+    .card-tight{padding:16px;max-width:980px;margin:0 auto 16px}
+    .why-list{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media (max-width:820px){.why-list{grid-template-columns:1fr}}
+    .why-item{border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px;background:rgba(0,0,0,.28)}
+    .why-item h4{margin:0 0 6px}
+    .trust{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .badges{display:flex;flex-wrap:wrap;gap:10px}
+    .badge{border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:10px 12px;background:rgba(0,0,0,.28)}
+    .process{display:grid;gap:12px}
+    .step{border-left:3px solid #4a8dff;padding-left:12px}
+    .step h4{margin:0 0 4px}
+    .cta-bottom{padding:16px;max-width:980px;margin:16px auto;border:1px solid rgba(255,255,255,.08);border-radius:12px;background:rgba(0,0,0,.28);text-align:center}
+  </style>
 </head>
 <body>
   <nav>
-    <a href="custom.html">Custom PC</a>
     <a href="index.html">Contact</a>
+    <a href="custom.html">Custom PC</a>
     <a href="about.html">About</a>
     <a href="builds.html">Builds</a>
     <a href="cart.html">Cart</a>
@@ -22,14 +37,79 @@
 
   <div class="container">
     <h1>About CustomPC.tech</h1>
-    <p>We build custom computers designed exactly for your needs — gaming, creative work, or pro workloads.</p>
-    <ul>
-      <li><strong>Tailored for you:</strong> Every build is made from scratch for your goals.</li>
-      <li><strong>Smart parts:</strong> No wasted budget — performance where it matters.</li>
-      <li><strong>Budget-first:</strong> You set the budget, we maximize the specs.</li>
-      <li><strong>Real support:</strong> We keep you informed, start to finish.</li>
-      <li><strong>Stress-tested:</strong> Each system is tuned and validated.</li>
-    </ul>
+    <p style="opacity:.85;margin:-6px 0 18px">We build high-performance computers tailored to your exact needs — from esports battlestations to 4K creator rigs.</p>
+
+    <!-- Why choose us -->
+    <div class="card card-tight">
+      <div class="kicker">Why choose us</div>
+      <div class="why-list" style="margin-top:10px;">
+        <div class="why-item">
+          <h4>🎯 Tailored Performance</h4>
+          <p>We spec your PC to match your exact games, apps, and performance goals — no wasted budget.</p>
+        </div>
+        <div class="why-item">
+          <h4>🛠 Expert Assembly</h4>
+          <p>Meticulous cable management, thermal optimization, and BIOS tuning come standard.</p>
+        </div>
+        <div class="why-item">
+          <h4>🧪 Stress-Tested</h4>
+          <p>Every build passes hours of CPU, GPU, and memory stress testing to ensure stability from day one.</p>
+        </div>
+        <div class="why-item">
+          <h4>📦 Safe Shipping</h4>
+          <p>Foam-in-case packaging and insured shipping protect your PC until it’s on your desk.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trust badges -->
+    <div class="card card-tight">
+      <div class="trust">
+        <div class="badges">
+          <div class="badge">✅ 1-Year Workmanship Warranty</div>
+          <div class="badge">🧪 Burn-in & Stress Tested</div>
+          <div class="badge">📦 Foam-in-Case Shipping</div>
+          <div class="badge">📧 Lifetime Email Support</div>
+        </div>
+        <div>
+          <p style="opacity:.85">We stand behind every system we build. If you ever have a question or issue, we’re one email away — for life.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Our build process -->
+    <div class="card card-tight">
+      <div class="kicker">Our build process</div>
+      <div class="process" style="margin-top:10px;">
+        <div class="step">
+          <h4>1) Consultation</h4>
+          <p>We gather your requirements, preferences, and budget.</p>
+        </div>
+        <div class="step">
+          <h4>2) Spec Design</h4>
+          <p>We propose a parts list optimized for your use case and budget.</p>
+        </div>
+        <div class="step">
+          <h4>3) Assembly</h4>
+          <p>We carefully assemble and cable-manage your PC.</p>
+        </div>
+        <div class="step">
+          <h4>4) Stress Testing</h4>
+          <p>We run CPU, GPU, and memory stability tests, update BIOS, and fine-tune performance.</p>
+        </div>
+        <div class="step">
+          <h4>5) Shipping</h4>
+          <p>Your PC ships in secure packaging with tracking and insurance.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom CTA -->
+    <div class="cta-bottom">
+      <h2 style="margin:0 0 8px;">Ready for your perfect PC?</h2>
+      <p style="opacity:.85;margin:0 0 10px">We’ll design, assemble, stress-test, and ship your dream system.</p>
+      <a class="btn" href="custom.html">Start my build</a>
+    </div>
   </div>
 
   <script type="module" src="nav-auth.js"></script>
