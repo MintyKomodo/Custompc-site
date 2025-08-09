@@ -7,38 +7,87 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <style>
-    /* Page-only styles (small, neat boxes) */
+    /* ===== Page-only styles (kept lean, neat, and consistent with your site) ===== */
     .kicker{letter-spacing:.12em;text-transform:uppercase;font-size:12px;opacity:.75}
+    .row.gap{gap:10px}
+    .btn.secondary{background:rgba(255,255,255,.06)}
+    .btn.secondary:hover{background:rgba(255,255,255,.1)}
+    .card-tight{padding:16px;max-width:980px;margin:0 auto 16px}
+    .hero{
+      padding:24px;max-width:980px;margin:0 auto 16px;border-radius:16px;
+      background:
+        linear-gradient(180deg, rgba(15, 18, 28, 0.7), rgba(15, 18, 28, 0.4)),
+        url('https://images.pexels.com/photos/2115257/pexels-photo-2115257.jpeg?auto=compress&cs=tinysrgb&w=1600') center/cover no-repeat;
+      border:1px solid rgba(255,255,255,.06);
+      box-shadow:0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,0.03);
+    }
+
+    /* Trust badges + reviews */
+    .trust{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .badges{display:flex;flex-wrap:wrap;gap:10px}
+    .badge{border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:10px 12px;background:rgba(0,0,0,.28)}
+    .reviews{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .review{border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px;background:rgba(0,0,0,.28)}
+    @media (max-width:880px){ .trust{grid-template-columns:1fr}.reviews{grid-template-columns:1fr} }
+
+    /* How it works */
     .feature-grid{display:grid;gap:12px;grid-template-columns:repeat(3,1fr)}
     .feature{background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px}
     @media (max-width:900px){.feature-grid{grid-template-columns:1fr}}
+
+    /* Portfolio grid + modal */
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .card-pc{border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden;background:rgba(0,0,0,.28);cursor:pointer}
+    .card-pc img{display:block;width:100%;height:180px;object-fit:cover}
+    .card-pc .content{padding:12px}
+    .tag{font-size:12px;opacity:.75}
+    @media (max-width:980px){.grid{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:640px){.grid{grid-template-columns:1fr}}
+    .modal{
+      position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:16px;z-index:90
+    }
+    .modal.open{display:flex}
+    .modal-card{
+      max-width:880px;width:100%;background:#0d1016;border:1px solid rgba(255,255,255,.08);
+      border-radius:14px;overflow:hidden;box-shadow:0 18px 60px rgba(0,0,0,.45)
+    }
+    .modal-media{width:100%;height:320px;background:#000;object-fit:cover;display:block}
+    .modal-body{padding:16px}
+    .specs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .spec{border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:8px;background:rgba(255,255,255,.02)}
+    @media (max-width:760px){.specs{grid-template-columns:1fr}}
+
+    /* Estimator */
+    .est-wrap{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .est-controls .input, .est-controls select{width:100%}
+    .est-price{
+      border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:12px;background:rgba(0,0,0,.28);
+      display:flex;flex-direction:column;gap:8px;justify-content:center
+    }
+    @media (max-width:820px){.est-wrap{grid-template-columns:1fr}}
+
+    /* Form (reuse from earlier) */
     .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
     .form-grid .full{grid-column:1/-1}
     .input,textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:rgba(0,0,0,.35);color:#e9eefc;outline:none}
     textarea{min-height:140px;resize:vertical}
-    .row.gap{gap:10px}
-    .btn.secondary{background:rgba(255,255,255,.06)}
-    .btn.secondary:hover{background:rgba(255,255,255,.1)}
+    .status{display:none;margin-top:12px;padding:10px 12px;border-radius:10px;background:rgba(0, 140, 60, .15);border:1px solid rgba(0, 140, 60, .35);color:#8ff5b4}
+    .status.error{background:rgba(160,30,30,.15);border-color:rgba(160,30,30,.4);color:#ffb4b4}
     .sr-only{position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden}
 
-    /* Small FAQ boxes */
+    /* FAQ boxed */
     .faq-wrap{max-width:980px;margin:20px auto 0}
     .faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
     @media (max-width:820px){.faq-grid{grid-template-columns:1fr}}
-    .faq-box{
-      border:1px solid rgba(255,255,255,.1);
-      background:rgba(0,0,0,.28);
-      border-radius:12px;overflow:hidden;
-    }
-    .faq-q{
-      width:100%;text-align:left;background:transparent;color:#e9eefc;
-      padding:12px 14px;border:none;cursor:pointer;font-weight:600;
-      display:flex;justify-content:space-between;align-items:center;
-    }
+    .faq-box{border:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.28);border-radius:12px;overflow:hidden}
+    .faq-q{width:100%;text-align:left;background:transparent;color:#e9eefc;padding:12px 14px;border:none;cursor:pointer;font-weight:600;display:flex;justify-content:space-between;align-items:center}
     .chev{opacity:.8;transition:transform .15s ease}
     .faq-a{display:none;padding:0 14px 12px 14px;color:#cfd8ff}
     .faq-box.open .faq-a{display:block}
     .faq-box.open .chev{transform:rotate(180deg)}
+
+    /* Closing CTA */
+    .cta-bottom{padding:16px;max-width:980px;margin:16px auto;border:1px solid rgba(255,255,255,.08);border-radius:12px;background:rgba(0,0,0,.28);text-align:center}
   </style>
 </head>
 <body>
@@ -55,13 +104,37 @@
   </nav>
 
   <div class="container">
-    <h1>Custom PC — Built for You</h1>
-    <p style="opacity:.85;margin:-6px 0 18px">
-      Tell us what you play or create. We’ll design, assemble, stress-test, and ship your perfect system.
-    </p>
+    <!-- Hero -->
+    <div class="hero">
+      <div class="kicker">Tailored Builds</div>
+      <h1 style="margin:6px 0 10px;">Your perfect PC — spec’d, built & stress-tested for you.</h1>
+      <p style="opacity:.9;max-width:740px;margin:0 0 14px;">
+        We translate your games and workflows into the right CPU, GPU, cooling, and storage — then assemble, cable-manage, update, and ship with FedEx tracking.
+      </p>
+      <div class="row gap">
+        <a class="btn" href="#customPCForm">Start my build</a>
+        <a class="btn secondary" href="builds.html">See sample builds</a>
+      </div>
+    </div>
 
-    <!-- Explainer -->
-    <div class="card" style="padding:16px;max-width:980px;margin:0 auto 16px;">
+    <!-- Trust & Credibility -->
+    <div class="card card-tight">
+      <div class="trust">
+        <div class="badges">
+          <div class="badge">✅ 1-Year Workmanship Warranty</div>
+          <div class="badge">🧪 Burn-in & Stress Tested</div>
+          <div class="badge">📦 Foam-in-Case Shipping</div>
+          <div class="badge">📧 Lifetime Email Support</div>
+        </div>
+        <div class="reviews">
+          <div class="review">“Cable work was spotless. Hit 240 FPS in Valorant like promised.” — Alex R.</div>
+          <div class="review">“My Premiere renders are 3× faster than my laptop. Worth it.” — Jamie L.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- How it works -->
+    <div class="card card-tight">
       <div class="kicker">How it works</div>
       <div class="feature-grid" style="margin-top:10px;">
         <div class="feature"><h4 style="margin:0 0 6px;">1) Tell us your goals</h4><p style="opacity:.85;margin:0">Games/resolution, editing/AI workloads, silence vs airflow, looks.</p></div>
@@ -70,8 +143,51 @@
       </div>
     </div>
 
+    <!-- Portfolio (clickable cards -> modal) -->
+    <div class="card card-tight">
+      <div class="kicker">Sample builds</div>
+      <h2 style="margin:6px 0 10px;">Popular configurations</h2>
+      <div class="grid" id="portfolioGrid"></div>
+    </div>
+
+    <!-- Price Estimator -->
+    <div class="card card-tight">
+      <div class="kicker">Estimator</div>
+      <h2 style="margin:6px 0 10px;">Get a quick price range</h2>
+      <div class="est-wrap">
+        <div class="est-controls">
+          <label>Resolution / Goal</label>
+          <select id="estGoal" class="input" style="margin-bottom:8px">
+            <option value="1080">Gaming 1080p (high FPS)</option>
+            <option value="1440" selected>Gaming 1440p (ultra)</option>
+            <option value="4k">Gaming 4K (RT + upscaling)</option>
+            <option value="edit">Video Editing / Creator</option>
+            <option value="ai">AI / Compute</option>
+          </select>
+          <label>GPU Tier</label>
+          <select id="estTier" class="input" style="margin-bottom:8px">
+            <option value="entry">Entry</option>
+            <option value="mid" selected>Mid</option>
+            <option value="high">High</option>
+          </select>
+          <label>Storage</label>
+          <select id="estStorage" class="input">
+            <option value="1">1 TB</option>
+            <option value="2" selected>2 TB</option>
+            <option value="4">4 TB</option>
+          </select>
+        </div>
+        <div class="est-price">
+          <div>Estimated range:</div>
+          <div id="estOut" style="font-size:22px;font-weight:700;">$1,700 – $2,200</div>
+          <div style="font-size:12px;opacity:.8">Final quote depends on exact parts and aesthetics. We’ll confirm before you pay.</div>
+          <div><a class="btn" href="#customPCForm">Request a detailed quote</a></div>
+        </div>
+      </div>
+    </div>
+
     <!-- Request form -->
-    <form id="customPCForm" class="card" style="padding:16px;max-width:980px;margin:0 auto;">
+    <form id="customPCForm" class="card card-tight">
       <input type="text" name="_gotcha" autocomplete="off" class="sr-only" tabindex="-1">
       <div class="kicker">Request a tailored build</div>
 
@@ -103,69 +219,59 @@
         <button id="customBtn" class="btn" type="submit">Request My Custom PC</button>
         <a class="btn secondary" href="builds.html" role="button">See sample builds</a>
       </div>
-      <div id="customOk" class="status" style="display:none;margin-top:12px">Thanks! We’ll reply with a tailored spec and quote.</div>
-      <div id="customErr" class="status error" style="display:none;margin-top:12px">Couldn’t send right now. Please try again.</div>
+      <div id="customOk" class="status">Thanks! We’ll reply with a tailored spec and quote.</div>
+      <div id="customErr" class="status error">Couldn’t send right now. Please try again.</div>
     </form>
 
-    <!-- Small boxed FAQs (2-column grid) -->
+    <!-- FAQ (boxed) -->
     <div class="faq-wrap">
       <h2 style="text-align:center;margin:16px 0 10px;">FAQ</h2>
       <div class="faq-grid" id="faqGrid">
-        <!-- Boxes -->
-        <div class="faq-box">
-          <button class="faq-q" aria-expanded="false">How long does a custom build take?<span class="chev">⌄</span></button>
-          <div class="faq-a">Typically 5–10 business days after payment (parts availability can change this). We’ll share an ETA with your quote.</div>
+        <div class="faq-box"><button class="faq-q" aria-expanded="false">How long does a custom build take?<span class="chev">⌄</span></button><div class="faq-a">Typically 5–10 business days after payment (parts availability can change this). We’ll share an ETA with your quote.</div></div>
+        <div class="faq-box"><button class="faq-q" aria-expanded="false">Do you stress test before shipping?<span class="chev">⌄</span></button><div class="faq-a">Yes: BIOS update, memory XMP/EXPO, GPU (3DMark), CPU/memory/VRM (OCCT), and a 2–4 hour burn-in. We check temps and stability.</div></div>
+        <div class="faq-box"><button class="faq-q" aria-expanded="false">What warranty is included?<span class="chev">⌄</span></button><div class="faq-a">Manufacturer warranties for parts + 1-year workmanship warranty from us covering assembly-related issues.</div></div>
+        <div class="faq-box"><button class="faq-q" aria-expanded="false">Can I request specific parts or a certain look?<span class="chev">⌄</span></button><div class="faq-a">Absolutely. Share your case preference, RGB/no RGB, quiet vs airflow, brand lean, and color theme — we’ll design around it.</div></div>
+        <div class="faq-box"><button class="faq-q" aria-expanded="false">What performance targets do you build for?<span class="chev">⌄</span></button><div class="faq-a">We tune for 1080p high-FPS, 1440p ultra, or 4K RT + upscaling. For creators, we size CPU/GPU/RAM/SSD to your exact apps.</div></div>
+        <div class="faq-box"><button class="faq-q" aria-expanded="false">Do you install Windows and drivers?<span class="chev">⌄</span></button><div class="faq-a">Yes. Latest Windows, chipset/GPU drivers, updates, and essentials. Use your key or we can add one at checkout.</div></div>
+        <div class="faq-box"><button class="faq-q" aria-expanded="false">How is shipping handled?<span class="chev">⌄</span></button><div class="faq-a">FedEx with foam-in-case protection and tracking. You’ll get a link and ETA. Local pickup can be arranged if you’re nearby.</div></div>
+        <div class="faq-box"><button class="faq-q" aria-expanded="false">Can I upgrade later?<span class="chev">⌄</span></button><div class="faq-a">Yes — GPU, SSD, RAM, cooler, etc. We’ll design an upgrade path now and can quote parts/service later when you’re ready.</div></div>
+        <div class="faq-box"><button class="faq-q" aria-expanded="false">How do payments work?<span class="chev">⌄</span></button><div class="faq-a">After we finalize your spec, we’ll invoice. You can pay by card or PayPal. Apple/Google Pay available when you enable a processor.</div></div>
+        <div class="faq-box"><button class="faq-q" aria-expanded="false">What if a part is out of stock?<span class="chev">⌄</span></button><div class="faq-a">We’ll propose equivalent alternatives and confirm with you. If you’d rather wait, we’ll hold your spot in the build queue.</div></div>
+        <div class="faq-box"><button class="faq-q" aria-expanded="false">Do you support water cooling and silent builds?<span class="chev">⌄</span></button><div class="faq-a">Yep. From 240/360mm AIOs to quiet fan curves and acoustic panels — we can bias for silence without killing performance.</div></div>
+        <div class="faq-box"><button class="faq-q" aria-expanded="false">Can you preload games or apps?<span class="chev">⌄</span></button><div class="faq-a">We can install launchers and drivers. For licensed apps/games, share your accounts after delivery and we’ll guide you safely.</div></div>
+      </div>
+    </div>
+
+    <!-- Closing CTA -->
+    <div class="cta-bottom">
+      <h2 style="margin:0 0 8px;">Ready to start?</h2>
+      <p style="opacity:.85;margin:0 0 10px">Tell us what you need and we’ll send a parts plan, price, and timeline.</p>
+      <a class="btn" href="#customPCForm">Start my build</a>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" id="pcModal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="pcTitle">
+      <img id="pcImg" class="modal-media" alt="PC build preview">
+      <div class="modal-body">
+        <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <h2 id="pcTitle" style="margin:0"></h2>
+          <div id="pcPrice" class="price"></div>
         </div>
-        <div class="faq-box">
-          <button class="faq-q" aria-expanded="false">Do you stress test before shipping?<span class="chev">⌄</span></button>
-          <div class="faq-a">Yes: BIOS update, memory XMP/EXPO, GPU (3DMark), CPU/memory/VRM (OCCT), and a 2–4 hour burn-in. We check temps and stability.</div>
-        </div>
-        <div class="faq-box">
-          <button class="faq-q" aria-expanded="false">What warranty is included?<span class="chev">⌄</span></button>
-          <div class="faq-a">Manufacturer warranties for parts + 1-year workmanship warranty from us covering assembly-related issues.</div>
-        </div>
-        <div class="faq-box">
-          <button class="faq-q" aria-expanded="false">Can I request specific parts or a certain look?<span class="chev">⌄</span></button>
-          <div class="faq-a">Absolutely. Share your case preference, RGB/no RGB, quiet vs airflow, brand lean, and color theme—we’ll design around it.</div>
-        </div>
-        <div class="faq-box">
-          <button class="faq-q" aria-expanded="false">What performance targets do you build for?<span class="chev">⌄</span></button>
-          <div class="faq-a">We tune for 1080p high-FPS, 1440p ultra, or 4K RT + upscaling. For creators, we size CPU/GPU/RAM/SSD to your exact apps.</div>
-        </div>
-        <div class="faq-box">
-          <button class="faq-q" aria-expanded="false">Do you install Windows and drivers?<span class="chev">⌄</span></button>
-          <div class="faq-a">Yes. Latest Windows, chipset/GPU drivers, updates, and essential utilities. Use your key or we can add one at checkout.</div>
-        </div>
-        <div class="faq-box">
-          <button class="faq-q" aria-expanded="false">How is shipping handled?<span class="chev">⌄</span></button>
-          <div class="faq-a">FedEx with foam-in-case protection and tracking. You’ll get a link and ETA. Local pickup can be arranged if you’re nearby.</div>
-        </div>
-        <div class="faq-box">
-          <button class="faq-q" aria-expanded="false">Can I upgrade later?<span class="chev">⌄</span></button>
-          <div class="faq-a">Yes—GPU, SSD, RAM, cooler, etc. We’ll design an upgrade path now and can quote parts/service later when you’re ready.</div>
-        </div>
-        <div class="faq-box">
-          <button class="faq-q" aria-expanded="false">How do payments work?<span class="chev">⌄</span></button>
-          <div class="faq-a">After we finalize your spec, we’ll invoice. You can pay by card or PayPal. Apple/Google Pay available when you enable a processor.</div>
-        </div>
-        <div class="faq-box">
-          <button class="faq-q" aria-expanded="false">What if a part is out of stock?<span class="chev">⌄</span></button>
-          <div class="faq-a">We’ll propose equivalent alternatives and confirm with you. If you’d rather wait, we’ll hold your spot in the build queue.</div>
-        </div>
-        <div class="faq-box">
-          <button class="faq-q" aria-expanded="false">Do you support water cooling and silent builds?<span class="chev">⌄</span></button>
-          <div class="faq-a">Yep. From 240/360mm AIOs to quiet fan curves and acoustic panels—we can bias for silence without killing performance.</div>
-        </div>
-        <div class="faq-box">
-          <button class="faq-q" aria-expanded="false">Can you preload games or apps?<span class="chev">⌄</span></button>
-          <div class="faq-a">We can install launchers and drivers. For licensed apps/games, share your accounts after delivery and we’ll guide you safely.</div>
+        <div id="pcTag" class="tag" style="margin:-6px 0 10px;"></div>
+        <div class="specs" id="pcSpecs"></div>
+        <div style="margin-top:12px;" id="pcDesc"></div>
+        <div class="row gap" style="margin-top:12px;">
+          <button class="btn" id="pcRequestBtn">Request this build</button>
+          <button class="btn secondary" id="pcCloseBtn">Close</button>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    // Prefill from login
+    /* ===================== Login prefill ===================== */
     (async () => {
       if (window.__authReady) { try { await window.__authReady; } catch {} }
       const u = window.currentUser;
@@ -177,7 +283,205 @@
       }
     })();
 
-    // Formspree submit
+    /* ===================== Portfolio data (AMD + Intel) ===================== */
+    const BUILDS = [
+      { id:'amd-4k', title:'4K Gaming PC (AMD)', tag:'4K Gaming', price:2599,
+        img:'https://images.pexels.com/photos/7915355/pexels-photo-7915355.jpeg?auto=compress&cs=tinysrgb&w=1600',
+        specs:[
+          ['CPU','Ryzen 7 7800X3D'],['GPU','GeForce RTX 5080'],
+          ['RAM','32GB DDR5-6000'],['Storage','2TB NVMe (Gen4)'],
+          ['Cooling','360mm AIO'],['PSU','850W Gold'],['Case','Airflow chassis']
+        ],
+        desc:'Tuned for high-refresh 4K with frame-gen/upscaling. Quiet fan curves, excellent temps.' },
+      { id:'amd-over', title:'Overkill PC (AMD)', tag:'Extreme', price:4499,
+        img:'https://images.pexels.com/photos/5553050/pexels-photo-5553050.jpeg?auto=compress&cs=tinysrgb&w=1600',
+        specs:[
+          ['CPU','Ryzen 9 7950X'],['GPU','GeForce RTX 5090'],
+          ['RAM','64GB DDR5-6000'],['Storage','2TB + 4TB NVMe'],
+          ['Cooling','360mm AIO'],['PSU','1000W Gold'],['Case','Premium airflow']
+        ],
+        desc:'Built for everything maxed: 4K RT, heavy editing, AI. Top-tier thermals & acoustics.' },
+      { id:'amd-creator', title:'Creator Pro (AMD)', tag:'Creator', price:2999,
+        img:'https://images.pexels.com/photos/5777692/pexels-photo-5777692.jpeg?auto=compress&cs=tinysrgb&w=1600',
+        specs:[
+          ['CPU','Ryzen 9 7950X'],['GPU','GeForce RTX 5080'],
+          ['RAM','64GB DDR5-6000'],['Storage','2TB 990 PRO'],
+          ['Cooling','360mm AIO'],['Scratch','Separate cache/scratch setup']
+        ],
+        desc:'Designed for Premiere/Resolve/Blender with fast cache disks and color-accurate GPU drivers.' },
+      { id:'amd-budget', title:'Budget Gaming (AMD)', tag:'Best Value', price:899,
+        img:'https://images.pexels.com/photos/1148820/pexels-photo-1148820.jpeg?auto=compress&cs=tinysrgb&w=1600',
+        specs:[
+          ['CPU','Ryzen 5 5600'],['GPU','GeForce RTX 4060'],
+          ['RAM','16GB DDR4'],['Storage','1TB NVMe'],
+          ['Cooling','Tower Air'],['PSU','650W Bronze']
+        ],
+        desc:'1080p high settings in today’s top titles. Easy upgrade path for GPU/RAM later.' },
+      { id:'amd-creator-budget', title:'Budget Creator (AMD)', tag:'Creator', price:699,
+        img:'https://images.pexels.com/photos/97077/pexels-photo-97077.jpeg?auto=compress&cs=tinysrgb&w=1600',
+        specs:[
+          ['CPU','Ryzen 5 5600G'],['GPU','GeForce RTX 3050'],
+          ['RAM','16GB DDR4'],['Storage','512GB NVMe']
+        ],
+        desc:'Great starter for light editing and content creation with GPU acceleration.' },
+      { id:'amd-esports', title:'Esports Pro (AMD)', tag:'Esports', price:999,
+        img:'https://images.pexels.com/photos/8166086/pexels-photo-8166086.jpeg?auto=compress&cs=tinysrgb&w=1600',
+        specs:[
+          ['CPU','Ryzen 5 7600'],['GPU','GeForce RTX 4060'],
+          ['RAM','16GB DDR5'],['Storage','1TB NVMe']
+        ],
+        desc:'Tuned for esports titles (CS, Valorant, Fortnite) with low input lag and stable high FPS.' },
+
+      { id:'intel-4k', title:'4K Gaming PC (Intel)', tag:'4K Gaming', price:2699,
+        img:'https://images.pexels.com/photos/3861956/pexels-photo-3861956.jpeg?auto=compress&cs=tinysrgb&w=1600',
+        specs:[
+          ['CPU','Core i7-14700K'],['GPU','GeForce RTX 5080'],
+          ['RAM','32GB DDR5-6000'],['Storage','2TB NVMe'],
+          ['Cooling','360mm AIO'],['PSU','850W Gold']
+        ],
+        desc:'Fantastic 4K gaming with frame-gen, tuned for low noise and strong boost clocks.' },
+      { id:'intel-over', title:'Overkill PC (Intel)', tag:'Extreme', price:4599,
+        img:'https://images.pexels.com/photos/907173/pexels-photo-907173.jpeg?auto=compress&cs=tinysrgb&w=1600',
+        specs:[
+          ['CPU','Core i9-14900K'],['GPU','GeForce RTX 5090'],
+          ['RAM','64GB DDR5-6000'],['Storage','2TB + 4TB NVMe'],
+          ['Cooling','360mm AIO'],['PSU','1000W Gold']
+        ],
+        desc:'For the “everything on ultra” crowd. Also crushes editing and multi-task workloads.' },
+      { id:'intel-creator', title:'Creator Pro (Intel)', tag:'Creator', price:3099,
+        img:'https://images.pexels.com/photos/218863/pexels-photo-218863.jpeg?auto=compress&cs=tinysrgb&w=1600',
+        specs:[
+          ['CPU','Core i9-14900K'],['GPU','GeForce RTX 5080'],
+          ['RAM','64GB DDR5-6000'],['Storage','2TB 990 PRO']
+        ],
+        desc:'Optimized for Adobe/Resolve with tuned scratch disks and studio-ready GPU drivers.' },
+      { id:'intel-budget', title:'Budget Gaming (Intel)', tag:'Best Value', price:929,
+        img:'https://images.pexels.com/photos/538062/pexels-photo-538062.jpeg?auto=compress&cs=tinysrgb&w=1600',
+        specs:[
+          ['CPU','Core i5-12400F'],['GPU','GeForce RTX 4060'],
+          ['RAM','16GB DDR4'],['Storage','1TB NVMe']
+        ],
+        desc:'Solid 1080p experience with an easy path to 1440p via future GPU upgrade.' },
+      { id:'intel-creator-budget', title:'Budget Creator (Intel)', tag:'Creator', price:719,
+        img:'https://images.pexels.com/photos/1144176/pexels-photo-1144176.jpeg?auto=compress&cs=tinysrgb&w=1600',
+        specs:[
+          ['CPU','Core i5-13400F'],['GPU','GeForce RTX 3050'],
+          ['RAM','16GB DDR4'],['Storage','512GB NVMe']
+        ],
+        desc:'Entry creative rig for photo/light video with an upgrade path to more storage and RAM.' },
+      { id:'intel-esports', title:'Esports Pro (Intel)', tag:'Esports', price:1049,
+        img:'https://images.pexels.com/photos/1800205/pexels-photo-1800205.jpeg?auto=compress&cs=tinysrgb&w=1600',
+        specs:[
+          ['CPU','Core i5-14500'],['GPU','GeForce RTX 4060'],
+          ['RAM','16GB DDR5'],['Storage','1TB NVMe']
+        ],
+        desc:'High-FPS esports tuning with consistent frame times and quiet acoustics.' }
+    ];
+
+    function $el(tag, attrs={}, inner=''){
+      const e = document.createElement(tag);
+      for (const [k,v] of Object.entries(attrs)) e.setAttribute(k,v);
+      if (inner) e.innerHTML = inner;
+      return e;
+    }
+
+    function renderPortfolio(){
+      const grid = document.getElementById('portfolioGrid');
+      grid.innerHTML = '';
+      BUILDS.forEach(b=>{
+        const card = $el('div', {class:'card-pc', 'data-id':b.id});
+        const img  = $el('img', {src:b.img, alt:b.title});
+        const ctn  = $el('div', {class:'content'});
+        ctn.innerHTML = `
+          <div class="tag">${b.tag}</div>
+          <h3 style="margin:4px 0 6px">${b.title}</h3>
+          <div class="row" style="justify-content:space-between;align-items:center;">
+            <div class="price">$${b.price.toLocaleString()}</div>
+            <div style="opacity:.8;font-size:12px">Click for details</div>
+          </div>`;
+        card.appendChild(img); card.appendChild(ctn);
+        card.addEventListener('click', ()=>openModal(b.id));
+        grid.appendChild(card);
+      });
+    }
+
+    /* ===================== Modal logic ===================== */
+    const modal = document.getElementById('pcModal');
+    const mImg  = document.getElementById('pcImg');
+    const mTitle= document.getElementById('pcTitle');
+    const mPrice= document.getElementById('pcPrice');
+    const mTag  = document.getElementById('pcTag');
+    const mSpecs= document.getElementById('pcSpecs');
+    const mDesc = document.getElementById('pcDesc');
+    const mBtn  = document.getElementById('pcRequestBtn');
+    const mClose= document.getElementById('pcCloseBtn');
+    let currentBuild = null;
+
+    function openModal(id){
+      const b = BUILDS.find(x=>x.id===id);
+      if (!b) return;
+      currentBuild = b;
+      mImg.src = b.img;
+      mTitle.textContent = b.title;
+      mPrice.textContent = '$' + b.price.toLocaleString();
+      mTag.textContent = b.tag;
+      mSpecs.innerHTML = b.specs.map(([k,v])=>`<div class="spec"><strong>${k}:</strong> ${v}</div>`).join('');
+      mDesc.textContent = b.desc || '';
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden','false');
+    }
+    function closeModal(){
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden','true');
+      currentBuild = null;
+    }
+    mClose.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e)=>{ if (e.target===modal) closeModal(); });
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && modal.classList.contains('open')) closeModal(); });
+
+    // Prefill form when requesting from modal
+    mBtn.addEventListener('click', ()=>{
+      if (!currentBuild) return;
+      const notes = document.getElementById('c_notes');
+      const use   = document.getElementById('c_use');
+      notes.value = `[Requesting] ${currentBuild.title} — $${currentBuild.price.toLocaleString()}
+Specs:
+${currentBuild.specs.map(([k,v])=>`- ${k}: ${v}`).join('\n')}
+Use cases: ${currentBuild.tag}
+Add any tweaks here →`;
+      // Best guess for use drop-down:
+      const guess = currentBuild.tag.includes('Creator') ? 'Software/AI' :
+                    currentBuild.tag.includes('Esports') ? 'Gaming (1080p)' :
+                    currentBuild.tag.includes('4K') ? 'Gaming (4K)' : 'Gaming (1440p)';
+      for (const opt of use.options){ if (opt.text===guess){ use.value = opt.text; break; } }
+      location.hash = '#customPCForm';
+      closeModal();
+    });
+
+    renderPortfolio();
+
+    /* ===================== Estimator (simple model) ===================== */
+    const estGoal = document.getElementById('estGoal');
+    const estTier = document.getElementById('estTier');
+    const estSto  = document.getElementById('estStorage');
+    const estOut  = document.getElementById('estOut');
+
+    function recompute(){
+      // Baseline by goal
+      const base = { '1080': 1000, '1440': 1500, '4k': 2200, 'edit': 1800, 'ai': 2200 }[estGoal.value] || 1500;
+      // Tier multiplier
+      const tier = { 'entry': 0.9, 'mid': 1.0, 'high': 1.35 }[estTier.value] || 1.0;
+      // Storage bump
+      const sto  = ({'1':0, '2':150, '4':350}[estSto.value] || 0);
+      const mid = Math.round(base*tier + sto);
+      const low = Math.max(700, Math.round(mid*0.85));
+      const high= Math.round(mid*1.2);
+      estOut.textContent = `$${low.toLocaleString()} – $${high.toLocaleString()}`;
+    }
+    [estGoal, estTier, estSto].forEach(el=>el.addEventListener('change', recompute));
+    recompute();
+
+    /* ===================== Form submit (Formspree) ===================== */
     const CUSTOM_ENDPOINT = "https://formspree.io/f/xrblokly";
     const cForm = document.getElementById('customPCForm');
     const cBtn  = document.getElementById('customBtn');
@@ -194,13 +498,17 @@
         fd.append("_subject", "CustomPC.tech – Custom PC Request");
         fd.append("type", "custom_pc");
         if (window.currentUser?.uid) fd.append("firebase_uid", window.currentUser.uid);
-        const res = await fetch(CUSTOM_ENDPOINT, { method:"POST", body:fd, headers:{ "Accept":"application/json" }});
-        if (res.ok){ show(cOk); cForm.reset(); } else { show(cErr); }
+
+        const res = await fetch(CUSTOM_ENDPOINT, {
+          method:"POST", body:fd, headers:{ "Accept":"application/json" }
+        });
+        if (res.ok){ show(cOk); cForm.reset(); }
+        else { show(cErr); }
       } catch { show(cErr); }
       finally { cBtn.disabled=false; cBtn.textContent="Request My Custom PC"; }
     });
 
-    // FAQ toggles (independent, neat boxes)
+    /* ===================== FAQ toggles ===================== */
     document.addEventListener('click', (e)=>{
       const btn = e.target.closest('.faq-q');
       if(!btn) return;
