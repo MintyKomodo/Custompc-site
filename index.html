@@ -7,51 +7,36 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <style>
-    /* Contact-only small tweaks */
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-    .form-grid .full { grid-column: 1 / -1; }
-    .input, textarea {
-      width: 100%;
-      padding: 10px 12px;
-      border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(0,0,0,0.35);
-      color: #e9eefc;
-      outline: none;
-    }
-    textarea { min-height: 140px; resize: vertical; }
-    .hint { font-size: 12px; opacity: .75; margin-top: 6px; }
-    .status {
-      display: none;
-      margin-top: 16px;
-      padding: 10px 12px;
-      border-radius: 10px;
-      background: rgba(0, 140, 60, .15);
-      border: 1px solid rgba(0, 140, 60, .35);
-      color: #8ff5b4;
-    }
-    .status.error {
-      background: rgba(160, 30, 30, .15);
-      border-color: rgba(160, 30, 30, .4);
-      color: #ffb4b4;
-    }
-    .row.gap { gap: 10px; }
-    .btn.secondary { background: rgba(255,255,255,0.05); }
-    .btn.secondary:hover { background: rgba(255,255,255,0.09); }
-    .sr-only { position:absolute; left:-10000px; top:auto; width:1px; height:1px; overflow:hidden; }
-    @media (max-width: 720px) {
-      .form-grid { grid-template-columns: 1fr; }
-    }
+    .kicker{letter-spacing:.12em;text-transform:uppercase;font-size:12px;opacity:.75}
+    .card-tight{padding:16px;max-width:980px;margin:0 auto 16px}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .form-grid .full{grid-column:1/-1}
+    .input,textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:rgba(0,0,0,.35);color:#e9eefc;outline:none}
+    textarea{min-height:140px;resize:vertical}
+    .row.gap{gap:10px}
+    .btn.secondary{background:rgba(255,255,255,.06)}
+    .btn.secondary:hover{background:rgba(255,255,255,.1)}
+    .sr-only{position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden}
+    .trust{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .badges{display:flex;flex-wrap:wrap;gap:10px}
+    .badge{border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:10px 12px;background:rgba(0,0,0,.28)}
+    .reviews{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .review{border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px;background:rgba(0,0,0,.28)}
+    @media (max-width:880px){ .trust{grid-template-columns:1fr}.reviews{grid-template-columns:1fr} }
+    .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .g-item{border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden;background:rgba(0,0,0,.28)}
+    .g-item img{display:block;width:100%;height:160px;object-fit:cover}
+    @media (max-width:900px){.gallery{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:620px){.gallery{grid-template-columns:1fr}}
+    .status{display:none;margin-top:12px;padding:10px 12px;border-radius:10px;background:rgba(0,140,60,.15);border:1px solid rgba(0,140,60,.35);color:#8ff5b4}
+    .status.error{background:rgba(160,30,30,.15);border-color:rgba(160,30,30,.4);color:#ffb4b4}
+    .cta-bottom{padding:16px;max-width:980px;margin:16px auto;border:1px solid rgba(255,255,255,.08);border-radius:12px;background:rgba(0,0,0,.28);text-align:center}
   </style>
 </head>
 <body>
   <nav>
-    <a href="custom.html">Custom PC</a>
     <a href="index.html">Contact</a>
+    <a href="custom.html">Custom PC</a>
     <a href="about.html">About</a>
     <a href="builds.html">Builds</a>
     <a href="cart.html">Cart</a>
@@ -62,149 +47,110 @@
   </nav>
 
   <div class="container">
-    <h1>Tell us what you need</h1>
-    <p style="opacity:.85;margin:-6px 0 18px">
-      We’ll reply fast with a tailored parts list, pricing, and timeline.
-    </p>
+    <h1>Contact us</h1>
+    <p style="opacity:.85;margin:-6px 0 18px">Questions, support, or vendor inquiries — we’ll reply fast.</p>
 
-    <form id="contactForm" class="card" style="padding:18px; max-width:880px; margin:0 auto;">
-      <!-- Honeypot -->
+    <!-- Trust -->
+    <div class="card card-tight">
+      <div class="trust">
+        <div class="badges">
+          <div class="badge">✅ 1-Year Workmanship Warranty</div>
+          <div class="badge">🧪 Burn-in & Stress Tested</div>
+          <div class="badge">📦 Foam-in-Case Shipping</div>
+          <div class="badge">📧 Lifetime Email Support</div>
+        </div>
+        <div class="reviews">
+          <div class="review">“Build quality is insane. Temps are great and it’s quiet.” — M. Diaz</div>
+          <div class="review">“They specced exactly to my Premiere workflow. So much faster.” — T. Chen</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact form -->
+    <form id="contactForm" class="card card-tight">
       <input type="text" name="_gotcha" autocomplete="off" class="sr-only" tabindex="-1">
-
-      <div class="form-grid">
-        <div>
-          <label for="name">Your Name</label>
-          <input id="name" name="name" class="input" type="text" autocomplete="name" required>
-        </div>
-        <div>
-          <label for="email">Email</label>
-          <input id="email" name="email" class="input" type="email" autocomplete="email" required>
-        </div>
-
-        <div>
-          <label for="budget">Budget (USD)</label>
-          <input id="budget" name="budget" class="input" type="number" min="300" step="1" placeholder="e.g., 1500" required>
-        </div>
-        <div>
-          <label for="usecase">Primary Use</label>
-          <select id="usecase" name="usecase" class="input" required>
-            <option value="" disabled selected>Select one…</option>
-            <option>Gaming (1080p)</option>
-            <option>Gaming (1440p)</option>
-            <option>Gaming (4K)</option>
-            <option>Streaming</option>
-            <option>Video Editing</option>
-            <option>3D / CAD</option>
-            <option>Software/AI</option>
-            <option>General Productivity</option>
-          </select>
-        </div>
-
-        <div class="full">
-          <label for="message">What do you want this PC to crush?</label>
-          <textarea id="message" name="message" placeholder="Tell us any requirements, favorite cases, upgrades, or deadlines…" required></textarea>
-          <div class="hint">We read everything. More detail = better recommendations.</div>
-        </div>
+      <div class="kicker">Send us a note</div>
+      <div class="form-grid" style="margin-top:10px;">
+        <div><label for="name">Your Name</label><input id="name" name="name" class="input" type="text" required></div>
+        <div><label for="email">Email</label><input id="email" name="email" class="input" type="email" required></div>
+        <div class="full"><label for="message">Message</label><textarea id="message" name="message" placeholder="How can we help?" required></textarea></div>
       </div>
-
       <div class="row gap" style="margin-top:12px;">
-        <button id="submitBtn" class="btn" type="submit">Send Request</button>
-        <button id="resetBtn" class="btn secondary" type="button">Reset</button>
+        <button id="submitBtn" class="btn" type="submit">Send</button>
+        <a class="btn secondary" href="custom.html">Request a Custom PC</a>
       </div>
-      <div id="statusOk" class="status">Thanks! Your request was sent. We’ll email you shortly.</div>
-      <div id="statusErr" class="status error">Hmm, that didn’t send. Please try again in a moment.</div>
+      <div id="statusOk" class="status">Thanks! We’ll get back to you shortly.</div>
+      <div id="statusErr" class="status error">Couldn’t send right now. Try again in a moment.</div>
     </form>
 
-    <!-- Optional: quick FedEx tracking helper -->
-    <div class="card" style="padding:18px; max-width:880px; margin:16px auto 0;">
-      <h3 style="margin:0 0 10px;">Track a shipment</h3>
+    <!-- Mini gallery -->
+    <div class="card card-tight">
+      <div class="kicker">Recent work</div>
+      <div class="gallery">
+        <div class="g-item"><img src="https://images.pexels.com/photos/7915355/pexels-photo-7915355.jpeg?auto=compress&cs=tinysrgb&w=1600" alt="Build 1"></div>
+        <div class="g-item"><img src="https://images.pexels.com/photos/5553050/pexels-photo-5553050.jpeg?auto=compress&cs=tinysrgb&w=1600" alt="Build 2"></div>
+        <div class="g-item"><img src="https://images.pexels.com/photos/5777692/pexels-photo-5777692.jpeg?auto=compress&cs=tinysrgb&w=1600" alt="Build 3"></div>
+      </div>
+    </div>
+
+    <!-- FedEx helper -->
+    <div class="card card-tight">
+      <div class="kicker">Track a shipment</div>
       <div class="row gap">
         <input id="fedex" class="input" placeholder="Enter FedEx tracking number">
         <button class="btn" type="button" onclick="trackFedEx()">Track</button>
       </div>
-      <div class="hint">Opens FedEx in a new tab with your tracking number.</div>
+      <div class="hint" style="opacity:.75;margin-top:6px">Opens FedEx in a new tab.</div>
+    </div>
+
+    <!-- Bottom CTA -->
+    <div class="cta-bottom">
+      <h2 style="margin:0 0 8px;">Want a tailored build instead?</h2>
+      <p style="opacity:.85;margin:0 0 10px">We’ll design, assemble, stress-test, and ship your perfect PC.</p>
+      <a class="btn" href="custom.html">Start my build</a>
     </div>
   </div>
 
   <script>
-    // Prefill name/email if logged in
+    // Prefill if logged in
     (async () => {
-      // Wait for nav-auth to load (it sets window.__authReady)
       if (window.__authReady) { try { await window.__authReady; } catch {} }
-      if (window.currentUser) {
-        const u = window.currentUser;
-        const name = u.displayName || '';
-        const email = u.email || '';
-        if (name) document.getElementById('name').value = name;
-        if (email) document.getElementById('email').value = email;
+      const u = window.currentUser;
+      if (u) {
+        if (u.displayName) document.getElementById('name').value = u.displayName;
+        if (u.email)       document.getElementById('email').value = u.email;
       }
     })();
 
-    // Contact form submit via Formspree
-    const FORM_ENDPOINT = "https://formspree.io/f/xrblokly"; // your endpoint
+    const FORM_ENDPOINT = "https://formspree.io/f/xrblokly";
     const form = document.getElementById('contactForm');
     const submitBtn = document.getElementById('submitBtn');
-    const resetBtn = document.getElementById('resetBtn');
     const ok = document.getElementById('statusOk');
     const err = document.getElementById('statusErr');
-
-    function show(el){ el.style.display = 'block'; }
-    function hide(el){ el.style.display = 'none'; }
-
-    resetBtn.addEventListener('click', () => {
-      form.reset();
-      hide(ok); hide(err);
-    });
+    const show = el => el.style.display='block';
+    const hide = el => el.style.display='none';
 
     form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      hide(ok); hide(err);
-      submitBtn.disabled = true;
-      submitBtn.textContent = "Sending…";
-
-      // Attach some meta for you:
-      const payload = new FormData(form);
-      payload.append("_subject", "New CustomPC.tech inquiry");
-      payload.append("source", "custompc.tech/contact");
-      if (window.currentUser?.uid) payload.append("firebase_uid", window.currentUser.uid);
-
+      e.preventDefault(); hide(ok); hide(err);
+      submitBtn.disabled = true; submitBtn.textContent = "Sending…";
       try {
-        const res = await fetch(FORM_ENDPOINT, { method: "POST", body: payload, headers: { "Accept": "application/json" } });
-        if (res.ok) {
-          show(ok);
-          form.reset();
-        } else {
-          show(err);
-        }
-      } catch (e) {
-        show(err);
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = "Send Request";
-      }
+        const fd = new FormData(form);
+        fd.append("_subject", "Contact – CustomPC.tech");
+        fd.append("type", "contact");
+        if (window.currentUser?.uid) fd.append("firebase_uid", window.currentUser.uid);
+        const res = await fetch(FORM_ENDPOINT, { method:"POST", body:fd, headers:{ "Accept":"application/json" } });
+        res.ok ? show(ok) : show(err);
+        if (res.ok) form.reset();
+      } catch { show(err); }
+      finally { submitBtn.disabled = false; submitBtn.textContent = "Send"; }
     });
 
-    // FedEx tracking helper
     function trackFedEx(){
       const code = document.getElementById('fedex').value.trim();
-      if(!code){ alert("Enter a tracking number"); return; }
-      const url = `https://www.fedex.com/fedextrack/?trknbr=${encodeURIComponent(code)}`;
-      window.open(url, "_blank", "noopener");
+      if (!code) { alert("Enter a tracking number"); return; }
+      window.open(`https://www.fedex.com/fedextrack/?trknbr=${encodeURIComponent(code)}`, "_blank", "noopener");
     }
-    window.trackFedEx = trackFedEx;
   </script>
-
-  <!-- Your live chat (optional) -->
-  <!--
-  <script type="text/javascript">
-  var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-  (function(){
-    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-    s1.async=true; s1.src='https://embed.tawk.to/6895040bea5b0a1926912936/1j231fjbt';
-    s1.charset='UTF-8'; s1.setAttribute('crossorigin','*'); s0.parentNode.insertBefore(s1,s0);
-  })();
-  </script>
-  -->
 
   <script type="module" src="nav-auth.js"></script>
 </body>
