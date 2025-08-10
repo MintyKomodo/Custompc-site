@@ -12,17 +12,73 @@
       --max:1200px;
     }
     *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,Segoe UI,Roboto;color:var(--ink);background:var(--bg);line-height:1.55}
-    .wrap{max-width:var(--max);margin:0 auto;padding:24px}
-    header{display:flex;justify-content:space-between;align-items:center;margin-bottom:32px}
-    nav a{color:var(--ink);text-decoration:none;margin:0 12px;font-weight:500}
-    nav a:hover{color:var(--brand)}
-    h1{color:var(--brand)}
-    form{background:var(--panel);padding:24px;border-radius:var(--radius);box-shadow:var(--shadow)}
-    label{display:block;margin-bottom:8px;font-weight:500}
-    input,textarea{width:100%;padding:12px;margin-bottom:16px;border:1px solid var(--border);border-radius:var(--radius);background:var(--panel2);color:var(--ink)}
-    input[type="submit"]{background:var(--brand);border:none;color:#000;font-weight:bold;cursor:pointer;transition:background .2s}
-    input[type="submit"]:hover{background:var(--brand2)}
+    body {
+      margin:0;
+      font-family:system-ui,Segoe UI,Roboto;
+      color:var(--ink);
+      background:var(--bg);
+      line-height:1.55;
+    }
+    .wrap {
+      max-width:var(--max);
+      margin:0 auto;
+      padding:24px;
+    }
+    header {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:32px;
+    }
+    nav a {
+      color:var(--ink);
+      text-decoration:none;
+      margin:0 12px;
+      font-weight:500;
+    }
+    nav a:hover {
+      color:var(--brand);
+    }
+    h1 {
+      color:var(--brand);
+      margin-bottom:16px;
+    }
+    p {
+      color:var(--muted);
+      margin-bottom:24px;
+    }
+    form {
+      background:var(--panel);
+      padding:24px;
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+    }
+    label {
+      display:block;
+      margin-bottom:8px;
+      font-weight:500;
+    }
+    input, textarea {
+      width:100%;
+      padding:12px;
+      margin-bottom:16px;
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      background:var(--panel2);
+      color:var(--ink);
+      font-size:1rem;
+    }
+    input[type="submit"] {
+      background:var(--brand);
+      border:none;
+      color:#000;
+      font-weight:bold;
+      cursor:pointer;
+      transition:background .2s;
+    }
+    input[type="submit"]:hover {
+      background:var(--brand2);
+    }
   </style>
 </head>
 <body>
@@ -32,13 +88,13 @@
       <nav>
         <a href="index.html">Builds</a>
         <a href="about.html">About</a>
-        <a href="custompc.html">Custom PC</a>
+        <a href="index.html">Custom PC</a>
         <a href="contact.html">Contact</a>
       </nav>
     </header>
 
     <h1>Contact Us</h1>
-    <p>Have a question, suggestion, or custom build request? Fill out the form below and we’ll get back to you.</p>
+    <p>Have a question, suggestion, or custom build request? Fill out the form below and we’ll get back to you soon.</p>
 
     <form action="https://formspree.io/f/xrblokly" method="POST">
       <label for="name">Your Name</label>
