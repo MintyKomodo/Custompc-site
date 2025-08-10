@@ -1,117 +1,231 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>About – CustomPC.tech</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <title>About | CustomPC.tech</title>
   <style>
-    .kicker{letter-spacing:.12em;text-transform:uppercase;font-size:12px;opacity:.75}
-    .card-tight{padding:16px;max-width:980px;margin:0 auto 16px}
-    .why-list{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    @media (max-width:820px){.why-list{grid-template-columns:1fr}}
-    .why-item{border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px;background:rgba(0,0,0,.28)}
-    .why-item h4{margin:0 0 6px}
-    .trust{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .badges{display:flex;flex-wrap:wrap;gap:10px}
-    .badge{border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:10px 12px;background:rgba(0,0,0,.28)}
-    .process{display:grid;gap:12px}
-    .step{border-left:3px solid #4a8dff;padding-left:12px}
-    .step h4{margin:0 0 4px}
-    .cta-bottom{padding:16px;max-width:980px;margin:16px auto;border:1px solid rgba(255,255,255,.08);border-radius:12px;background:rgba(0,0,0,.28);text-align:center}
+    :root{
+      --bg:#0b0f1a; --ink:#e8eefc; --muted:#b9c4dd; --panel:#11182a; --panel2:#0c1324; --border:rgba(255,255,255,.08); --brand:#7db2ff; --brand2:#7cf2e6; --radius:16px; --shadow:0 10px 28px rgba(0,0,0,.35); --max:1100px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,Segoe UI,Roboto;color:var(--ink);background:radial-gradient(1000px 700px at 100% -10%, rgba(66,140,255,.12), transparent 60%),radial-gradient(1000px 700px at -10% 10%, rgba(99,247,232,.10), transparent 50%),var(--bg);line-height:1.55}
+    a{color:var(--brand)}
+    .wrap{max-width:var(--max);margin:0 auto;padding:24px}
+    header{background:#0b0f1a;position:sticky;top:0;z-index:100;padding:12px 24px;border-bottom:1px solid var(--border)}
+    .brand{font-weight:700;color:var(--ink);text-decoration:none;letter-spacing:.2px}
+    nav ul{display:flex;gap:10px;margin:0;padding:0;list-style:none}
+    .toplink{display:inline-block;padding:8px 12px;border-radius:10px;border:1px solid transparent;color:var(--ink);text-decoration:none;background:transparent}
+    .toplink:hover{border-color:var(--border)}
+    .btn-cta{background:linear-gradient(90deg,var(--brand),var(--brand2));color:#00122a;font-weight:600}
+    .active{border-color:var(--border);background:rgba(255,255,255,.03)}
+
+    .hero{display:grid;grid-template-columns:1.15fr .85fr;gap:22px;align-items:stretch;margin-top:18px}
+    .card{background:linear-gradient(180deg,var(--panel),var(--panel2));border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border)}
+    .card.pad{padding:20px}
+    h1{margin:0 0 10px;font-size:32px}
+    .subtitle{color:var(--muted);margin:0 0 14px;font-size:15px}
+    .hero-bullets{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+    .chip{background:#0b1020;border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center}
+    .chip b{display:block;font-size:18px}
+
+    .form label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}
+    .input{width:100%;background:#0b1020;border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--ink)}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .cta{display:flex;justify-content:flex-end;margin-top:14px}
+    .btn{display:inline-block;padding:10px 14px;border-radius:12px;border:1px solid var(--border);text-decoration:none;color:var(--ink)}
+    .btn.primary{background:linear-gradient(90deg,var(--brand),var(--brand2));color:#00122a;font-weight:700;border:none}
+
+    section{margin-top:28px}
+    h2{font-size:22px;margin:0 0 10px}
+    .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+    .list{display:grid;gap:8px}
+    .li{background:#0b1020;border:1px solid var(--border);border-radius:12px;padding:12px}
+
+    .faq details{background:#0b1020;border:1px solid var(--border);border-radius:12px;padding:12px}
+    .faq summary{cursor:pointer;font-weight:600}
+
+    footer{color:var(--muted);font-size:12px;text-align:center;padding:24px;margin-top:30px}
+
+    @media (max-width:900px){
+      .hero{grid-template-columns:1fr}
+      .row{grid-template-columns:1fr}
+      .grid3{grid-template-columns:1fr}
+      .grid2{grid-template-columns:1fr}
+    }
   </style>
 </head>
 <body>
-  <nav>
-    <a href="index.html">Contact</a>
-    <a href="custom.html">Custom PC</a>
-    <a href="about.html">About</a>
-    <a href="builds.html">Builds</a>
-    <a href="cart.html">Cart</a>
-    <span id="nav-user" class="hidden"></span>
-    <a id="nav-login" href="login.html">Log In</a>
-    <a id="nav-signup" href="signup.html">Sign Up</a>
-    <a id="nav-logout" class="hidden" href="javascript:void(0)">Log Out</a>
+<header class="wrap" style="display:flex;align-items:center;justify-content:space-between;gap:16px">
+  <a class="brand" href="/">CustomPC.tech</a>
+  <nav aria-label="Main">
+    <ul>
+      <li><a href="/builds.html" class="toplink">Builds</a></li>
+      <li><a href="/about.html" class="toplink active">About</a></li>
+      <li><a href="/contact.html" class="toplink btn-cta">Contact</a></li>
+    </ul>
   </nav>
+</header>
 
-  <div class="container">
-    <h1>About CustomPC.tech</h1>
-    <p style="opacity:.85;margin:-6px 0 18px">We build high-performance computers tailored to your exact needs — from esports battlestations to 4K creator rigs.</p>
-
-    <!-- Why choose us -->
-    <div class="card card-tight">
-      <div class="kicker">Why choose us</div>
-      <div class="why-list" style="margin-top:10px;">
-        <div class="why-item">
-          <h4> Tailored Performance</h4>
-          <p>We spec your PC to match your exact games, apps, and performance goals — no wasted budget.</p>
-        </div>
-        <div class="why-item">
-          <h4>🛠 Expert Assembly</h4>
-          <p>Meticulous cable management, thermal optimization, and BIOS tuning come standard.</p>
-        </div>
-        <div class="why-item">
-          <h4> Stress-Tested</h4>
-          <p>Every build passes hours of CPU, GPU, and memory stress testing to ensure stability from day one.</p>
-        </div>
-        <div class="why-item">
-          <h4> Safe Shipping</h4>
-          <p>Foam-in-case packaging and insured shipping protect your PC until it’s on your desk.</p>
-        </div>
+<main class="wrap">
+  <!-- Hero: left value card, right quick request form (matching the look you showed) -->
+  <section class="hero" aria-labelledby="aboutHero">
+    <div class="card pad">
+      <h1 id="aboutHero">Get a Custom PC Plan—No Guesswork</h1>
+      <p class="subtitle">Tell us your budget and what you actually do. We return a clean parts list, expected performance, and upgrade path. No upsells, no 1,000 confusing options.</p>
+      <div class="hero-bullets">
+        <div class="chip"><b>24–48h</b><span>Turnaround</span></div>
+        <div class="chip"><b>+20%</b><span>Avg perf vs. prefab*</span></div>
+        <div class="chip"><b>$0</b><span>Quote cost</span></div>
       </div>
+      <p class="subtitle" style="margin-top:10px">*Estimate based on published benchmarks for similarly priced prebuilts vs. tuned parts lists.</p>
     </div>
 
-    <!-- Trust badges -->
-    <div class="card card-tight">
-      <div class="trust">
-        <div class="badges">
-          <div class="badge"> 1-Year Workmanship Warranty</div>
-          <div class="badge"> Burn-in & Stress Tested</div>
-          <div class="badge"> Foam-in-Case Shipping</div>
-          <div class="badge"> Lifetime Email Support</div>
+    <aside class="card pad" aria-labelledby="quickRequest">
+      <h2 id="quickRequest" style="margin-top:0">Quick Request</h2>
+      <form class="form" action="/contact.html" method="get">
+        <div class="row">
+          <div>
+            <label for="name">Name</label>
+            <input class="input" id="name" name="name" placeholder="Your name" />
+          </div>
+          <div>
+            <label for="email">Email</label>
+            <input class="input" id="email" name="email" type="email" placeholder="you@domain.com" />
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label for="budget">Budget (USD)</label>
+            <input class="input" id="budget" name="budget" type="number" inputmode="numeric" placeholder="1500" value="1500" />
+          </div>
+          <div>
+            <label for="priority">Priority</label>
+            <select id="priority" name="priority" class="input">
+              <option value="Balance" selected>Balance</option>
+              <option>Quiet</option>
+              <option>Small</option>
+              <option>Max FPS</option>
+              <option>Creator</option>
+            </select>
+          </div>
         </div>
         <div>
-          <p style="opacity:.85">We stand behind every system we build. If you ever have a question or issue, we’re one email away — for life.</p>
+          <label for="work">What do you do?</label>
+          <textarea class="input" id="work" name="work" rows="3" placeholder="e.g., 1440p esports, Premiere Pro 4K, Stable Diffusion, CAD, data science, etc."></textarea>
         </div>
+        <div class="cta">
+          <button class="btn primary" type="submit">Get My Build Plan →</button>
+        </div>
+        <p class="subtitle">Submitting takes you to the Contact page with these fields pre‑filled.</p>
+      </form>
+    </aside>
+  </section>
+
+  <!-- Our approach / what makes us different -->
+  <section aria-labelledby="approach">
+    <h2 id="approach">How We Work</h2>
+    <div class="grid3">
+      <div class="card pad">
+        <h3>1) Share your goals</h3>
+        <p>Budget, games/apps, resolution, size/noise preferences, and any constraints (Wi‑Fi only, number of drives, RGB/stealth, etc.).</p>
+      </div>
+      <div class="card pad">
+        <h3>2) We design and verify</h3>
+        <p>We map workloads to parts using third‑party benchmarks, then check PSU sizing, thermals, noise profiles, and upgrade paths.</p>
+      </div>
+      <div class="card pad">
+        <h3>3) You build or we build</h3>
+        <p>Get a parts list and step‑by‑step build notes—or ask us to assemble, cable, and thermally tune it for you.</p>
       </div>
     </div>
+  </section>
 
-    <!-- Our build process -->
-    <div class="card card-tight">
-      <div class="kicker">Our build process</div>
-      <div class="process" style="margin-top:10px;">
-        <div class="step">
-          <h4>1) Consultation</h4>
-          <p>We gather your requirements, preferences, and budget.</p>
-        </div>
-        <div class="step">
-          <h4>2) Spec Design</h4>
-          <p>We propose a parts list optimized for your use case and budget.</p>
-        </div>
-        <div class="step">
-          <h4>3) Assembly</h4>
-          <p>We carefully assemble and cable-manage your PC.</p>
-        </div>
-        <div class="step">
-          <h4>4) Stress Testing</h4>
-          <p>We run CPU, GPU, and memory stability tests, update BIOS, and fine-tune performance.</p>
-        </div>
-        <div class="step">
-          <h4>5) Shipping</h4>
-          <p>Your PC ships in secure packaging with tracking and insurance.</p>
-        </div>
+  <section aria-labelledby="whyus">
+    <h2 id="whyus">Why Choose CustomPC.tech</h2>
+    <div class="grid2">
+      <div class="card pad">
+        <h3>No vendor kickbacks</h3>
+        <p>We don’t accept payments from brands for placement. Component choices are data‑driven and workload‑first.</p>
+      </div>
+      <div class="card pad">
+        <h3>Transparent performance targets</h3>
+        <p>Every plan includes expected FPS or render times and the assumptions behind them (resolution, presets, plugins, etc.).</p>
+      </div>
+      <div class="card pad">
+        <h3>Quiet + cool by default</h3>
+        <p>We prioritize airflow cases, right‑sized coolers, and fan curves. Performance with comfort—not leaf‑blower noise.</p>
+      </div>
+      <div class="card pad">
+        <h3>Upgrade‑friendly</h3>
+        <p>We avoid dead‑end platforms. Your plan includes clear next‑steps for GPU/CPU/RAM and storage expansion.</p>
       </div>
     </div>
+  </section>
 
-    <!-- Bottom CTA -->
-    <div class="cta-bottom">
-      <h2 style="margin:0 0 8px;">Ready for your perfect PC?</h2>
-      <p style="opacity:.85;margin:0 0 10px">We’ll design, assemble, stress-test, and ship your dream system.</p>
-      <a class="btn" href="custom.html">Start my build</a>
+  <section aria-labelledby="whatyouget">
+    <h2 id="whatyouget">What You Get</h2>
+    <div class="list">
+      <div class="li"><strong>Parts list</strong> with SKUs and alternates (A/B options for price swings).</div>
+      <div class="li"><strong>Performance estimate</strong> (FPS or app times) with test references and assumptions.</div>
+      <div class="li"><strong>Thermal + noise plan</strong> (case selection, fan placement, curve guidance).</div>
+      <div class="li"><strong>Build notes</strong> for cable paths, BIOS settings, DOCP/XMP, and driver order.</div>
+      <div class="li"><strong>Post‑build checklist</strong> (stress tests, temps, and what “good” looks like).</div>
     </div>
-  </div>
+  </section>
 
-  <script type="module" src="nav-auth.js"></script>
+  <section aria-labelledby="benchmarks">
+    <h2 id="benchmarks">Benchmarks & Sourcing</h2>
+    <div class="grid2">
+      <div class="card pad">
+        <h3>Methodology</h3>
+        <p>We draw from independent sources (TechPowerUp, GN, Puget, UL, SPEC, Blender, Unreal Valley) and normalize by resolution/preset to match your use‑case. We don’t cherry‑pick single runs—outliers are treated carefully.</p>
+      </div>
+      <div class="card pad">
+        <h3>Parts Sourcing</h3>
+        <p>We track price/stock across reputable retailers and warn about known coil‑whine or cooler‑mount issues. If a part is on watchlist, we provide an alternative with similar performance per dollar.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq" aria-labelledby="faq">
+    <h2 id="faq">FAQ</h2>
+    <div class="list">
+      <details>
+        <summary>Can you beat big "customizer" sites?</summary>
+        <p>Usually on value and noise. We skip flashy but inefficient parts, tune curves, and put dollars where they move the needle for your workload.</p>
+      </details>
+      <details>
+        <summary>Do you provide performance estimates?</summary>
+        <p>Yes—each plan includes expected FPS or app metrics plus a note on variability (driver versions, game patches, plug‑ins).</p>
+      </details>
+      <details>
+        <summary>What about support?</summary>
+        <p>Self‑build: we include checklists and quick‑triage steps. Full build: we burn‑in test and provide a 30‑day tune/adjust window.</p>
+      </details>
+    </div>
+  </section>
+
+  <section aria-labelledby="cta" style="margin-top:24px">
+    <div class="card pad" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <div>
+        <h2 id="cta" style="margin:0">Ready to get your plan?</h2>
+        <p class="subtitle" style="margin:6px 0 0">Use Quick Request above or jump straight to the contact page.</p>
+      </div>
+      <div>
+        <a class="btn" href="/builds.html">Browse Builds</a>
+        <a class="btn primary" href="/contact.html">Go to Contact →</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  © <span id="y"></span> CustomPC.tech • Data‑driven builds without the noise.
+</footer>
+<script>
+  document.getElementById('y').textContent = new Date().getFullYear();
+</script>
 </body>
 </html>
