@@ -22,39 +22,49 @@
     }
     .wrap{max-width:var(--max);margin:0 auto;padding:28px}
 
-    /* Shared header */
+    /* Header */
     header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-    .brand a{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;font-weight:700;letter-spacing:.3px}
+    .brand a{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;font-weight:700;letter-spacing:.3px;white-space:nowrap}
     .dot{width:10px;height:10px;border-radius:50%;background:linear-gradient(120deg,var(--accent1),var(--accent2));box-shadow:0 0 14px rgba(125,178,255,.6)}
     nav{display:flex;gap:10px;flex-wrap:wrap}
     .pill{display:inline-block;padding:10px 14px;border-radius:999px;color:var(--ink);text-decoration:none;border:1px solid transparent}
     .pill:hover{background:#0f1830}
     .pill.active{background:linear-gradient(120deg,rgba(125,178,255,.15),rgba(124,242,230,.15));border-color:rgba(255,255,255,.08)}
 
-    /* Utilities */
+    /* Layout */
     .grid{display:grid;gap:18px}
     .card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
     .pad{padding:20px}
     .muted{color:var(--muted)}
     h1{margin:0 0 6px;font-size:34px}
 
-    /* Hero layout (form is dominant now) */
+    /* Hero layout */
     .hero{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:stretch}
     @media (max-width:1000px){.hero{grid-template-columns:1fr}}
+    .leftcol{display:grid;grid-template-rows:auto 1fr;gap:22px} /* Reviews (auto) + Request (fills) */
+
     .badges{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
     .badge{background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center}
     .badge b{display:block;font-size:18px}
 
-    /* BIG Request card */
+    /* Reviews */
+    .reviews h2{margin:0 0 8px;font-size:22px}
+    .review-list{display:grid;grid-template-columns:1fr;gap:12px}
+    .review{background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:14px}
+    .stars{font-size:14px;letter-spacing:1px}
+    .who{display:flex;align-items:center;gap:10px;margin-top:8px}
+    .avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(120deg,var(--accent1),var(--accent2))}
+    .name{font-weight:600}
+
+    /* Request form */
     .request{
-      background:
-        linear-gradient(135deg, rgba(125,178,255,.16), rgba(124,242,230,.12)),
-        var(--panel);
+      background:linear-gradient(135deg, rgba(125,178,255,.16), rgba(124,242,230,.12)), var(--panel);
       border:1px solid rgba(125,178,255,.25);
       padding:34px 28px;
+      display:flex;flex-direction:column;height:100%;
     }
     .request h2{margin:0 0 16px;font-size:28px}
-    form{display:grid;gap:16px}
+    form{display:grid;gap:16px;flex-grow:1}
     label{font-weight:600;margin-bottom:6px;display:block}
     input, textarea{
       width:100%;padding:18px 16px;border-radius:16px;border:1px solid var(--border);
@@ -78,7 +88,7 @@
     .thumb img{width:100%;height:100%;object-fit:cover;display:block}
     .build .t{font-weight:700;margin:10px 0 4px}
     .spec{font-size:.95rem;color:var(--muted)}
-    .build .mini-btn{
+    .mini-btn{
       margin-top:10px;display:inline-block;padding:10px 14px;border-radius:12px;text-decoration:none;font-weight:700;
       color:#0b0f1a;background:linear-gradient(90deg,var(--accent1),var(--accent2));box-shadow:0 6px 18px rgba(117,194,255,.22)
     }
@@ -98,31 +108,54 @@
       </nav>
     </header>
 
-    <!-- Hero: form is bigger and more prominent -->
+    <!-- Hero: Left (Reviews + Request) | Right (Info) -->
     <section class="hero">
-      <!-- BIG Request -->
-      <aside class="card request">
-        <h2>Quick Request</h2>
-        <!-- forwards to contact with prefill -->
-        <form action="contact.html" method="GET">
-          <div>
-            <label for="rq_name">Name</label>
-            <input id="rq_name" name="name" type="text" required autocomplete="name">
+      <div class="leftcol">
+        <!-- Reviews -->
+        <section class="card pad reviews">
+          <h2>Reviews</h2>
+          <div class="review-list">
+            <div class="review">
+              <div class="stars">★★★★★</div>
+              <p class="muted" style="margin:6px 0 0">“They specced exactly for my Premiere workflow. Renders are way faster and the system is whisper-quiet.”</p>
+              <div class="who"><div class="avatar"></div><div class="name">T. Chen — Creator 4K</div></div>
+            </div>
+            <div class="review">
+              <div class="stars">★★★★★</div>
+              <p class="muted" style="margin:6px 0 0">“Hit my 240Hz target in Valorant and CS2, temps under control. No fluff, just performance.”</p>
+              <div class="who"><div class="avatar"></div><div class="name">A. Rivera — Esports</div></div>
+            </div>
+            <div class="review">
+              <div class="stars">★★★★★</div>
+              <p class="muted" style="margin:6px 0 0">“Thermals validated, PSU sized right, and clear upgrade notes. Exactly what I needed for CAD + Blender.”</p>
+              <div class="who"><div class="avatar"></div><div class="name">J. Patel — Workstation</div></div>
+            </div>
           </div>
-          <div>
-            <label for="rq_email">Email</label>
-            <input id="rq_email" name="email" type="email" required autocomplete="email">
-          </div>
-          <div>
-            <label for="rq_msg">What do you need?</label>
-            <textarea id="rq_msg" name="message" placeholder="e.g., 1440p esports, Premiere 4K, SolidWorks workstation, SFF, ultra-quiet, etc." required></textarea>
-          </div>
-          <button class="btn" type="submit">Get My Build Plan →</button>
-          <p class="tiny">We’ll reply by email within 24–48 hours.</p>
-        </form>
-      </aside>
+        </section>
 
-      <!-- Value props -->
+        <!-- Request a PC -->
+        <aside class="card request">
+          <h2>Request a PC</h2>
+          <form action="contact.html" method="GET">
+            <div>
+              <label for="rq_name">Name</label>
+              <input id="rq_name" name="name" type="text" required autocomplete="name">
+            </div>
+            <div>
+              <label for="rq_email">Email</label>
+              <input id="rq_email" name="email" type="email" required autocomplete="email">
+            </div>
+            <div>
+              <label for="rq_msg">What do you need?</label>
+              <textarea id="rq_msg" name="message" placeholder="e.g., 1440p esports, Premiere 4K, SolidWorks workstation, quiet build, SFF, etc." required></textarea>
+            </div>
+            <button class="btn" type="submit">Get My Build Plan →</button>
+            <p class="tiny">We’ll reply by email within 24–48 hours.</p>
+          </form>
+        </aside>
+      </div>
+
+      <!-- Info -->
       <div class="card pad">
         <h1>Get Your Perfect PC — No Guesswork</h1>
         <p class="muted">Tell us what you actually do. We’ll return a clean parts list, expected performance, and an upgrade path.</p>
@@ -135,7 +168,7 @@
       </div>
     </section>
 
-    <!-- Example Builds (kept) -->
+    <!-- Example Builds -->
     <section class="grid" style="margin-top:18px">
       <h3 style="margin:0">Sample Builds</h3>
       <div class="builds">
@@ -143,22 +176,54 @@
           <div class="thumb"><img src="https://images.unsplash.com/photo-1541807084-5c52b6b3adef?q=80&w=1200&auto=format&fit=crop" alt="Esports build"></div>
           <div class="t">Esports 1080p/1440p</div>
           <div class="spec">High FPS for Valorant/CS2. Air-cooled, low noise.</div>
-          <a class="mini-btn" href="contact.html?message=Interested%20in%20Esports%201080p/1440p%20build">Request this build</a>
+          <a class="mini-btn" href="index.html?message=Interested%20in%20Esports%201080p/1440p%20build">Request this build</a>
         </div>
         <div class="card pad build">
           <div class="thumb"><img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop" alt="Creator build"></div>
           <div class="t">Creator 4K</div>
           <div class="spec">Premiere/DaVinci & Lightroom. GPU-accelerated, quiet case.</div>
-          <a class="mini-btn" href="contact.html?message=Interested%20in%20Creator%204K%20build">Request this build</a>
+          <a class="mini-btn" href="index.html?message=Interested%20in%20Creator%204K%20build">Request this build</a>
         </div>
         <div class="card pad build">
           <div class="thumb"><img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=1200&auto=format&fit=crop" alt="Workstation build"></div>
           <div class="t">CAD / AI Workstation</div>
           <div class="spec">SolidWorks, Blender, SD inference. Verified PSU & thermals.</div>
-          <a class="mini-btn" href="contact.html?message=Interested%20in%20CAD%20%2F%20AI%20Workstation">Request this build</a>
+          <a class="mini-btn" href="index.html?message=Interested%20in%20CAD%20%2F%20AI%20Workstation">Request this build</a>
         </div>
       </div>
     </section>
   </div>
+
+  <script>
+    // Auto-fill Request a PC form if ?message= / ?name= / ?email= are present
+    (function () {
+      const params = new URLSearchParams(location.search);
+      const map = { name: 'rq_name', email: 'rq_email', message: 'rq_msg' };
+      let filled = false;
+
+      for (const [q, id] of Object.entries(map)) {
+        const v = params.get(q);
+        const el = document.getElementById(id);
+        if (v && el) { el.value = v; filled = true; }
+      }
+
+      if (filled) {
+        const block = document.querySelector('.request');
+        if (block && block.scrollIntoView) block.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // quick highlight
+        if (block && block.style) {
+          const old = block.style.boxShadow;
+          block.style.boxShadow = '0 0 0 2px rgba(125,178,255,.45), 0 20px 40px rgba(0,0,0,.35)';
+          setTimeout(() => block.style.boxShadow = old, 1200);
+        }
+        // clean URL
+        try {
+          const url = new URL(location.href);
+          url.search = '';
+          history.replaceState({}, '', url.toString());
+        } catch {}
+      }
+    })();
+  </script>
 </body>
 </html>
