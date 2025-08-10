@@ -21,16 +21,14 @@
       line-height:1.55
     }
     .wrap{max-width:var(--max);margin:0 auto;padding:28px}
-
-    /* Header */
+    /* Shared header */
     header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
     .brand a{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;font-weight:700;letter-spacing:.3px}
     .dot{width:10px;height:10px;border-radius:50%;background:linear-gradient(120deg,var(--accent1),var(--accent2));box-shadow:0 0 14px rgba(125,178,255,.6)}
-    nav{display:flex;gap:10px}
+    nav{display:flex;gap:10px;flex-wrap:wrap}
     .pill{display:inline-block;padding:10px 14px;border-radius:999px;color:var(--ink);text-decoration:none;border:1px solid transparent}
     .pill:hover{background:#0f1830}
     .pill.active{background:linear-gradient(120deg,rgba(125,178,255,.15),rgba(124,242,230,.15));border-color:rgba(255,255,255,.08)}
-
     /* Utilities */
     .card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
     .panel{background:var(--panel2);border:1px solid var(--border);border-radius:var(--radius)}
@@ -38,28 +36,20 @@
     .muted{color:var(--muted)}
     h1{margin:0 0 6px;font-size:32px}
     .grid{display:grid;gap:16px}
-
     /* Columns */
     .cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
     @media (max-width:900px){.cols{grid-template-columns:1fr}}
-
     .chiplist{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
     @media (max-width:900px){.chiplist{grid-template-columns:1fr}}
     .chip{background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:12px}
-
     .step{background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:14px}
-
     /* FAQ */
     details{background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:14px}
     summary{cursor:pointer;font-weight:600}
-
     /* Big CTA */
     .cta-card{
-      text-align:center;
-      border:1px solid var(--border);
-      border-radius:calc(var(--radius) + 6px);
-      box-shadow:0 28px 60px rgba(0,0,0,.45);
-      padding:34px 26px;
+      text-align:center;border:1px solid var(--border);border-radius:calc(var(--radius) + 6px);
+      box-shadow:0 28px 60px rgba(0,0,0,.45);padding:34px 26px;
       background:linear-gradient(135deg, rgba(125,178,255,.12), rgba(124,242,230,.12));
     }
     .cta-title{font-size:26px;margin:0 0 8px}
@@ -68,13 +58,8 @@
     .cta-primary, .cta-secondary{
       display:inline-block; padding:12px 18px; border-radius:14px; font-weight:700; text-decoration:none
     }
-    .cta-primary{
-      color:#0b0f1a; background:linear-gradient(90deg,var(--accent1),var(--accent2));
-      box-shadow:0 10px 26px rgba(117,194,255,.28)
-    }
-    .cta-secondary{
-      color:var(--ink); border:1px solid var(--border); background:#0f1830
-    }
+    .cta-primary{color:#0b0f1a;background:linear-gradient(90deg,var(--accent1),var(--accent2));box-shadow:0 10px 26px rgba(117,194,255,.28)}
+    .cta-secondary{color:var(--ink);border:1px solid var(--border);background:#0f1830}
   </style>
 </head>
 <body>
@@ -84,7 +69,8 @@
         <a href="index.html"><span class="dot"></span> CustomPC.tech</a>
       </div>
       <nav>
-        <a class="pill" href="index.html">Builds</a>
+        <a class="pill" href="builds.html">Builds</a>
+        <a class="pill" href="index.html">Custom PC</a>
         <a class="pill active" href="about.html">About</a>
         <a class="pill" href="contact.html">Contact</a>
       </nav>
@@ -138,12 +124,12 @@
       </div>
     </section>
 
-    <!-- FAQ (new) -->
+    <!-- FAQ -->
     <section class="grid">
       <h3 style="margin:0">FAQ</h3>
       <details>
         <summary>Do you really design around my workload?</summary>
-        <p class="muted">Yes. We pick parts based on what you run (games/apps, resolution, thermals/noise targets) rather than generic “tiers.”</p>
+        <p class="muted">Yes. We pick parts based on what you run (games/apps, resolution, thermals/noise targets) rather than generic tiers.</p>
       </details>
       <details>
         <summary>How do you validate performance?</summary>
@@ -163,7 +149,7 @@
       </details>
     </section>
 
-    <!-- BIGGER CTA (updated) -->
+    <!-- Bigger CTA -->
     <section class="cta-card" style="margin-top:18px">
       <div class="cta-title">Ready for a build that’s actually right for you?</div>
       <p class="cta-sub">Tell us what you do—we’ll design, verify, and deliver a PC that fits your workload and budget.</p>
