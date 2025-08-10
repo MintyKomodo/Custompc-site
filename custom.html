@@ -1,523 +1,256 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Custom PC – Tailored Build | CustomPC.tech</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <title>Custom PC Builder | Tailored Builds for Your Budget & Use‑Case</title>
+  <meta name="description" content="Answer a few questions and get a data‑driven custom PC build optimized for your budget and workload. Simple, fast, and transparent." />
+  <link rel="canonical" href="https://custompc.tech/custom" />
+
+  <!-- Open Graph / Twitter for rich shares -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Custom PC Builder | Tailored Builds" />
+  <meta property="og:description" content="Get a parts list and performance estimates matched to your needs—without the complexity." />
+  <meta property="og:url" content="https://custompc.tech/custom" />
+  <meta property="og:image" content="https://custompc.tech/assets/og-cover.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Minimal, self‑contained styles (no frameworks) -->
   <style>
-    /* ===== Page-only styles (kept lean, neat, and consistent with your site) ===== */
-    .kicker{letter-spacing:.12em;text-transform:uppercase;font-size:12px;opacity:.75}
-    .row.gap{gap:10px}
-    .btn.secondary{background:rgba(255,255,255,.06)}
-    .btn.secondary:hover{background:rgba(255,255,255,.1)}
-    .card-tight{padding:16px;max-width:980px;margin:0 auto 16px}
-    .hero{
-      padding:24px;max-width:980px;margin:0 auto 16px;border-radius:16px;
-      background:
-        linear-gradient(180deg, rgba(15, 18, 28, 0.7), rgba(15, 18, 28, 0.4)),
-        url('https://images.pexels.com/photos/2115257/pexels-photo-2115257.jpeg?auto=compress&cs=tinysrgb&w=1600') center/cover no-repeat;
-      border:1px solid rgba(255,255,255,.06);
-      box-shadow:0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,0.03);
+    :root {
+      --bg: #0b0f1a;
+      --panel: #12182a;
+      --panel-2: #0f1424;
+      --text: #e8eefc;
+      --muted: #b7c1da;
+      --brand: #6da8ff;
+      --brand-2: #7cf2e6;
+      --accent: #c3ff6a;
+      --error: #ff6978;
+      --radius: 16px;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --max: 980px;
     }
-
-    /* Trust badges + reviews */
-    .trust{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .badges{display:flex;flex-wrap:wrap;gap:10px}
-    .badge{border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:10px 12px;background:rgba(0,0,0,.28)}
-    .reviews{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .review{border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px;background:rgba(0,0,0,.28)}
-    @media (max-width:880px){ .trust{grid-template-columns:1fr}.reviews{grid-template-columns:1fr} }
-
-    /* How it works */
-    .feature-grid{display:grid;gap:12px;grid-template-columns:repeat(3,1fr)}
-    .feature{background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px}
-    @media (max-width:900px){.feature-grid{grid-template-columns:1fr}}
-
-    /* Portfolio grid + modal */
-    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-    .card-pc{border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden;background:rgba(0,0,0,.28);cursor:pointer}
-    .card-pc img{display:block;width:100%;height:180px;object-fit:cover}
-    .card-pc .content{padding:12px}
-    .tag{font-size:12px;opacity:.75}
-    @media (max-width:980px){.grid{grid-template-columns:repeat(2,1fr)}}
-    @media (max-width:640px){.grid{grid-template-columns:1fr}}
-    .modal{
-      position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:16px;z-index:90
+    html, body { height: 100%; }
+    body {
+      margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, 'Helvetica Neue', Arial, 'Apple Color Emoji', 'Segoe UI Emoji';
+      color: var(--text); background: radial-gradient(1200px 600px at 10% -10%, #152041 0%, transparent 60%),
+              radial-gradient(900px 500px at 90% 10%, #0c233b 0%, transparent 65%),
+              var(--bg);
+      line-height: 1.55;
     }
-    .modal.open{display:flex}
-    .modal-card{
-      max-width:880px;width:100%;background:#0d1016;border:1px solid rgba(255,255,255,.08);
-      border-radius:14px;overflow:hidden;box-shadow:0 18px 60px rgba(0,0,0,.45)
+    a { color: var(--brand); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .wrap { max-width: var(--max); margin: 0 auto; padding: 24px; }
+
+    header {
+      position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px);
+      background: linear-gradient(180deg, rgba(11,15,26,.9), rgba(11,15,26,.6));
+      border-bottom: 1px solid rgba(255,255,255,.06);
     }
-    .modal-media{width:100%;height:320px;background:#000;object-fit:cover;display:block}
-    .modal-body{padding:16px}
-    .specs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-    .spec{border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:8px;background:rgba(255,255,255,.02)}
-    @media (max-width:760px){.specs{grid-template-columns:1fr}}
+    .nav { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+    .brand { display:flex; align-items:center; gap:12px; font-weight:700; letter-spacing:.2px; }
+    .brand img { width:36px; height:36px; border-radius:10px; box-shadow: var(--shadow); }
+    .nav a.btn { text-decoration:none }
 
-    /* Estimator */
-    .est-wrap{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .est-controls .input, .est-controls select{width:100%}
-    .est-price{
-      border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:12px;background:rgba(0,0,0,.28);
-      display:flex;flex-direction:column;gap:8px;justify-content:center
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:12px 16px; border-radius:999px; font-weight:600; border:1px solid transparent; box-shadow: var(--shadow); cursor:pointer; }
+    .btn-primary { background: linear-gradient(135deg, var(--brand), var(--brand-2)); color:#071120; }
+    .btn-primary:hover { filter: brightness(1.05); }
+    .btn-ghost { background: transparent; border-color: rgba(255,255,255,.12); color: var(--text); }
+
+    .hero { display:grid; grid-template-columns: 1.2fr .8fr; gap:24px; align-items:center; margin-top: 24px; }
+    .card { background: linear-gradient(180deg, var(--panel), var(--panel-2)); border:1px solid rgba(255,255,255,.06); border-radius: var(--radius); box-shadow: var(--shadow); }
+    .pad { padding: 22px; }
+
+    .kpis { display:grid; grid-template-columns: repeat(3, 1fr); gap:12px; margin-top:12px; }
+    .kpi { background: #0c1222; border:1px solid rgba(255,255,255,.06); border-radius:12px; padding:12px; text-align:center; }
+    .kpi strong { font-size: 20px; display:block; }
+    .kpi span { color: var(--muted); font-size: 12px; }
+
+    .section { margin: 28px 0; }
+    .grid { display:grid; grid-template-columns: repeat(3, 1fr); gap:16px; }
+
+    .step { padding:16px; border-radius:12px; background:#0c1426; border:1px solid rgba(255,255,255,.06); }
+    .step h3 { margin: 0 0 8px 0; font-size: 18px; }
+
+    form { display:grid; gap:12px; }
+    .row { display:grid; gap:12px; grid-template-columns: 1fr 1fr; }
+    label { display:block; font-weight:600; margin-bottom:6px; }
+    input, select, textarea { width:100%; background:#0a1324; color:var(--text); border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:12px; font: inherit; }
+    input:focus, select:focus, textarea:focus { outline:2px solid var(--brand-2); }
+    textarea { min-height: 120px; resize: vertical; }
+    .hint { color: var(--muted); font-size: 12px; margin-top: 6px; }
+
+    details { background:#0c1426; border:1px solid rgba(255,255,255,.06); border-radius:12px; padding:12px; }
+    details + details { margin-top:10px; }
+    summary { cursor:pointer; font-weight:600; }
+
+    footer { color: var(--muted); font-size: 13px; padding: 28px 0 60px; }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; }
+      .grid { grid-template-columns: 1fr; }
+      .row { grid-template-columns: 1fr; }
     }
-    @media (max-width:820px){.est-wrap{grid-template-columns:1fr}}
-
-    /* Form (reuse from earlier) */
-    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .form-grid .full{grid-column:1/-1}
-    .input,textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:rgba(0,0,0,.35);color:#e9eefc;outline:none}
-    textarea{min-height:140px;resize:vertical}
-    .status{display:none;margin-top:12px;padding:10px 12px;border-radius:10px;background:rgba(0, 140, 60, .15);border:1px solid rgba(0, 140, 60, .35);color:#8ff5b4}
-    .status.error{background:rgba(160,30,30,.15);border-color:rgba(160,30,30,.4);color:#ffb4b4}
-    .sr-only{position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden}
-
-    /* FAQ boxed */
-    .faq-wrap{max-width:980px;margin:20px auto 0}
-    .faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    @media (max-width:820px){.faq-grid{grid-template-columns:1fr}}
-    .faq-box{border:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.28);border-radius:12px;overflow:hidden}
-    .faq-q{width:100%;text-align:left;background:transparent;color:#e9eefc;padding:12px 14px;border:none;cursor:pointer;font-weight:600;display:flex;justify-content:space-between;align-items:center}
-    .chev{opacity:.8;transition:transform .15s ease}
-    .faq-a{display:none;padding:0 14px 12px 14px;color:#cfd8ff}
-    .faq-box.open .faq-a{display:block}
-    .faq-box.open .chev{transform:rotate(180deg)}
-
-    /* Closing CTA */
-    .cta-bottom{padding:16px;max-width:980px;margin:16px auto;border:1px solid rgba(255,255,255,.08);border-radius:12px;background:rgba(0,0,0,.28);text-align:center}
   </style>
+
+  <!-- Structured data to help Google understand the service -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": "Custom PC Build Planning",
+    "provider": {
+      "@type": "Organization",
+      "name": "CustomPC.tech",
+      "url": "https://custompc.tech"
+    },
+    "areaServed": "US",
+    "description": "We design data‑driven custom PC builds matched to budget and workload, with clear upgrade paths.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD",
+      "description": "Free personalized parts list and build plan"
+    }
+  }
+  </script>
 </head>
 <body>
-  <nav>
-    <a href="index.html">Contact</a>
-    <a href="custom.html">Custom PC</a>
-    <a href="about.html">About</a>
-    <a href="builds.html">Builds</a>
-    <a href="cart.html">Cart</a>
-    <span id="nav-user" class="hidden"></span>
-    <a id="nav-login" href="login.html">Log In</a>
-    <a id="nav-signup" href="signup.html">Sign Up</a>
-    <a id="nav-logout" class="hidden" href="javascript:void(0)">Log Out</a>
-  </nav>
-
-  <div class="container">
-    <!-- Hero -->
-    <div class="hero">
-      <div class="kicker">Tailored Builds</div>
-      <h1 style="margin:6px 0 10px;">Your perfect PC — spec’d, built & stress-tested for you.</h1>
-      <p style="opacity:.9;max-width:740px;margin:0 0 14px;">
-        We translate your games and workflows into the right CPU, GPU, cooling, and storage — then assemble, cable-manage, update, and ship with FedEx tracking.
-      </p>
-      <div class="row gap">
-        <a class="btn" href="#customPCForm">Start my build</a>
-        <a class="btn secondary" href="builds.html">See sample builds</a>
-      </div>
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="/">
+        <img src="/assets/logo.png" alt="CustomPC.tech logo" loading="lazy" />
+        <span>CustomPC.tech</span>
+      </a>
+      <nav style="display:flex; gap:8px">
+        <a class="btn btn-ghost" href="/builds.html">Builds</a>
+        <a class="btn btn-ghost" href="/about.html">About</a>
+        <a class="btn btn-primary" href="/contact.html">Contact</a>
+      </nav>
     </div>
+  </header>
 
-    <!-- Trust & Credibility -->
-    <div class="card card-tight">
-      <div class="trust">
-        <div class="badges">
-          <div class="badge"> 1-Year Workmanship Warranty</div>
-          <div class="badge"> Burn-in & Stress Tested</div>
-          <div class="badge"> Foam-in-Case Shipping</div>
-          <div class="badge"> Lifetime Email Support</div>
+  <main class="wrap">
+    <section class="hero">
+      <div class="card pad">
+        <h1 style="margin:0 0 6px">Get a Custom PC Plan—No Guesswork</h1>
+        <p style="margin:0;color:var(--muted)">Tell us your budget and what you actually do. We’ll return a clean parts list, expected performance, and upgrade path. No upsells, no thousands of confusing options.</p>
+        <div class="kpis" aria-label="Service highlights">
+          <div class="kpi"><strong>24–48h</strong><span>Turnaround</span></div>
+          <div class="kpi"><strong>+20%</strong><span>Avg perf vs. typical prebuilt*</span></div>
+          <div class="kpi"><strong>$0</strong><span>Quote cost</span></div>
         </div>
-        <div class="reviews">
-          <div class="review">“Cable work was spotless. Hit 240 FPS in Valorant like promised.” — Alex R.</div>
-          <div class="review">“My Premiere renders are 3× faster than my laptop. Worth it.” — Jamie L.</div>
-        </div>
+        <p class="hint">*Estimate based on published benchmarks for similarly priced prebuilts vs. tuned parts lists.</p>
       </div>
-    </div>
+      <aside class="card pad" aria-label="Quick contact">
+        <h2 style="margin-top:0">Quick Request</h2>
+        <form id="quick-form" action="/contact.html" method="get" novalidate>
+          <div class="row">
+            <div>
+              <label for="name">Name</label>
+              <input id="name" name="name" autocomplete="name" required />
+            </div>
+            <div>
+              <label for="email">Email</label>
+              <input id="email" name="email" type="email" autocomplete="email" required />
+            </div>
+          </div>
+          <div class="row">
+            <div>
+              <label for="budget">Budget (USD)</label>
+              <input id="budget" name="budget" type="number" min="300" step="50" placeholder="1500" required />
+            </div>
+            <div>
+              <label for="priority">Priority</label>
+              <select id="priority" name="priority">
+                <option>Balance</option>
+                <option>Max FPS</option>
+                <option>Quiet / Cool</option>
+                <option>Creator / AI</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label for="work">What do you do?</label>
+            <textarea id="work" name="work" placeholder="e.g., 1440p esports, Premiere Pro 4K, Stable Diffusion, CAD (SolidWorks), data science, etc." required></textarea>
+          </div>
+          <button class="btn btn-primary" type="submit">Get My Build Plan →</button>
+          <p class="hint">Submitting takes you to the Contact page with these fields pre‑filled.</p>
+        </form>
+      </aside>
+    </section>
 
-    <!-- How it works -->
-    <div class="card card-tight">
-      <div class="kicker">How it works</div>
-      <div class="feature-grid" style="margin-top:10px;">
-        <div class="feature"><h4 style="margin:0 0 6px;">1) Tell us your goals</h4><p style="opacity:.85;margin:0">Games/resolution, editing/AI workloads, silence vs airflow, looks.</p></div>
-        <div class="feature"><h4 style="margin:0 0 6px;">2) We propose your build</h4><p style="opacity:.85;margin:0">A tuned parts list with options (NVIDIA/AMD, storage, acoustics).</p></div>
-        <div class="feature"><h4 style="margin:0 0 6px;">3) We build & ship</h4><p style="opacity:.85;margin:0">Cable-managed, burn-in tested, shipped with FedEx tracking.</p></div>
-      </div>
-    </div>
-
-    <!-- Portfolio (clickable cards -> modal) -->
-    <div class="card card-tight">
-      <div class="kicker">Sample builds</div>
-      <h2 style="margin:6px 0 10px;">Popular configurations</h2>
-      <div class="grid" id="portfolioGrid"></div>
-    </div>
-
-    <!-- Price Estimator -->
-    <div class="card card-tight">
-      <div class="kicker">Estimator</div>
-      <h2 style="margin:6px 0 10px;">Get a quick price range</h2>
-      <div class="est-wrap">
-        <div class="est-controls">
-          <label>Resolution / Goal</label>
-          <select id="estGoal" class="input" style="margin-bottom:8px">
-            <option value="1080">Gaming 1080p (high FPS)</option>
-            <option value="1440" selected>Gaming 1440p (ultra)</option>
-            <option value="4k">Gaming 4K (RT + upscaling)</option>
-            <option value="edit">Video Editing / Creator</option>
-            <option value="ai">AI / Compute</option>
-          </select>
-          <label>GPU Tier</label>
-          <select id="estTier" class="input" style="margin-bottom:8px">
-            <option value="entry">Entry</option>
-            <option value="mid" selected>Mid</option>
-            <option value="high">High</option>
-          </select>
-          <label>Storage</label>
-          <select id="estStorage" class="input">
-            <option value="1">1 TB</option>
-            <option value="2" selected>2 TB</option>
-            <option value="4">4 TB</option>
-          </select>
+    <section class="section">
+      <h2>How it Works</h2>
+      <div class="grid">
+        <div class="step">
+          <h3>1) Share your goals</h3>
+          <p>Budget, games/apps, resolution, and any size/noise preferences.</p>
         </div>
-        <div class="est-price">
-          <div>Estimated range:</div>
-          <div id="estOut" style="font-size:22px;font-weight:700;">$1,700 – $2,200</div>
-          <div style="font-size:12px;opacity:.8">Final quote depends on exact parts and aesthetics. We’ll confirm before you pay.</div>
-          <div><a class="btn" href="#customPCForm">Request a detailed quote</a></div>
+        <div class="step">
+          <h3>2) We design and verify</h3>
+          <p>We map workloads → parts using reliable benchmarks and check PSU, thermals, and bottlenecks.</p>
+        </div>
+        <div class="step">
+          <h3>3) You build or we build</h3>
+          <p>Receive a parts list and step‑by‑step build notes—or ask us to assemble and test.</p>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- Request form -->
-    <form id="customPCForm" class="card card-tight">
-      <input type="text" name="_gotcha" autocomplete="off" class="sr-only" tabindex="-1">
-      <div class="kicker">Request a tailored build</div>
+    <section class="section card pad" aria-label="FAQ">
+      <h2 style="margin-top:0">FAQ</h2>
+      <details>
+        <summary>Can you beat big “customizer” sites?</summary>
+        <p>Yes—those sites often constrain you to inventory, leading to mismatched CPUs/GPUs and noisy thermals. We pick parts by workload, not stock.</p>
+      </details>
+      <details>
+        <summary>Do you provide performance estimates?</summary>
+        <p>We include estimated FPS for target games/resolutions and app scores (e.g., PugetBench categories) when available.</p>
+      </details>
+      <details>
+        <summary>What about upgrades?</summary>
+        <p>Each plan ships with a simple upgrade path so you know what to swap first as budgets or needs grow.</p>
+      </details>
+    </section>
 
-      <div class="form-grid" style="margin-top:10px;">
-        <div><label for="c_name">Your Name</label><input id="c_name" name="name" class="input" type="text" required></div>
-        <div><label for="c_email">Email</label><input id="c_email" name="email" class="input" type="email" required></div>
-        <div><label for="c_budget">Budget (USD)</label><input id="c_budget" name="budget" class="input" type="number" min="300" step="1" placeholder="e.g., 1500" required></div>
-        <div>
-          <label for="c_use">Primary Use</label>
-          <select id="c_use" name="usecase" class="input" required>
-            <option value="" disabled selected>Select one…</option>
-            <option>Gaming (1080p)</option>
-            <option>Gaming (1440p)</option>
-            <option>Gaming (4K)</option>
-            <option>Streaming</option>
-            <option>Video Editing</option>
-            <option>3D / CAD</option>
-            <option>Software/AI</option>
-            <option>General Productivity</option>
-          </select>
-        </div>
-        <div class="full">
-          <label for="c_notes">What do you want this PC to crush?</label>
-          <textarea id="c_notes" name="notes" placeholder="Games/apps, favorite case, RGB/no RGB, silence vs airflow, deadlines…" required></textarea>
-        </div>
+    <section class="section">
+      <div class="card pad">
+        <h2 style="margin-top:0">Ready to Start?</h2>
+        <p>If you already know exactly what you want, jump straight to the contact page. Otherwise, use the Quick Request above.</p>
+        <a class="btn btn-primary" href="/contact.html" aria-label="Go to contact page">Go to Contact →</a>
       </div>
+    </section>
 
-      <div class="row gap" style="margin-top:12px;">
-        <button id="customBtn" class="btn" type="submit">Request My Custom PC</button>
-        <a class="btn secondary" href="builds.html" role="button">See sample builds</a>
-      </div>
-      <div id="customOk" class="status">Thanks! We’ll reply with a tailored spec and quote.</div>
-      <div id="customErr" class="status error">Couldn’t send right now. Please try again.</div>
-    </form>
+    <footer class="wrap">
+      <footer>
+        <div>© <span id="year"></span> CustomPC.tech • <a href="/privacy.html">Privacy</a> • <a href="/sitemap.xml">Sitemap</a></div>
+      </footer>
+    </footer>
+  </main>
 
-    <!-- FAQ (boxed) -->
-    <div class="faq-wrap">
-      <h2 style="text-align:center;margin:16px 0 10px;">FAQ</h2>
-      <div class="faq-grid" id="faqGrid">
-        <div class="faq-box"><button class="faq-q" aria-expanded="false">How long does a custom build take?<span class="chev">⌄</span></button><div class="faq-a">Typically 5–10 business days after payment (parts availability can change this). We’ll share an ETA with your quote.</div></div>
-        <div class="faq-box"><button class="faq-q" aria-expanded="false">Do you stress test before shipping?<span class="chev">⌄</span></button><div class="faq-a">Yes: BIOS update, memory XMP/EXPO, GPU (3DMark), CPU/memory/VRM (OCCT), and a 2–4 hour burn-in. We check temps and stability.</div></div>
-        <div class="faq-box"><button class="faq-q" aria-expanded="false">What warranty is included?<span class="chev">⌄</span></button><div class="faq-a">Manufacturer warranties for parts + 1-year workmanship warranty from us covering assembly-related issues.</div></div>
-        <div class="faq-box"><button class="faq-q" aria-expanded="false">Can I request specific parts or a certain look?<span class="chev">⌄</span></button><div class="faq-a">Absolutely. Share your case preference, RGB/no RGB, quiet vs airflow, brand lean, and color theme — we’ll design around it.</div></div>
-        <div class="faq-box"><button class="faq-q" aria-expanded="false">What performance targets do you build for?<span class="chev">⌄</span></button><div class="faq-a">We tune for 1080p high-FPS, 1440p ultra, or 4K RT + upscaling. For creators, we size CPU/GPU/RAM/SSD to your exact apps.</div></div>
-        <div class="faq-box"><button class="faq-q" aria-expanded="false">Do you install Windows and drivers?<span class="chev">⌄</span></button><div class="faq-a">Yes. Latest Windows, chipset/GPU drivers, updates, and essentials. Use your key or we can add one at checkout.</div></div>
-        <div class="faq-box"><button class="faq-q" aria-expanded="false">How is shipping handled?<span class="chev">⌄</span></button><div class="faq-a">FedEx with foam-in-case protection and tracking. You’ll get a link and ETA. Local pickup can be arranged if you’re nearby.</div></div>
-        <div class="faq-box"><button class="faq-q" aria-expanded="false">Can I upgrade later?<span class="chev">⌄</span></button><div class="faq-a">Yes — GPU, SSD, RAM, cooler, etc. We’ll design an upgrade path now and can quote parts/service later when you’re ready.</div></div>
-        <div class="faq-box"><button class="faq-q" aria-expanded="false">How do payments work?<span class="chev">⌄</span></button><div class="faq-a">After we finalize your spec, we’ll invoice. You can pay by card or PayPal. Apple/Google Pay available when you enable a processor.</div></div>
-        <div class="faq-box"><button class="faq-q" aria-expanded="false">What if a part is out of stock?<span class="chev">⌄</span></button><div class="faq-a">We’ll propose equivalent alternatives and confirm with you. If you’d rather wait, we’ll hold your spot in the build queue.</div></div>
-        <div class="faq-box"><button class="faq-q" aria-expanded="false">Do you support water cooling and silent builds?<span class="chev">⌄</span></button><div class="faq-a">Yep. From 240/360mm AIOs to quiet fan curves and acoustic panels — we can bias for silence without killing performance.</div></div>
-        <div class="faq-box"><button class="faq-q" aria-expanded="false">Can you preload games or apps?<span class="chev">⌄</span></button><div class="faq-a">We can install launchers and drivers. For licensed apps/games, share your accounts after delivery and we’ll guide you safely.</div></div>
-      </div>
-    </div>
+  <noscript><div class="wrap" style="color:var(--error)">Note: Enable JavaScript for the Quick Request form prefill.</div></noscript>
 
-    <!-- Closing CTA -->
-    <div class="cta-bottom">
-      <h2 style="margin:0 0 8px;">Ready to start?</h2>
-      <p style="opacity:.85;margin:0 0 10px">Tell us what you need and we’ll send a parts plan, price, and timeline.</p>
-      <a class="btn" href="#customPCForm">Start my build</a>
-    </div>
-  </div>
-
-  <!-- Modal -->
-  <div class="modal" id="pcModal" aria-hidden="true">
-    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="pcTitle">
-      <img id="pcImg" class="modal-media" alt="PC build preview">
-      <div class="modal-body">
-        <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:8px;">
-          <h2 id="pcTitle" style="margin:0"></h2>
-          <div id="pcPrice" class="price"></div>
-        </div>
-        <div id="pcTag" class="tag" style="margin:-6px 0 10px;"></div>
-        <div class="specs" id="pcSpecs"></div>
-        <div style="margin-top:12px;" id="pcDesc"></div>
-        <div class="row gap" style="margin-top:12px;">
-          <button class="btn" id="pcRequestBtn">Request this build</button>
-          <button class="btn secondary" id="pcCloseBtn">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
+  <!-- Tiny progressive enhancement: validate email/budget quickly and keep UX fast -->
   <script>
-    /* ===================== Login prefill ===================== */
-    (async () => {
-      if (window.__authReady) { try { await window.__authReady; } catch {} }
-      const u = window.currentUser;
-      if (u) {
-        const name = u.displayName || '';
-        const email = u.email || '';
-        if (name)  document.getElementById('c_name').value  = name;
-        if (email) document.getElementById('c_email').value = email;
-      }
-    })();
-
-    /* ===================== Portfolio data (AMD + Intel) ===================== */
-    const BUILDS = [
-      { id:'amd-4k', title:'4K Gaming PC (AMD)', tag:'4K Gaming', price:2599,
-        img:'https://images.pexels.com/photos/7915355/pexels-photo-7915355.jpeg?auto=compress&cs=tinysrgb&w=1600',
-        specs:[
-          ['CPU','Ryzen 7 7800X3D'],['GPU','GeForce RTX 5080'],
-          ['RAM','32GB DDR5-6000'],['Storage','2TB NVMe (Gen4)'],
-          ['Cooling','360mm AIO'],['PSU','850W Gold'],['Case','Airflow chassis']
-        ],
-        desc:'Tuned for high-refresh 4K with frame-gen/upscaling. Quiet fan curves, excellent temps.' },
-      { id:'amd-over', title:'Overkill PC (AMD)', tag:'Extreme', price:4499,
-        img:'https://images.pexels.com/photos/5553050/pexels-photo-5553050.jpeg?auto=compress&cs=tinysrgb&w=1600',
-        specs:[
-          ['CPU','Ryzen 9 7950X'],['GPU','GeForce RTX 5090'],
-          ['RAM','64GB DDR5-6000'],['Storage','2TB + 4TB NVMe'],
-          ['Cooling','360mm AIO'],['PSU','1000W Gold'],['Case','Premium airflow']
-        ],
-        desc:'Built for everything maxed: 4K RT, heavy editing, AI. Top-tier thermals & acoustics.' },
-      { id:'amd-creator', title:'Creator Pro (AMD)', tag:'Creator', price:2999,
-        img:'https://images.pexels.com/photos/5777692/pexels-photo-5777692.jpeg?auto=compress&cs=tinysrgb&w=1600',
-        specs:[
-          ['CPU','Ryzen 9 7950X'],['GPU','GeForce RTX 5080'],
-          ['RAM','64GB DDR5-6000'],['Storage','2TB 990 PRO'],
-          ['Cooling','360mm AIO'],['Scratch','Separate cache/scratch setup']
-        ],
-        desc:'Designed for Premiere/Resolve/Blender with fast cache disks and color-accurate GPU drivers.' },
-      { id:'amd-budget', title:'Budget Gaming (AMD)', tag:'Best Value', price:899,
-        img:'https://images.pexels.com/photos/1148820/pexels-photo-1148820.jpeg?auto=compress&cs=tinysrgb&w=1600',
-        specs:[
-          ['CPU','Ryzen 5 5600'],['GPU','GeForce RTX 4060'],
-          ['RAM','16GB DDR4'],['Storage','1TB NVMe'],
-          ['Cooling','Tower Air'],['PSU','650W Bronze']
-        ],
-        desc:'1080p high settings in today’s top titles. Easy upgrade path for GPU/RAM later.' },
-      { id:'amd-creator-budget', title:'Budget Creator (AMD)', tag:'Creator', price:699,
-        img:'https://images.pexels.com/photos/97077/pexels-photo-97077.jpeg?auto=compress&cs=tinysrgb&w=1600',
-        specs:[
-          ['CPU','Ryzen 5 5600G'],['GPU','GeForce RTX 3050'],
-          ['RAM','16GB DDR4'],['Storage','512GB NVMe']
-        ],
-        desc:'Great starter for light editing and content creation with GPU acceleration.' },
-      { id:'amd-esports', title:'Esports Pro (AMD)', tag:'Esports', price:999,
-        img:'https://images.pexels.com/photos/8166086/pexels-photo-8166086.jpeg?auto=compress&cs=tinysrgb&w=1600',
-        specs:[
-          ['CPU','Ryzen 5 7600'],['GPU','GeForce RTX 4060'],
-          ['RAM','16GB DDR5'],['Storage','1TB NVMe']
-        ],
-        desc:'Tuned for esports titles (CS, Valorant, Fortnite) with low input lag and stable high FPS.' },
-
-      { id:'intel-4k', title:'4K Gaming PC (Intel)', tag:'4K Gaming', price:2699,
-        img:'https://images.pexels.com/photos/3861956/pexels-photo-3861956.jpeg?auto=compress&cs=tinysrgb&w=1600',
-        specs:[
-          ['CPU','Core i7-14700K'],['GPU','GeForce RTX 5080'],
-          ['RAM','32GB DDR5-6000'],['Storage','2TB NVMe'],
-          ['Cooling','360mm AIO'],['PSU','850W Gold']
-        ],
-        desc:'Fantastic 4K gaming with frame-gen, tuned for low noise and strong boost clocks.' },
-      { id:'intel-over', title:'Overkill PC (Intel)', tag:'Extreme', price:4599,
-        img:'https://images.pexels.com/photos/907173/pexels-photo-907173.jpeg?auto=compress&cs=tinysrgb&w=1600',
-        specs:[
-          ['CPU','Core i9-14900K'],['GPU','GeForce RTX 5090'],
-          ['RAM','64GB DDR5-6000'],['Storage','2TB + 4TB NVMe'],
-          ['Cooling','360mm AIO'],['PSU','1000W Gold']
-        ],
-        desc:'For the “everything on ultra” crowd. Also crushes editing and multi-task workloads.' },
-      { id:'intel-creator', title:'Creator Pro (Intel)', tag:'Creator', price:3099,
-        img:'https://images.pexels.com/photos/218863/pexels-photo-218863.jpeg?auto=compress&cs=tinysrgb&w=1600',
-        specs:[
-          ['CPU','Core i9-14900K'],['GPU','GeForce RTX 5080'],
-          ['RAM','64GB DDR5-6000'],['Storage','2TB 990 PRO']
-        ],
-        desc:'Optimized for Adobe/Resolve with tuned scratch disks and studio-ready GPU drivers.' },
-      { id:'intel-budget', title:'Budget Gaming (Intel)', tag:'Best Value', price:929,
-        img:'https://images.pexels.com/photos/538062/pexels-photo-538062.jpeg?auto=compress&cs=tinysrgb&w=1600',
-        specs:[
-          ['CPU','Core i5-12400F'],['GPU','GeForce RTX 4060'],
-          ['RAM','16GB DDR4'],['Storage','1TB NVMe']
-        ],
-        desc:'Solid 1080p experience with an easy path to 1440p via future GPU upgrade.' },
-      { id:'intel-creator-budget', title:'Budget Creator (Intel)', tag:'Creator', price:719,
-        img:'https://images.pexels.com/photos/1144176/pexels-photo-1144176.jpeg?auto=compress&cs=tinysrgb&w=1600',
-        specs:[
-          ['CPU','Core i5-13400F'],['GPU','GeForce RTX 3050'],
-          ['RAM','16GB DDR4'],['Storage','512GB NVMe']
-        ],
-        desc:'Entry creative rig for photo/light video with an upgrade path to more storage and RAM.' },
-      { id:'intel-esports', title:'Esports Pro (Intel)', tag:'Esports', price:1049,
-        img:'https://images.pexels.com/photos/1800205/pexels-photo-1800205.jpeg?auto=compress&cs=tinysrgb&w=1600',
-        specs:[
-          ['CPU','Core i5-14500'],['GPU','GeForce RTX 4060'],
-          ['RAM','16GB DDR5'],['Storage','1TB NVMe']
-        ],
-        desc:'High-FPS esports tuning with consistent frame times and quiet acoustics.' }
-    ];
-
-    function $el(tag, attrs={}, inner=''){
-      const e = document.createElement(tag);
-      for (const [k,v] of Object.entries(attrs)) e.setAttribute(k,v);
-      if (inner) e.innerHTML = inner;
-      return e;
-    }
-
-    function renderPortfolio(){
-      const grid = document.getElementById('portfolioGrid');
-      grid.innerHTML = '';
-      BUILDS.forEach(b=>{
-        const card = $el('div', {class:'card-pc', 'data-id':b.id});
-        const img  = $el('img', {src:b.img, alt:b.title});
-        const ctn  = $el('div', {class:'content'});
-        ctn.innerHTML = `
-          <div class="tag">${b.tag}</div>
-          <h3 style="margin:4px 0 6px">${b.title}</h3>
-          <div class="row" style="justify-content:space-between;align-items:center;">
-            <div class="price">$${b.price.toLocaleString()}</div>
-            <div style="opacity:.8;font-size:12px">Click for details</div>
-          </div>`;
-        card.appendChild(img); card.appendChild(ctn);
-        card.addEventListener('click', ()=>openModal(b.id));
-        grid.appendChild(card);
+    (function(){
+      const year = document.getElementById('year'); if (year) year.textContent = new Date().getFullYear();
+      const form = document.getElementById('quick-form');
+      if (!form) return;
+      form.addEventListener('submit', function(ev){
+        const email = form.email.value.trim();
+        const budget = Number(form.budget.value);
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          ev.preventDefault(); alert('Please enter a valid email.'); return; }
+        if (!Number.isFinite(budget) || budget < 300) {
+          ev.preventDefault(); alert('Please enter a realistic budget (≥ $300).'); return; }
+        // Pre-fill contact page via URL params for simplicity
+        const params = new URLSearchParams(new FormData(form));
+        form.action = '/contact.html?' + params.toString();
       });
-    }
-
-    /* ===================== Modal logic ===================== */
-    const modal = document.getElementById('pcModal');
-    const mImg  = document.getElementById('pcImg');
-    const mTitle= document.getElementById('pcTitle');
-    const mPrice= document.getElementById('pcPrice');
-    const mTag  = document.getElementById('pcTag');
-    const mSpecs= document.getElementById('pcSpecs');
-    const mDesc = document.getElementById('pcDesc');
-    const mBtn  = document.getElementById('pcRequestBtn');
-    const mClose= document.getElementById('pcCloseBtn');
-    let currentBuild = null;
-
-    function openModal(id){
-      const b = BUILDS.find(x=>x.id===id);
-      if (!b) return;
-      currentBuild = b;
-      mImg.src = b.img;
-      mTitle.textContent = b.title;
-      mPrice.textContent = '$' + b.price.toLocaleString();
-      mTag.textContent = b.tag;
-      mSpecs.innerHTML = b.specs.map(([k,v])=>`<div class="spec"><strong>${k}:</strong> ${v}</div>`).join('');
-      mDesc.textContent = b.desc || '';
-      modal.classList.add('open');
-      modal.setAttribute('aria-hidden','false');
-    }
-    function closeModal(){
-      modal.classList.remove('open');
-      modal.setAttribute('aria-hidden','true');
-      currentBuild = null;
-    }
-    mClose.addEventListener('click', closeModal);
-    modal.addEventListener('click', (e)=>{ if (e.target===modal) closeModal(); });
-    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && modal.classList.contains('open')) closeModal(); });
-
-    // Prefill form when requesting from modal
-    mBtn.addEventListener('click', ()=>{
-      if (!currentBuild) return;
-      const notes = document.getElementById('c_notes');
-      const use   = document.getElementById('c_use');
-      notes.value = `[Requesting] ${currentBuild.title} — $${currentBuild.price.toLocaleString()}
-Specs:
-${currentBuild.specs.map(([k,v])=>`- ${k}: ${v}`).join('\n')}
-Use cases: ${currentBuild.tag}
-Add any tweaks here →`;
-      // Best guess for use drop-down:
-      const guess = currentBuild.tag.includes('Creator') ? 'Software/AI' :
-                    currentBuild.tag.includes('Esports') ? 'Gaming (1080p)' :
-                    currentBuild.tag.includes('4K') ? 'Gaming (4K)' : 'Gaming (1440p)';
-      for (const opt of use.options){ if (opt.text===guess){ use.value = opt.text; break; } }
-      location.hash = '#customPCForm';
-      closeModal();
-    });
-
-    renderPortfolio();
-
-    /* ===================== Estimator (simple model) ===================== */
-    const estGoal = document.getElementById('estGoal');
-    const estTier = document.getElementById('estTier');
-    const estSto  = document.getElementById('estStorage');
-    const estOut  = document.getElementById('estOut');
-
-    function recompute(){
-      // Baseline by goal
-      const base = { '1080': 1000, '1440': 1500, '4k': 2200, 'edit': 1800, 'ai': 2200 }[estGoal.value] || 1500;
-      // Tier multiplier
-      const tier = { 'entry': 0.9, 'mid': 1.0, 'high': 1.35 }[estTier.value] || 1.0;
-      // Storage bump
-      const sto  = ({'1':0, '2':150, '4':350}[estSto.value] || 0);
-      const mid = Math.round(base*tier + sto);
-      const low = Math.max(700, Math.round(mid*0.85));
-      const high= Math.round(mid*1.2);
-      estOut.textContent = `$${low.toLocaleString()} – $${high.toLocaleString()}`;
-    }
-    [estGoal, estTier, estSto].forEach(el=>el.addEventListener('change', recompute));
-    recompute();
-
-    /* ===================== Form submit (Formspree) ===================== */
-    const CUSTOM_ENDPOINT = "https://formspree.io/f/xrblokly";
-    const cForm = document.getElementById('customPCForm');
-    const cBtn  = document.getElementById('customBtn');
-    const cOk   = document.getElementById('customOk');
-    const cErr  = document.getElementById('customErr');
-    const show = el => el.style.display='block';
-    const hide = el => el.style.display='none';
-
-    cForm.addEventListener('submit', async (e) => {
-      e.preventDefault(); hide(cOk); hide(cErr);
-      cBtn.disabled = true; cBtn.textContent = "Sending…";
-      try {
-        const fd = new FormData(cForm);
-        fd.append("_subject", "CustomPC.tech – Custom PC Request");
-        fd.append("type", "custom_pc");
-        if (window.currentUser?.uid) fd.append("firebase_uid", window.currentUser.uid);
-
-        const res = await fetch(CUSTOM_ENDPOINT, {
-          method:"POST", body:fd, headers:{ "Accept":"application/json" }
-        });
-        if (res.ok){ show(cOk); cForm.reset(); }
-        else { show(cErr); }
-      } catch { show(cErr); }
-      finally { cBtn.disabled=false; cBtn.textContent="Request My Custom PC"; }
-    });
-
-    /* ===================== FAQ toggles ===================== */
-    document.addEventListener('click', (e)=>{
-      const btn = e.target.closest('.faq-q');
-      if(!btn) return;
-      const box = btn.closest('.faq-box');
-      const open = box.classList.toggle('open');
-      btn.setAttribute('aria-expanded', open ? 'true':'false');
-    });
+    })();
   </script>
-
-  <script type="module" src="nav-auth.js"></script>
 </body>
 </html>
