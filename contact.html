@@ -5,109 +5,191 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Contact | CustomPC.tech</title>
   <style>
-    :root {
-      --bg:#0b0f1a; --ink:#e8eefc; --muted:#b9c4dd;
-      --panel:#11182a; --panel2:#0c1324; --border:rgba(255,255,255,.08);
-      --brand:#7db2ff; --brand2:#7cf2e6; --radius:16px; --shadow:0 10px 28px rgba(0,0,0,.35);
+    :root{
+      --bg:#0a0f1a; --ink:#e9eefc; --muted:#aeb9d4;
+      --panel:#111729; --panel2:#0d1426; --border:rgba(255,255,255,.08);
+      --accent1:#7db2ff; --accent2:#7cf2e6;
+      --radius:18px; --shadow:0 20px 40px rgba(0,0,0,.35);
       --max:1200px;
     }
     *{box-sizing:border-box}
-    body {
-      margin:0;
-      font-family:system-ui,Segoe UI,Roboto;
-      color:var(--ink);
-      background:var(--bg);
-      line-height:1.55;
+    body{margin:0;font-family:system-ui,Segoe UI,Roboto,Inter,Arial;color:var(--ink);background:radial-gradient(1200px 600px at 50% -10%, #0f162b 8%, transparent 55%), var(--bg);line-height:1.55}
+    .wrap{max-width:var(--max);margin:0 auto;padding:28px}
+    /* Header */
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.3px}
+    .brand .dot{width:10px;height:10px;border-radius:50%;background:linear-gradient(120deg,var(--accent1),var(--accent2));box-shadow:0 0 14px rgba(125,178,255,.6)}
+    nav{display:flex;gap:10px}
+    .pill{display:inline-block;padding:10px 14px;border-radius:999px;color:var(--ink);text-decoration:none;border:1px solid transparent}
+    .pill:hover{background:#0f1830}
+    .pill.active{background:linear-gradient(120deg,rgba(125,178,255,.15),rgba(124,242,230,.15));border-color:rgba(255,255,255,.08)}
+    /* Layout */
+    .grid{display:grid;grid-template-columns:1.3fr .9fr;gap:24px}
+    @media (max-width:900px){.grid{grid-template-columns:1fr}}
+    /* Cards */
+    .card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .pad{padding:22px}
+    h1{margin:0 0 8px;font-size:28px}
+    .muted{color:var(--muted)}
+    /* Badges row like the mock */
+    .badges{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px}
+    .badge{background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+    .badge b{display:block;font-size:18px;margin-bottom:2px}
+    /* Form */
+    form{display:grid;gap:12px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media (max-width:600px){.row{grid-template-columns:1fr}}
+    label{font-weight:600;font-size:.95rem;margin-bottom:6px;display:block}
+    input, textarea, select{
+      width:100%;padding:12px 14px;border-radius:12px;
+      border:1px solid var(--border);background:var(--panel2);color:var(--ink);
+      outline:none
     }
-    .wrap {
-      max-width:var(--max);
-      margin:0 auto;
-      padding:24px;
+    textarea{min-height:140px;resize:vertical}
+    .cta{
+      border:0;cursor:pointer;font-weight:700;padding:12px 16px;border-radius:14px;
+      background:linear-gradient(90deg,var(--accent1),var(--accent2));
+      color:#0b0f1a; box-shadow:0 8px 22px rgba(117,194,255,.25);
+      transition:transform .06s ease
     }
-    header {
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-bottom:32px;
-    }
-    nav a {
-      color:var(--ink);
-      text-decoration:none;
-      margin:0 12px;
-      font-weight:500;
-    }
-    nav a:hover {
-      color:var(--brand);
-    }
-    h1 {
-      color:var(--brand);
-      margin-bottom:16px;
-    }
-    p {
-      color:var(--muted);
-      margin-bottom:24px;
-    }
-    form {
-      background:var(--panel);
-      padding:24px;
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-    }
-    label {
-      display:block;
-      margin-bottom:8px;
-      font-weight:500;
-    }
-    input, textarea {
-      width:100%;
-      padding:12px;
-      margin-bottom:16px;
-      border:1px solid var(--border);
-      border-radius:var(--radius);
-      background:var(--panel2);
-      color:var(--ink);
-      font-size:1rem;
-    }
-    input[type="submit"] {
-      background:var(--brand);
-      border:none;
-      color:#000;
-      font-weight:bold;
-      cursor:pointer;
-      transition:background .2s;
-    }
-    input[type="submit"]:hover {
-      background:var(--brand2);
-    }
+    .cta:active{transform:translateY(1px)}
+    .note{font-size:.9rem;color:var(--muted)}
+    /* FAQ/extra sections if you want them later */
+    .section-title{margin:24px 0 10px;font-size:20px}
+    /* Alerts */
+    .alert{display:none;margin-top:10px;padding:12px 14px;border-radius:12px}
+    .ok{background:rgba(124,242,230,.12);border:1px solid rgba(124,242,230,.35)}
+    .err{background:rgba(255,99,132,.12);border:1px solid rgba(255,99,132,.35)}
   </style>
 </head>
 <body>
   <div class="wrap">
     <header>
-      <h2>CustomPC.tech</h2>
+      <div class="brand"><span class="dot"></span> CustomPC.tech</div>
       <nav>
-        <a href="index.html">Builds</a>
-        <a href="about.html">About</a>
-        <a href="index.html">Custom PC</a>
-        <a href="contact.html">Contact</a>
+        <a class="pill" href="index.html">Builds</a>
+        <a class="pill" href="about.html">About</a>
+        <a class="pill active" href="contact.html">Contact</a>
       </nav>
     </header>
 
-    <h1>Contact Us</h1>
-    <p>Have a question, suggestion, or custom build request? Fill out the form below and we’ll get back to you soon.</p>
+    <div class="grid">
+      <!-- Left: Intro card with badges (matches your style) -->
+      <section class="card pad">
+        <h1>Get a Custom PC Plan — No Guesswork</h1>
+        <p class="muted">Tell us your budget and what you actually do. We’ll return a clean parts list, expected performance, and an upgrade path. No upsells, no confusing options.</p>
 
-    <form action="https://formspree.io/f/xrblokly" method="POST">
-      <label for="name">Your Name</label>
-      <input type="text" id="name" name="name" required>
+        <div class="badges">
+          <div class="badge"><b>24–48h</b><span class="muted">Turnaround</span></div>
+          <div class="badge"><b>+20%</b><span class="muted">Avg perf vs. prebuilts*</span></div>
+          <div class="badge"><b>$0</b><span class="muted">Quote cost</span></div>
+        </div>
+        <p class="muted" style="margin-top:10px;font-size:.9rem">*Estimate based on published benchmarks for similarly priced prebuilts vs. tuned parts lists.</p>
+      </section>
 
-      <label for="email">Your Email</label>
-      <input type="email" id="email" name="_replyto" required>
+      <!-- Right: Contact form card -->
+      <aside class="card pad">
+        <h2 style="margin:0 0 6px">Quick Request</h2>
+        <p class="muted" style="margin:0 0 12px">Send your details—no obligation. We’ll reply with a parts plan.</p>
 
-      <label for="message">Your Message</label>
-      <textarea id="message" name="message" rows="6" required></textarea>
+        <form id="contactForm" action="https://formspree.io/f/xrblokly" method="POST">
+          <!-- honeypot -->
+          <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
+          <div class="row">
+            <div>
+              <label for="name">Name</label>
+              <input id="name" name="name" type="text" required autocomplete="name">
+            </div>
+            <div>
+              <label for="email">Email</label>
+              <input id="email" name="_replyto" type="email" required autocomplete="email">
+            </div>
+          </div>
 
-      <input type="submit" value="Send Message">
-    </form>
+          <div class="row">
+            <div>
+              <label for="budget">Budget (USD)</label>
+              <input id="budget" name="budget" type="number" inputmode="numeric" min="300" step="50" placeholder="1500">
+            </div>
+            <div>
+              <label for="priority">Priority</label>
+              <select id="priority" name="priority">
+                <option>Balance</option>
+                <option>Quiet / Low Heat</option>
+                <option>Max FPS (Esports)</option>
+                <option>Content / Pro Apps</option>
+                <option>Small Form Factor</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label for="message">What do you do?</label>
+            <textarea id="message" name="message" placeholder="e.g., 1440p esports, Premiere Pro 4K, Stable Diffusion, CAD (SolidWorks), data science, etc." required></textarea>
+          </div>
+
+          <button class="cta" type="submit">Get My Build Plan →</button>
+          <div class="note">We’ll email your plan within 24–48 hours.</div>
+
+          <div id="ok" class="alert ok">Thanks! Your request was sent—check your inbox for confirmation.</div>
+          <div id="err" class="alert err">Hmm, something went wrong. Please try again or email us directly.</div>
+        </form>
+      </aside>
+    </div>
+
+    <!-- Optional: extra sections to mirror your layout -->
+    <section class="section-title">How it Works</section>
+    <div class="grid" style="grid-template-columns:repeat(3,1fr);gap:16px">
+      <div class="card pad"><b>1) Share your goals</b><p class="muted">Budget, games/apps, resolution, size/noise preferences.</p></div>
+      <div class="card pad"><b>2) We design and verify</b><p class="muted">We map workloads → parts using reliable benchmarks and check PSU, thermals, and bottlenecks.</p></div>
+      <div class="card pad"><b>3) You build or we build</b><p class="muted">Get a parts list and step-by-step notes—or hire us to assemble and test.</p></div>
+    </div>
+
+    <section class="card pad" style="margin-top:18px">
+      <b>Ready to Start?</b>
+      <p class="muted" style="margin:8px 0 0">If you already know exactly what you want, you’re in the right place—use the form above.</p>
+    </section>
   </div>
+
+  <script>
+    // Prefill from query params (name, email, budget, priority, message)
+    (function () {
+      const p = new URLSearchParams(location.search);
+      for (const key of ["name","_replyto","email","budget","priority","message"]) {
+        const el = document.getElementById(key) || (key==="email" ? document.getElementById("_replyto") : null);
+        const v = p.get(key) || (key==="email" ? p.get("_replyto") : null);
+        if (el && v) el.value = v;
+      }
+    })();
+
+    // AJAX submit to Formspree with inline success/fail UI
+    const form = document.getElementById('contactForm');
+    const ok = document.getElementById('ok');
+    const err = document.getElementById('err');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      ok.style.display = 'none';
+      err.style.display = 'none';
+
+      try {
+        const fd = new FormData(form);
+        const res = await fetch(form.action, {
+          method: 'POST',
+          headers: { 'Accept': 'application/json' },
+          body: fd
+        });
+        if (res.ok) {
+          form.reset();
+          ok.style.display = 'block';
+          ok.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+          err.style.display = 'block';
+        }
+      } catch {
+        err.style.display = 'block';
+      }
+    });
+  </script>
 </body>
 </html>
