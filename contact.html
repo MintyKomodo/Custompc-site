@@ -5,157 +5,53 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Contact | CustomPC.tech</title>
   <style>
-    :root{
-      --bg:#0b0f1a; --ink:#e8eefc; --muted:#b9c4dd; --panel:#11182a; --panel2:#0c1324; --border:rgba(255,255,255,.08); --brand:#7db2ff; --brand2:#7cf2e6; --radius:16px; --shadow:0 10px 28px rgba(0,0,0,.35); --max:1100px;
+    :root {
+      --bg:#0b0f1a; --ink:#e8eefc; --muted:#b9c4dd;
+      --panel:#11182a; --panel2:#0c1324; --border:rgba(255,255,255,.08);
+      --brand:#7db2ff; --brand2:#7cf2e6; --radius:16px; --shadow:0 10px 28px rgba(0,0,0,.35);
+      --max:1200px;
     }
     *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,Segoe UI,Roboto;color:var(--ink);background:radial-gradient(1000px 700px at 100% -10%, rgba(66,140,255,.12), transparent 60%),radial-gradient(1000px 700px at -10% 10%, rgba(99,247,232,.10), transparent 50%),var(--bg);line-height:1.55}
-    a{color:var(--brand)}
+    body{margin:0;font-family:system-ui,Segoe UI,Roboto;color:var(--ink);background:var(--bg);line-height:1.55}
     .wrap{max-width:var(--max);margin:0 auto;padding:24px}
-    header{background:#0b0f1a;position:sticky;top:0;z-index:100;padding:12px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:16px}
-    .brand{font-weight:700;color:var(--ink);text-decoration:none;letter-spacing:.2px}
-    nav ul{display:flex;gap:10px;margin:0;padding:0;list-style:none}
-    .toplink{display:inline-block;padding:8px 12px;border-radius:10px;border:1px solid transparent;color:var(--ink);text-decoration:none;background:transparent}
-    .toplink:hover{border-color:var(--border)}
-    .btn-cta{background:linear-gradient(90deg,var(--brand),var(--brand2));color:#00122a;font-weight:600}
-    .active{border-color:var(--border);background:rgba(255,255,255,.03)}
-
-    h1{font-size:32px;margin:0 0 8px;text-align:center}
-    .subtitle.center{color:var(--muted);text-align:center;margin:0 0 18px}
-
-    /* Top badges/testimonials row */
-    .top-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}
-    .chip{background:#0b1020;border:1px solid var(--border);border-radius:14px;padding:12px;box-shadow:var(--shadow)}
-    .chip b{display:block}
-
-    /* Contact card */
-    .card{background:linear-gradient(180deg,var(--panel),var(--panel2));border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border)}
-    .pad{padding:16px}
-    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}
-    .input, textarea{width:100%;background:#0b1020;border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--ink)}
-    textarea{min-height:140px;resize:vertical}
-    .row{margin-top:10px}
-    .actions{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
-    .btn{display:inline-block;padding:10px 14px;border-radius:12px;border:1px solid var(--border);text-decoration:none;color:var(--ink);cursor:pointer}
-    .btn.primary{background:linear-gradient(90deg,var(--brand),var(--brand2));color:#00122a;font-weight:700;border:none}
-
-    /* Recent work gallery */
-    .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-    .gimg{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:12px;border:1px solid var(--border);background:#0b1020}
-
-    /* Shipment tracker */
-    .track{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
-
-    /* Bottom CTA */
-    .cta-card{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
-
-    footer{color:var(--muted);font-size:12px;text-align:center;padding:24px;margin-top:30px}
-
-    @media (max-width:900px){
-      .top-row{grid-template-columns:1fr}
-      .form-grid{grid-template-columns:1fr}
-      .gallery{grid-template-columns:1fr}
-    }
+    header{display:flex;justify-content:space-between;align-items:center;margin-bottom:32px}
+    nav a{color:var(--ink);text-decoration:none;margin:0 12px;font-weight:500}
+    nav a:hover{color:var(--brand)}
+    h1{color:var(--brand)}
+    form{background:var(--panel);padding:24px;border-radius:var(--radius);box-shadow:var(--shadow)}
+    label{display:block;margin-bottom:8px;font-weight:500}
+    input,textarea{width:100%;padding:12px;margin-bottom:16px;border:1px solid var(--border);border-radius:var(--radius);background:var(--panel2);color:var(--ink)}
+    input[type="submit"]{background:var(--brand);border:none;color:#000;font-weight:bold;cursor:pointer;transition:background .2s}
+    input[type="submit"]:hover{background:var(--brand2)}
   </style>
 </head>
 <body>
-<header class="wrap">
-  <a class="brand" href="/">CustomPC.tech</a>
-  <nav aria-label="Main">
-    <ul>
-      <li><a href="/builds.html" class="toplink">Builds</a></li>
-      <li><a href="/about.html" class="toplink">About</a></li>
-      <li><a href="/contact.html" class="toplink btn-cta active">Contact</a></li>
-    </ul>
-  </nav>
-</header>
+  <div class="wrap">
+    <header>
+      <h2>CustomPC.tech</h2>
+      <nav>
+        <a href="index.html">Builds</a>
+        <a href="about.html">About</a>
+        <a href="custompc.html">Custom PC</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+    </header>
 
-<main class="wrap">
-  <h1>Contact us</h1>
-  <p class="subtitle center">Questions, support, or vendor inquiries — we’ll reply fast.</p>
+    <h1>Contact Us</h1>
+    <p>Have a question, suggestion, or custom build request? Fill out the form below and we’ll get back to you.</p>
 
-  <section class="top-row" aria-label="Highlights and testimonials">
-    <div class="chip"><b>1‑Year Workmanship Warranty</b></div>
-    <div class="chip"><b>Burn‑in & Stress Tested</b><br/>Foam‑in‑Case Shipping</div>
-    <div class="chip">“Build quality is insane. Temps are great and it’s quiet.” — M. Diaz</div>
-  </section>
+    <form action="https://formspree.io/f/xrblokly" method="POST">
+      <label for="name">Your Name</label>
+      <input type="text" id="name" name="name" required>
 
-  <section class="card pad" aria-label="Contact form">
-    <h2 style="margin:0 0 8px;font-size:18px">Send us a note</h2>
-    <form id="contactForm" action="/thank-you.html" method="get" novalidate>
-      <div class="form-grid">
-        <div>
-          <label for="name">Your Name</label>
-          <input class="input" id="name" name="name" required placeholder="Your name" />
-        </div>
-        <div>
-          <label for="email">Email</label>
-          <input class="input" id="email" name="email" type="email" required placeholder="you@domain.com" />
-        </div>
-      </div>
-      <div class="row">
-        <label for="message">Message</label>
-        <textarea id="message" name="message" class="input" placeholder="How can we help?"></textarea>
-      </div>
-      <div class="actions">
-        <button class="btn primary" type="submit">Send</button>
-        <a class="btn" href="/contact.html?priority=Balance" id="requestBtn">Request a Custom PC</a>
-      </div>
+      <label for="email">Your Email</label>
+      <input type="email" id="email" name="_replyto" required>
+
+      <label for="message">Your Message</label>
+      <textarea id="message" name="message" rows="6" required></textarea>
+
+      <input type="submit" value="Send Message">
     </form>
-  </section>
-
-  <section class="card pad" style="margin-top:12px" aria-label="Recent work">
-    <h2 style="margin:0 0 8px;font-size:14px;letter-spacing:.2px;color:var(--muted)">RECENT WORK</h2>
-    <div class="gallery">
-      <img class="gimg" src="/assets/gallery/desk-phones.jpg" alt="Customer using quiet PC with headphones" loading="lazy" />
-      <img class="gimg" src="/assets/gallery/meeting.jpg" alt="Workstation build in meeting room" loading="lazy" />
-      <img class="gimg" src="/assets/gallery/rig-bloom.jpg" alt="Close-up of clean cable management" loading="lazy" />
-    </div>
-  </section>
-
-  <section class="card pad" style="margin-top:12px" aria-label="Track a shipment">
-    <h2 style="margin:0 0 6px;font-size:14px;letter-spacing:.2px;color:var(--muted)">TRACK A SHIPMENT</h2>
-    <div class="track">
-      <input id="tracking" class="input" placeholder="Enter FedEx tracking number" />
-      <button id="trackBtn" class="btn">Track</button>
-    </div>
-    <p class="subtitle" style="margin-top:8px">Opens FedEx in a <strong>new tab</strong>.</p>
-  </section>
-
-  <section class="card pad cta-card" style="margin-top:14px" aria-label="Tailored build CTA">
-    <h2 style="margin:0">Want a tailored build instead?</h2>
-    <p class="subtitle" style="margin:6px 0 0">We’ll design, assemble, stress‑test, and ship your perfect PC.</p>
-    <a class="btn primary" href="/builds.html">Start my build</a>
-  </section>
-</main>
-
-<footer>
-  © <span id="y"></span> CustomPC.tech • Data‑driven builds without the noise.
-</footer>
-
-<script>
-  // Prefill basic fields if called from Quick Request on other pages
-  (function(){
-    const p = new URLSearchParams(location.search);
-    ['name','email'].forEach(id=>{ if(p.has(id)){ const el = document.getElementById(id); if(el) el.value = p.get(id); }});
-  })();
-
-  // Simple required validation
-  document.getElementById('contactForm').addEventListener('submit', function(e){
-    const need = ['name','email'];
-    let ok = true;
-    need.forEach(id=>{ const el = document.getElementById(id); if(!el.value.trim()){ el.style.borderColor = '#ff6b6b'; ok=false } else { el.style.borderColor = 'var(--border)'; }});
-    if(!ok){ e.preventDefault(); alert('Please provide your name and a valid email.'); }
-  });
-
-  // Track button -> open FedEx with tracking number
-  document.getElementById('trackBtn').addEventListener('click', function(){
-    const num = document.getElementById('tracking').value.trim();
-    if(!num){ alert('Enter a FedEx tracking number.'); return; }
-    const url = `https://www.fedex.com/fedextrack/?trknbr=${encodeURIComponent(num)}`;
-    window.open(url, '_blank', 'noopener');
-  });
-</script>
+  </div>
 </body>
 </html>
