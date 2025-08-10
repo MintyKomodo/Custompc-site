@@ -1,429 +1,243 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Build Suggestions – CustomPC.tech</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <title>Inspiration Builds | CustomPC.tech</title>
+  <meta name="description" content="Example PC configurations we’ve built for clients. Use these as starting points, then customize to your budget and workload." />
+  <link rel="canonical" href="https://custompc.tech/builds" />
   <style>
-    /* Page heading */
-    .lead {
-      max-width: 980px; margin: 0 auto 10px; padding: 10px 14px;
-      background: rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08);
-      border-radius: 12px;
+    :root{
+      --bg:#0b0f1a; --ink:#e8eefc; --muted:#b9c4dd;
+      --panel:#11182a; --panel2:#0c1324; --border:rgba(255,255,255,.08);
+      --brand:#7db2ff; --brand2:#7cf2e6; --accent:#c3ff6a;
+      --radius:16px; --shadow:0 10px 28px rgba(0,0,0,.35); --max:1100px;
     }
+    html,body{height:100%}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica Neue,Arial;color:var(--ink);background:radial-gradient(1200px 600px at 10% -10%, #152041 0%, transparent 60%),radial-gradient(900px 500px at 90% 10%, #0c233b 0%, transparent 65%),var(--bg);line-height:1.55}
+    a{color:var(--brand);text-decoration:none}
+    a:hover{text-decoration:underline}
+    .wrap{max-width:var(--max);margin:0 auto;padding:24px}
 
-    /* Controls */
-    .controls { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin:8px 0 12px; }
-    .controls .btn { min-width:140px; }
-    .filters { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:0 0 10px; }
-    .filters select {
-      padding:8px 10px; border-radius:10px; border:1px solid rgba(255,255,255,.12);
-      background:rgba(0,0,0,.28); color:#e9eefc;
+    header{position:sticky;top:0;z-index:50;backdrop-filter:blur(10px);background:linear-gradient(180deg,rgba(11,15,26,.9),rgba(11,15,26,.65));border-bottom:1px solid var(--border)}
+    .nav{display:flex;align-items:center;justify-content:space-between}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:700}
+    .brand img{width:36px;height:36px;border-radius:10px;box-shadow:var(--shadow)}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 16px;border-radius:999px;border:1px solid var(--border);background:transparent;color:var(--ink);box-shadow:var(--shadow)}
+    .btn-primary{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#06101f;border-color:transparent}
+
+    .lede{background:#6a7386; color:#fff; border-radius:12px; padding:16px 18px; box-shadow:var(--shadow)}
+    .lede h1{margin:0 0 6px 0;font-size:28px}
+    .lede p{margin:0;font-size:14px}
+
+    .grid{display:grid;grid-template-columns:1fr;gap:20px;margin-top:20px}
+
+    .build{display:grid;grid-template-columns: 1.1fr .9fr;gap:22px;background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .pad{padding:18px}
+    .media{padding:18px}
+    .media img{width:100%;height:auto;border-radius:10px;border:1px solid var(--border);box-shadow:var(--shadow)}
+
+    .titleRow{display:flex;align-items:flex-end;justify-content:space-between;margin:0 0 8px 0}
+    h2{margin:0;font-size:24px}
+    .price{color:#fff;font-weight:800}
+    .price small{display:block;color:var(--muted);font-weight:600;text-align:right;line-height:1}
+
+    .desc{color:var(--ink);opacity:.95;margin:0 0 12px}
+
+    .specs{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:#0e1322;border:1px solid var(--border);border-radius:12px;padding:12px}
+    .pill{background:#0b1020;border:1px solid var(--border);border-radius:10px;padding:10px;font-size:14px}
+    .pill strong{display:block;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+
+    .fps{margin-top:12px;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+    .fps table{width:100%;border-collapse:collapse;background:#0b1020}
+    .fps caption{padding:10px;font-weight:700;text-align:left;background:#0e1322}
+    .fps th,.fps td{padding:10px;border-top:1px solid var(--border);font-size:14px}
+    .fps th{background:#0e1426;text-align:left}
+
+    .cta{margin-top:14px;display:flex;justify-content:flex-end}
+
+    .note{color:var(--muted);font-size:12px;margin-top:8px}
+
+    @media (max-width:980px){
+      .build{grid-template-columns:1fr}
+      .titleRow{align-items:flex-start}
+      .price{font-size:18px}
     }
-
-    /* Suggestion cards grid */
-    .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
-    @media (max-width:980px){ .grid { grid-template-columns:repeat(2,1fr); } }
-    @media (max-width:640px){ .grid { grid-template-columns:1fr; } }
-
-    .suggest {
-      position:relative; border:1px solid rgba(255,255,255,.08);
-      border-radius:14px; overflow:hidden; background:linear-gradient(180deg, rgba(6,10,18,.70), rgba(10,22,46,.70));
-      transition:transform .12s ease, box-shadow .2s ease;
-    }
-    .suggest:hover { transform: translateY(-2px); box-shadow:0 16px 40px rgba(0,0,0,.40); }
-    .suggest img { width:100%; height:190px; object-fit:cover; display:block; }
-    .suggest .pad { padding:12px; }
-    .suggest .kicker { letter-spacing:.12em; text-transform:uppercase; font-size:12px; opacity:.75 }
-    .suggest .title { font-size:18px; font-weight:700; margin:6px 0 4px; }
-    .suggest .pitch { opacity:.88; font-size:14px; min-height:42px; }
-    .suggest .foot { display:flex; justify-content:space-between; align-items:center; margin-top:8px; }
-    .startat { text-align:right; font-size:12px; opacity:.85 }
-    .startat .price { display:block; font-size:16px; font-weight:700; opacity:1 }
-
-    /* Modal — dark, two-column suggestion detail */
-    .modal { position:fixed; inset:0; background:rgba(0,0,0,.6); display:none; align-items:center; justify-content:center; padding:16px; z-index:90; }
-    .modal.open { display:flex; }
-    .modal-card {
-      width:100%; max-width:1100px; border-radius:14px; overflow:hidden;
-      background: linear-gradient(180deg, #0a0f1c 0%, #0e1b3b 100%);
-      color:#e5e7eb; border:1px solid rgba(255,255,255,.08); box-shadow:0 18px 60px rgba(0,0,0,.5);
-    }
-    .modal-topbar {
-      display:flex; justify-content:space-between; align-items:center;
-      padding:10px 14px; background:rgba(0,0,0,.25); border-bottom:1px solid rgba(255,255,255,.08);
-    }
-    .modal-close { border:1px solid rgba(255,255,255,.15); background:transparent; color:#e5e7eb; border-radius:10px; padding:6px 10px; cursor:pointer; }
-
-    .modal-body { display:grid; grid-template-columns:1.05fr 1.25fr; gap:0; }
-    @media (max-width:980px){ .modal-body { grid-template-columns:1fr; } }
-
-    .modal-media { width:100%; height:100%; min-height:340px; background:#000; object-fit:cover; display:block; }
-    .pane { padding:16px; }
-
-    .detail-head { display:flex; justify-content:space-between; align-items:flex-end; gap:10px; }
-    .detail-head h2 { margin:0; }
-    .detail-price { text-align:right; font-size:13px; }
-    .detail-price .price { display:block; font-size:18px; font-weight:700; }
-
-    .panel-box { margin-top:12px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08); border-radius:10px; padding:12px; }
-    .specs-list { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-    .spec-row { border:1px solid rgba(255,255,255,.08); border-radius:10px; padding:8px; background:rgba(255,255,255,.02); font-size:14px; }
-    @media (max-width:760px){ .specs-list { grid-template-columns:1fr; } }
-
-    .fps table { width:100%; border-collapse:collapse; }
-    .fps th,.fps td { padding:8px 10px; border-bottom:1px solid rgba(255,255,255,.06); text-align:left; font-size:14px; }
-    .fps tr:last-child td { border-bottom:none; }
-    .fineprint { font-size:12px; opacity:.75; margin-top:6px; }
-
-    .actions { display:flex; gap:10px; margin-top:14px; }
-    .btn.secondary { opacity:.9; }
-
-    /* Bottom CTA */
-    .cta-bottom { padding:16px; max-width:980px; margin:16px auto; border:1px solid rgba(255,255,255,.08); border-radius:12px; background:rgba(0,0,0,.28); text-align:center; }
   </style>
 </head>
 <body>
-  <nav>
-    <a href="index.html">Contact</a>
-    <a href="custom.html">Custom PC</a>
-    <a href="about.html">About</a>
-    <a href="builds.html">Builds</a>
-    <a href="cart.html">Cart</a>
-    <span id="nav-user" class="hidden"></span>
-    <a id="nav-login" href="login.html">Log In</a>
-    <a id="nav-signup" href="signup.html">Sign Up</a>
-    <a id="nav-logout" class="hidden" href="javascript:void(0)">Log Out</a>
-  </nav>
-
-  <div class="container">
-    <h1>Build Suggestions</h1>
-    <div class="lead">
-      These are example configurations we’ve built and tested. Use any suggestion as a **starting point**
-      and we’ll tailor parts to your budget, games, and style.
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="/"><img src="/assets/logo.png" alt="CustomPC.tech logo"/> <span>CustomPC.tech</span></a>
+      <nav style="display:flex;gap:8px">
+        <a class="btn" href="/custom.html">Custom</a>
+        <a class="btn" href="/about.html">About</a>
+        <a class="btn btn-primary" href="/contact.html">Contact</a>
+      </nav>
     </div>
+  </header>
 
-    <div class="controls">
-      <button id="btn-amd" class="btn" onclick="setBrand('amd')">AMD Suggestions</button>
-      <button id="btn-intel" class="btn" onclick="setBrand('intel')">Intel Suggestions</button>
-    </div>
+  <main class="wrap">
+    <section class="lede" aria-label="Inspiration header">
+      <h1>Need Some Inspiration?</h1>
+      <p>We build every PC to order and to your exact specs. Below are example configurations we’ve delivered for clients. Use any model as a starting point and customize it to your needs.</p>
+    </section>
 
-    <div class="filters">
-      <select id="filterUse">
-        <option value="all" selected>All use cases</option>
-        <option value="Gaming">Gaming</option>
-        <option value="Creator">Creator</option>
-        <option value="Esports">Esports</option>
-        <option value="Value">Best Value</option>
-      </select>
-      <select id="filterPrice">
-        <option value="all" selected>All prices</option>
-        <option value="0-1000">Under $1,000</option>
-        <option value="1000-2000">$1,000–$2,000</option>
-        <option value="2000-3500">$2,000–$3,500</option>
-        <option value="3500-999999">$3,500+</option>
-      </select>
-    </div>
+    <section class="grid" aria-label="Build list">
 
-    <div id="grid" class="grid"></div>
+      <!-- Build 1: Overkill PC (AMD) -->
+      <article class="build" id="overkill-amd">
+        <div class="media"><img src="/assets/builds/overkill-amd.jpg" alt="Overkill PC AMD build with premium airflow case" loading="lazy"></div>
+        <div class="pad">
+          <div class="titleRow">
+            <h2>OVERKILL PC (AMD)</h2>
+            <div class="price"><small>starting at</small> $1,890</div>
+          </div>
+          <p class="desc">Built for high‑performance gaming, video creation, and computational modeling. Top‑tier thermals and acoustics with clear upgrade headroom.</p>
 
-    <div class="cta-bottom">
-      <h2 style="margin:0 0 8px;">Want something unique?</h2>
-      <p style="opacity:.85;margin:0 0 10px">We’ll design, assemble, stress-test, and ship your perfect PC.</p>
-      <a class="btn" href="custom.html">Start my custom build</a>
-    </div>
-  </div>
-
-  <!-- Suggestion detail modal -->
-  <div class="modal" id="pcModal" aria-hidden="true">
-    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="pcTitle">
-      <div class="modal-topbar">
-        <div class="kicker">Suggestion Details</div>
-        <button class="modal-close" id="pcCloseBtn">Close</button>
-      </div>
-
-      <div class="modal-body">
-        <div>
-          <img id="pcImg" class="modal-media" alt="PC build preview">
-        </div>
-
-        <div class="pane">
-          <div class="detail-head">
-            <h2 id="pcTitle"></h2>
-            <div class="detail-price">starting at<br><span id="pcPrice" class="price"></span></div>
+          <div class="specs" role="list" aria-label="Example specifications">
+            <div class="pill" role="listitem"><strong>CPU</strong> Ryzen 9 7950X</div>
+            <div class="pill" role="listitem"><strong>GPU</strong> GeForce RTX 5090</div>
+            <div class="pill" role="listitem"><strong>RAM</strong> 64GB DDR5‑6000</div>
+            <div class="pill" role="listitem"><strong>Storage</strong> 2TB + 4TB NVMe</div>
+            <div class="pill" role="listitem"><strong>Cooling</strong> 360mm AIO</div>
+            <div class="pill" role="listitem"><strong>PSU</strong> 1000W Gold</div>
+            <div class="pill" role="listitem"><strong>Case</strong> Premium airflow mid‑tower</div>
+            <div class="pill" role="listitem"><strong>Board</strong> X670E, Wi‑Fi 6E</div>
           </div>
 
-          <p id="pcDesc" style="opacity:.9; margin:8px 0 10px;"></p>
-
-          <div class="panel-box">
-            <div class="kicker" style="margin-bottom:6px;">Example specifications</div>
-            <div class="specs-list" id="pcSpecs"></div>
-          </div>
-
-          <div class="panel-box fps" id="pcFps" style="display:none;">
+          <div class="fps">
             <table>
+              <caption>Built for everything maxed: 4K ray tracing, heavy editing, and AI.</caption>
               <thead>
                 <tr><th>Game</th><th>1080p</th><th>1440p</th><th>4K</th></tr>
               </thead>
-              <tbody id="pcFpsBody"></tbody>
+              <tbody>
+                <tr><td>Cyberpunk 2077</td><td>200</td><td>160</td><td>100</td></tr>
+                <tr><td>Fortnite</td><td>360</td><td>300</td><td>180</td></tr>
+                <tr><td>Valorant</td><td>520</td><td>450</td><td>260</td></tr>
+              </tbody>
             </table>
-            <div class="fineprint">
-              FPS values are illustrative estimates for typical settings. Actual performance varies by title and configuration.
-            </div>
           </div>
 
-          <div id="pcCredit" class="fineprint"></div>
-
-          <div class="actions">
-            <a class="btn" id="pcUseBtn" href="custom.html">Use this suggestion</a>
-            <button class="btn secondary" id="pcAddBtn">Add to cart</button>
+          <p class="note">FPS values are illustrative estimates for typical settings. Actual performance varies by title and configuration.</p>
+          <div class="cta">
+            <a class="btn btn-primary" href="/contact.html?model=overkill-amd">Start Your Build →</a>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
+      </article>
 
-  <script>
-    /* ---------- Data (AMD keeps prior photos; INTEL uses your images) ---------- */
-    const AMD_BUILDS = [
-      { id:'amd-4k', title:'4K Gaming (AMD)', use:'Gaming', tag:'4K Gaming', price:2599,
-        img:'https://images.unsplash.com/photo-1555685812-4b943f1cb0eb?q=80&w=1600&auto=format&fit=crop',
-        imgCredit:'Unsplash',
-        desc:'High-refresh 4K with frame generation and upscaling. Quiet fan curves, excellent temps.',
-        why:'7800X3D excels in game latency; paired with a next-gen GPU for 4K headroom.',
-        specs:[['CPU','Ryzen 7 7800X3D'],['GPU','GeForce RTX 5080'],['RAM','32GB DDR5-6000'],['Storage','2TB NVMe Gen4'],['Cooling','360mm AIO'],['PSU','850W Gold'],['Case','Airflow chassis']],
-        fps:{ 'Cyberpunk 2077':[160,120,75], 'Fortnite':[300,240,140], 'Valorant':[450,380,210] } },
-      { id:'amd-over', title:'Overkill (AMD)', use:'Gaming', tag:'Extreme', price:4499,
-        img:'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=1600&auto=format&fit=crop',
-        imgCredit:'Unsplash',
-        desc:'Everything maxed: 4K ray tracing, heavy editing, and AI. Top-tier thermals and acoustics.',
-        why:'7950X gives creator performance; paired with a flagship GPU for uncompromised gaming.',
-        specs:[['CPU','Ryzen 9 7950X'],['GPU','GeForce RTX 5090'],['RAM','64GB DDR5-6000'],['Storage','2TB + 4TB NVMe'],['Cooling','360mm AIO'],['PSU','1000W Gold'],['Case','Premium airflow']],
-        fps:{ 'Cyberpunk 2077':[200,160,100], 'Fortnite':[360,300,180], 'Valorant':[520,450,260] } },
-      { id:'amd-creator', title:'Creator Pro (AMD)', use:'Creator', tag:'Creator', price:2999,
-        img:'https://images.pexels.com/photos/777001/pexels-photo-777001.jpeg?auto=compress&cs=tinysrgb&w=1600',
-        imgCredit:'Pexels',
-        desc:'Optimized for Adobe/Resolve/Blender with fast cache disks and studio drivers.',
-        why:'Many cores with strong boost; NVMe scratch improves timelines and renders.',
-        specs:[['CPU','Ryzen 9 7950X'],['GPU','GeForce RTX 5080'],['RAM','64GB DDR5-6000'],['Storage','2TB 990 PRO'],['Cooling','360mm AIO'],['Scratch','Separate cache/scratch']],
-        fps:null },
-      { id:'amd-budget', title:'Budget Gaming (AMD)', use:'Value', tag:'Best Value', price:899,
-        img:'https://images.pexels.com/photos/160107/pexels-photo-160107.jpeg?auto=compress&cs=tinysrgb&w=1600',
-        imgCredit:'Pexels',
-        desc:'1080p high settings with an easy upgrade path.',
-        why:'Ryzen 5 + RTX 4060 hits popular titles comfortably; drop-in GPU upgrades later.',
-        specs:[['CPU','Ryzen 5 5600'],['GPU','GeForce RTX 4060'],['RAM','16GB DDR4'],['Storage','1TB NVMe'],['Cooling','Tower Air'],['PSU','650W Bronze']],
-        fps:{ 'Fortnite':[220,170,90], 'Valorant':[380,300,160] } },
-      { id:'amd-creator-budget', title:'Budget Creator (AMD)', use:'Creator', tag:'Creator', price:699,
-        img:'https://images.unsplash.com/photo-1544731612-de7f96afe55f?q=80&w=1600&auto=format&fit=crop',
-        imgCredit:'Unsplash',
-        desc:'Great starter for light editing and content creation with GPU acceleration.',
-        why:'APU or entry GPU keeps cost down while enabling GPU-accelerated effects.',
-        specs:[['CPU','Ryzen 5 5600G'],['GPU','GeForce RTX 3050'],['RAM','16GB DDR4'],['Storage','512GB NVMe']],
-        fps:null },
-      { id:'amd-esports', title:'Esports Pro (AMD)', use:'Esports', tag:'Esports', price:999,
-        img:'https://images.unsplash.com/photo-1545235617-9465d2a55698?q=80&w=1600&auto=format&fit=crop',
-        imgCredit:'Unsplash',
-        desc:'Low input lag and consistent high FPS for competitive titles.',
-        why:'Balanced CPU/GPU with high-refresh tuning for smooth frame times.',
-        specs:[['CPU','Ryzen 5 7600'],['GPU','GeForce RTX 4060'],['RAM','16GB DDR5'],['Storage','1TB NVMe']],
-        fps:{ 'Fortnite':[260,210,120], 'Valorant':[420,350,190] } }
-    ];
-
-    /* ---- INTEL with your images (place files in /images/) ---- */
-    const INTEL_BUILDS = [
-      { id:'intel-over', title:'Overkill (Intel)', use:'Gaming', tag:'Extreme', price:4599,
-        img:'images/intel-overkill.png', /* wood-panel RGB tower */
-        imgCredit:'Provided',
-        desc:'For the “everything on ultra” crowd. Also crushes editing and multi-task workloads.',
-        why:'14900K + flagship GPU for max FPS; oversized cooling for quiet turbo behavior.',
-        specs:[['CPU','Core i9-14900K'],['GPU','GeForce RTX 5090'],['RAM','64GB DDR5-6000'],['Storage','2TB + 4TB NVMe'],['Cooling','360mm AIO'],['PSU','1000W Gold']],
-        fps:{ 'Cyberpunk 2077':[205,165,102], 'Fortnite':[370,305,185], 'Valorant':[530,460,265] } },
-
-      { id:'intel-4k', title:'4K Gaming (Intel)', use:'Gaming', tag:'4K Gaming', price:2699,
-        img:'images/intel-4k.png', /* white Phanteks */
-        imgCredit:'Provided',
-        desc:'Fantastic 4K gaming with frame generation, tuned for low noise.',
-        why:'14700K gives strong boost with efficiency cores for background tasks.',
-        specs:[['CPU','Core i7-14700K'],['GPU','GeForce RTX 5080'],['RAM','32GB DDR5-6000'],['Storage','2TB NVMe'],['Cooling','360mm AIO'],['PSU','850W Gold']],
-        fps:{ 'Cyberpunk 2077':[165,125,78], 'Fortnite':[310,250,145], 'Valorant':[460,390,215] } },
-
-      { id:'intel-creator', title:'Creator Pro (Intel)', use:'Creator', tag:'Creator', price:3099,
-        img:'images/intel-creator.png', /* black tower, green lighting */
-        imgCredit:'Provided',
-        desc:'Optimized for Adobe/Resolve with tuned scratch disks and studio-ready drivers.',
-        why:'High boost clocks matter for timeline fluidity; NVMe scratch accelerates caching.',
-        specs:[['CPU','Core i9-14900K'],['GPU','GeForce RTX 5080'],['RAM','64GB DDR5-6000'],['Storage','2TB 990 PRO'],['Cooling','360mm AIO']],
-        fps:null },
-
-      { id:'intel-value', title:'Budget Gaming (Intel)', use:'Value', tag:'Best Value', price:929,
-        img:'images/intel-value.png', /* white cube build */
-        imgCredit:'Provided',
-        desc:'Solid 1080p experience with an easy path to 1440p via future GPU upgrade.',
-        why:'12400F keeps costs low; RTX 4060 handles popular titles well.',
-        specs:[['CPU','Core i5-12400F'],['GPU','GeForce RTX 4060'],['RAM','16GB DDR4'],['Storage','1TB NVMe']],
-        fps:{ 'Fortnite':[225,175,95], 'Valorant':[390,310,165] } },
-
-      { id:'intel-creator-budget', title:'Budget Creator (Intel)', use:'Creator', tag:'Creator', price:719,
-        img:'images/intel-creator-budget.png', /* Thermaltake angled-front white */
-        imgCredit:'Provided',
-        desc:'Entry creative rig for photo/light video with room to grow.',
-        why:'13400F + entry GPU make a very capable creator starter.',
-        specs:[['CPU','Core i5-13400F'],['GPU','GeForce RTX 3050'],['RAM','16GB DDR4'],['Storage','512GB NVMe']],
-        fps:null },
-
-      { id:'intel-esports', title:'Esports Pro (Intel)', use:'Esports', tag:'Esports', price:1049,
-        img:'images/intel-esports.png', /* square RGB cube */
-        imgCredit:'Provided',
-        desc:'High-FPS esports tuning with consistent frame times and quiet acoustics.',
-        why:'14500 + 4060, tuned for low input latency and stable high refresh.',
-        specs:[['CPU','Core i5-14500'],['GPU','GeForce RTX 4060'],['RAM','16GB DDR5'],['Storage','1TB NVMe']],
-        fps:{ 'Fortnite':[265,215,122], 'Valorant':[425,355,195] } }
-    ];
-
-    /* ---------- State & rendering ---------- */
-    let BRAND = 'amd';
-    let FILTER_USE = 'all';
-    let FILTER_PRICE = 'all';
-
-    function data(){ return BRAND==='amd' ? AMD_BUILDS.slice() : INTEL_BUILDS.slice(); }
-
-    function applyFilters(arr){
-      if (FILTER_USE !== 'all') arr = arr.filter(b => b.use === FILTER_USE || (FILTER_USE==='Value' && b.tag.includes('Value')));
-      if (FILTER_PRICE !== 'all') {
-        const [min,max] = FILTER_PRICE.split('-').map(Number);
-        arr = arr.filter(b => b.price >= min && b.price <= max);
-      }
-      return arr;
-    }
-
-    function renderGrid(){
-      const root = document.getElementById('grid');
-      root.innerHTML = '';
-      applyFilters(data()).forEach(b=>{
-        const card = document.createElement('div'); card.className='suggest';
-        const img = document.createElement('img'); img.src=b.img; img.alt=b.title; img.loading='lazy'; img.decoding='async';
-        const pad = document.createElement('div'); pad.className='pad';
-        pad.innerHTML = `
-          <div class="kicker">${b.tag}</div>
-          <div class="title">${b.title}</div>
-          <div class="pitch">${b.desc}</div>
-          <div class="foot">
-            <button class="btn" onclick="openModal('${b.id}')">View suggestion</button>
-            <div class="startat">starting at <span class="price">$${b.price.toLocaleString()}</span></div>
+      <!-- Build 2: Creator PC (Intel) -->
+      <article class="build" id="creator-intel">
+        <div class="media"><img src="/assets/builds/creator-intel.jpg" alt="Creator workstation PC with Intel CPU and quiet cooling" loading="lazy"></div>
+        <div class="pad">
+          <div class="titleRow">
+            <h2>CREATOR PC (INTEL)</h2>
+            <div class="price"><small>starting at</small> $1,650</div>
           </div>
-        `;
-        card.appendChild(img); card.appendChild(pad);
-        root.appendChild(card);
-      });
-    }
+          <p class="desc">Quiet workstation tuned for Adobe Suite, Resolve, Blender, and coding. Color‑accurate outputs and fast scratch storage.</p>
 
-    function setBrand(b){
-      BRAND = b;
-      document.getElementById('btn-amd')?.classList.toggle('active', BRAND==='amd');
-      document.getElementById('btn-intel')?.classList.toggle('active', BRAND==='intel');
-      renderGrid();
-    }
+          <div class="specs" role="list" aria-label="Example specifications">
+            <div class="pill" role="listitem"><strong>CPU</strong> Intel Core i7‑14700K</div>
+            <div class="pill" role="listitem"><strong>GPU</strong> GeForce RTX 4080 Super</div>
+            <div class="pill" role="listitem"><strong>RAM</strong> 64GB DDR5‑6000</div>
+            <div class="pill" role="listitem"><strong>Storage</strong> 2TB Gen4 NVMe + 2TB project drive</div>
+            <div class="pill" role="listitem"><strong>Cooling</strong> Dual 140mm towers (quiet)</div>
+            <div class="pill" role="listitem"><strong>PSU</strong> 850W Gold</div>
+            <div class="pill" role="listitem"><strong>Case</strong> Silence‑focused mid‑tower</div>
+            <div class="pill" role="listitem"><strong>I/O</strong> Thunderbolt 4 (board dependent)</div>
+          </div>
 
-    document.getElementById('filterUse').addEventListener('change', e=>{ FILTER_USE = e.target.value; renderGrid(); });
-    document.getElementById('filterPrice').addEventListener('change', e=>{ FILTER_PRICE = e.target.value; renderGrid(); });
+          <div class="fps">
+            <table>
+              <caption>Great balance: 4K timeline fluency and fast renders.</caption>
+              <thead>
+                <tr><th>Task</th><th>Relative speed*</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Premiere Pro 4K export</td><td>1.0× baseline → 1.6× with GPU accel</td></tr>
+                <tr><td>DaVinci Resolve NR</td><td>Smooth up to UHD; 6–8 nodes typical</td></tr>
+                <tr><td>Blender Cycles</td><td>~2.1× faster than last‑gen midrange</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="note">*Relative to prior‑gen mainstream creator PCs we’ve built with similar budgets.</p>
+          <div class="cta">
+            <a class="btn btn-primary" href="/contact.html?model=creator-intel">Start Your Build →</a>
+          </div>
+        </div>
+      </article>
 
-    /* ---------- Modal logic ---------- */
-    const modal = document.getElementById('pcModal');
-    const mImg  = document.getElementById('pcImg');
-    const mTitle= document.getElementById('pcTitle');
-    const mPrice= document.getElementById('pcPrice');
-    const mSpecs= document.getElementById('pcSpecs');
-    const mDesc = document.getElementById('pcDesc');
-    const mFps  = document.getElementById('pcFps');
-    const mFpsBody = document.getElementById('pcFpsBody');
-    const mCredit = document.getElementById('pcCredit');
-    const mClose= document.getElementById('pcCloseBtn');
-    const mAdd  = document.getElementById('pcAddBtn');
-    const mUse  = document.getElementById('pcUseBtn');
+      <!-- Build 3: Esports 1080p -->
+      <article class="build" id="esports-1080p">
+        <div class="media"><img src="/assets/builds/esports.jpg" alt="Compact esports PC" loading="lazy"></div>
+        <div class="pad">
+          <div class="titleRow">
+            <h2>ESPORTS (1080p)</h2>
+            <div class="price"><small>starting at</small> $890</div>
+          </div>
+          <p class="desc">High‑FPS competitive gaming at 1080p/1440p with an easy upgrade path to 4K later.</p>
 
-    function allBuilds(){ return [...AMD_BUILDS, ...INTEL_BUILDS]; }
-    function openModal(id){
-      const b = allBuilds().find(x=>x.id===id); if(!b) return;
-      mImg.src = b.img;
-      mTitle.textContent = b.title;
-      mPrice.textContent = '$' + b.price.toLocaleString();
-      mDesc.textContent = b.why || b.desc || '';
+          <div class="specs" role="list" aria-label="Example specifications">
+            <div class="pill" role="listitem"><strong>CPU</strong> Ryzen 5 7600</div>
+            <div class="pill" role="listitem"><strong>GPU</strong> Radeon RX 7700 XT</div>
+            <div class="pill" role="listitem"><strong>RAM</strong> 32GB DDR5‑6000</div>
+            <div class="pill" role="listitem"><strong>Storage</strong> 1TB Gen4 NVMe</div>
+            <div class="pill" role="listitem"><strong>Cooling</strong> 120mm tower</div>
+            <div class="pill" role="listitem"><strong>PSU</strong> 650W Gold</div>
+            <div class="pill" role="listitem"><strong>Case</strong> Compact airflow ATX</div>
+            <div class="pill" role="listitem"><strong>Board</strong> B650, Wi‑Fi 6</div>
+          </div>
 
-      mSpecs.innerHTML = b.specs.map(([k,v])=>`<div class="spec-row"><strong>${k}:</strong> ${v}</div>`).join('');
+          <div class="fps">
+            <table>
+              <caption>Target: 240+ FPS in esports titles; strong 1440p in AAA on high.</caption>
+              <thead>
+                <tr><th>Game</th><th>1080p</th><th>1440p</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Valorant</td><td>300+</td><td>240+</td></tr>
+                <tr><td>Apex Legends</td><td>200</td><td>160</td></tr>
+                <tr><td>Fortnite (Performance)</td><td>260</td><td>200</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="cta">
+            <a class="btn btn-primary" href="/contact.html?model=esports-1080p">Start Your Build →</a>
+          </div>
+        </div>
+      </article>
 
-      if (b.fps) {
-        mFps.style.display = 'block';
-        mFpsBody.innerHTML = Object.entries(b.fps).map(
-          ([game,[f1080,f1440,f4k]]) => `<tr><td>${game}</td><td>${f1080}</td><td>${f1440}</td><td>${f4k ?? '—'}</td></tr>`
-        ).join('');
-      } else { mFps.style.display='none'; mFpsBody.innerHTML=''; }
+      <!-- Build 4: Quiet SFF -->
+      <article class="build" id="quiet-sff">
+        <div class="media"><img src="/assets/builds/quiet-sff.jpg" alt="Small form factor quiet PC" loading="lazy"></div>
+        <div class="pad">
+          <div class="titleRow">
+            <h2>QUIET SFF</h2>
+            <div class="price"><small>starting at</small> $1,250</div>
+          </div>
+          <p class="desc">Small‑form‑factor system for living‑room or studio use—low noise, low temps, zero RGB if you want it.</p>
 
-      mCredit.textContent = b.imgCredit ? `Photo: ${b.imgCredit}` : '';
+          <div class="specs" role="list" aria-label="Example specifications">
+            <div class="pill" role="listitem"><strong>CPU</strong> Ryzen 7 7800X3D</div>
+            <div class="pill" role="listitem"><strong>GPU</strong> GeForce RTX 4070 Super (short)</div>
+            <div class="pill" role="listitem"><strong>RAM</strong> 32GB DDR5‑6000</div>
+            <div class="pill" role="listitem"><strong>Storage</strong> 2TB Gen4 NVMe</div>
+            <div class="pill" role="listitem"><strong>Cooling</strong> Low‑profile air with tuned curve</div>
+            <div class="pill" role="listitem"><strong>PSU</strong> 750W SFX Gold</div>
+            <div class="pill" role="listitem"><strong>Case</strong> 10–14L SFF case</div>
+            <div class="pill" role="listitem"><strong>Thermals</strong> Optimized intake/exhaust paths</div>
+          </div>
 
-      // Prefill custom form via hash notes
-      const notes = encodeURIComponent(
-        `[Suggestion]\n${b.title}\nStarting at: $${b.price}\n\nSpecs:\n` +
-        b.specs.map(([k,v])=>`- ${k}: ${v}`).join('\n')
-      );
-      mUse.href = `custom.html#customPCForm?notes=${notes}`;
+          <div class="cta">
+            <a class="btn btn-primary" href="/contact.html?model=quiet-sff">Start Your Build →</a>
+          </div>
+        </div>
+      </article>
 
-      mAdd.onclick = ()=>addToCart(b.title, b.price);
+    </section>
 
-      modal.classList.add('open'); modal.setAttribute('aria-hidden','false');
-    }
-    function closeModal(){ modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); }
-    mClose.addEventListener('click', closeModal);
-    modal.addEventListener('click', (e)=>{ if(e.target===modal) closeModal(); });
-    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && modal.classList.contains('open')) closeModal(); });
-
-    /* ---------- Cart helpers (cloud if logged in, local fallback) ---------- */
-    async function waitAuthReady(ms=4000){
-      try { await Promise.race([ (window.__authReady ?? Promise.resolve()), new Promise((_,rej)=>setTimeout(()=>rej(new Error('auth-timeout')), ms)) ]); } catch {}
-    }
-    function localAdd(item){
-      const cart = JSON.parse(localStorage.getItem('cart')||'[]');
-      const key = `${item.name}::${item.price}`;
-      const map = new Map();
-      for (const it of cart){ const k = `${it.name}::${Number(it.price)}`; map.set(k,(map.get(k)||0)+Number(it.qty||1)); }
-      map.set(key,(map.get(key)||0)+1);
-      const out=[]; for (const [k,q] of map.entries()){ const [n,p]=k.split('::'); out.push({name:n,price:Number(p),qty:q}); }
-      localStorage.setItem('cart', JSON.stringify(out)); return out;
-    }
-    async function syncLocalToCloud(){
-      if (!(window.isLoggedIn && window.currentUser && window.__cartAPI)) return false;
-      try{
-        const { getCloudCart, setCloudCart, mergeCarts } = window.__cartAPI;
-        const uid = window.currentUser.uid;
-        const local = JSON.parse(localStorage.getItem('cart')||'[]');
-        if(!local.length) return true;
-        const cloud = await getCloudCart(uid);
-        const merged = mergeCarts(cloud, local);
-        await setCloudCart(uid, merged);
-        localStorage.removeItem('cart'); return true;
-      }catch(e){ console.warn('[cart] sync local->cloud failed:', e); return false; }
-    }
-    async function addToCart(name, price){
-      const item = { name, price, qty:1 };
-      await waitAuthReady();
-      if (window.isLoggedIn && window.currentUser && window.__cartAPI){
-        try{
-          const { addItemToCloud } = window.__cartAPI;
-          await addItemToCloud(window.currentUser.uid, item);
-          alert(`${name} added to your account cart!`); return;
-        }catch(e){ console.warn('[cart] cloud add failed, fallback to local', e); }
-      }
-      localAdd(item);
-      const synced = await syncLocalToCloud();
-      alert(name + (synced ? ' added to your account cart!' : ' added locally (offline).'));
-    }
-
-    /* ---------- Init ---------- */
-    setBrand('amd');
-  </script>
-
-  <script type="module" src="nav-auth.js"></script>
+    <p class="note">Want a carbon copy of any model? Tell us the name (e.g., “Overkill PC AMD”) on the contact form—then we’ll tweak it for your use‑case.</p>
+  </main>
 </body>
 </html>
