@@ -9,57 +9,79 @@
       --bg:#0a0f1a; --ink:#e9eefc; --muted:#aeb9d4;
       --panel:#111729; --panel2:#0d1426; --border:rgba(255,255,255,.08);
       --accent1:#7db2ff; --accent2:#7cf2e6;
-      --radius:18px; --shadow:0 20px 40px rgba(0,0,0,.35);
-      --max:1200px;
+      --radius:18px; --radius-sm:12px; --shadow:0 20px 40px rgba(0,0,0,.35);
+      --max:1100px;
     }
     *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,Segoe UI,Roboto,Inter,Arial;color:var(--ink);background:radial-gradient(1200px 600px at 50% -10%, #0f162b 8%, transparent 55%), var(--bg);line-height:1.55}
+    body{
+      margin:0;font-family:system-ui,Segoe UI,Roboto,Inter,Arial;color:var(--ink);
+      background:
+        radial-gradient(1200px 600px at 50% -10%, #0f162b 8%, transparent 55%),
+        linear-gradient(#081021, #0a0f1a 40%, #0a0f1a);
+      line-height:1.55
+    }
     .wrap{max-width:var(--max);margin:0 auto;padding:28px}
-    /* Header */
-    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+
+    /* Header/Nav */
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
     .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.3px}
-    .brand .dot{width:10px;height:10px;border-radius:50%;background:linear-gradient(120deg,var(--accent1),var(--accent2));box-shadow:0 0 14px rgba(125,178,255,.6)}
+    .dot{width:10px;height:10px;border-radius:50%;background:linear-gradient(120deg,var(--accent1),var(--accent2));box-shadow:0 0 14px rgba(125,178,255,.6)}
     nav{display:flex;gap:10px}
     .pill{display:inline-block;padding:10px 14px;border-radius:999px;color:var(--ink);text-decoration:none;border:1px solid transparent}
     .pill:hover{background:#0f1830}
     .pill.active{background:linear-gradient(120deg,rgba(125,178,255,.15),rgba(124,242,230,.15));border-color:rgba(255,255,255,.08)}
-    /* Layout */
-    .grid{display:grid;grid-template-columns:1.3fr .9fr;gap:24px}
-    @media (max-width:900px){.grid{grid-template-columns:1fr}}
-    /* Cards */
+
+    /* Title */
+    .page-title{font-size:28px;text-align:center;margin:8px 0 6px}
+    .lead{color:var(--muted);text-align:center;margin:0 0 18px}
+
+    /* Cards / containers */
     .card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
-    .pad{padding:22px}
-    h1{margin:0 0 8px;font-size:28px}
-    .muted{color:var(--muted)}
-    /* Badges row like the mock */
-    .badges{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px}
-    .badge{background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
-    .badge b{display:block;font-size:18px;margin-bottom:2px}
-    /* Form */
+    .panel{background:var(--panel2);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .pad{padding:18px}
+
+    /* Chips row */
+    .chips{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:10px 0 18px}
+    @media (max-width:900px){.chips{grid-template-columns:1fr}}
+    .chip{background:var(--panel2);border:1px solid var(--border);border-radius:14px;padding:14px}
+    .quote{font-style:italic}
+
+    /* Form block */
+    .form-wrap{margin:6px 0 16px}
     form{display:grid;gap:12px}
     .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    @media (max-width:600px){.row{grid-template-columns:1fr}}
-    label{font-weight:600;font-size:.95rem;margin-bottom:6px;display:block}
-    input, textarea, select{
-      width:100%;padding:12px 14px;border-radius:12px;
-      border:1px solid var(--border);background:var(--panel2);color:var(--ink);
-      outline:none
+    @media (max-width:700px){.row{grid-template-columns:1fr}}
+    label{display:block;font-weight:600;margin:0 0 6px}
+    input, textarea{
+      width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--border);
+      background:#0c1426;color:var(--ink);outline:none
     }
     textarea{min-height:140px;resize:vertical}
-    .cta{
-      border:0;cursor:pointer;font-weight:700;padding:12px 16px;border-radius:14px;
-      background:linear-gradient(90deg,var(--accent1),var(--accent2));
-      color:#0b0f1a; box-shadow:0 8px 22px rgba(117,194,255,.25);
-      transition:transform .06s ease
+    .actions{display:flex;justify-content:space-between;align-items:center;gap:12px}
+    .btn{
+      display:inline-block;border:0;cursor:pointer;font-weight:700;padding:10px 14px;border-radius:12px;
+      color:#0b0f1a;background:linear-gradient(90deg,var(--accent1),var(--accent2));box-shadow:0 8px 22px rgba(117,194,255,.25)
     }
-    .cta:active{transform:translateY(1px)}
+    .btn:active{transform:translateY(1px)}
+    .link-btn{font-weight:600;color:var(--ink);text-decoration:none;border:1px solid var(--border);padding:8px 12px;border-radius:10px;background:#0f1830}
     .note{font-size:.9rem;color:var(--muted)}
-    /* FAQ/extra sections if you want them later */
-    .section-title{margin:24px 0 10px;font-size:20px}
-    /* Alerts */
     .alert{display:none;margin-top:10px;padding:12px 14px;border-radius:12px}
     .ok{background:rgba(124,242,230,.12);border:1px solid rgba(124,242,230,.35)}
     .err{background:rgba(255,99,132,.12);border:1px solid rgba(255,99,132,.35)}
+
+    /* Recent work strip */
+    .strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .thumb{position:relative;overflow:hidden;border-radius:12px;border:1px solid var(--border);background:#0c1426;aspect-ratio:16/9}
+    .thumb img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.05)}
+
+    /* Shipment tracker */
+    .track{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
+    .track input{height:44px}
+    .track .go{height:44px;padding:0 16px}
+
+    /* Big CTA */
+    .cta-card{text-align:center;padding:26px;border-radius:var(--radius)}
+    .cta-title{font-size:20px;margin:0 0 4px}
   </style>
 </head>
 <body>
@@ -73,93 +95,86 @@
       </nav>
     </header>
 
-    <div class="grid">
-      <!-- Left: Intro card with badges (matches your style) -->
-      <section class="card pad">
-        <h1>Get a Custom PC Plan — No Guesswork</h1>
-        <p class="muted">Tell us your budget and what you actually do. We’ll return a clean parts list, expected performance, and an upgrade path. No upsells, no confusing options.</p>
+    <h1 class="page-title">Contact us</h1>
+    <p class="lead">Questions, support, or vendor inquiries — we’ll reply fast.</p>
 
-        <div class="badges">
-          <div class="badge"><b>24–48h</b><span class="muted">Turnaround</span></div>
-          <div class="badge"><b>+20%</b><span class="muted">Avg perf vs. prebuilts*</span></div>
-          <div class="badge"><b>$0</b><span class="muted">Quote cost</span></div>
-        </div>
-        <p class="muted" style="margin-top:10px;font-size:.9rem">*Estimate based on published benchmarks for similarly priced prebuilts vs. tuned parts lists.</p>
-      </section>
+    <!-- Chips row -->
+    <section class="card pad chips">
+      <div class="chip">1-Year Workmanship Warranty</div>
+      <div class="chip">Burn-in & Stress Tested • Foam-in-Case Shipping • Lifetime Email Support</div>
+      <div class="chip quote">“They specced exactly to my Premiere workflow. So much faster.” — T. Chen</div>
+    </section>
 
-      <!-- Right: Contact form card -->
-      <aside class="card pad">
-        <h2 style="margin:0 0 6px">Quick Request</h2>
-        <p class="muted" style="margin:0 0 12px">Send your details—no obligation. We’ll reply with a parts plan.</p>
-
-        <form id="contactForm" action="https://formspree.io/f/xrblokly" method="POST">
-          <!-- honeypot -->
-          <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
-          <div class="row">
-            <div>
-              <label for="name">Name</label>
-              <input id="name" name="name" type="text" required autocomplete="name">
-            </div>
-            <div>
-              <label for="email">Email</label>
-              <input id="email" name="_replyto" type="email" required autocomplete="email">
-            </div>
-          </div>
-
-          <div class="row">
-            <div>
-              <label for="budget">Budget (USD)</label>
-              <input id="budget" name="budget" type="number" inputmode="numeric" min="300" step="50" placeholder="1500">
-            </div>
-            <div>
-              <label for="priority">Priority</label>
-              <select id="priority" name="priority">
-                <option>Balance</option>
-                <option>Quiet / Low Heat</option>
-                <option>Max FPS (Esports)</option>
-                <option>Content / Pro Apps</option>
-                <option>Small Form Factor</option>
-              </select>
-            </div>
-          </div>
-
+    <!-- Form block -->
+    <section class="panel pad form-wrap">
+      <h3 style="margin:0 0 10px">Send us a note</h3>
+      <form id="contactForm" action="https://formspree.io/f/xrblokly" method="POST">
+        <!-- honeypot -->
+        <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
+        <div class="row">
           <div>
-            <label for="message">What do you do?</label>
-            <textarea id="message" name="message" placeholder="e.g., 1440p esports, Premiere Pro 4K, Stable Diffusion, CAD (SolidWorks), data science, etc." required></textarea>
+            <label for="name">Your Name</label>
+            <input id="name" name="name" type="text" required autocomplete="name">
           </div>
+          <div>
+            <label for="email">Email</label>
+            <input id="email" name="_replyto" type="email" required autocomplete="email">
+          </div>
+        </div>
+        <div>
+          <label for="message">Message</label>
+          <textarea id="message" name="message" placeholder="How can we help?" required></textarea>
+        </div>
 
-          <button class="cta" type="submit">Get My Build Plan →</button>
-          <div class="note">We’ll email your plan within 24–48 hours.</div>
+        <div class="actions">
+          <button class="btn" type="submit">Send</button>
+          <a class="link-btn" href="index.html">Request a Custom PC</a>
+        </div>
 
-          <div id="ok" class="alert ok">Thanks! Your request was sent—check your inbox for confirmation.</div>
-          <div id="err" class="alert err">Hmm, something went wrong. Please try again or email us directly.</div>
-        </form>
-      </aside>
-    </div>
+        <div class="alert ok" id="ok">Thanks! Your message was sent — we’ll get back within 24–48 hours.</div>
+        <div class="alert err" id="err">Something went wrong. Please try again or email us directly.</div>
+      </form>
+      <p class="note" style="margin-top:8px">We never share your email. Replies usually within 24–48 hours.</p>
+    </section>
 
-    <!-- Optional: extra sections to mirror your layout -->
-    <section class="section-title">How it Works</section>
-    <div class="grid" style="grid-template-columns:repeat(3,1fr);gap:16px">
-      <div class="card pad"><b>1) Share your goals</b><p class="muted">Budget, games/apps, resolution, size/noise preferences.</p></div>
-      <div class="card pad"><b>2) We design and verify</b><p class="muted">We map workloads → parts using reliable benchmarks and check PSU, thermals, and bottlenecks.</p></div>
-      <div class="card pad"><b>3) You build or we build</b><p class="muted">Get a parts list and step-by-step notes—or hire us to assemble and test.</p></div>
-    </div>
+    <!-- Recent work -->
+    <section class="card pad" style="margin-top:14px">
+      <div style="font-size:.85rem;letter-spacing:.06em;color:var(--muted);margin:0 0 10px">RECENT WORK</div>
+      <div class="strip">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1546435770-a3e426bf472b?q=80&w=1200&auto=format&fit=crop" alt="Headphones and desktop setup"></div>
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?q=80&w=1200&auto=format&fit=crop" alt="Team discussing a plan"></div>
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1470115636492-6d2b56f9146e?q=80&w=1200&auto=format&fit=crop" alt="Close-up detail"></div>
+      </div>
+    </section>
 
-    <section class="card pad" style="margin-top:18px">
-      <b>Ready to Start?</b>
-      <p class="muted" style="margin:8px 0 0">If you already know exactly what you want, you’re in the right place—use the form above.</p>
+    <!-- Shipment tracker -->
+    <section class="card pad" style="margin-top:14px">
+      <div style="font-size:.85rem;letter-spacing:.06em;color:var(--muted);margin:0 0 10px">TRACK A SHIPMENT</div>
+      <div class="track">
+        <input id="tracking" type="text" placeholder="Enter FedEx tracking number" aria-label="FedEx tracking number">
+        <a id="trackBtn" class="btn go" href="#" target="_blank" rel="noopener">Track</a>
+      </div>
+      <p class="note" style="margin-top:8px">Opens FedEx in a new tab.</p>
+    </section>
+
+    <!-- Big CTA -->
+    <section class="card cta-card" style="margin-top:18px">
+      <div class="cta-title">Want a tailored build instead?</div>
+      <p class="lead" style="margin:6px 0 14px">We’ll design, assemble, stress-test, and ship your perfect PC.</p>
+      <a class="btn" href="index.html">Start my build</a>
     </section>
   </div>
 
   <script>
-    // Prefill from query params (name, email, budget, priority, message)
+    // Prefill from query params if present
     (function () {
       const p = new URLSearchParams(location.search);
-      for (const key of ["name","_replyto","email","budget","priority","message"]) {
-        const el = document.getElementById(key) || (key==="email" ? document.getElementById("_replyto") : null);
-        const v = p.get(key) || (key==="email" ? p.get("_replyto") : null);
-        if (el && v) el.value = v;
-      }
+      const map = { name: 'name', email: '_replyto', message: 'message' };
+      Object.entries(map).forEach(([q,id]) => {
+        const v = p.get(q);
+        const el = document.getElementById(id);
+        if (v && el) el.value = v;
+      });
     })();
 
     // AJAX submit to Formspree with inline success/fail UI
@@ -171,7 +186,6 @@
       e.preventDefault();
       ok.style.display = 'none';
       err.style.display = 'none';
-
       try {
         const fd = new FormData(form);
         const res = await fetch(form.action, {
@@ -189,6 +203,14 @@
       } catch {
         err.style.display = 'block';
       }
+    });
+
+    // FedEx tracker link
+    const trackBtn = document.getElementById('trackBtn');
+    trackBtn.addEventListener('click', (e) => {
+      const tn = document.getElementById('tracking').value.trim();
+      if (!tn) { e.preventDefault(); return; }
+      trackBtn.href = `https://www.fedex.com/fedextrack/?trknbr=${encodeURIComponent(tn)}`;
     });
   </script>
 </body>
