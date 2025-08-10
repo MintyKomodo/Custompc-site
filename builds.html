@@ -17,6 +17,7 @@
       radial-gradient(1200px 600px at 50% -10%, #0f162b 8%, transparent 55%),
       linear-gradient(#081021, #0a0f1a 40%, #0a0f1a);line-height:1.55}
     .wrap{max-width:var(--max);margin:0 auto;padding:28px}
+
     /* Shared header */
     header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
     .brand a{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;font-weight:700;letter-spacing:.3px}
@@ -25,10 +26,10 @@
     .pill{display:inline-block;padding:10px 14px;border-radius:999px;color:var(--ink);text-decoration:none;border:1px solid transparent}
     .pill:hover{background:#0f1830}
     .pill.active{background:linear-gradient(120deg,rgba(125,178,255,.15),rgba(124,242,230,.15));border-color:rgba(255,255,255,.08)}
-    /* Grid */
-    .grid{display:grid;gap:18px}
+
+    /* Gallery */
     .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-    @media (max-width:1000px){.gallery{grid-template-columns:1fr 1fr}}
+    @media (max-width:1100px){.gallery{grid-template-columns:1fr 1fr}}
     @media (max-width:650px){.gallery{grid-template-columns:1fr}}
     .card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px}
     .thumb{border-radius:12px;overflow:hidden;border:1px solid var(--border);aspect-ratio:16/9;background:#0c1426;margin-bottom:10px}
@@ -37,7 +38,7 @@
     .spec{color:var(--muted);font-size:.95rem;margin-bottom:10px}
     .btn{
       display:inline-block;border:0;cursor:pointer;font-weight:700;padding:10px 14px;border-radius:12px;
-      color:#0b0f1a;background:linear-gradient(90deg,var(--accent1),var(--accent2));box-shadow:0 8px 22px rgba(117,194,255,.25)
+      color:#0b0f1a;background:linear-gradient(90deg,var(--accent1),var(--accent2));box-shadow:0 8px 22px rgba(117,194,255,.25);text-decoration:none
     }
   </style>
 </head>
@@ -56,28 +57,71 @@
     </header>
 
     <h1 style="margin:0 0 10px">Inspiration Builds</h1>
-    <p style="color:var(--muted);margin:0 0 14px">A few starting points — we’ll tune to your exact workload.</p>
+    <p style="color:var(--muted);margin:0 0 14px">More starting points — we’ll tune to your exact workload.</p>
 
     <section class="gallery">
+      <!-- 1 -->
       <div class="card">
         <div class="thumb"><img src="https://images.unsplash.com/photo-1541807084-5c52b6b3adef?q=80&w=1200&auto=format&fit=crop" alt="Esports build"></div>
         <div class="t">Esports 1080p/1440p</div>
         <div class="spec">High FPS for Valorant/CS2. Air-cooled, low noise.</div>
-        <a class="btn" href="contact.html?message=Interested%20in%20Esports%20build">Request this build</a>
+        <a class="btn" href="contact.html?message=Interested%20in%20Esports%201080p/1440p%20build">Request this build</a>
       </div>
-
+      <!-- 2 -->
       <div class="card">
         <div class="thumb"><img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop" alt="Creator build"></div>
         <div class="t">Creator 4K</div>
         <div class="spec">Premiere/DaVinci & Lightroom. GPU-accelerated, quiet case.</div>
         <a class="btn" href="contact.html?message=Interested%20in%20Creator%204K%20build">Request this build</a>
       </div>
-
+      <!-- 3 -->
       <div class="card">
         <div class="thumb"><img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=1200&auto=format&fit=crop" alt="Workstation build"></div>
         <div class="t">CAD / AI Workstation</div>
         <div class="spec">SolidWorks, Blender, SD inference. Verified PSU & thermals.</div>
         <a class="btn" href="contact.html?message=Interested%20in%20CAD%20%2F%20AI%20Workstation">Request this build</a>
+      </div>
+      <!-- 4 -->
+      <div class="card">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200&auto=format&fit=crop" alt="SFF build"></div>
+        <div class="t">Small Form Factor (SFF)</div>
+        <div class="spec">Compact ITX with strong thermals, quiet tuning, and clean cable runs.</div>
+        <a class="btn" href="contact.html?message=Interested%20in%20Small%20Form%20Factor%20build">Request this build</a>
+      </div>
+      <!-- 5 -->
+      <div class="card">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1484704849700-f032a568e944?q=80&w=1200&auto=format&fit=crop" alt="Silence optimized"></div>
+        <div class="t">Silence-Optimized</div>
+        <div class="spec">Acoustic-first: damped case, tuned fan curves, zero-RPM profiles.</div>
+        <a class="btn" href="contact.html?message=Interested%20in%20Silence-Optimized%20build">Request this build</a>
+      </div>
+      <!-- 6 -->
+      <div class="card">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=1200&auto=format&fit=crop" alt="Streaming build"></div>
+        <div class="t">Streaming + Gaming</div>
+        <div class="spec">x264/NVENC tuned, capture workflow ready, dual-SSD layout.</div>
+        <a class="btn" href="contact.html?message=Interested%20in%20Streaming%20%2B%20Gaming%20build">Request this build</a>
+      </div>
+      <!-- 7 -->
+      <div class="card">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1555685812-4b943f1cb0eb?q=80&w=1200&auto=format&fit=crop" alt="VR build"></div>
+        <div class="t">VR-Ready</div>
+        <div class="spec">High sustained FPS, stable USB for HMDs, motion smoothing friendly.</div>
+        <a class="btn" href="contact.html?message=Interested%20in%20VR-Ready%20build">Request this build</a>
+      </div>
+      <!-- 8 -->
+      <div class="card">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1560958089-b8a1929cea89?q=80&w=1200&auto=format&fit=crop" alt="Photos/Lightroom build"></div>
+        <div class="t">Photo Pro</div>
+        <div class="spec">Lightroom/Photoshop snappy previews, calibrated monitor workflow.</div>
+        <a class="btn" href="contact.html?message=Interested%20in%20Photo%20Pro%20build">Request this build</a>
+      </div>
+      <!-- 9 -->
+      <div class="card">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1200&auto=format&fit=crop" alt="Home lab"></div>
+        <div class="t">Home Lab / Dev</div>
+        <div class="spec">Docker/K8s friendly, ECC optional, quiet 24/7 operation.</div>
+        <a class="btn" href="contact.html?message=Interested%20in%20Home%20Lab%20%2F%20Dev%20build">Request this build</a>
       </div>
     </section>
   </div>
