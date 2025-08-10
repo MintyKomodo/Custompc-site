@@ -9,8 +9,8 @@
       --bg:#0a0f1a; --ink:#e9eefc; --muted:#aeb9d4;
       --panel:#111729; --panel2:#0d1426; --border:rgba(255,255,255,.08);
       --accent1:#7db2ff; --accent2:#7cf2e6;
-      --radius:18px; --radius-sm:12px; --shadow:0 20px 40px rgba(0,0,0,.35);
-      --max:1100px;
+      --radius:18px; --shadow:0 20px 40px rgba(0,0,0,.35);
+      --max:900px;
     }
     *{box-sizing:border-box}
     body{
@@ -35,53 +35,26 @@
     .page-title{font-size:28px;text-align:center;margin:8px 0 6px}
     .lead{color:var(--muted);text-align:center;margin:0 0 18px}
 
-    /* Cards / containers */
-    .card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
-    .panel{background:var(--panel2);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
-    .pad{padding:18px}
+    /* Card */
+    .card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
 
-    /* Chips row */
-    .chips{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:10px 0 18px}
-    @media (max-width:900px){.chips{grid-template-columns:1fr}}
-    .chip{background:var(--panel2);border:1px solid var(--border);border-radius:14px;padding:14px}
-    .quote{font-style:italic}
-
-    /* Form block */
-    .form-wrap{margin:6px 0 16px}
-    form{display:grid;gap:12px}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    @media (max-width:700px){.row{grid-template-columns:1fr}}
+    /* Form */
+    form{display:grid;gap:12px;margin-top:6px}
     label{display:block;font-weight:600;margin:0 0 6px}
     input, textarea{
       width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--border);
-      background:#0c1426;color:var(--ink);outline:none
+      background:var(--panel2);color:var(--ink);outline:none
     }
-    textarea{min-height:140px;resize:vertical}
-    .actions{display:flex;justify-content:space-between;align-items:center;gap:12px}
+    textarea{min-height:160px;resize:vertical}
     .btn{
       display:inline-block;border:0;cursor:pointer;font-weight:700;padding:10px 14px;border-radius:12px;
       color:#0b0f1a;background:linear-gradient(90deg,var(--accent1),var(--accent2));box-shadow:0 8px 22px rgba(117,194,255,.25)
     }
     .btn:active{transform:translateY(1px)}
-    .link-btn{font-weight:600;color:var(--ink);text-decoration:none;border:1px solid var(--border);padding:8px 12px;border-radius:10px;background:#0f1830}
-    .note{font-size:.9rem;color:var(--muted)}
     .alert{display:none;margin-top:10px;padding:12px 14px;border-radius:12px}
     .ok{background:rgba(124,242,230,.12);border:1px solid rgba(124,242,230,.35)}
     .err{background:rgba(255,99,132,.12);border:1px solid rgba(255,99,132,.35)}
-
-    /* Recent work strip */
-    .strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-    .thumb{position:relative;overflow:hidden;border-radius:12px;border:1px solid var(--border);background:#0c1426;aspect-ratio:16/9}
-    .thumb img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.05)}
-
-    /* Shipment tracker */
-    .track{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
-    .track input{height:44px}
-    .track .go{height:44px;padding:0 16px}
-
-    /* Big CTA */
-    .cta-card{text-align:center;padding:26px;border-radius:var(--radius)}
-    .cta-title{font-size:20px;margin:0 0 4px}
+    .note{font-size:.9rem;color:var(--muted);margin-top:10px}
   </style>
 </head>
 <body>
@@ -96,85 +69,49 @@
     </header>
 
     <h1 class="page-title">Contact us</h1>
-    <p class="lead">Questions, support, or vendor inquiries — we’ll reply fast.</p>
+    <p class="lead">Questions or support—send a message and we’ll reply fast.</p>
 
-    <!-- Chips row -->
-    <section class="card pad chips">
-      <div class="chip">1-Year Workmanship Warranty</div>
-      <div class="chip">Burn-in & Stress Tested • Foam-in-Case Shipping • Lifetime Email Support</div>
-      <div class="chip quote">“They specced exactly to my Premiere workflow. So much faster.” — T. Chen</div>
-    </section>
-
-    <!-- Form block -->
-    <section class="panel pad form-wrap">
-      <h3 style="margin:0 0 10px">Send us a note</h3>
+    <section class="card">
+      <h3 style="margin:0 0 8px">Send a message</h3>
       <form id="contactForm" action="https://formspree.io/f/xrblokly" method="POST">
         <!-- honeypot -->
         <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
-        <div class="row">
-          <div>
-            <label for="name">Your Name</label>
-            <input id="name" name="name" type="text" required autocomplete="name">
-          </div>
-          <div>
-            <label for="email">Email</label>
-            <input id="email" name="_replyto" type="email" required autocomplete="email">
-          </div>
+
+        <div>
+          <label for="name">Your Name</label>
+          <input id="name" name="name" type="text" required autocomplete="name">
         </div>
+
+        <div>
+          <label for="email">Email</label>
+          <input id="email" name="_replyto" type="email" required autocomplete="email">
+        </div>
+
         <div>
           <label for="message">Message</label>
           <textarea id="message" name="message" placeholder="How can we help?" required></textarea>
         </div>
 
-        <div class="actions">
-          <button class="btn" type="submit">Send</button>
-          <a class="link-btn" href="index.html">Request a Custom PC</a>
-        </div>
+        <button class="btn" type="submit">Send</button>
 
         <div class="alert ok" id="ok">Thanks! Your message was sent — we’ll get back within 24–48 hours.</div>
         <div class="alert err" id="err">Something went wrong. Please try again or email us directly.</div>
       </form>
-      <p class="note" style="margin-top:8px">We never share your email. Replies usually within 24–48 hours.</p>
-    </section>
 
-    <!-- Recent work -->
-    <section class="card pad" style="margin-top:14px">
-      <div style="font-size:.85rem;letter-spacing:.06em;color:var(--muted);margin:0 0 10px">RECENT WORK</div>
-      <div class="strip">
-        <div class="thumb"><img src="https://images.unsplash.com/photo-1546435770-a3e426bf472b?q=80&w=1200&auto=format&fit=crop" alt="Headphones and desktop setup"></div>
-        <div class="thumb"><img src="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?q=80&w=1200&auto=format&fit=crop" alt="Team discussing a plan"></div>
-        <div class="thumb"><img src="https://images.unsplash.com/photo-1470115636492-6d2b56f9146e?q=80&w=1200&auto=format&fit=crop" alt="Close-up detail"></div>
-      </div>
-    </section>
-
-    <!-- Shipment tracker -->
-    <section class="card pad" style="margin-top:14px">
-      <div style="font-size:.85rem;letter-spacing:.06em;color:var(--muted);margin:0 0 10px">TRACK A SHIPMENT</div>
-      <div class="track">
-        <input id="tracking" type="text" placeholder="Enter FedEx tracking number" aria-label="FedEx tracking number">
-        <a id="trackBtn" class="btn go" href="#" target="_blank" rel="noopener">Track</a>
-      </div>
-      <p class="note" style="margin-top:8px">Opens FedEx in a new tab.</p>
-    </section>
-
-    <!-- Big CTA -->
-    <section class="card cta-card" style="margin-top:18px">
-      <div class="cta-title">Want a tailored build instead?</div>
-      <p class="lead" style="margin:6px 0 14px">We’ll design, assemble, stress-test, and ship your perfect PC.</p>
-      <a class="btn" href="index.html">Start my build</a>
+      <div class="note">We never share your email. Replies usually within 24–48 hours.</div>
     </section>
   </div>
 
   <script>
-    // Prefill from query params if present
+    // Lightweight prefill from query params if present (optional)
     (function () {
       const p = new URLSearchParams(location.search);
-      const map = { name: 'name', email: '_replyto', message: 'message' };
-      Object.entries(map).forEach(([q,id]) => {
+      const map = { name:'name', email:'_replyto', message:'message' };
+      for (const [q,id] of Object.entries(map)) {
         const v = p.get(q);
         const el = document.getElementById(id);
         if (v && el) el.value = v;
-      });
+      }
     })();
 
     // AJAX submit to Formspree with inline success/fail UI
@@ -203,14 +140,6 @@
       } catch {
         err.style.display = 'block';
       }
-    });
-
-    // FedEx tracker link
-    const trackBtn = document.getElementById('trackBtn');
-    trackBtn.addEventListener('click', (e) => {
-      const tn = document.getElementById('tracking').value.trim();
-      if (!tn) { e.preventDefault(); return; }
-      trackBtn.href = `https://www.fedex.com/fedextrack/?trknbr=${encodeURIComponent(tn)}`;
     });
   </script>
 </body>
