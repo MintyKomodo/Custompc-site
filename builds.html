@@ -3,295 +3,83 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Inspiration Builds | CustomPC.tech</title>
+  <title>Builds | CustomPC.tech</title>
   <style>
     :root{
-      --bg:#0b0f1a; --ink:#e8eefc; --muted:#b9c4dd; --panel:#11182a; --panel2:#0c1324; --border:rgba(255,255,255,.08); --brand:#7db2ff; --brand2:#7cf2e6; --radius:16px; --shadow:0 10px 28px rgba(0,0,0,.35); --max:1200px;
+      --bg:#0a0f1a; --ink:#e9eefc; --muted:#aeb9d4;
+      --panel:#111729; --panel2:#0d1426; --border:rgba(255,255,255,.08);
+      --accent1:#7db2ff; --accent2:#7cf2e6;
+      --radius:18px; --shadow:0 20px 40px rgba(0,0,0,.35);
+      --max:1200px;
     }
     *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,Segoe UI,Roboto;color:var(--ink);background:var(--bg);line-height:1.55}
-    a{color:var(--brand)}
-    .wrap{max-width:var(--max);margin:0 auto;padding:24px}
-    header{background:#0b0f1a;position:sticky;top:0;z-index:100;padding:12px 24px;border-bottom:1px solid var(--border)}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px;margin-top:20px}
-    .card{background:linear-gradient(180deg,var(--panel),var(--panel2));border-radius:var(--radius);overflow:hidden;cursor:pointer;box-shadow:var(--shadow);outline:none}
-    .card img{width:100%;display:block}
-    .card h2{margin:12px;font-size:18px}
-    .priceChip{margin:0 12px 12px;color:var(--muted);font-size:13px}
-    .card[role="button"]:focus{outline:2px solid var(--brand2);outline-offset:3px}
-
-    .modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;z-index:200;padding:20px}
-    .modal.open{display:flex}
-    .modal-content{background:linear-gradient(180deg,var(--panel),var(--panel2));border-radius:var(--radius);max-width:900px;width:100%;max-height:92vh;overflow:auto;box-shadow:var(--shadow);padding:20px;position:relative}
-    .modal-content img{width:100%;border-radius:var(--radius)}
-    .modal h2{margin:12px 0 4px}
-    .specs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
-    .pill{background:#0b1020;border:1px solid var(--border);border-radius:10px;padding:10px;font-size:14px}
-    .pill strong{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
-    .fps{margin-top:12px;border:1px solid var(--border);border-radius:12px;overflow:hidden}
-    .fps table{width:100%;border-collapse:collapse;background:#0b1020}
-    .fps th,.fps td{padding:8px;border-top:1px solid var(--border)}
-    .fps th{background:#0e1426;text-align:left}
-    .cta{margin-top:14px;text-align:right}
-    .close-btn{position:absolute;top:20px;right:20px;background:#ff5c5c;color:#fff;border:none;padding:8px 12px;border-radius:8px;cursor:pointer}
-    footer{color:var(--muted);font-size:12px;text-align:center;padding:20px}
-    body.modal-open{overflow:hidden}
-    @media (max-width:700px){ .specs{grid-template-columns:1fr} }
-      .toplink{display:inline-block;padding:8px 12px;border-radius:10px;border:1px solid transparent;color:var(--ink);text-decoration:none;background:transparent}
-    .toplink:hover{border-color:var(--border)}
-    .btn-cta{background:linear-gradient(90deg,var(--brand),var(--brand2));color:#00122a;font-weight:600}
+    body{margin:0;font-family:system-ui,Segoe UI,Roboto,Inter,Arial;color:var(--ink);background:
+      radial-gradient(1200px 600px at 50% -10%, #0f162b 8%, transparent 55%),
+      linear-gradient(#081021, #0a0f1a 40%, #0a0f1a);line-height:1.55}
+    .wrap{max-width:var(--max);margin:0 auto;padding:28px}
+    /* Shared header */
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+    .brand a{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;font-weight:700;letter-spacing:.3px}
+    .dot{width:10px;height:10px;border-radius:50%;background:linear-gradient(120deg,var(--accent1),var(--accent2));box-shadow:0 0 14px rgba(125,178,255,.6)}
+    nav{display:flex;gap:10px;flex-wrap:wrap}
+    .pill{display:inline-block;padding:10px 14px;border-radius:999px;color:var(--ink);text-decoration:none;border:1px solid transparent}
+    .pill:hover{background:#0f1830}
+    .pill.active{background:linear-gradient(120deg,rgba(125,178,255,.15),rgba(124,242,230,.15));border-color:rgba(255,255,255,.08)}
+    /* Grid */
+    .grid{display:grid;gap:18px}
+    .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    @media (max-width:1000px){.gallery{grid-template-columns:1fr 1fr}}
+    @media (max-width:650px){.gallery{grid-template-columns:1fr}}
+    .card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px}
+    .thumb{border-radius:12px;overflow:hidden;border:1px solid var(--border);aspect-ratio:16/9;background:#0c1426;margin-bottom:10px}
+    .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+    .t{font-weight:700;margin:4px 0}
+    .spec{color:var(--muted);font-size:.95rem;margin-bottom:10px}
+    .btn{
+      display:inline-block;border:0;cursor:pointer;font-weight:700;padding:10px 14px;border-radius:12px;
+      color:#0b0f1a;background:linear-gradient(90deg,var(--accent1),var(--accent2));box-shadow:0 8px 22px rgba(117,194,255,.25)
+    }
   </style>
 </head>
 <body>
-<header class="wrap" style="display:flex;align-items:center;justify-content:space-between;gap:16px">
-  <a href="/" style="font-weight:700;color:var(--ink);text-decoration:none;letter-spacing:.2px">CustomPC.tech</a>
-  <nav aria-label="Main">
-    <ul style="display:flex;gap:10px;margin:0;padding:0;list-style:none">
-      <li><a href="/builds.html" class="toplink">Builds</a></li>
-      <li><a href="/about.html" class="toplink">About</a></li>
-      <li><a href="/contact.html" class="toplink btn-cta">Contact</a></li>
-    </ul>
-  </nav>
-</header>
-<main class="wrap">
-  <section class="grid" id="buildGrid">
-    <!-- 12 original cards -->
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <a href="index.html"><span class="dot"></span> CustomPC.tech</a>
+      </div>
+      <nav>
+        <a class="pill active" href="builds.html">Builds</a>
+        <a class="pill" href="index.html">Custom PC</a>
+        <a class="pill" href="about.html">About</a>
+        <a class="pill" href="contact.html">Contact</a>
+      </nav>
+    </header>
 
-    <!-- 1 OVERKILL -->
-    <div class="card" role="button" tabindex="0" data-model="overkill-amd" data-title="OVERKILL PC (AMD)" data-price="$1,890 (as of Aug 2025)" data-img="/assets/builds/overkill-amd.jpg" data-specs='[{"CPU":"Ryzen 9 7950X"},{"GPU":"RTX 5090"},{"RAM":"64GB DDR5-6000"},{"Storage":"2TB + 4TB NVMe"},{"Cooling":"360mm AIO"},{"PSU":"1000W Gold"},{"Case":"Premium airflow mid-tower"}]' data-fps='[{"Game":"Cyberpunk 2077","1080p":"200","1440p":"160","4K":"100"}]'>
-      <img loading="lazy" src="/assets/builds/overkill-amd.jpg" alt="Overkill PC AMD">
-      <h2>OVERKILL PC (AMD)</h2>
-      <p class="priceChip">starting at $1,890 (as of Aug 2025)</p>
-    </div>
+    <h1 style="margin:0 0 10px">Inspiration Builds</h1>
+    <p style="color:var(--muted);margin:0 0 14px">A few starting points — we’ll tune to your exact workload.</p>
 
-    <!-- 2 CREATOR INTEL -->
-    <div class="card" role="button" tabindex="0" data-model="creator-intel" data-title="CREATOR PC (INTEL)" data-price="$2,350" data-img="/assets/builds/creator-intel.jpg" data-specs='[{"CPU":"Core i7-14700K"},{"GPU":"GeForce RTX 4080 Super"},{"RAM":"64GB DDR5-6000"},{"Storage":"2TB OS + 2TB project NVMe"},{"Cooling":"Dual 140mm towers"},{"PSU":"850W Gold"},{"Case":"Silence-focused mid-tower"}]' data-fps='[{"Task":"Premiere Pro 4K","Notes":"GPU accel; tuned VRAM"},{"Task":"Resolve NR","Notes":"Smooth UHD timelines"},{"Task":"Blender Cycles","Notes":"~2× over last-gen mid"}]'>
-      <img loading="lazy" src="/assets/builds/creator-intel.jpg" alt="Creator workstation PC">
-      <h2>CREATOR PC (INTEL)</h2>
-      <p class="priceChip">starting at $2,350</p>
-    </div>
+    <section class="gallery">
+      <div class="card">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1541807084-5c52b6b3adef?q=80&w=1200&auto=format&fit=crop" alt="Esports build"></div>
+        <div class="t">Esports 1080p/1440p</div>
+        <div class="spec">High FPS for Valorant/CS2. Air-cooled, low noise.</div>
+        <a class="btn" href="contact.html?message=Interested%20in%20Esports%20build">Request this build</a>
+      </div>
 
-    <!-- 3 ESPORTS -->
-    <div class="card" role="button" tabindex="0" data-model="esports-1080p" data-title="ESPORTS (1080p)" data-price="$1,150" data-img="/assets/builds/esports.jpg" data-specs='[{"CPU":"Ryzen 5 7600"},{"GPU":"Radeon RX 7700 XT"},{"RAM":"32GB DDR5-6000"},{"Storage":"1TB Gen4 NVMe"},{"Cooling":"120mm tower"},{"PSU":"650W Gold"},{"Case":"Compact airflow ATX"},{"Board":"B650, Wi‑Fi 6"}]' data-fps='[{"Game":"Valorant","1080p":"300+","1440p":"240+"},{"Game":"Apex Legends","1080p":"200","1440p":"160"},{"Game":"Fortnite (Perf)","1080p":"260","1440p":"200"}]'>
-      <img loading="lazy" src="/assets/builds/esports.jpg" alt="Compact esports PC">
-      <h2>ESPORTS (1080p)</h2>
-      <p class="priceChip">starting at $1,150</p>
-    </div>
+      <div class="card">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop" alt="Creator build"></div>
+        <div class="t">Creator 4K</div>
+        <div class="spec">Premiere/DaVinci & Lightroom. GPU-accelerated, quiet case.</div>
+        <a class="btn" href="contact.html?message=Interested%20in%20Creator%204K%20build">Request this build</a>
+      </div>
 
-    <!-- 4 QUIET SFF -->
-    <div class="card" role="button" tabindex="0" data-model="quiet-sff" data-title="QUIET SFF" data-price="$1,780" data-img="/assets/builds/quiet-sff.jpg" data-specs='[{"CPU":"Ryzen 7 7800X3D"},{"GPU":"GeForce RTX 4070 Super (short)"},{"RAM":"32GB DDR5-6000"},{"Storage":"2TB Gen4 NVMe"},{"Cooling":"Low-profile air"},{"PSU":"750W SFX Gold"},{"Case":"10–14L SFF case"},{"Thermals":"Optimized airflow"}]'>
-      <img loading="lazy" src="/assets/builds/quiet-sff.jpg" alt="Small form factor quiet PC">
-      <h2>QUIET SFF</h2>
-      <p class="priceChip">starting at $1,780</p>
-    </div>
-
-    <!-- 5 STREAMER -->
-    <div class="card" role="button" tabindex="0" data-model="streamer-1440p" data-title="STREAMER (1440p)" data-price="$1,750" data-img="/assets/builds/streamer.jpg" data-specs='[{"CPU":"Ryzen 7 7700"},{"GPU":"GeForce RTX 4070 Ti Super"},{"RAM":"32GB DDR5-6000"},{"Storage":"1TB OS + 2TB scratch NVMe"},{"Capture":"NVENC/AV1 + optional card"},{"PSU":"750W Gold"},{"Case":"Quiet airflow mid-tower"},{"Network":"2.5G LAN + Wi‑Fi 6E"}]'>
-      <img loading="lazy" src="/assets/builds/streamer.jpg" alt="Streaming PC">
-      <h2>STREAMER (1440p)</h2>
-      <p class="priceChip">starting at $1,750</p>
-    </div>
-
-    <!-- 6 BUDGET STARTER -->
-    <div class="card" role="button" tabindex="0" data-model="budget-starter" data-title="BUDGET STARTER" data-price="$850" data-img="/assets/builds/budget.jpg" data-specs='[{"CPU":"Core i5-13400F"},{"GPU":"Radeon RX 7600"},{"RAM":"16GB DDR5-5600"},{"Storage":"1TB NVMe"},{"PSU":"650W Bronze (quiet)"},{"Case":"Airflow ATX"},{"Board":"B760"},{"Upgrade":"Easy GPU/CPU path later"}]'>
-      <img loading="lazy" src="/assets/builds/budget.jpg" alt="Budget gaming PC">
-      <h2>BUDGET STARTER</h2>
-      <p class="priceChip">starting at $850</p>
-    </div>
-
-    <!-- 7 AI WORKSTATION -->
-    <div class="card" role="button" tabindex="0" data-model="ai-workstation" data-title="AI WORKSTATION" data-price="$3,900" data-img="/assets/builds/ai.jpg" data-specs='[{"CPU":"Threadripper PRO (alt: Ryzen 9)"},{"GPU":"RTX 4090 / 24GB+ VRAM"},{"RAM":"128GB DDR5"},{"Storage":"2× 4TB Gen4 NVMe"},{"Cooling":"High‑surface AIO or tuned air"},{"PSU":"1200W Platinum"},{"Board":"PCIe bifurcation support"},{"Notes":"Dual‑GPU optional"}]'>
-      <img loading="lazy" src="/assets/builds/ai.jpg" alt="AI workstation PC">
-      <h2>AI WORKSTATION</h2>
-      <p class="priceChip">starting at $3,900</p>
-    </div>
-
-    <!-- 8 CAD / CAM PRO -->
-    <div class="card" role="button" tabindex="0" data-model="cad-pro" data-title="CAD / CAM PRO" data-price="$3,200" data-img="/assets/builds/cad.jpg" data-specs='[{"CPU":"Core i9-14900K (alt: Xeon W)"},{"GPU":"RTX 4000 Ada / Pro-class"},{"RAM":"64–128GB DDR5"},{"Storage":"2TB OS + 2–8TB project NVMe"},{"Cooling":"Quiet 240–360mm"},{"PSU":"1000W Gold"},{"I/O":"10G LAN option"},{"Certs":"ISV driver profiles"}]'>
-      <img loading="lazy" src="/assets/builds/cad.jpg" alt="CAD workstation PC">
-      <h2>CAD / CAM PRO</h2>
-      <p class="priceChip">starting at $3,200</p>
-    </div>
-
-    <!-- 9 COMPACT ITX GAMER -->
-    <div class="card" role="button" tabindex="0" data-model="itx-gamer" data-title="COMPACT ITX GAMER" data-price="$2,100" data-img="/assets/builds/itx.jpg" data-specs='[{"CPU":"Ryzen 7 7800X3D"},{"GPU":"RTX 4080 Super (short/2‑slot)"},{"RAM":"32–64GB DDR5"},{"Storage":"2× NVMe"},{"Cooling":"240mm slim AIO / tuned air"},{"PSU":"850W SFX"},{"Case":"12–20L ITX"},{"Thermals":"Positive pressure layout"}]'>
-      <img loading="lazy" src="/assets/builds/itx.jpg" alt="Mini‑ITX gaming PC">
-      <h2>COMPACT ITX GAMER</h2>
-      <p class="priceChip">starting at $2,100</p>
-    </div>
-
-    <!-- 10 SILENT OFFICE -->
-    <div class="card" role="button" tabindex="0" data-model="silent-office" data-title="SILENT OFFICE" data-price="$980" data-img="/assets/builds/office.jpg" data-specs='[{"CPU":"Core i5-14600"},{"GPU":"Integrated / low‑profile"},{"RAM":"32GB DDR5"},{"Storage":"1–2TB NVMe + backup plan"},{"Cooling":"Silent tower"},{"PSU":"550–650W Gold (semi‑fanless)"},{"Case":"Minimalist damped ATX"},{"Security":"TPM 2.0 + BitLocker ready"}]'>
-      <img loading="lazy" src="/assets/builds/office.jpg" alt="Silent office PC">
-      <h2>SILENT OFFICE</h2>
-      <p class="priceChip">starting at $980</p>
-    </div>
-
-    <!-- 11 4K MAX GAMING -->
-    <div class="card" role="button" tabindex="0" data-model="4k-max" data-title="4K MAX GAMING" data-price="$2,650" data-img="/assets/builds/4k.jpg" data-specs='[{"CPU":"Core i7-14700K"},{"GPU":"GeForce RTX 4090 (alt: 5090)"},{"RAM":"64GB DDR5"},{"Storage":"2TB + 4TB NVMe"},{"Cooling":"360mm AIO (quiet curve)"},{"PSU":"1000–1200W Platinum"},{"Case":"High airflow full-tower"},{"Extras":"FG/RT profiles"}]' data-fps='[{"Game":"Cyberpunk 2077","4K":"90–120"},{"Game":"Horizon FW","4K":"110–140"},{"Game":"Fortnite","4K":"120–180"}]'>
-      <img loading="lazy" src="/assets/builds/4k.jpg" alt="4K max settings gaming PC">
-      <h2>4K MAX GAMING</h2>
-      <p class="priceChip">starting at $2,650</p>
-    </div>
-
-    <!-- 12 VR / SIM -->
-    <div class="card" role="button" tabindex="0" data-model="vr-sim" data-title="VR / SIM" data-price="$1,980" data-img="/assets/builds/vr.jpg" data-specs='[{"CPU":"Core i9-14900K (high clocks)"},{"GPU":"RTX 4080/4090"},{"RAM":"64GB DDR5"},{"Storage":"2TB + 2TB NVMe"},{"USB":"Front/back I/O for gear"},{"PSU":"1000W Gold"},{"Case":"Airflow ATX"},{"Network":"2.5G LAN"}]'>
-      <img loading="lazy" src="/assets/builds/vr.jpg" alt="VR and simulation PC">
-      <h2>VR / SIM</h2>
-      <p class="priceChip">starting at $1,980</p>
-    </div>
-
-    <!-- NEW: 7 additional cards -->
-
-    <!-- 13 HOME THEATER PC (HTPC) -->
-    <div class="card" role="button" tabindex="0" data-model="htpc" data-title="HOME THEATER PC" data-price="$900" data-img="/assets/builds/htpc.jpg" data-specs='[{"CPU":"Ryzen 5 5600G (iGPU)"},{"GPU":"Integrated"},{"RAM":"16–32GB DDR4/5"},{"Storage":"1–2TB NVMe + quiet HDD"},{"Cooling":"Low-profile, silent"},{"Case":"Slim HTPC w/ IR"},{"Audio":"HDMI eARC, SPDIF"}]'>
-      <img loading="lazy" src="/assets/builds/htpc.jpg" alt="Home Theater PC">
-      <h2>HOME THEATER PC</h2>
-      <p class="priceChip">starting at $900</p>
-    </div>
-
-    <!-- 14 STUDENT / SCHOOL -->
-    <div class="card" role="button" tabindex="0" data-model="student" data-title="STUDENT / SCHOOL" data-price="$650" data-img="/assets/builds/student.jpg" data-specs='[{"CPU":"Core i3-14100 / Ryzen 5 5500"},{"GPU":"Integrated"},{"RAM":"16GB"},{"Storage":"500GB–1TB NVMe"},{"Wi‑Fi":"Wi‑Fi 6 + BT"},{"Case":"Compact mATX"},{"Notes":"Low power, easy to service"}]'>
-      <img loading="lazy" src="/assets/builds/student.jpg" alt="Student desktop PC">
-      <h2>STUDENT / SCHOOL</h2>
-      <p class="priceChip">starting at $650</p>
-    </div>
-
-    <!-- 15 PHOTO / LIGHTROOM PRO -->
-    <div class="card" role="button" tabindex="0" data-model="photo-pro" data-title="PHOTO / LIGHTROOM PRO" data-price="$1,600" data-img="/assets/builds/photo.jpg" data-specs='[{"CPU":"Ryzen 7 7700 / i7-13700"},{"GPU":"RTX 4060 Ti (for AI)"},{"RAM":"64GB DDR5"},{"Storage":"1TB OS + 2TB NVMe (scratch)"},{"Reader":"UHS-II / CFexpress option"},{"Display":"Calibrated output ready"}]'>
-      <img loading="lazy" src="/assets/builds/photo.jpg" alt="Photography workstation">
-      <h2>PHOTO / LIGHTROOM PRO</h2>
-      <p class="priceChip">starting at $1,600</p>
-    </div>
-
-    <!-- 16 LINUX DEV BOX -->
-    <div class="card" role="button" tabindex="0" data-model="linux-dev" data-title="LINUX DEV BOX" data-price="$1,300" data-img="/assets/builds/linux.jpg" data-specs='[{"CPU":"Ryzen 7 7700"},{"GPU":"Open‑source friendly (RDNA3)"},{"RAM":"64GB DDR5"},{"Storage":"2TB NVMe + ZFS‑ready bay"},{"I/O":"2.5G LAN + TPM"},{"Notes":"Ubuntu/Fedora tuned"}]'>
-      <img loading="lazy" src="/assets/builds/linux.jpg" alt="Linux development workstation">
-      <h2>LINUX DEV BOX</h2>
-      <p class="priceChip">starting at $1,300</p>
-    </div>
-
-    <!-- 17 COMPACT WFH MICROATX -->
-    <div class="card" role="button" tabindex="0" data-model="wfh-matx" data-title="COMPACT WFH mATX" data-price="$1,050" data-img="/assets/builds/wfh.jpg" data-specs='[{"CPU":"Core i5-14500"},{"GPU":"Low-profile (optional)"},{"RAM":"32GB DDR5"},{"Storage":"1TB NVMe"},{"I/O":"Dual monitors + USB‑C"},{"Acoustics":"Semi‑fanless profile"}]'>
-      <img loading="lazy" src="/assets/builds/wfh.jpg" alt="Compact work from home desktop">
-      <h2>COMPACT WFH mATX</h2>
-      <p class="priceChip">starting at $1,050</p>
-    </div>
-
-    <!-- 18 TRIPLE‑MONITOR SIM RIG -->
-    <div class="card" role="button" tabindex="0" data-model="sim-rig" data-title="TRIPLE‑MONITOR SIM RIG" data-price="$2,200" data-img="/assets/builds/simrig.jpg" data-specs='[{"CPU":"Ryzen 7 7800X3D"},{"GPU":"RTX 4080 Super"},{"RAM":"32–64GB DDR5"},{"Storage":"2TB NVMe"},{"USB":"Plenty for pedals/wheels"},{"Notes":"High USB polling stability"}]' data-fps='[{"Sim":"MSFS 2024","1440p Triple":"70–90"},{"Sim":"iRacing","1440p Triple":"120–160"}]'>
-      <img loading="lazy" src="/assets/builds/simrig.jpg" alt="Triple monitor sim racing PC">
-      <h2>TRIPLE‑MONITOR SIM RIG</h2>
-      <p class="priceChip">starting at $2,200</p>
-    </div>
-
-    <!-- 19 NAS / PROXMOX MICROSERVER -->
-    <div class="card" role="button" tabindex="0" data-model="nas-proxmox" data-title="NAS / PROXMOX MICROSERVER" data-price="$1,150" data-img="/assets/builds/nas.jpg" data-specs='[{"CPU":"Xeon E‑2300 / Ryzen 5 PRO"},{"GPU":"None"},{"RAM":"32–64GB ECC (where possible)"},{"Storage":"Boot NVMe + 4–8 bays"},{"LAN":"2.5G/10G options"},{"Notes":"Proxmox/ZFS ready"}]'>
-      <img loading="lazy" src="/assets/builds/nas.jpg" alt="NAS Proxmox microserver">
-      <h2>NAS / PROXMOX MICROSERVER</h2>
-      <p class="priceChip">starting at $1,150</p>
-    </div>
-
-  </section>
-</main>
-<footer>
-  <span>Prices are <strong>starting estimates</strong> as of Aug 2025 and vary by retailer/availability; final quotes may differ.</span>
-</footer>
-
-<div class="modal" id="modal" aria-hidden="true" role="dialog" aria-labelledby="modalTitle">
-  <div class="modal-content" role="document" aria-modal="true">
-    <button class="close-btn" id="closeModal" aria-label="Close">Close</button>
-    <img id="modalImg" src="" alt="">
-    <h2 id="modalTitle"></h2>
-    <p id="modalPrice"></p>
-    <div class="specs" id="modalSpecs"></div>
-    <div class="fps" id="modalFps"></div>
-    <div class="cta"><a class="btn btn-primary" id="modalLink" href="#">Start Your Build →</a></div>
+      <div class="card">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=1200&auto=format&fit=crop" alt="Workstation build"></div>
+        <div class="t">CAD / AI Workstation</div>
+        <div class="spec">SolidWorks, Blender, SD inference. Verified PSU & thermals.</div>
+        <a class="btn" href="contact.html?message=Interested%20in%20CAD%20%2F%20AI%20Workstation">Request this build</a>
+      </div>
+    </section>
   </div>
-</div>
-
-<noscript>
-  <div class="wrap" style="color:#fff;background:#a00;padding:12px;border-radius:8px;margin:16px auto;max-width:var(--max)">
-    JavaScript is disabled. Click a build to see full specs when JS is enabled.
-  </div>
-</noscript>
-
-<script>
-  const cards = document.querySelectorAll('.card');
-  const modal = document.getElementById('modal');
-  const closeModalBtn = document.getElementById('closeModal');
-  const modalTitle = document.getElementById('modalTitle');
-  const modalPrice = document.getElementById('modalPrice');
-  const modalImg = document.getElementById('modalImg');
-  const modalSpecs = document.getElementById('modalSpecs');
-  const modalFps = document.getElementById('modalFps');
-  const modalLink = document.getElementById('modalLink');
-
-  function openModalFor(card){
-    document.body.classList.add('modal-open');
-    modal.classList.add('open');
-    modal.setAttribute('aria-hidden','false');
-    modalTitle.textContent = card.dataset.title;
-    modalPrice.textContent = `Starting at ${card.dataset.price}`;
-    modalImg.src = card.dataset.img;
-    modalImg.alt = card.dataset.title;
-    modalLink.href = `/contact.html?model=${encodeURIComponent(card.dataset.model)}`;
-
-    // Specs
-    modalSpecs.innerHTML = '';
-    try {
-      const specs = JSON.parse(card.dataset.specs || '[]');
-      specs.forEach(s=>{
-        const key = Object.keys(s)[0];
-        const val = s[key];
-        modalSpecs.insertAdjacentHTML('beforeend', `<div class="pill"><strong>${key}</strong>${val}</div>`);
-      });
-    } catch(e){ modalSpecs.textContent = 'Specs unavailable'; }
-
-    // FPS/Task table
-    modalFps.innerHTML = '';
-    if(card.dataset.fps){
-      try{
-        const rows = JSON.parse(card.dataset.fps);
-        let headers = new Set();
-        rows.forEach(r=>Object.keys(r).forEach(k=>headers.add(k)));
-        headers = Array.from(headers);
-        let table = '<table><thead><tr>' + headers.map(h=>`<th>${h}</th>`).join('') + '</tr></thead><tbody>';
-        rows.forEach(r=>{
-          table += '<tr>' + headers.map(h=>`<td>${r[h]??''}</td>`).join('') + '</tr>';
-        });
-        table += '</tbody></table>';
-        modalFps.innerHTML = table;
-      }catch(e){ /* ignore */ }
-    }
-
-    // Move focus into modal for accessibility
-    closeModalBtn.focus();
-  }
-
-  function closeModalFn(){
-    modal.classList.remove('open');
-    modal.setAttribute('aria-hidden','true');
-    document.body.classList.remove('modal-open');
-  }
-
-  cards.forEach(card=>{
-    card.addEventListener('click',()=> openModalFor(card));
-    card.addEventListener('keydown',(e)=>{
-      if(e.key === 'Enter' || e.key === ' '){
-        e.preventDefault();
-        openModalFor(card);
-      }
-    });
-  });
-
-  closeModalBtn.addEventListener('click', closeModalFn);
-
-  // Click outside content closes
-  modal.addEventListener('click', (e)=>{ if(e.target === modal) closeModalFn(); });
-
-  // ESC to close
-  window.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeModalFn(); });
-</script>
 </body>
 </html>
