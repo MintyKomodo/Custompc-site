@@ -2,42 +2,59 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Builds – CustomPC.tech</title>
+  <title>Build Suggestions – CustomPC.tech</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <style>
-    /* Controls */
-    .controls { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin:8px 0 14px; }
-    .controls .btn { min-width:120px; }
-    .filters { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:0 0 10px; }
-    .filters select { padding:8px 10px; border-radius:10px; border:1px solid rgba(255,255,255,.1); background:rgba(0,0,0,.28); color:#e9eefc; }
+    /* Page heading */
+    .lead {
+      max-width: 980px; margin: 0 auto 10px; padding: 10px 14px;
+      background: rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08);
+      border-radius: 12px;
+    }
 
-    /* Grid */
-    .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+    /* Controls */
+    .controls { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin:8px 0 12px; }
+    .controls .btn { min-width:140px; }
+    .filters { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:0 0 10px; }
+    .filters select {
+      padding:8px 10px; border-radius:10px; border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.28); color:#e9eefc;
+    }
+
+    /* Suggestion cards grid */
+    .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
     @media (max-width:980px){ .grid { grid-template-columns:repeat(2,1fr); } }
     @media (max-width:640px){ .grid { grid-template-columns:1fr; } }
 
-    .card-pc { position:relative; border:1px solid rgba(255,255,255,.08); border-radius:12px; overflow:hidden; background:rgba(0,0,0,.28); transition:transform .12s ease, box-shadow .2s ease; }
-    .card-pc:hover { transform: translateY(-2px); box-shadow:0 12px 30px rgba(0,0,0,.35); }
-    .card-pc img { display:block; width:100%; height:180px; object-fit:cover; cursor:pointer; }
-    .card-pc .content { padding:12px; }
-    .tag { font-size:12px; opacity:.75; }
-    .badge { position:absolute; top:8px; left:8px; background:rgba(20,160,255,.2); border:1px solid rgba(20,160,255,.35); padding:4px 8px; border-radius:999px; font-size:12px; }
-
-    /* Hover quick specs */
-    .quick {
-      position:absolute; inset:auto 0 0 0; background:linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.7));
-      color:#e9eefc; padding:10px 12px; opacity:0; transition:opacity .15s ease;
+    .suggest {
+      position:relative; border:1px solid rgba(255,255,255,.08);
+      border-radius:14px; overflow:hidden; background:linear-gradient(180deg, rgba(6,10,18,.70), rgba(10,22,46,.70));
+      transition:transform .12s ease, box-shadow .2s ease;
     }
-    .card-pc:hover .quick { opacity:1; }
-    .quick small { opacity:.85; }
+    .suggest:hover { transform: translateY(-2px); box-shadow:0 16px 40px rgba(0,0,0,.40); }
+    .suggest img { width:100%; height:190px; object-fit:cover; display:block; }
+    .suggest .pad { padding:12px; }
+    .suggest .kicker { letter-spacing:.12em; text-transform:uppercase; font-size:12px; opacity:.75 }
+    .suggest .title { font-size:18px; font-weight:700; margin:6px 0 4px; }
+    .suggest .pitch { opacity:.88; font-size:14px; min-height:42px; }
+    .suggest .foot { display:flex; justify-content:space-between; align-items:center; margin-top:8px; }
+    .startat { text-align:right; font-size:12px; opacity:.85 }
+    .startat .price { display:block; font-size:16px; font-weight:700; opacity:1 }
 
-    /* Detail Modal — dark two-column showcase */
+    /* Modal — dark, two-column suggestion detail */
     .modal { position:fixed; inset:0; background:rgba(0,0,0,.6); display:none; align-items:center; justify-content:center; padding:16px; z-index:90; }
     .modal.open { display:flex; }
-    .modal-card { width:100%; max-width:1100px; border-radius:14px; overflow:hidden; background:#111827; color:#e5e7eb; border:1px solid rgba(255,255,255,.08); box-shadow:0 18px 60px rgba(0,0,0,.5); }
-    .modal-topbar { display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:rgba(0,0,0,.25); border-bottom:1px solid rgba(255,255,255,.08); }
+    .modal-card {
+      width:100%; max-width:1100px; border-radius:14px; overflow:hidden;
+      background: linear-gradient(180deg, #0a0f1c 0%, #0e1b3b 100%);
+      color:#e5e7eb; border:1px solid rgba(255,255,255,.08); box-shadow:0 18px 60px rgba(0,0,0,.5);
+    }
+    .modal-topbar {
+      display:flex; justify-content:space-between; align-items:center;
+      padding:10px 14px; background:rgba(0,0,0,.25); border-bottom:1px solid rgba(255,255,255,.08);
+    }
     .modal-close { border:1px solid rgba(255,255,255,.15); background:transparent; color:#e5e7eb; border-radius:10px; padding:6px 10px; cursor:pointer; }
 
     .modal-body { display:grid; grid-template-columns:1.05fr 1.25fr; gap:0; }
@@ -48,8 +65,8 @@
 
     .detail-head { display:flex; justify-content:space-between; align-items:flex-end; gap:10px; }
     .detail-head h2 { margin:0; }
-    .detail-price { text-align:right; font-size:14px; }
-    .detail-price .price { display:block; }
+    .detail-price { text-align:right; font-size:13px; }
+    .detail-price .price { display:block; font-size:18px; font-weight:700; }
 
     .panel-box { margin-top:12px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08); border-radius:10px; padding:12px; }
     .specs-list { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
@@ -62,8 +79,9 @@
     .fineprint { font-size:12px; opacity:.75; margin-top:6px; }
 
     .actions { display:flex; gap:10px; margin-top:14px; }
+    .btn.secondary { opacity:.9; }
 
-    /* Bottom CTA card */
+    /* Bottom CTA */
     .cta-bottom { padding:16px; max-width:980px; margin:16px auto; border:1px solid rgba(255,255,255,.08); border-radius:12px; background:rgba(0,0,0,.28); text-align:center; }
   </style>
 </head>
@@ -81,16 +99,20 @@
   </nav>
 
   <div class="container">
-    <h1>Custom PC Builds</h1>
+    <h1>Build Suggestions</h1>
+    <div class="lead">
+      These are example configurations we’ve built and tested. Use any suggestion as a **starting point**
+      and we’ll tailor parts to your budget, games, and style.
+    </div>
 
     <div class="controls">
-      <button id="btn-amd" class="btn" onclick="setBrand('amd')">AMD Builds</button>
-      <button id="btn-intel" class="btn" onclick="setBrand('intel')">Intel Builds</button>
+      <button id="btn-amd" class="btn" onclick="setBrand('amd')">AMD Suggestions</button>
+      <button id="btn-intel" class="btn" onclick="setBrand('intel')">Intel Suggestions</button>
     </div>
 
     <div class="filters">
       <select id="filterUse">
-        <option value="all" selected>All uses</option>
+        <option value="all" selected>All use cases</option>
         <option value="Gaming">Gaming</option>
         <option value="Creator">Creator</option>
         <option value="Esports">Esports</option>
@@ -107,19 +129,18 @@
 
     <div id="grid" class="grid"></div>
 
-    <!-- Bottom CTA -->
     <div class="cta-bottom">
-      <h2 style="margin:0 0 8px;">Want a custom build?</h2>
+      <h2 style="margin:0 0 8px;">Want something unique?</h2>
       <p style="opacity:.85;margin:0 0 10px">We’ll design, assemble, stress-test, and ship your perfect PC.</p>
       <a class="btn" href="custom.html">Start my custom build</a>
     </div>
   </div>
 
-  <!-- Dark two-column detail modal -->
+  <!-- Suggestion detail modal -->
   <div class="modal" id="pcModal" aria-hidden="true">
     <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="pcTitle">
       <div class="modal-topbar">
-        <div class="kicker">Need Some Inspiration?</div>
+        <div class="kicker">Suggestion Details</div>
         <button class="modal-close" id="pcCloseBtn">Close</button>
       </div>
 
@@ -156,7 +177,7 @@
           <div id="pcCredit" class="fineprint"></div>
 
           <div class="actions">
-            <a class="btn" id="pcCustomizeBtn" href="custom.html">Start Your Build</a>
+            <a class="btn" id="pcUseBtn" href="custom.html">Use this suggestion</a>
             <button class="btn secondary" id="pcAddBtn">Add to cart</button>
           </div>
         </div>
@@ -165,100 +186,112 @@
   </div>
 
   <script>
-    /* ===== Data with real photos and optional source attribution ===== */
+    /* ---------- Data (AMD keeps prior photos; INTEL uses your images) ---------- */
     const AMD_BUILDS = [
-      { id:'amd-4k', title:'4K Gaming PC (AMD)', use:'Gaming', tag:'4K Gaming', price:2599,
-        img:'https://images.unsplash.com/photo-1593642634315-48f5414c3ad9?q=80&w=1600&auto=format&fit=crop',
+      { id:'amd-4k', title:'4K Gaming (AMD)', use:'Gaming', tag:'4K Gaming', price:2599,
+        img:'https://images.unsplash.com/photo-1555685812-4b943f1cb0eb?q=80&w=1600&auto=format&fit=crop',
         imgCredit:'Unsplash',
-        desc:'Tuned for high-refresh 4K with frame generation and upscaling. Quiet fan curves, excellent temps.',
+        desc:'High-refresh 4K with frame generation and upscaling. Quiet fan curves, excellent temps.',
+        why:'7800X3D excels in game latency; paired with a next-gen GPU for 4K headroom.',
         specs:[['CPU','Ryzen 7 7800X3D'],['GPU','GeForce RTX 5080'],['RAM','32GB DDR5-6000'],['Storage','2TB NVMe Gen4'],['Cooling','360mm AIO'],['PSU','850W Gold'],['Case','Airflow chassis']],
-        badge:'Popular',
         fps:{ 'Cyberpunk 2077':[160,120,75], 'Fortnite':[300,240,140], 'Valorant':[450,380,210] } },
-      { id:'amd-over', title:'Overkill PC (AMD)', use:'Gaming', tag:'Extreme', price:4499,
+      { id:'amd-over', title:'Overkill (AMD)', use:'Gaming', tag:'Extreme', price:4499,
         img:'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=1600&auto=format&fit=crop',
         imgCredit:'Unsplash',
-        desc:'Built for everything maxed: 4K ray tracing, heavy editing, and AI. Top-tier thermals and acoustics.',
+        desc:'Everything maxed: 4K ray tracing, heavy editing, and AI. Top-tier thermals and acoustics.',
+        why:'7950X gives creator performance; paired with a flagship GPU for uncompromised gaming.',
         specs:[['CPU','Ryzen 9 7950X'],['GPU','GeForce RTX 5090'],['RAM','64GB DDR5-6000'],['Storage','2TB + 4TB NVMe'],['Cooling','360mm AIO'],['PSU','1000W Gold'],['Case','Premium airflow']],
-        badge:'New',
         fps:{ 'Cyberpunk 2077':[200,160,100], 'Fortnite':[360,300,180], 'Valorant':[520,450,260] } },
       { id:'amd-creator', title:'Creator Pro (AMD)', use:'Creator', tag:'Creator', price:2999,
         img:'https://images.pexels.com/photos/777001/pexels-photo-777001.jpeg?auto=compress&cs=tinysrgb&w=1600',
         imgCredit:'Pexels',
-        desc:'Designed for Adobe/Resolve/Blender with fast cache disks and studio driver stability.',
+        desc:'Optimized for Adobe/Resolve/Blender with fast cache disks and studio drivers.',
+        why:'Many cores with strong boost; NVMe scratch improves timelines and renders.',
         specs:[['CPU','Ryzen 9 7950X'],['GPU','GeForce RTX 5080'],['RAM','64GB DDR5-6000'],['Storage','2TB 990 PRO'],['Cooling','360mm AIO'],['Scratch','Separate cache/scratch']],
         fps:null },
       { id:'amd-budget', title:'Budget Gaming (AMD)', use:'Value', tag:'Best Value', price:899,
         img:'https://images.pexels.com/photos/160107/pexels-photo-160107.jpeg?auto=compress&cs=tinysrgb&w=1600',
         imgCredit:'Pexels',
-        desc:'1080p high settings in modern titles with an easy upgrade path.',
+        desc:'1080p high settings with an easy upgrade path.',
+        why:'Ryzen 5 + RTX 4060 hits popular titles comfortably; drop-in GPU upgrades later.',
         specs:[['CPU','Ryzen 5 5600'],['GPU','GeForce RTX 4060'],['RAM','16GB DDR4'],['Storage','1TB NVMe'],['Cooling','Tower Air'],['PSU','650W Bronze']],
         fps:{ 'Fortnite':[220,170,90], 'Valorant':[380,300,160] } },
       { id:'amd-creator-budget', title:'Budget Creator (AMD)', use:'Creator', tag:'Creator', price:699,
         img:'https://images.unsplash.com/photo-1544731612-de7f96afe55f?q=80&w=1600&auto=format&fit=crop',
         imgCredit:'Unsplash',
         desc:'Great starter for light editing and content creation with GPU acceleration.',
+        why:'APU or entry GPU keeps cost down while enabling GPU-accelerated effects.',
         specs:[['CPU','Ryzen 5 5600G'],['GPU','GeForce RTX 3050'],['RAM','16GB DDR4'],['Storage','512GB NVMe']],
         fps:null },
       { id:'amd-esports', title:'Esports Pro (AMD)', use:'Esports', tag:'Esports', price:999,
         img:'https://images.unsplash.com/photo-1545235617-9465d2a55698?q=80&w=1600&auto=format&fit=crop',
         imgCredit:'Unsplash',
-        desc:'Tuned for esports titles with low input lag and consistent high FPS.',
+        desc:'Low input lag and consistent high FPS for competitive titles.',
+        why:'Balanced CPU/GPU with high-refresh tuning for smooth frame times.',
         specs:[['CPU','Ryzen 5 7600'],['GPU','GeForce RTX 4060'],['RAM','16GB DDR5'],['Storage','1TB NVMe']],
         fps:{ 'Fortnite':[260,210,120], 'Valorant':[420,350,190] } }
     ];
 
+    /* ---- INTEL with your images (place files in /images/) ---- */
     const INTEL_BUILDS = [
-      { id:'intel-4k', title:'4K Gaming PC (Intel)', use:'Gaming', tag:'4K Gaming', price:2699,
-        img:'https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1600&auto=format&fit=crop',
-        imgCredit:'Unsplash',
-        desc:'Fantastic 4K gaming with frame generation, tuned for low noise and strong boost clocks.',
-        specs:[['CPU','Core i7-14700K'],['GPU','GeForce RTX 5080'],['RAM','32GB DDR5-6000'],['Storage','2TB NVMe'],['Cooling','360mm AIO'],['PSU','850W Gold']],
-        badge:'Popular',
-        fps:{ 'Cyberpunk 2077':[165,125,78], 'Fortnite':[310,250,145], 'Valorant':[460,390,215] } },
-      { id:'intel-over', title:'Overkill PC (Intel)', use:'Gaming', tag:'Extreme', price:4599,
-        img:'https://images.unsplash.com/photo-1603481546579-65d935ba9c29?q=80&w=1600&auto=format&fit=crop',
-        imgCredit:'Unsplash',
+      { id:'intel-over', title:'Overkill (Intel)', use:'Gaming', tag:'Extreme', price:4599,
+        img:'images/intel-overkill.png', /* wood-panel RGB tower */
+        imgCredit:'Provided',
         desc:'For the “everything on ultra” crowd. Also crushes editing and multi-task workloads.',
+        why:'14900K + flagship GPU for max FPS; oversized cooling for quiet turbo behavior.',
         specs:[['CPU','Core i9-14900K'],['GPU','GeForce RTX 5090'],['RAM','64GB DDR5-6000'],['Storage','2TB + 4TB NVMe'],['Cooling','360mm AIO'],['PSU','1000W Gold']],
-        badge:'New',
         fps:{ 'Cyberpunk 2077':[205,165,102], 'Fortnite':[370,305,185], 'Valorant':[530,460,265] } },
+
+      { id:'intel-4k', title:'4K Gaming (Intel)', use:'Gaming', tag:'4K Gaming', price:2699,
+        img:'images/intel-4k.png', /* white Phanteks */
+        imgCredit:'Provided',
+        desc:'Fantastic 4K gaming with frame generation, tuned for low noise.',
+        why:'14700K gives strong boost with efficiency cores for background tasks.',
+        specs:[['CPU','Core i7-14700K'],['GPU','GeForce RTX 5080'],['RAM','32GB DDR5-6000'],['Storage','2TB NVMe'],['Cooling','360mm AIO'],['PSU','850W Gold']],
+        fps:{ 'Cyberpunk 2077':[165,125,78], 'Fortnite':[310,250,145], 'Valorant':[460,390,215] } },
+
       { id:'intel-creator', title:'Creator Pro (Intel)', use:'Creator', tag:'Creator', price:3099,
-        img:'https://images.pexels.com/photos/479444/pexels-photo-479444.jpeg?auto=compress&cs=tinysrgb&w=1600',
-        imgCredit:'Pexels',
+        img:'images/intel-creator.png', /* black tower, green lighting */
+        imgCredit:'Provided',
         desc:'Optimized for Adobe/Resolve with tuned scratch disks and studio-ready drivers.',
-        specs:[['CPU','Core i9-14900K'],['GPU','GeForce RTX 5080'],['RAM','64GB DDR5-6000'],['Storage','2TB 990 PRO']],
+        why:'High boost clocks matter for timeline fluidity; NVMe scratch accelerates caching.',
+        specs:[['CPU','Core i9-14900K'],['GPU','GeForce RTX 5080'],['RAM','64GB DDR5-6000'],['Storage','2TB 990 PRO'],['Cooling','360mm AIO']],
         fps:null },
-      { id:'intel-budget', title:'Budget Gaming (Intel)', use:'Value', tag:'Best Value', price:929,
-        img:'https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1600&auto=format&fit=crop',
-        imgCredit:'Unsplash',
+
+      { id:'intel-value', title:'Budget Gaming (Intel)', use:'Value', tag:'Best Value', price:929,
+        img:'images/intel-value.png', /* white cube build */
+        imgCredit:'Provided',
         desc:'Solid 1080p experience with an easy path to 1440p via future GPU upgrade.',
+        why:'12400F keeps costs low; RTX 4060 handles popular titles well.',
         specs:[['CPU','Core i5-12400F'],['GPU','GeForce RTX 4060'],['RAM','16GB DDR4'],['Storage','1TB NVMe']],
         fps:{ 'Fortnite':[225,175,95], 'Valorant':[390,310,165] } },
+
       { id:'intel-creator-budget', title:'Budget Creator (Intel)', use:'Creator', tag:'Creator', price:719,
-        img:'https://images.pexels.com/photos/1148820/pexels-photo-1148820.jpeg?auto=compress&cs=tinysrgb&w=1600',
-        imgCredit:'Pexels',
+        img:'images/intel-creator-budget.png', /* Thermaltake angled-front white */
+        imgCredit:'Provided',
         desc:'Entry creative rig for photo/light video with room to grow.',
+        why:'13400F + entry GPU make a very capable creator starter.',
         specs:[['CPU','Core i5-13400F'],['GPU','GeForce RTX 3050'],['RAM','16GB DDR4'],['Storage','512GB NVMe']],
         fps:null },
+
       { id:'intel-esports', title:'Esports Pro (Intel)', use:'Esports', tag:'Esports', price:1049,
-        img:'https://images.unsplash.com/photo-1527443224154-c4f2a9d3c3a9?q=80&w=1600&auto=format&fit=crop',
-        imgCredit:'Unsplash',
+        img:'images/intel-esports.png', /* square RGB cube */
+        imgCredit:'Provided',
         desc:'High-FPS esports tuning with consistent frame times and quiet acoustics.',
+        why:'14500 + 4060, tuned for low input latency and stable high refresh.',
         specs:[['CPU','Core i5-14500'],['GPU','GeForce RTX 4060'],['RAM','16GB DDR5'],['Storage','1TB NVMe']],
         fps:{ 'Fortnite':[265,215,122], 'Valorant':[425,355,195] } }
     ];
 
-    /* ===== State & helpers ===== */
+    /* ---------- State & rendering ---------- */
     let BRAND = 'amd';
-    let FILTER_USE = 'all';    // 'all' | 'Gaming' | 'Creator' | 'Esports' | 'Value'
-    let FILTER_PRICE = 'all';  // 'all' | 'min-max'
+    let FILTER_USE = 'all';
+    let FILTER_PRICE = 'all';
 
-    function data() { return BRAND === 'amd' ? AMD_BUILDS.slice() : INTEL_BUILDS.slice(); }
+    function data(){ return BRAND==='amd' ? AMD_BUILDS.slice() : INTEL_BUILDS.slice(); }
 
     function applyFilters(arr){
-      if (FILTER_USE !== 'all') {
-        arr = arr.filter(b => b.use === FILTER_USE || (FILTER_USE==='Value' && b.tag.includes('Value')));
-      }
+      if (FILTER_USE !== 'all') arr = arr.filter(b => b.use === FILTER_USE || (FILTER_USE==='Value' && b.tag.includes('Value')));
       if (FILTER_PRICE !== 'all') {
         const [min,max] = FILTER_PRICE.split('-').map(Number);
         arr = arr.filter(b => b.price >= min && b.price <= max);
@@ -269,24 +302,20 @@
     function renderGrid(){
       const root = document.getElementById('grid');
       root.innerHTML = '';
-      const arr = applyFilters(data());
-      arr.forEach(b=>{
-        const card = document.createElement('div'); card.className='card-pc';
-        if (b.badge) { const bd = document.createElement('div'); bd.className='badge'; bd.textContent=b.badge; card.appendChild(bd); }
+      applyFilters(data()).forEach(b=>{
+        const card = document.createElement('div'); card.className='suggest';
         const img = document.createElement('img'); img.src=b.img; img.alt=b.title; img.loading='lazy'; img.decoding='async';
-        img.addEventListener('click', ()=>openModal(b));
-        const quick = document.createElement('div'); quick.className='quick';
-        quick.innerHTML = `<small>${b.specs.slice(0,3).map(([k,v])=>`${k}: ${v}`).join(' • ')}</small>`;
-        const ctn = document.createElement('div'); ctn.className='content';
-        ctn.innerHTML = `
-          <div class="tag">${b.tag}</div>
-          <h3 style="margin:4px 0 6px">${b.title}</h3>
-          <div class="row" style="justify-content:space-between;align-items:center;">
-            <div class="price">$${b.price.toLocaleString()}</div>
-            <button class="btn" onclick="addToCart('${b.title.replace(/'/g,"\\'")}', ${b.price})">Add</button>
+        const pad = document.createElement('div'); pad.className='pad';
+        pad.innerHTML = `
+          <div class="kicker">${b.tag}</div>
+          <div class="title">${b.title}</div>
+          <div class="pitch">${b.desc}</div>
+          <div class="foot">
+            <button class="btn" onclick="openModal('${b.id}')">View suggestion</button>
+            <div class="startat">starting at <span class="price">$${b.price.toLocaleString()}</span></div>
           </div>
-          <div style="opacity:.8;font-size:12px;margin-top:6px;cursor:pointer" onclick="openModalById('${b.id}')">Preview details</div>`;
-        card.appendChild(img); card.appendChild(quick); card.appendChild(ctn);
+        `;
+        card.appendChild(img); card.appendChild(pad);
         root.appendChild(card);
       });
     }
@@ -301,7 +330,7 @@
     document.getElementById('filterUse').addEventListener('change', e=>{ FILTER_USE = e.target.value; renderGrid(); });
     document.getElementById('filterPrice').addEventListener('change', e=>{ FILTER_PRICE = e.target.value; renderGrid(); });
 
-    /* ===== Modal logic (two-column dark showcase) ===== */
+    /* ---------- Modal logic ---------- */
     const modal = document.getElementById('pcModal');
     const mImg  = document.getElementById('pcImg');
     const mTitle= document.getElementById('pcTitle');
@@ -313,47 +342,44 @@
     const mCredit = document.getElementById('pcCredit');
     const mClose= document.getElementById('pcCloseBtn');
     const mAdd  = document.getElementById('pcAddBtn');
-    const mCustomize = document.getElementById('pcCustomizeBtn');
-    let currentBuild = null;
+    const mUse  = document.getElementById('pcUseBtn');
 
     function allBuilds(){ return [...AMD_BUILDS, ...INTEL_BUILDS]; }
-    function openModalById(id){ const b = allBuilds().find(x=>x.id===id); if(b) openModal(b); }
-
-    function openModal(b){
-      currentBuild = b;
-      mImg.src = b.img; mTitle.textContent = b.title;
+    function openModal(id){
+      const b = allBuilds().find(x=>x.id===id); if(!b) return;
+      mImg.src = b.img;
+      mTitle.textContent = b.title;
       mPrice.textContent = '$' + b.price.toLocaleString();
-      mDesc.textContent  = b.desc || '';
+      mDesc.textContent = b.why || b.desc || '';
 
-      // specs list
       mSpecs.innerHTML = b.specs.map(([k,v])=>`<div class="spec-row"><strong>${k}:</strong> ${v}</div>`).join('');
 
-      // fps table
       if (b.fps) {
         mFps.style.display = 'block';
-        mFpsBody.innerHTML = Object.entries(b.fps).map(([game,[f1080,f1440,f4k]]) =>
-          `<tr><td>${game}</td><td>${f1080}</td><td>${f1440}</td><td>${f4k ?? '—'}</td></tr>`
+        mFpsBody.innerHTML = Object.entries(b.fps).map(
+          ([game,[f1080,f1440,f4k]]) => `<tr><td>${game}</td><td>${f1080}</td><td>${f1440}</td><td>${f4k ?? '—'}</td></tr>`
         ).join('');
-      } else {
-        mFps.style.display = 'none';
-        mFpsBody.innerHTML = '';
-      }
+      } else { mFps.style.display='none'; mFpsBody.innerHTML=''; }
 
-      // attribution (photo/source)
       mCredit.textContent = b.imgCredit ? `Photo: ${b.imgCredit}` : '';
 
-      // actions
-      mCustomize.href = 'custom.html#customPCForm';
-      mAdd.onclick = () => { addToCart(b.title, b.price); };
+      // Prefill custom form via hash notes
+      const notes = encodeURIComponent(
+        `[Suggestion]\n${b.title}\nStarting at: $${b.price}\n\nSpecs:\n` +
+        b.specs.map(([k,v])=>`- ${k}: ${v}`).join('\n')
+      );
+      mUse.href = `custom.html#customPCForm?notes=${notes}`;
+
+      mAdd.onclick = ()=>addToCart(b.title, b.price);
 
       modal.classList.add('open'); modal.setAttribute('aria-hidden','false');
     }
-    function closeModal(){ modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); currentBuild=null; }
+    function closeModal(){ modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); }
     mClose.addEventListener('click', closeModal);
     modal.addEventListener('click', (e)=>{ if(e.target===modal) closeModal(); });
     document.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && modal.classList.contains('open')) closeModal(); });
 
-    /* ===== Cart helpers (cloud when logged in, local fallback) ===== */
+    /* ---------- Cart helpers (cloud if logged in, local fallback) ---------- */
     async function waitAuthReady(ms=4000){
       try { await Promise.race([ (window.__authReady ?? Promise.resolve()), new Promise((_,rej)=>setTimeout(()=>rej(new Error('auth-timeout')), ms)) ]); } catch {}
     }
@@ -394,8 +420,8 @@
       alert(name + (synced ? ' added to your account cart!' : ' added locally (offline).'));
     }
 
-    /* ===== Init ===== */
-    setBrand('amd'); // default view
+    /* ---------- Init ---------- */
+    setBrand('amd');
   </script>
 
   <script type="module" src="nav-auth.js"></script>
