@@ -93,26 +93,33 @@
         <p class="muted" style="margin-top:8px;font-size:.9rem">*Based on published benchmarks for similarly priced prebuilts vs tuned parts lists.</p>
       </div>
 
-      <aside class="card pad">
-        <h3 style="margin:0 0 8px">Quick Request</h3>
-        <!-- This forwards to contact.html with prefilled fields -->
-        <form action="contact.html" method="GET">
-          <div>
-            <label for="rq_name">Name</label>
-            <input id="rq_name" name="name" type="text" required autocomplete="name">
-          </div>
-          <div>
-            <label for="rq_email">Email</label>
-            <input id="rq_email" name="email" type="email" required autocomplete="email">
-          </div>
-          <div>
-            <label for="rq_msg">What do you need?</label>
-            <textarea id="rq_msg" name="message" placeholder="e.g., 1440p esports, Premiere 4K, SolidWorks workstation, quiet build, SFF, etc." required></textarea>
-          </div>
-          <button class="btn" type="submit">Get My Build Plan →</button>
-          <p class="muted" style="margin:8px 0 0;font-size:.9rem">We’ll reply by email within 24–48 hours.</p>
-        </form>
-      </aside>
+     <aside class="card pad" style="background:linear-gradient(135deg, rgba(125,178,255,.12), rgba(124,242,230,.12));padding:28px">
+  <h2 style="margin:0 0 14px;font-size:26px">Quick Request</h2>
+  <!-- This forwards to contact.html with prefilled fields -->
+  <form action="contact.html" method="GET" style="display:grid;gap:14px">
+    <div>
+      <label for="rq_name" style="font-weight:600;margin-bottom:6px;display:block">Name</label>
+      <input id="rq_name" name="name" type="text" required autocomplete="name" 
+        style="width:100%;padding:16px 14px;border-radius:14px;border:1px solid var(--border);background:#0c1426;color:var(--ink);font-size:1rem">
+    </div>
+    <div>
+      <label for="rq_email" style="font-weight:600;margin-bottom:6px;display:block">Email</label>
+      <input id="rq_email" name="email" type="email" required autocomplete="email" 
+        style="width:100%;padding:16px 14px;border-radius:14px;border:1px solid var(--border);background:#0c1426;color:var(--ink);font-size:1rem">
+    </div>
+    <div>
+      <label for="rq_msg" style="font-weight:600;margin-bottom:6px;display:block">What do you need?</label>
+      <textarea id="rq_msg" name="message" placeholder="e.g., 1440p esports, Premiere 4K, SolidWorks workstation, quiet build, SFF, etc." required
+        style="width:100%;padding:16px 14px;border-radius:14px;border:1px solid var(--border);background:#0c1426;color:var(--ink);font-size:1rem;min-height:160px;resize:vertical"></textarea>
+    </div>
+    <button type="submit" 
+      style="padding:16px;border-radius:14px;font-size:1.1rem;font-weight:700;cursor:pointer;
+             border:0;color:#0b0f1a;background:linear-gradient(90deg,var(--accent1),var(--accent2));
+             box-shadow:0 8px 22px rgba(117,194,255,.25)">Get My Build Plan →</button>
+    <p class="muted" style="margin:0;font-size:.95rem">We’ll reply by email within 24–48 hours.</p>
+  </form>
+</aside>
+
     </section>
 
     <!-- Example Builds -->
