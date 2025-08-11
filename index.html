@@ -69,6 +69,9 @@
     }
     .btn:active{transform:translateY(1px)}
     .tiny{font-size:.95rem;color:var(--muted);margin-top:6px}
+    .alert{display:none;margin-top:10px;padding:12px 14px;border-radius:12px}
+    .ok{background:rgba(124,242,230,.12);border:1px solid rgba(124,242,230,.35)}
+    .err{background:rgba(255,99,132,.12);border:1px solid rgba(255,99,132,.35)}
 
     /* Value props */
     .badges{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
@@ -104,40 +107,23 @@
       </nav>
     </header>
 
-    <!-- 1) Reviews -->
-    <section class="card pad section">
-      <h2>Reviews</h2>
-      <div class="review-list">
-        <div class="review">
-          <div class="stars">★★★★★</div>
-          <p class="muted" style="margin:6px 0 0">“They specced exactly for my Premiere workflow. Renders are way faster and the system is whisper-quiet.”</p>
-          <div class="who"><div class="avatar"></div><div class="name">T. Chen — Creator 4K</div></div>
-        </div>
-        <div class="review">
-          <div class="stars">★★★★★</div>
-          <p class="muted" style="margin:6px 0 0">“Hit my 240Hz target in Valorant and CS2, temps under control. No fluff, just performance.”</p>
-          <div class="who"><div class="avatar"></div><div class="name">A. Rivera — Esports</div></div>
-        </div>
-        <div class="review">
-          <div class="stars">★★★★★</div>
-          <p class="muted" style="margin:6px 0 0">“Thermals validated, PSU sized right, and clear upgrade notes. Exactly what I needed for CAD + Blender.”</p>
-          <div class="who"><div class="avatar"></div><div class="name">J. Patel — Workstation</div></div>
-        </div>
-      </div>
-    </section>
 
-    <!-- 2) Request a PC -->
+
+    <!-- 2) Request a PC (now posts directly to Formspree) -->
     <section class="card request section" id="request">
       <h2>Request a PC</h2>
-      <!-- forwards to Contact with prefill -->
-      <form id="rq_form" action="contact.html" method="GET">
+      <form id="rq_form" action="https://formspree.io/f/xrblokly" method="POST">
+        <!-- honeypot -->
+        <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
+
         <div>
           <label for="rq_name">Name</label>
           <input id="rq_name" name="name" type="text" required autocomplete="name">
         </div>
+
         <div>
           <label for="rq_email">Email</label>
-          <input id="rq_email" name="email" type="email" required autocomplete="email">
+          <input id="rq_email" name="_replyto" type="email" required autocomplete="email">
         </div>
 
         <div>
@@ -156,6 +142,14 @@
         </div>
 
         <div>
+          <label for="rq_want">Want a build?</label>
+          <select id="rq_want" name="want">
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+
+        <div>
           <label for="rq_budget">Budget</label>
           <input id="rq_budget" name="budget" type="text" placeholder="$1500–$2500">
         </div>
@@ -167,6 +161,9 @@
 
         <button class="btn" type="submit">Get My Build Plan →</button>
         <p class="tiny">We’ll reply by email within 24–48 hours.</p>
+
+        <div class="alert ok" id="rq_ok" aria-live="polite">Thanks! Your request was sent — we’ll reply within 24–48 hours.</div>
+        <div class="alert err" id="rq_err" aria-live="polite">Something went wrong. Please try again or email us directly.</div>
       </form>
     </section>
 
@@ -220,12 +217,8 @@
         const el = document.getElementById(id);
         if (v && el) {
           if (el.tagName === 'SELECT') {
-            // If option doesn't exist, append it temporarily
             let opt = Array.from(el.options).find(o => o.value === v || o.text === v);
-            if (!opt) {
-              opt = new Option(v, v);
-              el.add(opt, undefined);
-            }
+            if (!opt) { opt = new Option(v, v); el.add(opt, undefined); }
             el.value = opt.value;
           } else {
             el.value = v;
@@ -237,41 +230,62 @@
       if (filled) {
         const block = document.getElementById('request');
         if (block && block.scrollIntoView) block.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        // highlight briefly
         if (block && block.style) {
           const old = block.style.boxShadow;
           block.style.boxShadow = '0 0 0 2px rgba(125,178,255,.45), 0 20px 40px rgba(0,0,0,.35)';
           setTimeout(() => block.style.boxShadow = old, 1200);
         }
-        // clean URL
-        try {
-          const url = new URL(location.href);
-          url.search = '';
-          history.replaceState({}, '', url.toString());
-        } catch {}
+        try { const url = new URL(location.href); url.search = ''; history.replaceState({}, '', url.toString()); } catch {}
       }
     })();
 
-    // Before navigating to contact.html, append extra fields into the message so they survive
+    // AJAX submit to Formspree with inline success/fail UI and merged details
     (function () {
       const form = document.getElementById('rq_form');
-      if (!form) return;
-      form.addEventListener('submit', () => {
+      const ok = document.getElementById('rq_ok');
+      const err = document.getElementById('rq_err');
+      const btn = form.querySelector('button[type="submit"]');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        ok.style.display = 'none';
+        err.style.display = 'none';
+
+        // Append structured details into the message (keeps separate fields too)
         const build = document.getElementById('rq_build')?.value || '';
         const budget = document.getElementById('rq_budget')?.value || '';
         const want = document.getElementById('rq_want')?.value || '';
         const msgEl = document.getElementById('rq_msg');
+        let m = (msgEl.value || '').trim();
+        const extras = [];
+        if (build) extras.push(`Build: ${build}`);
+        if (budget) extras.push(`Budget: ${budget}`);
+        if (want) extras.push(`Want build: ${want}`);
+        if (extras.length) {
+          m += (m ? '\n\n' : '') + '— Details —\n' + extras.join('\n');
+          msgEl.value = m;
+        }
 
-        if (msgEl) {
-          let m = msgEl.value.trim();
-          const extras = [];
-          if (build) extras.push(`Build: ${build}`);
-          if (budget) extras.push(`Budget: ${budget}`);
-          if (want) extras.push(`Want build: ${want}`);
-          if (extras.length) {
-            m += `\n\n— Details —\n${extras.join('\n')}`;
-            msgEl.value = m;
+        const fd = new FormData(form);
+
+        try {
+          btn.disabled = true;
+          const res = await fetch(form.action, {
+            method: 'POST',
+            headers: { 'Accept': 'application/json' },
+            body: fd
+          });
+          if (res.ok) {
+            form.reset();
+            ok.style.display = 'block';
+            ok.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          } else {
+            err.style.display = 'block';
           }
+        } catch {
+          err.style.display = 'block';
+        } finally {
+          btn.disabled = false;
         }
       });
     })();
