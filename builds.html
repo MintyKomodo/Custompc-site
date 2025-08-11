@@ -13,9 +13,13 @@
       --max:1200px;
     }
     *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,Segoe UI,Roboto,Inter,Arial;color:var(--ink);background:
-      radial-gradient(1200px 600px at 50% -10%, #0f162b 8%, transparent 55%),
-      linear-gradient(#081021, #0a0f1a 40%, #0a0f1a);line-height:1.55}
+    body{
+      margin:0;font-family:system-ui,Segoe UI,Roboto,Inter,Arial;color:var(--ink);
+      background:
+        radial-gradient(1200px 600px at 50% -10%, #0f162b 8%, transparent 55%),
+        linear-gradient(#081021, #0a0f1a 40%, #0a0f1a);
+      line-height:1.55
+    }
     .wrap{max-width:var(--max);margin:0 auto;padding:28px}
 
     /* Shared header */
@@ -27,20 +31,59 @@
     .pill:hover{background:#0f1830}
     .pill.active{background:linear-gradient(120deg,rgba(125,178,255,.15),rgba(124,242,230,.15));border-color:rgba(255,255,255,.08)}
 
-    /* Gallery */
+    /* Gallery grid */
     .intro{color:var(--muted);margin:0 0 14px}
     .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
     @media (max-width:1100px){.gallery{grid-template-columns:1fr 1fr}}
     @media (max-width:650px){.gallery{grid-template-columns:1fr}}
-    .card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;display:flex;flex-direction:column}
-    .thumb{border-radius:12px;overflow:hidden;border:1px solid var(--border);aspect-ratio:16/9;background:#0c1426;margin-bottom:10px}
-    .thumb img{width:100%;height:100%;object-fit:cover;display:block}
-    .t{font-weight:700;margin:4px 0}
-    .spec{color:var(--muted);font-size:.95rem;margin-bottom:10px}
-    .btn{
-      display:inline-block;border:0;cursor:pointer;font-weight:700;padding:10px 14px;border-radius:12px;text-decoration:none;
-      color:#0b0f1a;background:linear-gradient(90deg,var(--accent1),var(--accent2));box-shadow:0 8px 22px rgba(117,194,255,.25);margin-top:auto
+    .card{
+      background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);
+      padding:16px;display:flex;flex-direction:column;gap:8px;cursor:pointer;outline:none
     }
+    .card:focus{box-shadow:0 0 0 2px rgba(125,178,255,.45), var(--shadow)}
+    .thumb{border-radius:12px;overflow:hidden;border:1px solid var(--border);aspect-ratio:16/9;background:#0c1426}
+    .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+    .t{font-weight:700;margin:2px 0}
+    .spec{color:var(--muted);font-size:.95rem;margin:0 0 2px}
+    .hint{color:var(--muted);font-size:.85rem}
+
+    /* FULL-SCREEN MODAL */
+    .modal{position:fixed;inset:0;display:none;z-index:9999}
+    .modal.open{display:block}
+    .backdrop{
+      position:absolute;inset:0;background:linear-gradient(180deg, rgba(10,15,26,.75), rgba(10,15,26,.92));
+      backdrop-filter:blur(6px)
+    }
+    .dialog{
+      position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:20px
+    }
+    .sheet{
+      width:min(1100px, 96vw);height:min(92vh, 900px);
+      background:var(--panel);border:1px solid var(--border);border-radius:calc(var(--radius) + 6px);
+      box-shadow:0 28px 80px rgba(0,0,0,.6);display:grid;grid-template-columns:1.1fr .9fr;gap:18px;padding:18px;overflow:auto
+    }
+    @media (max-width:900px){.sheet{grid-template-columns:1fr;height:min(96vh, 1000px)}}
+    .sheet .left{display:flex;flex-direction:column;gap:12px}
+    .heroimg{border-radius:14px;border:1px solid var(--border);overflow:hidden;aspect-ratio:16/9;background:#0c1426}
+    .heroimg img{width:100%;height:100%;object-fit:cover;display:block}
+    .box{border:1px solid var(--border);border-radius:12px;padding:12px;background:var(--panel2)}
+    .box h4{margin:0 0 8px}
+    ul.clean{margin:0;padding-left:18px}
+    .chips{display:flex;flex-wrap:wrap;gap:8px}
+    .chip{border:1px solid var(--border);background:#0f1830;border-radius:999px;padding:6px 10px;font-size:.9rem}
+
+    .right h2{margin:2px 0 6px;font-size:26px}
+    .right p{margin:0 0 10px}
+    .btn{
+      display:inline-block;border:0;cursor:pointer;font-weight:700;padding:12px 16px;border-radius:12px;text-decoration:none;
+      color:#0b0f1a;background:linear-gradient(90deg,var(--accent1),var(--accent2));box-shadow:0 8px 22px rgba(117,194,255,.25)
+    }
+
+    .close{
+      position:absolute;top:14px;right:14px;border-radius:12px;border:1px solid var(--border);
+      background:#0f1830;color:var(--ink);padding:8px 12px;font-weight:700;cursor:pointer
+    }
+    .close:focus{outline:2px solid rgba(125,178,255,.45)}
   </style>
 </head>
 <body>
@@ -58,89 +101,327 @@
     </header>
 
     <h1 style="margin:0 0 10px">Inspiration Builds</h1>
-    <p class="intro">Pick a starting point—we’ll tune it to your exact apps, games, and noise/size targets.</p>
+    <p class="intro">Click a build to see example specs and why it’s a fit. The modal covers the screen; close with the ✕, Esc, or by clicking outside.</p>
 
     <section class="gallery">
+      <!-- Card template pattern:
+           data-link: href to index with prefill
+           template.tpl contains <ul.spec-list> and <div.chips> for modal content -->
       <!-- 1: Esports -->
-      <div class="card">
-        <div class="thumb">
-          <img src="https://images.unsplash.com/photo-1512428559087-560fa5ceab42?q=80&w=1400&auto=format&fit=crop" alt="Compact gaming PC with RGB lighting">
-        </div>
+      <div class="card build" tabindex="0" role="button" aria-label="Open Esports 1080p/1440p" data-link="index.html?build=Esports%201080p%2F1440p&message=Interested%20in%20Esports%201080p/1440p%20build">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1512428559087-560fa5ceab42?q=80&w=1400&auto=format&fit=crop" alt="Compact gaming PC with RGB lighting"></div>
         <div class="t">Esports 1080p/1440p</div>
-        <div class="spec">Target high FPS for Valorant/CS2. Air-cooled, low noise, no bloat.</div>
-        <a class="btn" href="index.html?message=Interested%20in%20Esports%201080p%2F1440p%20build">Request this build</a>
+        <div class="spec">High FPS for Valorant/CS2. Air-cooled, low noise.</div>
+        <div class="hint">Click to view</div>
+        <template class="tpl">
+          <ul class="spec-list">
+            <li>CPU: 6–8 core “current-gen” class</li>
+            <li>GPU: Mid–high tier (great 1440p esports)</li>
+            <li>RAM: 32GB DDR5, dual-channel</li>
+            <li>Storage: 1TB NVMe Gen4</li>
+            <li>Cooling: Quiet tower air cooler</li>
+            <li>Case: Airflow-focused ATX</li>
+            <li>PSU: 650–750W 80+ Gold</li>
+          </ul>
+          <div class="chips">
+            <span class="chip">Low input latency</span>
+            <span class="chip">Thermals under control</span>
+            <span class="chip">Simple upgrades later</span>
+          </div>
+        </template>
       </div>
 
       <!-- 2: Creator 4K -->
-      <div class="card">
-        <div class="thumb">
-          <img src="https://images.unsplash.com/photo-1551033406-611cf9a28f67?q=80&w=1400&auto=format&fit=crop" alt="Workstation PC and monitor setup for video editing">
-        </div>
+      <div class="card build" tabindex="0" role="button" aria-label="Open Creator 4K" data-link="index.html?build=Creator%204K&message=Interested%20in%20Creator%204K%20build">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1551033406-611cf9a28f67?q=80&w=1400&auto=format&fit=crop" alt="Workstation PC and monitor setup for video editing"></div>
         <div class="t">Creator 4K</div>
-        <div class="spec">Premiere/DaVinci & Lightroom. GPU acceleration, quiet case, fast scratch SSD.</div>
-        <a class="btn" href="index.html?message=Interested%20in%20Creator%204K%20build">Request this build</a>
+        <div class="spec">Premiere/DaVinci & Lightroom. Quiet and fast scratch.</div>
+        <div class="hint">Click to view</div>
+        <template class="tpl">
+          <ul class="spec-list">
+            <li>CPU: 8–16 core “current-gen” class</li>
+            <li>GPU: 12–16GB VRAM class</li>
+            <li>RAM: 32–64GB DDR5</li>
+            <li>Storage: 2TB NVMe (OS), 2TB NVMe (scratch)</li>
+            <li>Cooling: Quiet AIO or tower air</li>
+            <li>Case: Acoustic-friendly mid-tower</li>
+            <li>PSU: 750–850W 80+ Gold</li>
+          </ul>
+          <div class="chips">
+            <span class="chip">Fast timeline scrubbing</span>
+            <span class="chip">Quiet under load</span>
+            <span class="chip">Scratch-disk ready</span>
+          </div>
+        </template>
       </div>
 
       <!-- 3: CAD / AI Workstation -->
-      <div class="card">
-        <div class="thumb">
-          <img src="https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1400&auto=format&fit=crop" alt="Professional workstation tower on desk">
-        </div>
+      <div class="card build" tabindex="0" role="button" aria-label="Open CAD / AI Workstation" data-link="index.html?build=CAD%20%2F%20AI%20Workstation&message=Interested%20in%20CAD%20%2F%20AI%20Workstation">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1400&auto=format&fit=crop" alt="Professional workstation tower on desk"></div>
         <div class="t">CAD / AI Workstation</div>
-        <div class="spec">SolidWorks, Blender, SD inference. Verified PSU/thermals, ECC optional.</div>
-        <a class="btn" href="index.html?message=Interested%20in%20CAD%20%2F%20AI%20Workstation">Request this build</a>
+        <div class="spec">SolidWorks, Blender, SD inference. Verified PSU & thermals.</div>
+        <div class="hint">Click to view</div>
+        <template class="tpl">
+          <ul class="spec-list">
+            <li>CPU: High-performance “current-gen” class</li>
+            <li>GPU: High-VRAM or pro-driver class</li>
+            <li>RAM: 64–128GB DDR5 (ECC optional)</li>
+            <li>Storage: 2× NVMe (OS + projects)</li>
+            <li>Cooling: AIO or tower with strong airflow</li>
+            <li>Case: Airflow-focused mid/full tower</li>
+            <li>PSU: 850–1000W 80+ Gold/Platinum</li>
+          </ul>
+          <div class="chips">
+            <span class="chip">Stable under heavy load</span>
+            <span class="chip">VRAM headroom</span>
+            <span class="chip">Documented upgrade path</span>
+          </div>
+        </template>
       </div>
 
       <!-- 4: Small Form Factor -->
-      <div class="card">
-        <div class="thumb">
-          <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1400&auto=format&fit=crop" alt="Small form factor PC on minimalist desk">
-        </div>
+      <div class="card build" tabindex="0" role="button" aria-label="Open Small Form Factor (SFF)" data-link="index.html?build=Small%20Form%20Factor%20(SFF)&message=Interested%20in%20Small%20Form%20Factor%20build">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1400&auto=format&fit=crop" alt="Small form factor PC on minimalist desk"></div>
         <div class="t">Small Form Factor (SFF)</div>
-        <div class="spec">Compact ITX with strong thermals, clean cable runs, and tuned acoustics.</div>
-        <a class="btn" href="index.html?message=Interested%20in%20Small%20Form%20Factor%20build">Request this build</a>
+        <div class="spec">Compact ITX with strong thermals and clean cable runs.</div>
+        <div class="hint">Click to view</div>
+        <template class="tpl">
+          <ul class="spec-list">
+            <li>CPU: 6–12 core “current-gen” class</li>
+            <li>GPU: Short/dual-slot options</li>
+            <li>RAM: 32–64GB DDR5</li>
+            <li>Storage: 1–2TB NVMe</li>
+            <li>Cooling: Low-profile or 240mm AIO (case-dependent)</li>
+            <li>Case: ITX SFF with mesh panels</li>
+            <li>PSU: SFX/SFX-L 650–850W</li>
+          </ul>
+          <div class="chips">
+            <span class="chip">Desk-space friendly</span>
+            <span class="chip">Careful thermal tuning</span>
+            <span class="chip">Aesthetic cable management</span>
+          </div>
+        </template>
       </div>
 
       <!-- 5: Silence-Optimized -->
-      <div class="card">
-        <div class="thumb">
-          <img src="https://images.unsplash.com/photo-1587202372616-c2c8ab7b19b4?q=80&w=1400&auto=format&fit=crop" alt="Silent PC build in acoustic-damped case">
-        </div>
+      <div class="card build" tabindex="0" role="button" aria-label="Open Silence-Optimized" data-link="index.html?build=Silence-Optimized&message=Interested%20in%20Silence-Optimized%20build">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1587202372616-c2c8ab7b19b4?q=80&w=1400&auto=format&fit=crop" alt="Silent PC build in acoustic-damped case"></div>
         <div class="t">Silence-Optimized</div>
-        <div class="spec">Damped case, tuned fan curves, zero-RPM profiles where safe.</div>
-        <a class="btn" href="index.html?message=Interested%20in%20Silence-Optimized%20build">Request this build</a>
+        <div class="spec">Acoustic-first: damped case, tuned fan curves, zero-RPM profiles.</div>
+        <div class="hint">Click to view</div>
+        <template class="tpl">
+          <ul class="spec-list">
+            <li>CPU: Efficient “current-gen” class</li>
+            <li>GPU: Semi-passive capable</li>
+            <li>RAM: 32GB DDR5</li>
+            <li>Storage: 2TB NVMe (no spinning drives)</li>
+            <li>Cooling: Low-noise air/AIO, tuned curves</li>
+            <li>Case: Acoustic-damped mid-tower</li>
+            <li>PSU: Zero-RPM mode</li>
+          </ul>
+          <div class="chips">
+            <span class="chip">Whisper-quiet</span>
+            <span class="chip">Thermals verified</span>
+            <span class="chip">Great for studios</span>
+          </div>
+        </template>
       </div>
 
       <!-- 6: Streaming + Gaming -->
-      <div class="card">
-        <div class="thumb">
-          <img src="https://images.unsplash.com/photo-1537498425277-c283d32ef9db?q=80&w=1400&auto=format&fit=crop" alt="Gaming and streaming dual-monitor setup">
-        </div>
+      <div class="card build" tabindex="0" role="button" aria-label="Open Streaming + Gaming" data-link="index.html?build=Streaming%20%2B%20Gaming&message=Interested%20in%20Streaming%20%2B%20Gaming%20build">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1537498425277-c283d32ef9db?q=80&w=1400&auto=format&fit=crop" alt="Gaming and streaming dual-monitor setup"></div>
         <div class="t">Streaming + Gaming</div>
-        <div class="spec">NVENC/x264 tuned, capture-friendly I/O, dual SSDs for OS & scratch.</div>
-        <a class="btn" href="index.html?message=Interested%20in%20Streaming%20%2B%20Gaming%20build">Request this build</a>
+        <div class="spec">NVENC/x264 tuned, capture-friendly I/O, dual SSDs.</div>
+        <div class="hint">Click to view</div>
+        <template class="tpl">
+          <ul class="spec-list">
+            <li>CPU: 8–12 core “current-gen” class</li>
+            <li>GPU: Strong NVENC support</li>
+            <li>RAM: 32–64GB DDR5</li>
+            <li>Storage: OS NVMe + scratch NVMe</li>
+            <li>Capture: PCIe/USB as needed</li>
+            <li>Cooling: Quiet air/AIO</li>
+            <li>PSU: 750–850W 80+ Gold</li>
+          </ul>
+          <div class="chips">
+            <span class="chip">Smooth streams</span>
+            <span class="chip">Stable USB for capture</span>
+            <span class="chip">Creator-ready layout</span>
+          </div>
+        </template>
       </div>
 
       <!-- 7: RGB Showcase -->
-      <div class="card">
-        <div class="thumb">
-          <img src="https://images.unsplash.com/photo-1511715282680-fbf1e5132d99?q=80&w=1400&auto=format&fit=crop" alt="Glass side-panel PC with RGB lighting">
-        </div>
+      <div class="card build" tabindex="0" role="button" aria-label="Open RGB Showcase" data-link="index.html?build=RGB%20Showcase&message=Interested%20in%20RGB%20Showcase%20build">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1511715282680-fbf1e5132d99?q=80&w=1400&auto=format&fit=crop" alt="Glass side-panel PC with RGB lighting"></div>
         <div class="t">RGB Showcase</div>
-        <div class="spec">Tempered glass, addressable RGB, clean cables, airflow still prioritized.</div>
-        <a class="btn" href="index.html?message=Interested%20in%20RGB%20Showcase%20build">Request this build</a>
+        <div class="spec">Tempered glass, addressable RGB, airflow still prioritized.</div>
+        <div class="hint">Click to view</div>
+        <template class="tpl">
+          <ul class="spec-list">
+            <li>CPU/GPU: Balanced “current-gen” pair</li>
+            <li>RAM: 32GB DDR5 (RGB kit)</li>
+            <li>Storage: 1–2TB NVMe</li>
+            <li>Cooling: ARGB fans + AIO (as desired)</li>
+            <li>Case: Showcase glass with filters</li>
+            <li>PSU: 750–850W 80+ Gold</li>
+          </ul>
+          <div class="chips">
+            <span class="chip">Looks + airflow balance</span>
+            <span class="chip">Clean cable routing</span>
+            <span class="chip">Sync’d lighting</span>
+          </div>
+        </template>
       </div>
 
       <!-- 8: Photo Pro -->
-      <div class="card">
-        <div class="thumb">
-          <img src="https://images.unsplash.com/photo-1546435770-a3e426bf472b?q=80&w=1400&auto=format&fit=crop" alt="Desktop with calibration tools for photo editing">
-        </div>
+      <div class="card build" tabindex="0" role="button" aria-label="Open Photo Pro" data-link="index.html?build=Photo%20Pro&message=Interested%20in%20Photo%20Pro%20build">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1546435770-a3e426bf472b?q=80&w=1400&auto=format&fit=crop" alt="Desktop with calibration tools for photo editing"></div>
         <div class="t">Photo Pro</div>
-        <div class="spec">Lightroom/Photoshop snappy previews, calibrated workflow, fast cache.</div>
-        <a class="btn" href="index.html?message=Interested%20in%20Photo%20Pro%20build">Request this build</a>
+        <div class="spec">Lightroom/Photoshop snappy previews, calibrated workflow.</div>
+        <div class="hint">Click to view</div>
+        <template class="tpl">
+          <ul class="spec-list">
+            <li>CPU: High single-core “current-gen” class</li>
+            <li>GPU: Mid-tier (GPU-accel tasks)</li>
+            <li>RAM: 32–64GB DDR5</li>
+            <li>Storage: OS NVMe + fast cache NVMe</li>
+            <li>Cooling: Quiet air</li>
+            <li>Case: Dust-filtered mid-tower</li>
+            <li>PSU: 650–750W 80+ Gold</li>
+          </ul>
+          <div class="chips">
+            <span class="chip">Fast previews/exports</span>
+            <span class="chip">Color-workflow friendly</span>
+            <span class="chip">Low noise</span>
+          </div>
+        </template>
       </div>
     </section>
   </div>
+
+  <!-- Full-screen modal -->
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="backdrop" data-close></div>
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalSpec">
+      <div class="sheet">
+        <button class="close" type="button" data-close aria-label="Close">✕</button>
+        <div class="left">
+          <div class="heroimg"><img id="modalImg" alt=""></div>
+          <div class="box">
+            <h4>Sample spec</h4>
+            <ul class="clean" id="modalList"></ul>
+          </div>
+        </div>
+        <div class="right">
+          <h2 id="modalTitle">Build</h2>
+          <p class="muted" id="modalSpec">Spec</p>
+          <div class="box" style="margin-bottom:12px">
+            <h4>Why this build</h4>
+            <div class="chips" id="modalChips"></div>
+          </div>
+          <a class="btn" id="modalCta" href="#">Request this build</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const modal = document.getElementById('modal');
+      const sheet = modal.querySelector('.sheet');
+      const img = document.getElementById('modalImg');
+      const title = document.getElementById('modalTitle');
+      const spec = document.getElementById('modalSpec');
+      const list = document.getElementById('modalList');
+      const chips = document.getElementById('modalChips');
+      const cta = document.getElementById('modalCta');
+      let lastFocus = null;
+
+      function openFromCard(card){
+        // Fill content
+        const src = card.querySelector('img')?.src || '';
+        const t = card.querySelector('.t')?.textContent || 'Build';
+        const s = card.querySelector('.spec')?.textContent || '';
+        const link = card.dataset.link || '#';
+
+        // Extract template content
+        list.innerHTML = '';
+        chips.innerHTML = '';
+        const tpl = card.querySelector('template.tpl');
+        if (tpl) {
+          const frag = tpl.content.cloneNode(true);
+          frag.querySelectorAll('.spec-list li').forEach(li => {
+            const clone = document.createElement('li'); clone.textContent = li.textContent; list.appendChild(clone);
+          });
+          frag.querySelectorAll('.chips .chip').forEach(ch => {
+            const span = document.createElement('span'); span.className = 'chip'; span.textContent = ch.textContent; chips.appendChild(span);
+          });
+        }
+
+        img.src = src; img.alt = t;
+        title.textContent = t;
+        spec.textContent = s;
+        cta.href = link;
+
+        // Open modal
+        lastFocus = document.activeElement;
+        modal.classList.add('open');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        // focus close button
+        const closeBtn = modal.querySelector('.close');
+        closeBtn && closeBtn.focus();
+      }
+
+      function closeModal(){
+        modal.classList.remove('open');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        // restore focus
+        if (lastFocus && lastFocus.focus) lastFocus.focus();
+      }
+
+      // Click handlers
+      document.addEventListener('click', (e) => {
+        const card = e.target.closest('.card.build');
+        if (card) {
+          // Ignore if user clicked an actual link inside (we don't have any in the card)
+          e.preventDefault();
+          openFromCard(card);
+        }
+        if (e.target.matches('[data-close]')) {
+          closeModal();
+        }
+      });
+
+      // Keyboard: Enter/Space to open, Esc to close, trap focus
+      document.addEventListener('keydown', (e) => {
+        if (modal.classList.contains('open')) {
+          if (e.key === 'Escape') { e.preventDefault(); closeModal(); }
+          if (e.key === 'Tab') {
+            // simple focus trap
+            const focusables = modal.querySelectorAll('a, button, [tabindex]:not([tabindex="-1"])');
+            const listArr = Array.from(focusables).filter(el => !el.hasAttribute('disabled'));
+            if (!listArr.length) return;
+            const first = listArr[0], last = listArr[listArr.length - 1];
+            if (e.shiftKey && document.activeElement === first) { last.focus(); e.preventDefault(); }
+            else if (!e.shiftKey && document.activeElement === last) { first.focus(); e.preventDefault(); }
+          }
+        } else {
+          // Open from focused card
+          if ((e.key === 'Enter' || e.key === ' ') && document.activeElement?.classList?.contains('build')) {
+            e.preventDefault();
+            openFromCard(document.activeElement);
+          }
+        }
+      });
+
+      // Close if clicking backdrop outside the sheet
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+      });
+    })();
+  </script>
 </body>
 </html>
