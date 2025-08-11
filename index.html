@@ -56,7 +56,7 @@
     }
     form{display:grid;gap:16px}
     label{font-weight:600;margin-bottom:6px;display:block}
-    input, textarea{
+    input, textarea, select{
       width:100%;padding:18px 16px;border-radius:16px;border:1px solid var(--border);
       background:#0c1426;color:var(--ink);outline:none;font-size:1.05rem
     }
@@ -130,7 +130,7 @@
     <section class="card request section" id="request">
       <h2>Request a PC</h2>
       <!-- forwards to Contact with prefill -->
-      <form action="contact.html" method="GET">
+      <form id="rq_form" action="contact.html" method="GET">
         <div>
           <label for="rq_name">Name</label>
           <input id="rq_name" name="name" type="text" required autocomplete="name">
@@ -139,10 +139,40 @@
           <label for="rq_email">Email</label>
           <input id="rq_email" name="email" type="email" required autocomplete="email">
         </div>
+
         <div>
-          <label for="rq_msg">What do you need?</label>
+          <label for="rq_build">Build type</label>
+          <select id="rq_build" name="build">
+            <option value="None">None / Not sure</option>
+            <option>Esports 1080p/1440p</option>
+            <option>Creator 4K</option>
+            <option>CAD / AI Workstation</option>
+            <option>Small Form Factor (SFF)</option>
+            <option>Silence-Optimized</option>
+            <option>Streaming + Gaming</option>
+            <option>RGB Showcase</option>
+            <option>Photo Pro</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="rq_want">Want a build?</label>
+          <select id="rq_want" name="want">
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="rq_budget">Budget</label>
+          <input id="rq_budget" name="budget" type="text" placeholder="$1500–$2500">
+        </div>
+
+        <div>
+          <label for="rq_msg">What do you want?</label>
           <textarea id="rq_msg" name="message" placeholder="e.g., 1440p esports, Premiere 4K, SolidWorks workstation, quiet build, SFF, etc." required></textarea>
         </div>
+
         <button class="btn" type="submit">Get My Build Plan →</button>
         <p class="tiny">We’ll reply by email within 24–48 hours.</p>
       </form>
@@ -168,41 +198,54 @@
           <div class="thumb"><img src="https://images.unsplash.com/photo-1541807084-5c52b6b3adef?q=80&w=1200&auto=format&fit=crop" alt="Esports build"></div>
           <div class="t">Esports 1080p/1440p</div>
           <div class="spec">High FPS for Valorant/CS2. Air-cooled, low noise.</div>
-          <a class="mini-btn" href="index.html?message=Interested%20in%20Esports%201080p/1440p%20build">Request this build</a>
+          <a class="mini-btn" href="index.html?build=Esports%201080p%2F1440p&message=Interested%20in%20Esports%201080p/1440p%20build">Request this build</a>
         </div>
         <div class="card pad">
           <div class="thumb"><img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop" alt="Creator build"></div>
           <div class="t">Creator 4K</div>
           <div class="spec">Premiere/DaVinci & Lightroom. GPU-accelerated, quiet case.</div>
-          <a class="mini-btn" href="index.html?message=Interested%20in%20Creator%204K%20build">Request this build</a>
+          <a class="mini-btn" href="index.html?build=Creator%204K&message=Interested%20in%20Creator%204K%20build">Request this build</a>
         </div>
         <div class="card pad">
           <div class="thumb"><img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=1200&auto=format&fit=crop" alt="Workstation build"></div>
           <div class="t">CAD / AI Workstation</div>
           <div class="spec">SolidWorks, Blender, SD inference. Verified PSU & thermals.</div>
-          <a class="mini-btn" href="index.html?message=Interested%20in%20CAD%20%2F%20AI%20Workstation">Request this build</a>
+          <a class="mini-btn" href="index.html?build=CAD%20%2F%20AI%20Workstation&message=Interested%20in%20CAD%20%2F%20AI%20Workstation">Request this build</a>
         </div>
       </div>
     </section>
   </div>
 
   <script>
-    // Auto-fill Request a PC form if ?message= / ?name= / ?email= are present
+    // Auto-fill Request a PC form if ?name= ?email= ?message= ?build= ?budget= ?want=
     (function () {
       const params = new URLSearchParams(location.search);
-      const map = { name: 'rq_name', email: 'rq_email', message: 'rq_msg' };
+      const map = { name: 'rq_name', email: 'rq_email', message: 'rq_msg', build: 'rq_build', budget: 'rq_budget', want: 'rq_want' };
       let filled = false;
 
       for (const [q, id] of Object.entries(map)) {
         const v = params.get(q);
         const el = document.getElementById(id);
-        if (v && el) { el.value = v; filled = true; }
+        if (v && el) {
+          if (el.tagName === 'SELECT') {
+            // If option doesn't exist, append it temporarily
+            let opt = Array.from(el.options).find(o => o.value === v || o.text === v);
+            if (!opt) {
+              opt = new Option(v, v);
+              el.add(opt, undefined);
+            }
+            el.value = opt.value;
+          } else {
+            el.value = v;
+          }
+          filled = true;
+        }
       }
 
       if (filled) {
         const block = document.getElementById('request');
         if (block && block.scrollIntoView) block.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        // quick highlight
+        // highlight briefly
         if (block && block.style) {
           const old = block.style.boxShadow;
           block.style.boxShadow = '0 0 0 2px rgba(125,178,255,.45), 0 20px 40px rgba(0,0,0,.35)';
@@ -215,6 +258,30 @@
           history.replaceState({}, '', url.toString());
         } catch {}
       }
+    })();
+
+    // Before navigating to contact.html, append extra fields into the message so they survive
+    (function () {
+      const form = document.getElementById('rq_form');
+      if (!form) return;
+      form.addEventListener('submit', () => {
+        const build = document.getElementById('rq_build')?.value || '';
+        const budget = document.getElementById('rq_budget')?.value || '';
+        const want = document.getElementById('rq_want')?.value || '';
+        const msgEl = document.getElementById('rq_msg');
+
+        if (msgEl) {
+          let m = msgEl.value.trim();
+          const extras = [];
+          if (build) extras.push(`Build: ${build}`);
+          if (budget) extras.push(`Budget: ${budget}`);
+          if (want) extras.push(`Want build: ${want}`);
+          if (extras.length) {
+            m += `\n\n— Details —\n${extras.join('\n')}`;
+            msgEl.value = m;
+          }
+        }
+      });
     })();
   </script>
 </body>
