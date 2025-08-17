@@ -47,11 +47,28 @@
     }
     .component-card h3{margin:0 0 16px;color:var(--accent1)}
     
-    .component-select{
-      width:100%;padding:12px;background:var(--panel2);border:1px solid var(--border);
-      border-radius:12px;color:var(--ink);font-size:1rem;margin-bottom:12px
-    }
-    .component-select:focus{outline:2px solid var(--accent1);border-color:var(--accent1)}
+         .component-select{
+       width:100%;padding:12px;background:var(--panel2);border:1px solid var(--border);
+       border-radius:12px;color:var(--ink);font-size:1rem;margin-bottom:12px
+     }
+     .component-select:focus{outline:2px solid var(--accent1);border-color:var(--accent1)}
+     
+     /* Search functionality */
+     .search-container{position:relative;margin-bottom:12px}
+     .search-input{
+       width:100%;padding:12px;background:var(--panel2);border:1px solid var(--border);
+       border-radius:12px;color:var(--ink);font-size:1rem
+     }
+     .search-input:focus{outline:2px solid var(--accent1);border-color:var(--accent1)}
+     .search-results{
+       position:absolute;top:100%;left:0;right:0;background:var(--panel);border:1px solid var(--border);
+       border-radius:12px;max-height:200px;overflow-y:auto;z-index:100;display:none
+     }
+     .search-result{
+       padding:10px;cursor:pointer;border-bottom:1px solid var(--border)
+     }
+     .search-result:hover{background:var(--panel2)}
+     .search-result:last-child{border-bottom:none}
     
     .pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-top:12px}
     .price-item{
@@ -132,111 +149,143 @@
 
     <!-- Component Selection -->
     <div class="component-grid">
-      <!-- CPU -->
-      <div class="component-card">
-        <h3>CPU</h3>
-        <select class="component-select" id="cpuSelect" data-component="cpu">
-          <option value="">Select CPU</option>
-          <option value="i9-14900K" data-price="569" data-wattage="125" data-store="Newegg">Intel Core i9-14900K - $569</option>
-          <option value="i7-14700K" data-price="399" data-wattage="125" data-store="Newegg">Intel Core i7-14700K - $399</option>
-          <option value="i5-14600K" data-price="319" data-wattage="125" data-store="Newegg">Intel Core i5-14600K - $319</option>
-          <option value="R9-7950X" data-price="699" data-wattage="170" data-store="Amazon">AMD Ryzen 9 7950X - $699</option>
-          <option value="R7-7700X" data-price="399" data-wattage="105" data-store="Amazon">AMD Ryzen 7 7700X - $399</option>
-          <option value="R5-7600X" data-price="299" data-wattage="105" data-store="Amazon">AMD Ryzen 5 7600X - $299</option>
-        </select>
-        <div class="pricing-grid" id="cpuPricing"></div>
-      </div>
+             <!-- CPU -->
+       <div class="component-card">
+         <h3>CPU</h3>
+         <div class="search-container">
+           <input type="text" class="search-input" id="cpuSearch" placeholder="Search CPUs (e.g., i9, Ryzen 7, 14900K)" />
+           <div class="search-results" id="cpuSearchResults"></div>
+         </div>
+         <select class="component-select" id="cpuSelect" data-component="cpu">
+           <option value="">Select CPU</option>
+           <option value="i9-14900K" data-price="569" data-wattage="125" data-store="Newegg">Intel Core i9-14900K - $569</option>
+           <option value="i7-14700K" data-price="399" data-wattage="125" data-store="Newegg">Intel Core i7-14700K - $399</option>
+           <option value="i5-14600K" data-price="319" data-wattage="125" data-store="Newegg">Intel Core i5-14600K - $319</option>
+           <option value="R9-7950X" data-price="699" data-wattage="170" data-store="Amazon">AMD Ryzen 9 7950X - $699</option>
+           <option value="R7-7700X" data-price="399" data-wattage="105" data-store="Amazon">AMD Ryzen 7 7700X - $399</option>
+           <option value="R5-7600X" data-price="299" data-wattage="105" data-store="Amazon">AMD Ryzen 5 7600X - $299</option>
+         </select>
+         <div class="pricing-grid" id="cpuPricing"></div>
+       </div>
 
-      <!-- GPU -->
-      <div class="component-card">
-        <h3>Graphics Card</h3>
-        <select class="component-select" id="gpuSelect" data-component="gpu">
-          <option value="">Select GPU</option>
-          <option value="RTX-4090" data-price="1599" data-wattage="450" data-store="Newegg">RTX 4090 - $1599</option>
-          <option value="RTX-4080" data-price="1199" data-wattage="320" data-store="Newegg">RTX 4080 - $1199</option>
-          <option value="RTX-4070Ti" data-price="799" data-wattage="285" data-store="Newegg">RTX 4070 Ti - $799</option>
-          <option value="RTX-4070" data-price="599" data-wattage="200" data-store="Newegg">RTX 4070 - $599</option>
-          <option value="RX-7900XTX" data-price="999" data-wattage="355" data-store="Amazon">RX 7900 XTX - $999</option>
-          <option value="RX-7900XT" data-price="799" data-wattage="315" data-store="Amazon">RX 7900 XT - $799</option>
-        </select>
-        <div class="pricing-grid" id="gpuPricing"></div>
-      </div>
+             <!-- GPU -->
+       <div class="component-card">
+         <h3>Graphics Card</h3>
+         <div class="search-container">
+           <input type="text" class="search-input" id="gpuSearch" placeholder="Search GPUs (e.g., RTX 4090, RX 7900, 4070)" />
+           <div class="search-results" id="gpuSearchResults"></div>
+         </div>
+         <select class="component-select" id="gpuSelect" data-component="gpu">
+           <option value="">Select GPU</option>
+           <option value="RTX-4090" data-price="1599" data-wattage="450" data-store="Newegg">RTX 4090 - $1599</option>
+           <option value="RTX-4080" data-price="1199" data-wattage="320" data-store="Newegg">RTX 4080 - $1199</option>
+           <option value="RTX-4070Ti" data-price="799" data-wattage="285" data-store="Newegg">RTX 4070 Ti - $799</option>
+           <option value="RTX-4070" data-price="599" data-wattage="200" data-store="Newegg">RTX 4070 - $599</option>
+           <option value="RX-7900XTX" data-price="999" data-wattage="355" data-store="Amazon">RX 7900 XTX - $999</option>
+           <option value="RX-7900XT" data-price="799" data-wattage="315" data-store="Amazon">RX 7900 XT - $799</option>
+         </select>
+         <div class="pricing-grid" id="gpuPricing"></div>
+       </div>
 
-      <!-- Motherboard -->
-      <div class="component-card">
-        <h3>Motherboard</h3>
-        <select class="component-select" id="motherboardSelect" data-component="motherboard">
-          <option value="">Select Motherboard</option>
-          <option value="Z790-A" data-price="299" data-wattage="25" data-store="Newegg">ASUS ROG Z790-A - $299</option>
-          <option value="Z790-P" data-price="199" data-wattage="25" data-store="Newegg">MSI Z790-P - $199</option>
-          <option value="B760-A" data-price="179" data-wattage="25" data-store="Newegg">ASUS B760-A - $179</option>
-          <option value="X670E-A" data-price="399" data-wattage="25" data-store="Amazon">ASUS ROG X670E-A - $399</option>
-          <option value="B650-A" data-price="199" data-wattage="25" data-store="Amazon">MSI B650-A - $199</option>
-        </select>
-        <div class="pricing-grid" id="motherboardPricing"></div>
-      </div>
+             <!-- Motherboard -->
+       <div class="component-card">
+         <h3>Motherboard</h3>
+         <div class="search-container">
+           <input type="text" class="search-input" id="motherboardSearch" placeholder="Search Motherboards (e.g., Z790, B760, X670E)" />
+           <div class="search-results" id="motherboardSearchResults"></div>
+         </div>
+         <select class="component-select" id="motherboardSelect" data-component="motherboard">
+           <option value="">Select Motherboard</option>
+           <option value="Z790-A" data-price="299" data-wattage="25" data-store="Newegg">ASUS ROG Z790-A - $299</option>
+           <option value="Z790-P" data-price="199" data-wattage="25" data-store="Newegg">MSI Z790-P - $199</option>
+           <option value="B760-A" data-price="179" data-wattage="25" data-store="Newegg">ASUS B760-A - $179</option>
+           <option value="X670E-A" data-price="399" data-wattage="25" data-store="Amazon">ASUS ROG X670E-A - $399</option>
+           <option value="B650-A" data-price="199" data-wattage="25" data-store="Amazon">MSI B650-A - $199</option>
+         </select>
+         <div class="pricing-grid" id="motherboardPricing"></div>
+       </div>
 
-      <!-- RAM -->
-      <div class="component-card">
-        <h3>RAM</h3>
-        <select class="component-select" id="ramSelect" data-component="ram">
-          <option value="">Select RAM</option>
-          <option value="32GB-DDR5" data-price="129" data-wattage="15" data-store="Newegg">32GB DDR5-6000 - $129</option>
-          <option value="64GB-DDR5" data-price="249" data-wattage="15" data-store="Newegg">64GB DDR5-6000 - $249</option>
-          <option value="128GB-DDR5" data-price="499" data-wattage="15" data-store="Newegg">128GB DDR5-6000 - $499</option>
-        </select>
-        <div class="pricing-grid" id="ramPricing"></div>
-      </div>
+             <!-- RAM -->
+       <div class="component-card">
+         <h3>RAM</h3>
+         <div class="search-container">
+           <input type="text" class="search-input" id="ramSearch" placeholder="Search RAM (e.g., 32GB, DDR5, 6000MHz)" />
+           <div class="search-results" id="ramSearchResults"></div>
+         </div>
+         <select class="component-select" id="ramSelect" data-component="ram">
+           <option value="">Select RAM</option>
+           <option value="32GB-DDR5" data-price="129" data-wattage="15" data-store="Newegg">32GB DDR5-6000 - $129</option>
+           <option value="64GB-DDR5" data-price="249" data-wattage="15" data-store="Newegg">64GB DDR5-6000 - $249</option>
+           <option value="128GB-DDR5" data-price="499" data-wattage="15" data-store="Newegg">128GB DDR5-6000 - $499</option>
+         </select>
+         <div class="pricing-grid" id="ramPricing"></div>
+       </div>
 
-      <!-- Storage -->
-      <div class="component-card">
-        <h3>Storage</h3>
-        <select class="component-select" id="storageSelect" data-component="storage">
-          <option value="">Select Storage</option>
-          <option value="1TB-NVMe" data-price="89" data-wattage="5" data-store="Newegg">1TB NVMe Gen4 - $89</option>
-          <option value="2TB-NVMe" data-price="159" data-wattage="5" data-store="Newegg">2TB NVMe Gen4 - $159</option>
-          <option value="4TB-NVMe" data-price="299" data-wattage="5" data-store="Newegg">4TB NVMe Gen4 - $299</option>
-        </select>
-        <div class="pricing-grid" id="storagePricing"></div>
-      </div>
+             <!-- Storage -->
+       <div class="component-card">
+         <h3>Storage</h3>
+         <div class="search-container">
+           <input type="text" class="search-input" id="storageSearch" placeholder="Search Storage (e.g., 1TB, NVMe, SSD)" />
+           <div class="search-results" id="storageSearchResults"></div>
+         </div>
+         <select class="component-select" id="storageSelect" data-component="storage">
+           <option value="">Select Storage</option>
+           <option value="1TB-NVMe" data-price="89" data-wattage="5" data-store="Newegg">1TB NVMe Gen4 - $89</option>
+           <option value="2TB-NVMe" data-price="159" data-wattage="5" data-store="Newegg">2TB NVMe Gen4 - $159</option>
+           <option value="4TB-NVMe" data-price="299" data-wattage="5" data-store="Newegg">4TB NVMe Gen4 - $299</option>
+         </select>
+         <div class="pricing-grid" id="storagePricing"></div>
+       </div>
 
-      <!-- Case -->
-      <div class="component-card">
-        <h3>Case</h3>
-        <select class="component-select" id="caseSelect" data-component="case">
-          <option value="">Select Case</option>
-          <option value="Lian-Li-O11" data-price="159" data-wattage="0" data-store="Newegg">Lian Li O11 Dynamic - $159</option>
-          <option value="Phanteks-P500A" data-price="129" data-wattage="0" data-store="Newegg">Phanteks P500A - $129</option>
-          <option value="Fractal-Torrent" data-price="189" data-wattage="0" data-store="Amazon">Fractal Torrent - $189</option>
-          <option value="Corsair-4000D" data-price="99" data-wattage="0" data-store="Amazon">Corsair 4000D - $99</option>
-        </select>
-        <div class="pricing-grid" id="casePricing"></div>
-      </div>
+             <!-- Case -->
+       <div class="component-card">
+         <h3>Case</h3>
+         <div class="search-container">
+           <input type="text" class="search-input" id="caseSearch" placeholder="Search Cases (e.g., ATX, ITX, RGB, Silent)" />
+           <div class="search-results" id="caseSearchResults"></div>
+         </div>
+         <select class="component-select" id="caseSelect" data-component="case">
+           <option value="">Select Case</option>
+           <option value="Lian-Li-O11" data-price="159" data-wattage="0" data-store="Newegg">Lian Li O11 Dynamic - $159</option>
+           <option value="Phanteks-P500A" data-price="129" data-wattage="0" data-store="Newegg">Phanteks P500A - $129</option>
+           <option value="Fractal-Torrent" data-price="189" data-wattage="0" data-store="Amazon">Fractal Torrent - $189</option>
+           <option value="Corsair-4000D" data-price="99" data-wattage="0" data-store="Amazon">Corsair 4000D - $99</option>
+         </select>
+         <div class="pricing-grid" id="casePricing"></div>
+       </div>
 
-      <!-- PSU -->
-      <div class="component-card">
-        <h3>Power Supply</h3>
-        <select class="component-select" id="psuSelect" data-component="psu">
-          <option value="">Select PSU</option>
-          <option value="850W-Gold" data-price="129" data-wattage="0" data-store="Newegg">850W 80+ Gold - $129</option>
-          <option value="1000W-Gold" data-price="159" data-wattage="0" data-store="Newegg">1000W 80+ Gold - $159</option>
-          <option value="1200W-Gold" data-price="199" data-wattage="0" data-store="Newegg">1200W 80+ Gold - $199</option>
-          <option value="1000W-Platinum" data-price="229" data-wattage="0" data-store="Amazon">1000W 80+ Platinum - $229</option>
-        </select>
-        <div class="pricing-grid" id="psuPricing"></div>
-      </div>
+             <!-- PSU -->
+       <div class="component-card">
+         <h3>Power Supply</h3>
+         <div class="search-container">
+           <input type="text" class="search-input" id="psuSearch" placeholder="Search PSUs (e.g., 850W, Gold, Modular)" />
+           <div class="search-results" id="psuSearchResults"></div>
+         </div>
+         <select class="component-select" id="psuSelect" data-component="psu">
+           <option value="">Select PSU</option>
+           <option value="850W-Gold" data-price="129" data-wattage="0" data-store="Newegg">850W 80+ Gold - $129</option>
+           <option value="1000W-Gold" data-price="159" data-wattage="0" data-store="Newegg">1000W 80+ Gold - $159</option>
+           <option value="1200W-Gold" data-price="199" data-wattage="0" data-store="Newegg">1200W 80+ Gold - $199</option>
+           <option value="1000W-Platinum" data-price="229" data-wattage="0" data-store="Amazon">1000W 80+ Platinum - $229</option>
+         </select>
+         <div class="pricing-grid" id="psuPricing"></div>
+       </div>
 
-      <!-- Cooling -->
-      <div class="component-card">
-        <h3>Cooling</h3>
-        <select class="component-select" id="coolingSelect" data-component="cooling">
-          <option value="">Select Cooling</option>
-          <option value="Noctua-NH-D15" data-price="99" data-wattage="5" data-store="Newegg">Noctua NH-D15 - $99</option>
-          <option value="Arctic-Liquid-II" data-price="119" data-wattage="5" data-store="Newegg">Arctic Liquid Freezer II 240 - $119</option>
-          <option value="Corsair-H150i" data-price="189" data-wattage="5" data-store="Amazon">Corsair H150i Elite - $189</option>
-        </select>
-        <div class="pricing-grid" id="coolingPricing"></div>
-      </div>
+             <!-- Cooling -->
+       <div class="component-card">
+         <h3>Cooling</h3>
+         <div class="search-container">
+           <input type="text" class="search-input" id="coolingSearch" placeholder="Search Cooling (e.g., Air, Liquid, 240mm, RGB)" />
+           <div class="search-results" id="coolingSearchResults"></div>
+         </div>
+         <select class="component-select" id="coolingSelect" data-component="cooling">
+           <option value="">Select Cooling</option>
+           <option value="Noctua-NH-D15" data-price="99" data-wattage="5" data-store="Newegg">Noctua NH-D15 - $99</option>
+           <option value="Arctic-Liquid-II" data-price="119" data-wattage="5" data-store="Newegg">Arctic Liquid Freezer II 240 - $119</option>
+           <option value="Corsair-H150i" data-price="189" data-wattage="5" data-store="Amazon">Corsair H150i Elite - $189</option>
+         </select>
+         <div class="pricing-grid" id="coolingPricing"></div>
+       </div>
     </div>
 
     <!-- Total Section -->
@@ -269,81 +318,317 @@
   </div>
 
   <script>
-    // Component data and pricing
-    const componentData = {
-      cpu: {
-        'i9-14900K': { price: 569, wattage: 125, stores: { Newegg: 569, Amazon: 579, MicroCenter: 549 } },
-        'i7-14700K': { price: 399, wattage: 125, stores: { Newegg: 399, Amazon: 409, MicroCenter: 379 } },
-        'i5-14600K': { price: 319, wattage: 125, stores: { Newegg: 319, Amazon: 329, MicroCenter: 299 } },
-        'R9-7950X': { price: 699, wattage: 170, stores: { Newegg: 699, Amazon: 689, MicroCenter: 679 } },
-        'R7-7700X': { price: 399, wattage: 105, stores: { Newegg: 399, Amazon: 389, MicroCenter: 379 } },
-        'R5-7600X': { price: 299, wattage: 105, stores: { Newegg: 299, Amazon: 289, MicroCenter: 279 } }
-      },
-      gpu: {
-        'RTX-4090': { price: 1599, wattage: 450, stores: { Newegg: 1599, Amazon: 1599, MicroCenter: 1599 } },
-        'RTX-4080': { price: 1199, wattage: 320, stores: { Newegg: 1199, Amazon: 1199, MicroCenter: 1199 } },
-        'RTX-4070Ti': { price: 799, wattage: 285, stores: { Newegg: 799, Amazon: 799, MicroCenter: 799 } },
-        'RTX-4070': { price: 599, wattage: 200, stores: { Newegg: 599, Amazon: 599, MicroCenter: 599 } },
-        'RX-7900XTX': { price: 999, wattage: 355, stores: { Newegg: 999, Amazon: 999, MicroCenter: 999 } },
-        'RX-7900XT': { price: 799, wattage: 315, stores: { Newegg: 799, Amazon: 799, MicroCenter: 799 } }
-      },
-      motherboard: {
-        'Z790-A': { price: 299, wattage: 25, stores: { Newegg: 299, Amazon: 309, MicroCenter: 289 } },
-        'Z790-P': { price: 199, wattage: 25, stores: { Newegg: 199, Amazon: 209, MicroCenter: 189 } },
-        'B760-A': { price: 179, wattage: 25, stores: { Newegg: 179, Amazon: 189, MicroCenter: 169 } },
-        'X670E-A': { price: 399, wattage: 25, stores: { Newegg: 399, Amazon: 409, MicroCenter: 389 } },
-        'B650-A': { price: 199, wattage: 25, stores: { Newegg: 199, Amazon: 209, MicroCenter: 189 } }
-      },
-      ram: {
-        '32GB-DDR5': { price: 129, wattage: 15, stores: { Newegg: 129, Amazon: 139, MicroCenter: 119 } },
-        '64GB-DDR5': { price: 249, wattage: 15, stores: { Newegg: 249, Amazon: 259, MicroCenter: 239 } },
-        '128GB-DDR5': { price: 499, wattage: 15, stores: { Newegg: 499, Amazon: 509, MicroCenter: 489 } }
-      },
-      storage: {
-        '1TB-NVMe': { price: 89, wattage: 5, stores: { Newegg: 89, Amazon: 99, MicroCenter: 79 } },
-        '2TB-NVMe': { price: 159, wattage: 5, stores: { Newegg: 159, Amazon: 169, MicroCenter: 149 } },
-        '4TB-NVMe': { price: 299, wattage: 5, stores: { Newegg: 299, Amazon: 309, MicroCenter: 289 } }
-      },
-      case: {
-        'Lian-Li-O11': { price: 159, wattage: 0, stores: { Newegg: 159, Amazon: 169, MicroCenter: 149 } },
-        'Phanteks-P500A': { price: 129, wattage: 0, stores: { Newegg: 129, Amazon: 139, MicroCenter: 119 } },
-        'Fractal-Torrent': { price: 189, wattage: 0, stores: { Newegg: 189, Amazon: 199, MicroCenter: 179 } },
-        'Corsair-4000D': { price: 99, wattage: 0, stores: { Newegg: 99, Amazon: 109, MicroCenter: 89 } }
-      },
-      psu: {
-        '850W-Gold': { price: 129, wattage: 0, stores: { Newegg: 129, Amazon: 139, MicroCenter: 119 } },
-        '1000W-Gold': { price: 159, wattage: 0, stores: { Newegg: 159, Amazon: 169, MicroCenter: 149 } },
-        '1200W-Gold': { price: 199, wattage: 0, stores: { Newegg: 199, Amazon: 209, MicroCenter: 189 } },
-        '1000W-Platinum': { price: 229, wattage: 0, stores: { Newegg: 229, Amazon: 239, MicroCenter: 219 } }
-      },
-      cooling: {
-        'Noctua-NH-D15': { price: 99, wattage: 5, stores: { Newegg: 99, Amazon: 109, MicroCenter: 89 } },
-        'Arctic-Liquid-II': { price: 119, wattage: 5, stores: { Newegg: 119, Amazon: 129, MicroCenter: 109 } },
-        'Corsair-H150i': { price: 189, wattage: 5, stores: { Newegg: 189, Amazon: 199, MicroCenter: 179 } }
-      }
+         // Component data and pricing
+     const componentData = {
+       cpu: {
+         // Intel 14th Gen
+         'i9-14900K': { price: 569, wattage: 125, stores: { Newegg: 569, Amazon: 579, MicroCenter: 549 } },
+         'i7-14700K': { price: 399, wattage: 125, stores: { Newegg: 399, Amazon: 409, MicroCenter: 379 } },
+         'i5-14600K': { price: 319, wattage: 125, stores: { Newegg: 319, Amazon: 329, MicroCenter: 299 } },
+         'i3-14100': { price: 129, wattage: 60, stores: { Newegg: 129, Amazon: 139, MicroCenter: 119 } },
+         
+         // Intel 13th Gen
+         'i9-13900K': { price: 499, wattage: 125, stores: { Newegg: 499, Amazon: 509, MicroCenter: 479 } },
+         'i7-13700K': { price: 349, wattage: 125, stores: { Newegg: 349, Amazon: 359, MicroCenter: 329 } },
+         'i5-13600K': { price: 269, wattage: 125, stores: { Newegg: 269, Amazon: 279, MicroCenter: 249 } },
+         
+         // AMD Ryzen 7000
+         'R9-7950X': { price: 699, wattage: 170, stores: { Newegg: 699, Amazon: 689, MicroCenter: 679 } },
+         'R7-7700X': { price: 399, wattage: 105, stores: { Newegg: 399, Amazon: 389, MicroCenter: 379 } },
+         'R5-7600X': { price: 299, wattage: 105, stores: { Newegg: 299, Amazon: 289, MicroCenter: 279 } },
+         'R5-7600': { price: 229, wattage: 65, stores: { Newegg: 229, Amazon: 239, MicroCenter: 219 } },
+         
+         // AMD Ryzen 5000
+         'R9-5950X': { price: 399, wattage: 105, stores: { Newegg: 399, Amazon: 409, MicroCenter: 379 } },
+         'R7-5800X3D': { price: 299, wattage: 105, stores: { Newegg: 299, Amazon: 309, MicroCenter: 279 } },
+         'R5-5600X': { price: 199, wattage: 65, stores: { Newegg: 199, Amazon: 209, MicroCenter: 189 } }
+       },
+             gpu: {
+         // NVIDIA RTX 40 Series
+         'RTX-4090': { price: 1599, wattage: 450, stores: { Newegg: 1599, Amazon: 1599, MicroCenter: 1599 } },
+         'RTX-4080': { price: 1199, wattage: 320, stores: { Newegg: 1199, Amazon: 1199, MicroCenter: 1199 } },
+         'RTX-4070Ti': { price: 799, wattage: 285, stores: { Newegg: 799, Amazon: 799, MicroCenter: 799 } },
+         'RTX-4070': { price: 599, wattage: 200, stores: { Newegg: 599, Amazon: 599, MicroCenter: 599 } },
+         'RTX-4060Ti': { price: 399, wattage: 160, stores: { Newegg: 399, Amazon: 409, MicroCenter: 379 } },
+         'RTX-4060': { price: 299, wattage: 115, stores: { Newegg: 299, Amazon: 309, MicroCenter: 279 } },
+         
+         // NVIDIA RTX 30 Series
+         'RTX-3090': { price: 999, wattage: 350, stores: { Newegg: 999, Amazon: 1099, MicroCenter: 949 } },
+         'RTX-3080Ti': { price: 799, wattage: 350, stores: { Newegg: 799, Amazon: 899, MicroCenter: 749 } },
+         'RTX-3080': { price: 599, wattage: 320, stores: { Newegg: 599, Amazon: 699, MicroCenter: 549 } },
+         'RTX-3070Ti': { price: 499, wattage: 290, stores: { Newegg: 499, Amazon: 599, MicroCenter: 449 } },
+         'RTX-3070': { price: 399, wattage: 220, stores: { Newegg: 399, Amazon: 499, MicroCenter: 349 } },
+         
+         // AMD RX 7000 Series
+         'RX-7900XTX': { price: 999, wattage: 355, stores: { Newegg: 999, Amazon: 999, MicroCenter: 999 } },
+         'RX-7900XT': { price: 799, wattage: 315, stores: { Newegg: 799, Amazon: 799, MicroCenter: 799 } },
+         'RX-7800XT': { price: 499, wattage: 263, stores: { Newegg: 499, Amazon: 509, MicroCenter: 479 } },
+         'RX-7700XT': { price: 449, wattage: 245, stores: { Newegg: 449, Amazon: 459, MicroCenter: 429 } },
+         'RX-7600': { price: 269, wattage: 165, stores: { Newegg: 269, Amazon: 279, MicroCenter: 249 } },
+         
+         // AMD RX 6000 Series
+         'RX-6950XT': { price: 599, wattage: 335, stores: { Newegg: 599, Amazon: 699, MicroCenter: 549 } },
+         'RX-6900XT': { price: 499, wattage: 300, stores: { Newegg: 499, Amazon: 599, MicroCenter: 449 } },
+         'RX-6800XT': { price: 399, wattage: 300, stores: { Newegg: 399, Amazon: 499, MicroCenter: 349 } },
+         'RX-6800': { price: 299, wattage: 250, stores: { Newegg: 299, Amazon: 399, MicroCenter: 249 } }
+       },
+             motherboard: {
+         // Intel Z790 (14th/13th Gen)
+         'Z790-A': { price: 299, wattage: 25, stores: { Newegg: 299, Amazon: 309, MicroCenter: 289 } },
+         'Z790-P': { price: 199, wattage: 25, stores: { Newegg: 199, Amazon: 209, MicroCenter: 189 } },
+         'Z790-E': { price: 449, wattage: 25, stores: { Newegg: 449, Amazon: 459, MicroCenter: 429 } },
+         'Z790-F': { price: 399, wattage: 25, stores: { Newegg: 399, Amazon: 409, MicroCenter: 379 } },
+         
+         // Intel B760 (14th/13th Gen)
+         'B760-A': { price: 179, wattage: 25, stores: { Newegg: 179, Amazon: 189, MicroCenter: 169 } },
+         'B760-F': { price: 199, wattage: 25, stores: { Newegg: 199, Amazon: 209, MicroCenter: 189 } },
+         'B760M-A': { price: 149, wattage: 25, stores: { Newegg: 149, Amazon: 159, MicroCenter: 139 } },
+         
+         // Intel B660 (12th/13th Gen)
+         'B660-A': { price: 159, wattage: 25, stores: { Newegg: 159, Amazon: 169, MicroCenter: 149 } },
+         'B660M-A': { price: 129, wattage: 25, stores: { Newegg: 129, Amazon: 139, MicroCenter: 119 } },
+         
+         // AMD X670E (Ryzen 7000)
+         'X670E-A': { price: 399, wattage: 25, stores: { Newegg: 399, Amazon: 409, MicroCenter: 389 } },
+         'X670E-E': { price: 449, wattage: 25, stores: { Newegg: 449, Amazon: 459, MicroCenter: 429 } },
+         'X670E-F': { price: 349, wattage: 25, stores: { Newegg: 349, Amazon: 359, MicroCenter: 329 } },
+         
+         // AMD B650 (Ryzen 7000)
+         'B650-A': { price: 199, wattage: 25, stores: { Newegg: 199, Amazon: 209, MicroCenter: 189 } },
+         'B650M-A': { price: 169, wattage: 25, stores: { Newegg: 169, Amazon: 179, MicroCenter: 159 } },
+         'B650-F': { price: 229, wattage: 25, stores: { Newegg: 229, Amazon: 239, MicroCenter: 219 } },
+         
+         // AMD X570 (Ryzen 5000)
+         'X570-A': { price: 199, wattage: 25, stores: { Newegg: 199, Amazon: 209, MicroCenter: 189 } },
+         'X570-E': { price: 299, wattage: 25, stores: { Newegg: 299, Amazon: 309, MicroCenter: 279 } },
+         
+         // AMD B550 (Ryzen 5000)
+         'B550-A': { price: 149, wattage: 25, stores: { Newegg: 149, Amazon: 159, MicroCenter: 139 } },
+         'B550M-A': { price: 119, wattage: 25, stores: { Newegg: 119, Amazon: 129, MicroCenter: 109 } }
+       },
+             ram: {
+         // DDR5 Options
+         '32GB-DDR5-6000': { price: 129, wattage: 15, stores: { Newegg: 129, Amazon: 139, MicroCenter: 119 } },
+         '32GB-DDR5-6400': { price: 149, wattage: 15, stores: { Newegg: 149, Amazon: 159, MicroCenter: 139 } },
+         '32GB-DDR5-7200': { price: 179, wattage: 15, stores: { Newegg: 179, Amazon: 189, MicroCenter: 169 } },
+         '64GB-DDR5-6000': { price: 249, wattage: 15, stores: { Newegg: 249, Amazon: 259, MicroCenter: 239 } },
+         '64GB-DDR5-6400': { price: 279, wattage: 15, stores: { Newegg: 279, Amazon: 289, MicroCenter: 269 } },
+         '128GB-DDR5-6000': { price: 499, wattage: 15, stores: { Newegg: 499, Amazon: 509, MicroCenter: 489 } },
+         
+         // DDR4 Options
+         '16GB-DDR4-3200': { price: 59, wattage: 15, stores: { Newegg: 59, Amazon: 69, MicroCenter: 49 } },
+         '32GB-DDR4-3200': { price: 99, wattage: 15, stores: { Newegg: 99, Amazon: 109, MicroCenter: 89 } },
+         '32GB-DDR4-3600': { price: 119, wattage: 15, stores: { Newegg: 119, Amazon: 129, MicroCenter: 109 } },
+         '64GB-DDR4-3200': { price: 199, wattage: 15, stores: { Newegg: 199, Amazon: 209, MicroCenter: 189 } },
+         
+         // RGB Options
+         '32GB-DDR5-6000-RGB': { price: 159, wattage: 15, stores: { Newegg: 159, Amazon: 169, MicroCenter: 149 } },
+         '32GB-DDR4-3600-RGB': { price: 139, wattage: 15, stores: { Newegg: 139, Amazon: 149, MicroCenter: 129 } }
+       },
+             storage: {
+         // NVMe Gen4 Options
+         '1TB-NVMe-Gen4': { price: 89, wattage: 5, stores: { Newegg: 89, Amazon: 99, MicroCenter: 79 } },
+         '2TB-NVMe-Gen4': { price: 159, wattage: 5, stores: { Newegg: 159, Amazon: 169, MicroCenter: 149 } },
+         '4TB-NVMe-Gen4': { price: 299, wattage: 5, stores: { Newegg: 299, Amazon: 309, MicroCenter: 289 } },
+         
+         // NVMe Gen3 Options
+         '1TB-NVMe-Gen3': { price: 69, wattage: 5, stores: { Newegg: 69, Amazon: 79, MicroCenter: 59 } },
+         '2TB-NVMe-Gen3': { price: 129, wattage: 5, stores: { Newegg: 129, Amazon: 139, MicroCenter: 119 } },
+         '4TB-NVMe-Gen3': { price: 249, wattage: 5, stores: { Newegg: 249, Amazon: 259, MicroCenter: 239 } },
+         
+         // SATA SSD Options
+         '1TB-SATA-SSD': { price: 59, wattage: 5, stores: { Newegg: 59, Amazon: 69, MicroCenter: 49 } },
+         '2TB-SATA-SSD': { price: 99, wattage: 5, stores: { Newegg: 99, Amazon: 109, MicroCenter: 89 } },
+         '4TB-SATA-SSD': { price: 199, wattage: 5, stores: { Newegg: 199, Amazon: 209, MicroCenter: 189 } },
+         
+         // HDD Options
+         '2TB-HDD': { price: 49, wattage: 8, stores: { Newegg: 49, Amazon: 59, MicroCenter: 39 } },
+         '4TB-HDD': { price: 79, wattage: 8, stores: { Newegg: 79, Amazon: 89, MicroCenter: 69 } },
+         '8TB-HDD': { price: 149, wattage: 8, stores: { Newegg: 149, Amazon: 159, MicroCenter: 139 } }
+       },
+             case: {
+         // Full Tower Cases
+         'Lian-Li-O11-Dynamic': { price: 159, wattage: 0, stores: { Newegg: 159, Amazon: 169, MicroCenter: 149 } },
+         'Phanteks-Enthoo-719': { price: 199, wattage: 0, stores: { Newegg: 199, Amazon: 209, MicroCenter: 189 } },
+         'Corsair-7000D': { price: 249, wattage: 0, stores: { Newegg: 249, Amazon: 259, MicroCenter: 239 } },
+         
+         // Mid Tower Cases
+         'Phanteks-P500A': { price: 129, wattage: 0, stores: { Newegg: 129, Amazon: 139, MicroCenter: 119 } },
+         'Fractal-Torrent': { price: 189, wattage: 0, stores: { Newegg: 189, Amazon: 199, MicroCenter: 179 } },
+         'Corsair-4000D': { price: 99, wattage: 0, stores: { Newegg: 99, Amazon: 109, MicroCenter: 89 } },
+         'NZXT-H510-Flow': { price: 89, wattage: 0, stores: { Newegg: 89, Amazon: 99, MicroCenter: 79 } },
+         'be-quiet-Pure-Base-500DX': { price: 109, wattage: 0, stores: { Newegg: 109, Amazon: 119, MicroCenter: 99 } },
+         
+         // Small Form Factor
+         'NZXT-H210i': { price: 89, wattage: 0, stores: { Newegg: 89, Amazon: 99, MicroCenter: 79 } },
+         'Fractal-Design-Meshify-C': { price: 119, wattage: 0, stores: { Newegg: 119, Amazon: 129, MicroCenter: 109 } },
+         'Lian-Li-Q58': { price: 129, wattage: 0, stores: { Newegg: 129, Amazon: 139, MicroCenter: 119 } },
+         
+         // Budget Options
+         'Phanteks-P300A': { price: 69, wattage: 0, stores: { Newegg: 69, Amazon: 79, MicroCenter: 59 } },
+         'Corsair-275R': { price: 79, wattage: 0, stores: { Newegg: 79, Amazon: 89, MicroCenter: 69 } }
+       },
+             psu: {
+         // 850W Options
+         '850W-Gold-Modular': { price: 129, wattage: 0, stores: { Newegg: 129, Amazon: 139, MicroCenter: 119 } },
+         '850W-Gold-Semi': { price: 109, wattage: 0, stores: { Newegg: 109, Amazon: 119, MicroCenter: 99 } },
+         '850W-Bronze-Modular': { price: 89, wattage: 0, stores: { Newegg: 89, Amazon: 99, MicroCenter: 79 } },
+         
+         // 1000W Options
+         '1000W-Gold-Modular': { price: 159, wattage: 0, stores: { Newegg: 159, Amazon: 169, MicroCenter: 149 } },
+         '1000W-Platinum-Modular': { price: 229, wattage: 0, stores: { Newegg: 229, Amazon: 239, MicroCenter: 219 } },
+         '1000W-Titanium-Modular': { price: 299, wattage: 0, stores: { Newegg: 299, Amazon: 309, MicroCenter: 279 } },
+         
+         // 1200W+ Options
+         '1200W-Gold-Modular': { price: 199, wattage: 0, stores: { Newegg: 199, Amazon: 209, MicroCenter: 189 } },
+         '1300W-Platinum-Modular': { price: 279, wattage: 0, stores: { Newegg: 279, Amazon: 289, MicroCenter: 269 } },
+         '1600W-Titanium-Modular': { price: 399, wattage: 0, stores: { Newegg: 399, Amazon: 409, MicroCenter: 379 } },
+         
+         // Budget Options
+         '650W-Bronze-Semi': { price: 69, wattage: 0, stores: { Newegg: 69, Amazon: 79, MicroCenter: 59 } },
+         '750W-Bronze-Semi': { price: 79, wattage: 0, stores: { Newegg: 79, Amazon: 89, MicroCenter: 69 } },
+         '750W-Gold-Semi': { price: 99, wattage: 0, stores: { Newegg: 99, Amazon: 109, MicroCenter: 89 } }
+       },
+             cooling: {
+         // Air Cooling - High End
+         'Noctua-NH-D15': { price: 99, wattage: 5, stores: { Newegg: 99, Amazon: 109, MicroCenter: 89 } },
+         'be-quiet-Dark-Rock-Pro-4': { price: 89, wattage: 5, stores: { Newegg: 89, Amazon: 99, MicroCenter: 79 } },
+         'Thermalright-Peerless-Assassin': { price: 69, wattage: 5, stores: { Newegg: 69, Amazon: 79, MicroCenter: 59 } },
+         
+         // Air Cooling - Mid Range
+         'Noctua-NH-U12S': { price: 69, wattage: 5, stores: { Newegg: 69, Amazon: 79, MicroCenter: 59 } },
+         'be-quiet-Dark-Rock-4': { price: 74, wattage: 5, stores: { Newegg: 74, Amazon: 84, MicroCenter: 64 } },
+         'Cooler-Master-Hyper-212': { price: 44, wattage: 5, stores: { Newegg: 44, Amazon: 54, MicroCenter: 34 } },
+         
+         // Liquid Cooling - 240mm
+         'Arctic-Liquid-Freezer-II-240': { price: 119, wattage: 5, stores: { Newegg: 119, Amazon: 129, MicroCenter: 109 } },
+         'Corsair-H100i-Elite': { price: 159, wattage: 5, stores: { Newegg: 159, Amazon: 169, MicroCenter: 149 } },
+         'NZXT-Kraken-X53': { price: 139, wattage: 5, stores: { Newegg: 139, Amazon: 149, MicroCenter: 129 } },
+         
+         // Liquid Cooling - 280mm
+         'Arctic-Liquid-Freezer-II-280': { price: 129, wattage: 5, stores: { Newegg: 129, Amazon: 139, MicroCenter: 119 } },
+         'Corsair-H115i-Elite': { price: 179, wattage: 5, stores: { Newegg: 179, Amazon: 189, MicroCenter: 169 } },
+         
+         // Liquid Cooling - 360mm
+         'Corsair-H150i-Elite': { price: 189, wattage: 5, stores: { Newegg: 189, Amazon: 199, MicroCenter: 179 } },
+         'NZXT-Kraken-X73': { price: 169, wattage: 5, stores: { Newegg: 169, Amazon: 179, MicroCenter: 159 } },
+         'Arctic-Liquid-Freezer-II-360': { price: 139, wattage: 5, stores: { Newegg: 139, Amazon: 149, MicroCenter: 129 } }
+       }
     };
 
     let currentBuild = {};
     let totalPrice = 0;
     let totalWattage = 0;
 
-    // Initialize the part picker
-    function initPartPicker() {
-      // Add event listeners to all component selects
-      document.querySelectorAll('.component-select').forEach(select => {
-        select.addEventListener('change', handleComponentChange);
-      });
+         // Initialize the part picker
+     function initPartPicker() {
+       // Add event listeners to all component selects
+       document.querySelectorAll('.component-select').forEach(select => {
+         select.addEventListener('change', handleComponentChange);
+       });
 
-      // Add event listeners to buttons
-      document.getElementById('saveBuildBtn').addEventListener('click', saveBuild);
-      document.getElementById('peripheralsBtn').addEventListener('click', addPeripherals);
-      document.getElementById('requestBuildBtn').addEventListener('click', requestBuild);
-      document.getElementById('loginBtn').addEventListener('click', login);
-      document.getElementById('registerBtn').addEventListener('click', register);
+       // Add event listeners to buttons
+       document.getElementById('saveBuildBtn').addEventListener('click', saveBuild);
+       document.getElementById('peripheralsBtn').addEventListener('click', addPeripherals);
+       document.getElementById('requestBuildBtn').addEventListener('click', requestBuild);
+       document.getElementById('loginBtn').addEventListener('click', login);
+       document.getElementById('registerBtn').addEventListener('click', register);
 
-      // Load saved builds if user is logged in
-      loadSavedBuilds();
-    }
+       // Initialize search functionality
+       initSearch();
+
+       // Load saved builds if user is logged in
+       loadSavedBuilds();
+     }
+
+     // Initialize search functionality
+     function initSearch() {
+       const searchInputs = [
+         { id: 'cpuSearch', resultsId: 'cpuSearchResults', componentType: 'cpu' },
+         { id: 'gpuSearch', resultsId: 'gpuSearchResults', componentType: 'gpu' },
+         { id: 'motherboardSearch', resultsId: 'motherboardSearchResults', componentType: 'motherboard' },
+         { id: 'ramSearch', resultsId: 'ramSearchResults', componentType: 'ram' },
+         { id: 'storageSearch', resultsId: 'storageSearchResults', componentType: 'storage' },
+         { id: 'caseSearch', resultsId: 'caseSearchResults', componentType: 'case' },
+         { id: 'psuSearch', resultsId: 'psuSearchResults', componentType: 'psu' },
+         { id: 'coolingSearch', resultsId: 'coolingSearchResults', componentType: 'cooling' }
+       ];
+
+       searchInputs.forEach(({ id, resultsId, componentType }) => {
+         const input = document.getElementById(id);
+         const results = document.getElementById(resultsId);
+         
+         input.addEventListener('input', (e) => {
+           const query = e.target.value.toLowerCase();
+           if (query.length < 2) {
+             results.style.display = 'none';
+             return;
+           }
+           
+           const filteredComponents = filterComponents(componentType, query);
+           displaySearchResults(results, filteredComponents, componentType);
+         });
+
+         // Hide results when clicking outside
+         document.addEventListener('click', (e) => {
+           if (!input.contains(e.target) && !results.contains(e.target)) {
+             results.style.display = 'none';
+           }
+         });
+       });
+     }
+
+     // Filter components based on search query
+     function filterComponents(componentType, query) {
+       const components = componentData[componentType];
+       if (!components) return [];
+
+       return Object.entries(components)
+         .filter(([key, component]) => {
+           const searchText = `${key} ${component.name || ''}`.toLowerCase();
+           return searchText.includes(query);
+         })
+         .slice(0, 8); // Limit to 8 results
+     }
+
+     // Display search results
+     function displaySearchResults(resultsElement, components, componentType) {
+       if (components.length === 0) {
+         resultsElement.style.display = 'none';
+         return;
+       }
+
+       resultsElement.innerHTML = components
+         .map(([key, component]) => {
+           const name = component.name || key;
+           const price = component.price;
+           return `<div class="search-result" data-component="${key}" data-type="${componentType}">
+             ${name} - $${price}
+           </div>`;
+         })
+         .join('');
+
+       // Add click handlers to results
+       resultsElement.querySelectorAll('.search-result').forEach(result => {
+         result.addEventListener('click', () => {
+           const componentKey = result.dataset.component;
+           const componentType = result.dataset.type;
+           selectComponentFromSearch(componentType, componentKey);
+           resultsElement.style.display = 'none';
+         });
+       });
+
+       resultsElement.style.display = 'block';
+     }
+
+     // Select component from search results
+     function selectComponentFromSearch(componentType, componentKey) {
+       const select = document.getElementById(componentType + 'Select');
+       if (select) {
+         select.value = componentKey;
+         handleComponentChange({ target: select });
+       }
+     }
 
     // Handle component selection changes
     function handleComponentChange(event) {
