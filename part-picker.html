@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PC Part Picker | CustomPC.tech</title>
+  <style>
+    :root{
+      --bg:#0a0f1a; --ink:#e9eefc; --muted:#aeb9d4;
+      --panel:#111729; --panel2:#0d1426; --border:rgba(255,255,255,.08);
+      --accent1:#7db2ff; --accent2:#7cf2e6;
+      --radius:18px; --shadow:0 20px 40px rgba(0,0,0,.35);
+      --max:1200px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;font-family:system-ui,Segoe UI,Roboto,Inter,Arial;color:var(--ink);
+      background:
+        radial-gradient(1200px 600px at 50% -10%, #0f162b 8%, transparent 55%),
+        linear-gradient(#081021, #0a0f1a 40%, #0a0f1a);
+      line-height:1.55
+    }
+    .wrap{max-width:var(--max);margin:0 auto;padding:28px}
+
+    /* Header */
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+    .brand a{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;font-weight:700;letter-spacing:.3px;white-space:nowrap}
+    .dot{width:10px;height:10px;border-radius:50%;background:linear-gradient(120deg,var(--accent1),var(--accent2));box-shadow:0 0 14px rgba(125,178,255,.6)}
+    nav{display:flex;gap:10px;flex-wrap:wrap}
+    .pill{display:inline-block;padding:10px 14px;border-radius:999px;color:var(--ink);text-decoration:none;border:1px solid transparent}
+    .pill:hover{background:#0f1830}
+    .pill.active{background:linear-gradient(120deg,rgba(125,178,255,.15),rgba(124,242,230,.15));border-color:rgba(255,255,255,.08)}
+
+    /* Part Picker Styles */
+    .intro{color:var(--muted);margin:0 0 20px;font-size:1.1rem}
+    .wattage-display{
+      background:var(--panel2);border:1px solid var(--border);border-radius:var(--radius);
+      padding:16px;margin-bottom:20px;text-align:center
+    }
+    .wattage-display .current{font-size:1.5rem;font-weight:700;color:var(--accent1)}
+    .wattage-display .max{color:var(--muted);font-size:.9rem}
+    
+    .component-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;margin-bottom:30px}
+    .component-card{
+      background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);
+      padding:20px;box-shadow:var(--shadow)
+    }
+    .component-card h3{margin:0 0 16px;color:var(--accent1)}
+    
+    .component-select{
+      width:100%;padding:12px;background:var(--panel2);border:1px solid var(--border);
+      border-radius:12px;color:var(--ink);font-size:1rem;margin-bottom:12px
+    }
+    .component-select:focus{outline:2px solid var(--accent1);border-color:var(--accent1)}
+    
+    .pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-top:12px}
+    .price-item{
+      background:var(--panel2);border:1px solid var(--border);border-radius:8px;
+      padding:8px;text-align:center;font-size:.9rem
+    }
+    .price-item .store{color:var(--muted);font-size:.8rem;margin-bottom:4px}
+    .price-item .price{color:var(--accent2);font-weight:700}
+    
+    .total-section{
+      background:var(--panel2);border:1px solid var(--border);border-radius:var(--radius);
+      padding:24px;margin-bottom:20px;text-align:center
+    }
+    .total-section .total-price{font-size:2rem;font-weight:700;color:var(--accent2);margin-bottom:8px}
+    .total-section .total-wattage{color:var(--muted);font-size:1.1rem}
+    
+    .action-buttons{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+    .btn{
+      display:inline-block;border:0;cursor:pointer;font-weight:700;padding:14px 24px;
+      border-radius:12px;text-decoration:none;font-size:1.1rem
+    }
+    .btn-primary{
+      color:#0b0f1a;background:linear-gradient(90deg,var(--accent1),var(--accent2));
+      box-shadow:0 8px 22px rgba(117,194,255,.25)
+    }
+    .btn-secondary{
+      color:var(--ink);background:var(--panel);border:1px solid var(--border)
+    }
+    .btn:hover{transform:translateY(-2px);transition:transform .2s}
+    
+    .login-section{
+      background:var(--panel2);border:1px solid var(--border);border-radius:var(--radius);
+      padding:20px;margin-bottom:20px;text-align:center
+    }
+    .login-section input{
+      padding:12px;margin:0 8px;background:var(--panel);border:1px solid var(--border);
+      border-radius:8px;color:var(--ink);width:200px
+    }
+    .login-section button{margin-left:8px}
+    
+    .saved-builds{
+      background:var(--panel2);border:1px solid var(--border);border-radius:var(--radius);
+      padding:20px;margin-top:20px
+    }
+    .saved-builds h3{margin:0 0 16px;color:var(--accent1)}
+    .build-item{
+      background:var(--panel);border:1px solid var(--border);border-radius:12px;
+      padding:16px;margin-bottom:12px;cursor:pointer
+    }
+    .build-item:hover{background:var(--panel2)}
+    .build-item .name{font-weight:700;margin-bottom:4px}
+    .build-item .details{color:var(--muted);font-size:.9rem}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <a href="index.html"><span class="dot"></span> CustomPC.tech</a>
+      </div>
+      <nav>
+        <a class="pill" href="index.html">Custom PC</a>
+        <a class="pill active" href="part-picker.html">Part Picker</a>
+        <a class="pill" href="builds.html">Builds</a>
+        <a class="pill" href="about.html">About</a>
+        <a class="pill" href="contact.html">Contact</a>
+      </nav>
+    </header>
+
+    <h1 style="margin:0 0 10px">PC Part Picker</h1>
+    <p class="intro">Want certain components? Just want us to build it? Select your parts and we'll handle the rest.</p>
+
+    <!-- Wattage Display -->
+    <div class="wattage-display">
+      <div class="current">Current: <span id="currentWattage">0</span>W</div>
+      <div class="max">Recommended PSU: <span id="recommendedPSU">0</span>W</div>
+    </div>
+
+    <!-- Component Selection -->
+    <div class="component-grid">
+      <!-- CPU -->
+      <div class="component-card">
+        <h3>CPU</h3>
+        <select class="component-select" id="cpuSelect" data-component="cpu">
+          <option value="">Select CPU</option>
+          <option value="i9-14900K" data-price="569" data-wattage="125" data-store="Newegg">Intel Core i9-14900K - $569</option>
+          <option value="i7-14700K" data-price="399" data-wattage="125" data-store="Newegg">Intel Core i7-14700K - $399</option>
+          <option value="i5-14600K" data-price="319" data-wattage="125" data-store="Newegg">Intel Core i5-14600K - $319</option>
+          <option value="R9-7950X" data-price="699" data-wattage="170" data-store="Amazon">AMD Ryzen 9 7950X - $699</option>
+          <option value="R7-7700X" data-price="399" data-wattage="105" data-store="Amazon">AMD Ryzen 7 7700X - $399</option>
+          <option value="R5-7600X" data-price="299" data-wattage="105" data-store="Amazon">AMD Ryzen 5 7600X - $299</option>
+        </select>
+        <div class="pricing-grid" id="cpuPricing"></div>
+      </div>
+
+      <!-- GPU -->
+      <div class="component-card">
+        <h3>Graphics Card</h3>
+        <select class="component-select" id="gpuSelect" data-component="gpu">
+          <option value="">Select GPU</option>
+          <option value="RTX-4090" data-price="1599" data-wattage="450" data-store="Newegg">RTX 4090 - $1599</option>
+          <option value="RTX-4080" data-price="1199" data-wattage="320" data-store="Newegg">RTX 4080 - $1199</option>
+          <option value="RTX-4070Ti" data-price="799" data-wattage="285" data-store="Newegg">RTX 4070 Ti - $799</option>
+          <option value="RTX-4070" data-price="599" data-wattage="200" data-store="Newegg">RTX 4070 - $599</option>
+          <option value="RX-7900XTX" data-price="999" data-wattage="355" data-store="Amazon">RX 7900 XTX - $999</option>
+          <option value="RX-7900XT" data-price="799" data-wattage="315" data-store="Amazon">RX 7900 XT - $799</option>
+        </select>
+        <div class="pricing-grid" id="gpuPricing"></div>
+      </div>
+
+      <!-- Motherboard -->
+      <div class="component-card">
+        <h3>Motherboard</h3>
+        <select class="component-select" id="motherboardSelect" data-component="motherboard">
+          <option value="">Select Motherboard</option>
+          <option value="Z790-A" data-price="299" data-wattage="25" data-store="Newegg">ASUS ROG Z790-A - $299</option>
+          <option value="Z790-P" data-price="199" data-wattage="25" data-store="Newegg">MSI Z790-P - $199</option>
+          <option value="B760-A" data-price="179" data-wattage="25" data-store="Newegg">ASUS B760-A - $179</option>
+          <option value="X670E-A" data-price="399" data-wattage="25" data-store="Amazon">ASUS ROG X670E-A - $399</option>
+          <option value="B650-A" data-price="199" data-wattage="25" data-store="Amazon">MSI B650-A - $199</option>
+        </select>
+        <div class="pricing-grid" id="motherboardPricing"></div>
+      </div>
+
+      <!-- RAM -->
+      <div class="component-card">
+        <h3>RAM</h3>
+        <select class="component-select" id="ramSelect" data-component="ram">
+          <option value="">Select RAM</option>
+          <option value="32GB-DDR5" data-price="129" data-wattage="15" data-store="Newegg">32GB DDR5-6000 - $129</option>
+          <option value="64GB-DDR5" data-price="249" data-wattage="15" data-store="Newegg">64GB DDR5-6000 - $249</option>
+          <option value="128GB-DDR5" data-price="499" data-wattage="15" data-store="Newegg">128GB DDR5-6000 - $499</option>
+        </select>
+        <div class="pricing-grid" id="ramPricing"></div>
+      </div>
+
+      <!-- Storage -->
+      <div class="component-card">
+        <h3>Storage</h3>
+        <select class="component-select" id="storageSelect" data-component="storage">
+          <option value="">Select Storage</option>
+          <option value="1TB-NVMe" data-price="89" data-wattage="5" data-store="Newegg">1TB NVMe Gen4 - $89</option>
+          <option value="2TB-NVMe" data-price="159" data-wattage="5" data-store="Newegg">2TB NVMe Gen4 - $159</option>
+          <option value="4TB-NVMe" data-price="299" data-wattage="5" data-store="Newegg">4TB NVMe Gen4 - $299</option>
+        </select>
+        <div class="pricing-grid" id="storagePricing"></div>
+      </div>
+
+      <!-- Case -->
+      <div class="component-card">
+        <h3>Case</h3>
+        <select class="component-select" id="caseSelect" data-component="case">
+          <option value="">Select Case</option>
+          <option value="Lian-Li-O11" data-price="159" data-wattage="0" data-store="Newegg">Lian Li O11 Dynamic - $159</option>
+          <option value="Phanteks-P500A" data-price="129" data-wattage="0" data-store="Newegg">Phanteks P500A - $129</option>
+          <option value="Fractal-Torrent" data-price="189" data-wattage="0" data-store="Amazon">Fractal Torrent - $189</option>
+          <option value="Corsair-4000D" data-price="99" data-wattage="0" data-store="Amazon">Corsair 4000D - $99</option>
+        </select>
+        <div class="pricing-grid" id="casePricing"></div>
+      </div>
+
+      <!-- PSU -->
+      <div class="component-card">
+        <h3>Power Supply</h3>
+        <select class="component-select" id="psuSelect" data-component="psu">
+          <option value="">Select PSU</option>
+          <option value="850W-Gold" data-price="129" data-wattage="0" data-store="Newegg">850W 80+ Gold - $129</option>
+          <option value="1000W-Gold" data-price="159" data-wattage="0" data-store="Newegg">1000W 80+ Gold - $159</option>
+          <option value="1200W-Gold" data-price="199" data-wattage="0" data-store="Newegg">1200W 80+ Gold - $199</option>
+          <option value="1000W-Platinum" data-price="229" data-wattage="0" data-store="Amazon">1000W 80+ Platinum - $229</option>
+        </select>
+        <div class="pricing-grid" id="psuPricing"></div>
+      </div>
+
+      <!-- Cooling -->
+      <div class="component-card">
+        <h3>Cooling</h3>
+        <select class="component-select" id="coolingSelect" data-component="cooling">
+          <option value="">Select Cooling</option>
+          <option value="Noctua-NH-D15" data-price="99" data-wattage="5" data-store="Newegg">Noctua NH-D15 - $99</option>
+          <option value="Arctic-Liquid-II" data-price="119" data-wattage="5" data-store="Newegg">Arctic Liquid Freezer II 240 - $119</option>
+          <option value="Corsair-H150i" data-price="189" data-wattage="5" data-store="Amazon">Corsair H150i Elite - $189</option>
+        </select>
+        <div class="pricing-grid" id="coolingPricing"></div>
+      </div>
+    </div>
+
+    <!-- Total Section -->
+    <div class="total-section">
+      <div class="total-price">Total: $<span id="totalPrice">0</span></div>
+      <div class="total-wattage">Total Wattage: <span id="totalWattage">0</span>W</div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button class="btn btn-primary" id="saveBuildBtn">Save This Build</button>
+      <button class="btn btn-secondary" id="peripheralsBtn">Add Peripherals</button>
+      <a href="index.html" class="btn btn-primary" id="requestBuildBtn">Request This Build</a>
+    </div>
+
+    <!-- Login Section -->
+    <div class="login-section" id="loginSection">
+      <h3>Login to Save Your Build</h3>
+      <input type="email" id="userEmail" placeholder="Email" />
+      <input type="password" id="userPassword" placeholder="Password" />
+      <button class="btn btn-primary" id="loginBtn">Login</button>
+      <button class="btn btn-secondary" id="registerBtn">Register</button>
+    </div>
+
+    <!-- Saved Builds -->
+    <div class="saved-builds" id="savedBuilds" style="display:none">
+      <h3>Your Saved Builds</h3>
+      <div id="buildsList"></div>
+    </div>
+  </div>
+
+  <script>
+    // Component data and pricing
+    const componentData = {
+      cpu: {
+        'i9-14900K': { price: 569, wattage: 125, stores: { Newegg: 569, Amazon: 579, MicroCenter: 549 } },
+        'i7-14700K': { price: 399, wattage: 125, stores: { Newegg: 399, Amazon: 409, MicroCenter: 379 } },
+        'i5-14600K': { price: 319, wattage: 125, stores: { Newegg: 319, Amazon: 329, MicroCenter: 299 } },
+        'R9-7950X': { price: 699, wattage: 170, stores: { Newegg: 699, Amazon: 689, MicroCenter: 679 } },
+        'R7-7700X': { price: 399, wattage: 105, stores: { Newegg: 399, Amazon: 389, MicroCenter: 379 } },
+        'R5-7600X': { price: 299, wattage: 105, stores: { Newegg: 299, Amazon: 289, MicroCenter: 279 } }
+      },
+      gpu: {
+        'RTX-4090': { price: 1599, wattage: 450, stores: { Newegg: 1599, Amazon: 1599, MicroCenter: 1599 } },
+        'RTX-4080': { price: 1199, wattage: 320, stores: { Newegg: 1199, Amazon: 1199, MicroCenter: 1199 } },
+        'RTX-4070Ti': { price: 799, wattage: 285, stores: { Newegg: 799, Amazon: 799, MicroCenter: 799 } },
+        'RTX-4070': { price: 599, wattage: 200, stores: { Newegg: 599, Amazon: 599, MicroCenter: 599 } },
+        'RX-7900XTX': { price: 999, wattage: 355, stores: { Newegg: 999, Amazon: 999, MicroCenter: 999 } },
+        'RX-7900XT': { price: 799, wattage: 315, stores: { Newegg: 799, Amazon: 799, MicroCenter: 799 } }
+      },
+      motherboard: {
+        'Z790-A': { price: 299, wattage: 25, stores: { Newegg: 299, Amazon: 309, MicroCenter: 289 } },
+        'Z790-P': { price: 199, wattage: 25, stores: { Newegg: 199, Amazon: 209, MicroCenter: 189 } },
+        'B760-A': { price: 179, wattage: 25, stores: { Newegg: 179, Amazon: 189, MicroCenter: 169 } },
+        'X670E-A': { price: 399, wattage: 25, stores: { Newegg: 399, Amazon: 409, MicroCenter: 389 } },
+        'B650-A': { price: 199, wattage: 25, stores: { Newegg: 199, Amazon: 209, MicroCenter: 189 } }
+      },
+      ram: {
+        '32GB-DDR5': { price: 129, wattage: 15, stores: { Newegg: 129, Amazon: 139, MicroCenter: 119 } },
+        '64GB-DDR5': { price: 249, wattage: 15, stores: { Newegg: 249, Amazon: 259, MicroCenter: 239 } },
+        '128GB-DDR5': { price: 499, wattage: 15, stores: { Newegg: 499, Amazon: 509, MicroCenter: 489 } }
+      },
+      storage: {
+        '1TB-NVMe': { price: 89, wattage: 5, stores: { Newegg: 89, Amazon: 99, MicroCenter: 79 } },
+        '2TB-NVMe': { price: 159, wattage: 5, stores: { Newegg: 159, Amazon: 169, MicroCenter: 149 } },
+        '4TB-NVMe': { price: 299, wattage: 5, stores: { Newegg: 299, Amazon: 309, MicroCenter: 289 } }
+      },
+      case: {
+        'Lian-Li-O11': { price: 159, wattage: 0, stores: { Newegg: 159, Amazon: 169, MicroCenter: 149 } },
+        'Phanteks-P500A': { price: 129, wattage: 0, stores: { Newegg: 129, Amazon: 139, MicroCenter: 119 } },
+        'Fractal-Torrent': { price: 189, wattage: 0, stores: { Newegg: 189, Amazon: 199, MicroCenter: 179 } },
+        'Corsair-4000D': { price: 99, wattage: 0, stores: { Newegg: 99, Amazon: 109, MicroCenter: 89 } }
+      },
+      psu: {
+        '850W-Gold': { price: 129, wattage: 0, stores: { Newegg: 129, Amazon: 139, MicroCenter: 119 } },
+        '1000W-Gold': { price: 159, wattage: 0, stores: { Newegg: 159, Amazon: 169, MicroCenter: 149 } },
+        '1200W-Gold': { price: 199, wattage: 0, stores: { Newegg: 199, Amazon: 209, MicroCenter: 189 } },
+        '1000W-Platinum': { price: 229, wattage: 0, stores: { Newegg: 229, Amazon: 239, MicroCenter: 219 } }
+      },
+      cooling: {
+        'Noctua-NH-D15': { price: 99, wattage: 5, stores: { Newegg: 99, Amazon: 109, MicroCenter: 89 } },
+        'Arctic-Liquid-II': { price: 119, wattage: 5, stores: { Newegg: 119, Amazon: 129, MicroCenter: 109 } },
+        'Corsair-H150i': { price: 189, wattage: 5, stores: { Newegg: 189, Amazon: 199, MicroCenter: 179 } }
+      }
+    };
+
+    let currentBuild = {};
+    let totalPrice = 0;
+    let totalWattage = 0;
+
+    // Initialize the part picker
+    function initPartPicker() {
+      // Add event listeners to all component selects
+      document.querySelectorAll('.component-select').forEach(select => {
+        select.addEventListener('change', handleComponentChange);
+      });
+
+      // Add event listeners to buttons
+      document.getElementById('saveBuildBtn').addEventListener('click', saveBuild);
+      document.getElementById('peripheralsBtn').addEventListener('click', addPeripherals);
+      document.getElementById('requestBuildBtn').addEventListener('click', requestBuild);
+      document.getElementById('loginBtn').addEventListener('click', login);
+      document.getElementById('registerBtn').addEventListener('click', register);
+
+      // Load saved builds if user is logged in
+      loadSavedBuilds();
+    }
+
+    // Handle component selection changes
+    function handleComponentChange(event) {
+      const select = event.target;
+      const componentType = select.dataset.component;
+      const selectedValue = select.value;
+
+      if (selectedValue) {
+        const component = componentData[componentType][selectedValue];
+        currentBuild[componentType] = {
+          name: selectedValue,
+          price: component.price,
+          wattage: component.wattage,
+          stores: component.stores
+        };
+
+        // Update pricing display
+        updatePricingDisplay(componentType, component.stores);
+      } else {
+        delete currentBuild[componentType];
+        clearPricingDisplay(componentType);
+      }
+
+      updateTotals();
+    }
+
+    // Update pricing display for a component
+    function updatePricingDisplay(componentType, stores) {
+      const pricingDiv = document.getElementById(componentType + 'Pricing');
+      pricingDiv.innerHTML = '';
+
+      Object.entries(stores).forEach(([store, price]) => {
+        const priceItem = document.createElement('div');
+        priceItem.className = 'price-item';
+        priceItem.innerHTML = `
+          <div class="store">${store}</div>
+          <div class="price">$${price}</div>
+        `;
+        pricingDiv.appendChild(priceItem);
+      });
+    }
+
+    // Clear pricing display for a component
+    function clearPricingDisplay(componentType) {
+      const pricingDiv = document.getElementById(componentType + 'Pricing');
+      pricingDiv.innerHTML = '';
+    }
+
+    // Update totals
+    function updateTotals() {
+      totalPrice = 0;
+      totalWattage = 0;
+
+      Object.values(currentBuild).forEach(component => {
+        totalPrice += component.price;
+        totalWattage += component.wattage;
+      });
+
+      // Update display
+      document.getElementById('totalPrice').textContent = totalPrice;
+      document.getElementById('totalWattage').textContent = totalWattage;
+      document.getElementById('currentWattage').textContent = totalWattage;
+
+      // Calculate recommended PSU (add 20% buffer)
+      const recommendedPSU = Math.ceil(totalWattage * 1.2 / 50) * 50;
+      document.getElementById('recommendedPSU').textContent = recommendedPSU;
+
+      // Update request build button with build data
+      const requestBtn = document.getElementById('requestBuildBtn');
+      if (Object.keys(currentBuild).length > 0) {
+        const buildData = encodeURIComponent(JSON.stringify(currentBuild));
+        requestBtn.href = `index.html?build=${buildData}`;
+      }
+    }
+
+    // Save build function
+    function saveBuild() {
+      if (Object.keys(currentBuild).length === 0) {
+        alert('Please select at least one component before saving.');
+        return;
+      }
+
+      // Check if user is logged in (simplified for demo)
+      const userEmail = document.getElementById('userEmail').value;
+      if (!userEmail) {
+        alert('Please enter your email to save the build.');
+        return;
+      }
+
+      const buildName = prompt('Enter a name for this build:');
+      if (!buildName) return;
+
+      const buildToSave = {
+        name: buildName,
+        components: currentBuild,
+        totalPrice: totalPrice,
+        totalWattage: totalWattage,
+        timestamp: new Date().toISOString(),
+        userEmail: userEmail
+      };
+
+      // Save to localStorage (in real app, this would go to a database)
+      const savedBuilds = JSON.parse(localStorage.getItem('savedBuilds') || '[]');
+      savedBuilds.push(buildToSave);
+      localStorage.setItem('savedBuilds', JSON.stringify(savedBuilds));
+
+      alert('Build saved successfully!');
+      loadSavedBuilds();
+    }
+
+    // Load saved builds
+    function loadSavedBuilds() {
+      const savedBuilds = JSON.parse(localStorage.getItem('savedBuilds') || '[]');
+      const buildsList = document.getElementById('buildsList');
+      const savedBuildsSection = document.getElementById('savedBuilds');
+
+      if (savedBuilds.length > 0) {
+        savedBuildsSection.style.display = 'block';
+        buildsList.innerHTML = '';
+
+        savedBuilds.forEach((build, index) => {
+          const buildItem = document.createElement('div');
+          buildItem.className = 'build-item';
+          buildItem.innerHTML = `
+            <div class="name">${build.name}</div>
+            <div class="details">$${build.totalPrice} • ${build.totalWattage}W • ${new Date(build.timestamp).toLocaleDateString()}</div>
+          `;
+          buildItem.addEventListener('click', () => loadBuild(build));
+          buildsList.appendChild(buildItem);
+        });
+      } else {
+        savedBuildsSection.style.display = 'none';
+      }
+    }
+
+    // Load a saved build
+    function loadBuild(build) {
+      // Clear current selections
+      Object.keys(currentBuild).forEach(componentType => {
+        const select = document.getElementById(componentType + 'Select');
+        if (select) select.value = '';
+        clearPricingDisplay(componentType);
+      });
+
+      // Load the saved build
+      currentBuild = build.components;
+      Object.entries(build.components).forEach(([componentType, component]) => {
+        const select = document.getElementById(componentType + 'Select');
+        if (select) {
+          select.value = component.name;
+          updatePricingDisplay(componentType, component.stores);
+        }
+      });
+
+      updateTotals();
+      alert(`Loaded build: ${build.name}`);
+    }
+
+    // Add peripherals function
+    function addPeripherals() {
+      alert('Peripherals section coming soon! This will include monitors, keyboards, mice, and more.');
+    }
+
+    // Request build function
+    function requestBuild() {
+      if (Object.keys(currentBuild).length === 0) {
+        alert('Please select at least one component before requesting a build.');
+        return;
+      }
+      // The button href will handle the redirect with build data
+    }
+
+    // Simple login function (demo)
+    function login() {
+      const email = document.getElementById('userEmail').value;
+      const password = document.getElementById('userPassword').value;
+      
+      if (email && password) {
+        alert('Login successful! (Demo mode)');
+        loadSavedBuilds();
+      } else {
+        alert('Please enter both email and password.');
+      }
+    }
+
+    // Simple register function (demo)
+    function register() {
+      const email = document.getElementById('userEmail').value;
+      const password = document.getElementById('userPassword').value;
+      
+      if (email && password) {
+        alert('Registration successful! (Demo mode)');
+        loadSavedBuilds();
+      } else {
+        alert('Please enter both email and password.');
+      }
+    }
+
+    // Initialize when page loads
+    document.addEventListener('DOMContentLoaded', initPartPicker);
+  </script>
+</body>
+</html>
