@@ -156,15 +156,23 @@
            <input type="text" class="search-input" id="cpuSearch" placeholder="Search CPUs (e.g., i9, Ryzen 7, 14900K)" />
            <div class="search-results" id="cpuSearchResults"></div>
          </div>
-         <select class="component-select" id="cpuSelect" data-component="cpu">
-           <option value="">Select CPU</option>
-           <option value="i9-14900K" data-price="569" data-wattage="125" data-store="Newegg">Intel Core i9-14900K - $569</option>
-           <option value="i7-14700K" data-price="399" data-wattage="125" data-store="Newegg">Intel Core i7-14700K - $399</option>
-           <option value="i5-14600K" data-price="319" data-wattage="125" data-store="Newegg">Intel Core i5-14600K - $319</option>
-           <option value="R9-7950X" data-price="699" data-wattage="170" data-store="Amazon">AMD Ryzen 9 7950X - $699</option>
-           <option value="R7-7700X" data-price="399" data-wattage="105" data-store="Amazon">AMD Ryzen 7 7700X - $399</option>
-           <option value="R5-7600X" data-price="299" data-wattage="105" data-store="Amazon">AMD Ryzen 5 7600X - $299</option>
-         </select>
+                   <select class="component-select" id="cpuSelect" data-component="cpu">
+            <option value="">Select CPU</option>
+            <option value="i9-14900K">Intel Core i9-14900K - $569</option>
+            <option value="i7-14700K">Intel Core i7-14700K - $399</option>
+            <option value="i5-14600K">Intel Core i5-14600K - $319</option>
+            <option value="i3-14100">Intel Core i3-14100 - $129</option>
+            <option value="i9-13900K">Intel Core i9-13900K - $499</option>
+            <option value="i7-13700K">Intel Core i7-13700K - $349</option>
+            <option value="i5-13600K">Intel Core i5-13600K - $269</option>
+            <option value="R9-7950X">AMD Ryzen 9 7950X - $699</option>
+            <option value="R7-7700X">AMD Ryzen 7 7700X - $399</option>
+            <option value="R5-7600X">AMD Ryzen 5 7600X - $299</option>
+            <option value="R5-7600">AMD Ryzen 5 7600 - $229</option>
+            <option value="R9-5950X">AMD Ryzen 9 5950X - $399</option>
+            <option value="R7-5800X3D">AMD Ryzen 7 5800X3D - $299</option>
+            <option value="R5-5600X">AMD Ryzen 5 5600X - $199</option>
+          </select>
          <div class="pricing-grid" id="cpuPricing"></div>
        </div>
 
@@ -175,15 +183,29 @@
            <input type="text" class="search-input" id="gpuSearch" placeholder="Search GPUs (e.g., RTX 4090, RX 7900, 4070)" />
            <div class="search-results" id="gpuSearchResults"></div>
          </div>
-         <select class="component-select" id="gpuSelect" data-component="gpu">
-           <option value="">Select GPU</option>
-           <option value="RTX-4090" data-price="1599" data-wattage="450" data-store="Newegg">RTX 4090 - $1599</option>
-           <option value="RTX-4080" data-price="1199" data-wattage="320" data-store="Newegg">RTX 4080 - $1199</option>
-           <option value="RTX-4070Ti" data-price="799" data-wattage="285" data-store="Newegg">RTX 4070 Ti - $799</option>
-           <option value="RTX-4070" data-price="599" data-wattage="200" data-store="Newegg">RTX 4070 - $599</option>
-           <option value="RX-7900XTX" data-price="999" data-wattage="355" data-store="Amazon">RX 7900 XTX - $999</option>
-           <option value="RX-7900XT" data-price="799" data-wattage="315" data-store="Amazon">RX 7900 XT - $799</option>
-         </select>
+                   <select class="component-select" id="gpuSelect" data-component="gpu">
+            <option value="">Select GPU</option>
+            <option value="RTX-4090">RTX 4090 - $1599</option>
+            <option value="RTX-4080">RTX 4080 - $1199</option>
+            <option value="RTX-4070Ti">RTX 4070 Ti - $799</option>
+            <option value="RTX-4070">RTX 4070 - $599</option>
+            <option value="RTX-4060Ti">RTX 4060 Ti - $399</option>
+            <option value="RTX-4060">RTX 4060 - $299</option>
+            <option value="RTX-3090">RTX 3090 - $999</option>
+            <option value="RTX-3080Ti">RTX 3080 Ti - $799</option>
+            <option value="RTX-3080">RTX 3080 - $599</option>
+            <option value="RTX-3070Ti">RTX 3070 Ti - $499</option>
+            <option value="RTX-3070">RTX 3070 - $399</option>
+            <option value="RX-7900XTX">RX 7900 XTX - $999</option>
+            <option value="RX-7900XT">RX 7900 XT - $799</option>
+            <option value="RX-7800XT">RX 7800 XT - $499</option>
+            <option value="RX-7700XT">RX 7700 XT - $449</option>
+            <option value="RX-7600">RX 7600 - $269</option>
+            <option value="RX-6950XT">RX 6950 XT - $599</option>
+            <option value="RX-6900XT">RX 6900 XT - $499</option>
+            <option value="RX-6800XT">RX 6800 XT - $399</option>
+            <option value="RX-6800">RX 6800 - $299</option>
+          </select>
          <div class="pricing-grid" id="gpuPricing"></div>
        </div>
 
@@ -194,14 +216,28 @@
            <input type="text" class="search-input" id="motherboardSearch" placeholder="Search Motherboards (e.g., Z790, B760, X670E)" />
            <div class="search-results" id="motherboardSearchResults"></div>
          </div>
-         <select class="component-select" id="motherboardSelect" data-component="motherboard">
-           <option value="">Select Motherboard</option>
-           <option value="Z790-A" data-price="299" data-wattage="25" data-store="Newegg">ASUS ROG Z790-A - $299</option>
-           <option value="Z790-P" data-price="199" data-wattage="25" data-store="Newegg">MSI Z790-P - $199</option>
-           <option value="B760-A" data-price="179" data-wattage="25" data-store="Newegg">ASUS B760-A - $179</option>
-           <option value="X670E-A" data-price="399" data-wattage="25" data-store="Amazon">ASUS ROG X670E-A - $399</option>
-           <option value="B650-A" data-price="199" data-wattage="25" data-store="Amazon">MSI B650-A - $199</option>
-         </select>
+                   <select class="component-select" id="motherboardSelect" data-component="motherboard">
+            <option value="">Select Motherboard</option>
+            <option value="Z790-A">ASUS ROG Z790-A - $299</option>
+            <option value="Z790-P">MSI Z790-P - $199</option>
+            <option value="Z790-E">ASUS ROG Z790-E - $449</option>
+            <option value="Z790-F">ASUS ROG Z790-F - $399</option>
+            <option value="B760-A">ASUS B760-A - $179</option>
+            <option value="B760-F">ASUS B760-F - $199</option>
+            <option value="B760M-A">ASUS B760M-A - $149</option>
+            <option value="B660-A">ASUS B660-A - $159</option>
+            <option value="B660M-A">ASUS B660M-A - $129</option>
+            <option value="X670E-A">ASUS ROG X670E-A - $399</option>
+            <option value="X670E-E">ASUS ROG X670E-E - $449</option>
+            <option value="X670E-F">ASUS ROG X670E-F - $349</option>
+            <option value="B650-A">MSI B650-A - $199</option>
+            <option value="B650M-A">MSI B650M-A - $169</option>
+            <option value="B650-F">MSI B650-F - $229</option>
+            <option value="X570-A">ASUS ROG X570-A - $199</option>
+            <option value="X570-E">ASUS ROG X570-E - $299</option>
+            <option value="B550-A">ASUS B550-A - $149</option>
+            <option value="B550M-A">ASUS B550M-A - $119</option>
+          </select>
          <div class="pricing-grid" id="motherboardPricing"></div>
        </div>
 
@@ -212,12 +248,21 @@
            <input type="text" class="search-input" id="ramSearch" placeholder="Search RAM (e.g., 32GB, DDR5, 6000MHz)" />
            <div class="search-results" id="ramSearchResults"></div>
          </div>
-         <select class="component-select" id="ramSelect" data-component="ram">
-           <option value="">Select RAM</option>
-           <option value="32GB-DDR5" data-price="129" data-wattage="15" data-store="Newegg">32GB DDR5-6000 - $129</option>
-           <option value="64GB-DDR5" data-price="249" data-wattage="15" data-store="Newegg">64GB DDR5-6000 - $249</option>
-           <option value="128GB-DDR5" data-price="499" data-wattage="15" data-store="Newegg">128GB DDR5-6000 - $499</option>
-         </select>
+                   <select class="component-select" id="ramSelect" data-component="ram">
+            <option value="">Select RAM</option>
+            <option value="32GB-DDR5-6000">32GB DDR5-6000 - $129</option>
+            <option value="32GB-DDR5-6400">32GB DDR5-6400 - $149</option>
+            <option value="32GB-DDR5-7200">32GB DDR5-7200 - $179</option>
+            <option value="64GB-DDR5-6000">64GB DDR5-6000 - $249</option>
+            <option value="64GB-DDR5-6400">64GB DDR5-6400 - $279</option>
+            <option value="128GB-DDR5-6000">128GB DDR5-6000 - $499</option>
+            <option value="16GB-DDR4-3200">16GB DDR4-3200 - $59</option>
+            <option value="32GB-DDR4-3200">32GB DDR4-3200 - $99</option>
+            <option value="32GB-DDR4-3600">32GB DDR4-3600 - $119</option>
+            <option value="64GB-DDR4-3200">64GB DDR4-3200 - $199</option>
+            <option value="32GB-DDR5-6000-RGB">32GB DDR5-6000 RGB - $159</option>
+            <option value="32GB-DDR4-3600-RGB">32GB DDR4-3600 RGB - $139</option>
+          </select>
          <div class="pricing-grid" id="ramPricing"></div>
        </div>
 
@@ -228,12 +273,21 @@
            <input type="text" class="search-input" id="storageSearch" placeholder="Search Storage (e.g., 1TB, NVMe, SSD)" />
            <div class="search-results" id="storageSearchResults"></div>
          </div>
-         <select class="component-select" id="storageSelect" data-component="storage">
-           <option value="">Select Storage</option>
-           <option value="1TB-NVMe" data-price="89" data-wattage="5" data-store="Newegg">1TB NVMe Gen4 - $89</option>
-           <option value="2TB-NVMe" data-price="159" data-wattage="5" data-store="Newegg">2TB NVMe Gen4 - $159</option>
-           <option value="4TB-NVMe" data-price="299" data-wattage="5" data-store="Newegg">4TB NVMe Gen4 - $299</option>
-         </select>
+                   <select class="component-select" id="storageSelect" data-component="storage">
+            <option value="">Select Storage</option>
+            <option value="1TB-NVMe-Gen4">1TB NVMe Gen4 - $89</option>
+            <option value="2TB-NVMe-Gen4">2TB NVMe Gen4 - $159</option>
+            <option value="4TB-NVMe-Gen4">4TB NVMe Gen4 - $299</option>
+            <option value="1TB-NVMe-Gen3">1TB NVMe Gen3 - $69</option>
+            <option value="2TB-NVMe-Gen3">2TB NVMe Gen3 - $129</option>
+            <option value="4TB-NVMe-Gen3">4TB NVMe Gen3 - $249</option>
+            <option value="1TB-SATA-SSD">1TB SATA SSD - $59</option>
+            <option value="2TB-SATA-SSD">2TB SATA SSD - $99</option>
+            <option value="4TB-SATA-SSD">4TB SATA SSD - $199</option>
+            <option value="2TB-HDD">2TB HDD - $49</option>
+            <option value="4TB-HDD">4TB HDD - $79</option>
+            <option value="8TB-HDD">8TB HDD - $149</option>
+          </select>
          <div class="pricing-grid" id="storagePricing"></div>
        </div>
 
@@ -244,13 +298,22 @@
            <input type="text" class="search-input" id="caseSearch" placeholder="Search Cases (e.g., ATX, ITX, RGB, Silent)" />
            <div class="search-results" id="caseSearchResults"></div>
          </div>
-         <select class="component-select" id="caseSelect" data-component="case">
-           <option value="">Select Case</option>
-           <option value="Lian-Li-O11" data-price="159" data-wattage="0" data-store="Newegg">Lian Li O11 Dynamic - $159</option>
-           <option value="Phanteks-P500A" data-price="129" data-wattage="0" data-store="Newegg">Phanteks P500A - $129</option>
-           <option value="Fractal-Torrent" data-price="189" data-wattage="0" data-store="Amazon">Fractal Torrent - $189</option>
-           <option value="Corsair-4000D" data-price="99" data-wattage="0" data-store="Amazon">Corsair 4000D - $99</option>
-         </select>
+                   <select class="component-select" id="caseSelect" data-component="case">
+            <option value="">Select Case</option>
+            <option value="Lian-Li-O11-Dynamic">Lian Li O11 Dynamic - $159</option>
+            <option value="Phanteks-Enthoo-719">Phanteks Enthoo 719 - $199</option>
+            <option value="Corsair-7000D">Corsair 7000D - $249</option>
+            <option value="Phanteks-P500A">Phanteks P500A - $129</option>
+            <option value="Fractal-Torrent">Fractal Torrent - $189</option>
+            <option value="Corsair-4000D">Corsair 4000D - $99</option>
+            <option value="NZXT-H510-Flow">NZXT H510 Flow - $89</option>
+            <option value="be-quiet-Pure-Base-500DX">be quiet! Pure Base 500DX - $109</option>
+            <option value="NZXT-H210i">NZXT H210i - $89</option>
+            <option value="Fractal-Design-Meshify-C">Fractal Design Meshify C - $119</option>
+            <option value="Lian-Li-Q58">Lian Li Q58 - $129</option>
+            <option value="Phanteks-P300A">Phanteks P300A - $69</option>
+            <option value="Corsair-275R">Corsair 275R - $79</option>
+          </select>
          <div class="pricing-grid" id="casePricing"></div>
        </div>
 
@@ -261,13 +324,21 @@
            <input type="text" class="search-input" id="psuSearch" placeholder="Search PSUs (e.g., 850W, Gold, Modular)" />
            <div class="search-results" id="psuSearchResults"></div>
          </div>
-         <select class="component-select" id="psuSelect" data-component="psu">
-           <option value="">Select PSU</option>
-           <option value="850W-Gold" data-price="129" data-wattage="0" data-store="Newegg">850W 80+ Gold - $129</option>
-           <option value="1000W-Gold" data-price="159" data-wattage="0" data-store="Newegg">1000W 80+ Gold - $159</option>
-           <option value="1200W-Gold" data-price="199" data-wattage="0" data-store="Newegg">1200W 80+ Gold - $199</option>
-           <option value="1000W-Platinum" data-price="229" data-wattage="0" data-store="Amazon">1000W 80+ Platinum - $229</option>
-         </select>
+                   <select class="component-select" id="psuSelect" data-component="psu">
+            <option value="">Select PSU</option>
+            <option value="850W-Gold-Modular">850W 80+ Gold Modular - $129</option>
+            <option value="850W-Gold-Semi">850W 80+ Gold Semi-Modular - $109</option>
+            <option value="850W-Bronze-Modular">850W 80+ Bronze Modular - $89</option>
+            <option value="1000W-Gold-Modular">1000W 80+ Gold Modular - $159</option>
+            <option value="1000W-Platinum-Modular">1000W 80+ Platinum Modular - $229</option>
+            <option value="1000W-Titanium-Modular">1000W 80+ Titanium Modular - $299</option>
+            <option value="1200W-Gold-Modular">1200W 80+ Gold Modular - $199</option>
+            <option value="1300W-Platinum-Modular">1300W 80+ Platinum Modular - $279</option>
+            <option value="1600W-Titanium-Modular">1600W 80+ Titanium Modular - $399</option>
+            <option value="650W-Bronze-Semi">650W 80+ Bronze Semi-Modular - $69</option>
+            <option value="750W-Bronze-Semi">750W 80+ Bronze Semi-Modular - $79</option>
+            <option value="750W-Gold-Semi">750W 80+ Gold Semi-Modular - $99</option>
+          </select>
          <div class="pricing-grid" id="psuPricing"></div>
        </div>
 
@@ -278,12 +349,23 @@
            <input type="text" class="search-input" id="coolingSearch" placeholder="Search Cooling (e.g., Air, Liquid, 240mm, RGB)" />
            <div class="search-results" id="coolingSearchResults"></div>
          </div>
-         <select class="component-select" id="coolingSelect" data-component="cooling">
-           <option value="">Select Cooling</option>
-           <option value="Noctua-NH-D15" data-price="99" data-wattage="5" data-store="Newegg">Noctua NH-D15 - $99</option>
-           <option value="Arctic-Liquid-II" data-price="119" data-wattage="5" data-store="Newegg">Arctic Liquid Freezer II 240 - $119</option>
-           <option value="Corsair-H150i" data-price="189" data-wattage="5" data-store="Amazon">Corsair H150i Elite - $189</option>
-         </select>
+                   <select class="component-select" id="coolingSelect" data-component="cooling">
+            <option value="">Select Cooling</option>
+            <option value="Noctua-NH-D15">Noctua NH-D15 - $99</option>
+            <option value="be-quiet-Dark-Rock-Pro-4">be quiet! Dark Rock Pro 4 - $89</option>
+            <option value="Thermalright-Peerless-Assassin">Thermalright Peerless Assassin - $69</option>
+            <option value="Noctua-NH-U12S">Noctua NH-U12S - $69</option>
+            <option value="be-quiet-Dark-Rock-4">be quiet! Dark Rock 4 - $74</option>
+            <option value="Cooler-Master-Hyper-212">Cooler Master Hyper 212 - $44</option>
+            <option value="Arctic-Liquid-Freezer-II-240">Arctic Liquid Freezer II 240 - $119</option>
+            <option value="Corsair-H100i-Elite">Corsair H100i Elite - $159</option>
+            <option value="NZXT-Kraken-X53">NZXT Kraken X53 - $139</option>
+            <option value="Arctic-Liquid-Freezer-II-280">Arctic Liquid Freezer II 280 - $129</option>
+            <option value="Corsair-H115i-Elite">Corsair H115i Elite - $179</option>
+            <option value="Corsair-H150i-Elite">Corsair H150i Elite - $189</option>
+            <option value="NZXT-Kraken-X73">NZXT Kraken X73 - $169</option>
+            <option value="Arctic-Liquid-Freezer-II-360">Arctic Liquid Freezer II 360 - $139</option>
+          </select>
          <div class="pricing-grid" id="coolingPricing"></div>
        </div>
     </div>
@@ -294,27 +376,13 @@
       <div class="total-wattage">Total Wattage: <span id="totalWattage">0</span>W</div>
     </div>
 
-    <!-- Action Buttons -->
-    <div class="action-buttons">
-      <button class="btn btn-primary" id="saveBuildBtn">Save This Build</button>
-      <button class="btn btn-secondary" id="peripheralsBtn">Add Peripherals</button>
-      <a href="index.html" class="btn btn-primary" id="requestBuildBtn">Request This Build</a>
-    </div>
+         <!-- Action Buttons -->
+     <div class="action-buttons">
+       <button class="btn btn-secondary" id="peripheralsBtn">Add Peripherals</button>
+       <a href="index.html" class="btn btn-primary" id="requestBuildBtn">Request This Build</a>
+     </div>
 
-    <!-- Login Section -->
-    <div class="login-section" id="loginSection">
-      <h3>Login to Save Your Build</h3>
-      <input type="email" id="userEmail" placeholder="Email" />
-      <input type="password" id="userPassword" placeholder="Password" />
-      <button class="btn btn-primary" id="loginBtn">Login</button>
-      <button class="btn btn-secondary" id="registerBtn">Register</button>
-    </div>
-
-    <!-- Saved Builds -->
-    <div class="saved-builds" id="savedBuilds" style="display:none">
-      <h3>Your Saved Builds</h3>
-      <div id="buildsList"></div>
-    </div>
+    
   </div>
 
   <script>
@@ -528,17 +596,11 @@
        });
 
        // Add event listeners to buttons
-       document.getElementById('saveBuildBtn').addEventListener('click', saveBuild);
        document.getElementById('peripheralsBtn').addEventListener('click', addPeripherals);
        document.getElementById('requestBuildBtn').addEventListener('click', requestBuild);
-       document.getElementById('loginBtn').addEventListener('click', login);
-       document.getElementById('registerBtn').addEventListener('click', register);
 
        // Initialize search functionality
        initSearch();
-
-       // Load saved builds if user is logged in
-       loadSavedBuilds();
      }
 
      // Initialize search functionality
@@ -600,10 +662,14 @@
 
        resultsElement.innerHTML = components
          .map(([key, component]) => {
-           const name = component.name || key;
            const price = component.price;
+           // Get the display name from the dropdown option
+           const select = document.getElementById(componentType + 'Select');
+           const option = select.querySelector(`option[value="${key}"]`);
+           const displayName = option ? option.textContent : key;
+           
            return `<div class="search-result" data-component="${key}" data-type="${componentType}">
-             ${name} - $${price}
+             ${displayName}
            </div>`;
          })
          .join('');
@@ -704,128 +770,19 @@
       }
     }
 
-    // Save build function
-    function saveBuild() {
-      if (Object.keys(currentBuild).length === 0) {
-        alert('Please select at least one component before saving.');
-        return;
-      }
+         // Add peripherals function
+     function addPeripherals() {
+       alert('Peripherals section coming soon! This will include monitors, keyboards, mice, and more.');
+     }
 
-      // Check if user is logged in (simplified for demo)
-      const userEmail = document.getElementById('userEmail').value;
-      if (!userEmail) {
-        alert('Please enter your email to save the build.');
-        return;
-      }
-
-      const buildName = prompt('Enter a name for this build:');
-      if (!buildName) return;
-
-      const buildToSave = {
-        name: buildName,
-        components: currentBuild,
-        totalPrice: totalPrice,
-        totalWattage: totalWattage,
-        timestamp: new Date().toISOString(),
-        userEmail: userEmail
-      };
-
-      // Save to localStorage (in real app, this would go to a database)
-      const savedBuilds = JSON.parse(localStorage.getItem('savedBuilds') || '[]');
-      savedBuilds.push(buildToSave);
-      localStorage.setItem('savedBuilds', JSON.stringify(savedBuilds));
-
-      alert('Build saved successfully!');
-      loadSavedBuilds();
-    }
-
-    // Load saved builds
-    function loadSavedBuilds() {
-      const savedBuilds = JSON.parse(localStorage.getItem('savedBuilds') || '[]');
-      const buildsList = document.getElementById('buildsList');
-      const savedBuildsSection = document.getElementById('savedBuilds');
-
-      if (savedBuilds.length > 0) {
-        savedBuildsSection.style.display = 'block';
-        buildsList.innerHTML = '';
-
-        savedBuilds.forEach((build, index) => {
-          const buildItem = document.createElement('div');
-          buildItem.className = 'build-item';
-          buildItem.innerHTML = `
-            <div class="name">${build.name}</div>
-            <div class="details">$${build.totalPrice} • ${build.totalWattage}W • ${new Date(build.timestamp).toLocaleDateString()}</div>
-          `;
-          buildItem.addEventListener('click', () => loadBuild(build));
-          buildsList.appendChild(buildItem);
-        });
-      } else {
-        savedBuildsSection.style.display = 'none';
-      }
-    }
-
-    // Load a saved build
-    function loadBuild(build) {
-      // Clear current selections
-      Object.keys(currentBuild).forEach(componentType => {
-        const select = document.getElementById(componentType + 'Select');
-        if (select) select.value = '';
-        clearPricingDisplay(componentType);
-      });
-
-      // Load the saved build
-      currentBuild = build.components;
-      Object.entries(build.components).forEach(([componentType, component]) => {
-        const select = document.getElementById(componentType + 'Select');
-        if (select) {
-          select.value = component.name;
-          updatePricingDisplay(componentType, component.stores);
-        }
-      });
-
-      updateTotals();
-      alert(`Loaded build: ${build.name}`);
-    }
-
-    // Add peripherals function
-    function addPeripherals() {
-      alert('Peripherals section coming soon! This will include monitors, keyboards, mice, and more.');
-    }
-
-    // Request build function
-    function requestBuild() {
-      if (Object.keys(currentBuild).length === 0) {
-        alert('Please select at least one component before requesting a build.');
-        return;
-      }
-      // The button href will handle the redirect with build data
-    }
-
-    // Simple login function (demo)
-    function login() {
-      const email = document.getElementById('userEmail').value;
-      const password = document.getElementById('userPassword').value;
-      
-      if (email && password) {
-        alert('Login successful! (Demo mode)');
-        loadSavedBuilds();
-      } else {
-        alert('Please enter both email and password.');
-      }
-    }
-
-    // Simple register function (demo)
-    function register() {
-      const email = document.getElementById('userEmail').value;
-      const password = document.getElementById('userPassword').value;
-      
-      if (email && password) {
-        alert('Registration successful! (Demo mode)');
-        loadSavedBuilds();
-      } else {
-        alert('Please enter both email and password.');
-      }
-    }
+     // Request build function
+     function requestBuild() {
+       if (Object.keys(currentBuild).length === 0) {
+         alert('Please select at least one component before requesting a build.');
+         return;
+       }
+       // The button href will handle the redirect with build data
+     }
 
     // Initialize when page loads
     document.addEventListener('DOMContentLoaded', initPartPicker);
