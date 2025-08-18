@@ -113,11 +113,33 @@
     // Prefill from query params (name, email, message)
     (function () {
       const p = new URLSearchParams(location.search);
+      
+      // Handle build request
+      if (p.get('build') === 'true') {
+        let buildMessage = 'I would like to request a custom PC build with the following components:\n\n';
+        
+        const componentTypes = ['cpu', 'gpu', 'motherboard', 'ram', 'storage', 'case', 'psu', 'cooling'];
+        componentTypes.forEach(type => {
+          const component = p.get(type);
+          if (component) {
+            buildMessage += `${type.toUpperCase()}: ${component.replace(/-/g, ' ')}\n`;
+          }
+        });
+        
+        buildMessage += '\nPlease provide a quote and assembly timeline. Thank you!';
+        
+        const messageField = document.getElementById('message');
+        if (messageField) {
+          messageField.value = buildMessage;
+        }
+      }
+      
+      // Regular prefill functionality
       const map = { name:'name', email:'_replyto', message:'message' };
       for (const [q,id] of Object.entries(map)) {
         const v = p.get(q);
         const el = document.getElementById(id);
-        if (v && el) el.value = v;
+        if (v && el && id !== 'message') el.value = v; // Don't override build message
       }
     })();
 
