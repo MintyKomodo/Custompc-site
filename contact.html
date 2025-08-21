@@ -69,7 +69,6 @@
       <nav>
         <a class="pill" href="builds.html">Builds</a>
         <a class="pill" href="index.html">Custom PC</a>
-        <a class="pill" href="part-picker.html">Part Picker</a>
         <a class="pill" href="about.html">About</a>
         <a class="pill active" href="contact.html">Contact</a>
       </nav>
@@ -113,26 +112,6 @@
     // Prefill from query params (name, email, message)
     (function () {
       const p = new URLSearchParams(location.search);
-      
-      // Handle build request
-      if (p.get('build') === 'true') {
-        let buildMessage = 'I would like to request a custom PC build with the following components:\n\n';
-        
-        const componentTypes = ['cpu', 'gpu', 'motherboard', 'ram', 'storage', 'case', 'psu', 'cooling'];
-        componentTypes.forEach(type => {
-          const component = p.get(type);
-          if (component) {
-            buildMessage += `${type.toUpperCase()}: ${component.replace(/-/g, ' ')}\n`;
-          }
-        });
-        
-        buildMessage += '\nPlease provide a quote and assembly timeline. Thank you!';
-        
-        const messageField = document.getElementById('message');
-        if (messageField) {
-          messageField.value = buildMessage;
-        }
-      }
       
       // Regular prefill functionality
       const map = { name:'name', email:'_replyto', message:'message' };

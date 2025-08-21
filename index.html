@@ -94,7 +94,6 @@
       <nav>
         <a class="pill" href="builds.html">Builds</a>
         <a class="pill active" href="index.html">Custom PC</a>
-        <a class="pill" href="part-picker.html">Part Picker</a>
         <a class="pill" href="about.html">About</a>
         <a class="pill" href="contact.html">Contact</a>
       </nav>
@@ -189,31 +188,6 @@
   </div>
 
   <script>
-    // Handle build data from part-picker
-    (function() {
-      const urlParams = new URLSearchParams(window.location.search);
-      
-      if (urlParams.get('build') === 'true') {
-        let buildMessage = 'I would like to request a custom PC build with the following components:\n\n';
-        
-        const componentTypes = ['cpu', 'gpu', 'motherboard', 'ram', 'storage', 'case', 'psu', 'cooling'];
-        componentTypes.forEach(type => {
-          const component = urlParams.get(type);
-          if (component) {
-            buildMessage += `${type.toUpperCase()}: ${component.replace(/-/g, ' ')}\n`;
-          }
-        });
-        
-        buildMessage += '\nPlease provide a quote and assembly timeline. Thank you!';
-        
-        const messageField = document.getElementById('rq_msg');
-        if (messageField) {
-          messageField.value = buildMessage;
-          // Scroll to the form
-          document.getElementById('request').scrollIntoView({ behavior: 'smooth' });
-        }
-      }
-    })();
 
     // AJAX submit to Formspree with inline success/fail UI
     (function () {
