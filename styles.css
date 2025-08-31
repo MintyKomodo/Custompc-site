@@ -1,24 +1,4 @@
 /* Global look */
-/* kill the old gradient dot if it exists */
-.dot { display:none !important; }
-
-/* PC-only logo (no ring) */
-.logo-pc{
-  /* tune these if needed */
-  --crop: 72%;   /* radius to hide the ring (smaller = safer) */
-  --zoom: 120%;  /* zoom image so the tower fills the circle */
-
-  width:24px; height:24px; display:inline-block; flex:0 0 24px;
-  background: url("img/logo-pc.png") center / var(--zoom) no-repeat;
-  border-radius:50%;
-
-  /* mask away the outer ring — keep only the inner circle */
-  -webkit-mask: radial-gradient(circle at 50% 50%, #000 0 var(--crop), transparent var(--crop));
-          mask: radial-gradient(circle at 50% 50%, #000 0 var(--crop), transparent var(--crop));
-}
-
-/* optional: a subtle hover glow to match the theme */
-.brand a:hover .logo-pc { box-shadow: 0 0 10px rgba(125,178,255,.28); border-radius:50%; }
 
 *{box-sizing:border-box}
 body{
