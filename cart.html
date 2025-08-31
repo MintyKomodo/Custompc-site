@@ -7,6 +7,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <style>
+    :root{ --max:1200px; --ink:#e9eefc }
+    .wrap{max-width:var(--max);margin:0 auto;padding:28px}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+    .brand a{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;font-weight:700;letter-spacing:.3px;white-space:nowrap}
+    .topnav{display:flex;gap:10px;flex-wrap:wrap}
+    .pill{display:inline-block;padding:10px 14px;border-radius:999px;color:var(--ink);text-decoration:none;border:1px solid transparent}
+    .pill:hover{background:#0f1830}
+    .pill.active{background:linear-gradient(120deg,rgba(125,178,255,.15),rgba(124,242,230,.15));border-color:rgba(255,255,255,.08)}
+  </style>
+  <style>
     .cart-card{ padding:16px; max-width:980px; margin:0 auto; }
     .row.head{ font-weight:600; opacity:.9; border-bottom:1px solid rgba(255,255,255,.08); padding-bottom:8px; }
     .row.item{ border-bottom:1px solid rgba(255,255,255,.06); padding:10px 0; }
@@ -24,22 +34,22 @@
       .total, .cta{ text-align:left; justify-content:flex-start; }
     }
   </style>
-</head>
-<body>
-  <nav>
-    <a class="brand-logo" href="index.html" aria-label="Home">
-      <img class="logo" src="file:///C:/Users/Minty-Komodo/Desktop/images/logo.png" alt="CustomPC.tech logo" style="display:inline-block" onerror="this.style.display='none'" />
-    </a>
-    <a href="index.html">Contact</a>
-    <a href="custom.html">Custom PC</a>
-    <a href="builds.html">Builds</a>
-    <a href="about.html">About</a>
-    <a href="cart.html">Cart</a>
-    <span id="nav-user" class="hidden"></span>
-    <a id="nav-login" href="login.html">Log In</a>
-    <a id="nav-signup" href="signup.html">Sign Up</a>
-    <a id="nav-logout" class="hidden" href="javascript:void(0)">Log Out</a>
-  </nav>
+ </head>
+ <body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <a href="index.html"><img src="file:///C:/Users/Minty-Komodo/Desktop/images/logo.png" alt="CustomPC.tech logo" style="height:24px;width:auto;display:inline-block" onerror="this.style.display='none';this.nextElementSibling.style.marginLeft='0'" /> <span style="margin-left:8px">CustomPC.tech</span></a>
+      </div>
+      <nav class="topnav" role="navigation" aria-label="Primary">
+        <a class="pill" href="builds.html">Builds</a>
+        <a class="pill" href="index.html">Custom PC</a>
+        <a class="pill" href="about.html">About</a>
+        <a class="pill" href="contact.html">Contact</a>
+        <a class="pill active" href="cart.html">Cart</a>
+      </nav>
+    </header>
+  </div>
 
   <div class="container">
     <h1>Your Cart</h1>
