@@ -15,6 +15,15 @@
     .pill{display:inline-block;padding:10px 14px;border-radius:999px;color:var(--ink);text-decoration:none;border:1px solid transparent}
     .pill:hover{background:#0f1830}
     .pill.active{background:linear-gradient(120deg,rgba(125,178,255,.15),rgba(124,242,230,.15));border-color:rgba(255,255,255,.08)}
+    
+    /* Bottom CTA (shared) */
+    .cta-card{ text-align:center;border:1px solid var(--border);border-radius:calc(var(--radius,18px) + 6px);box-shadow:0 28px 60px rgba(0,0,0,.45);padding:34px 26px;background:linear-gradient(135deg, rgba(125,178,255,.12), rgba(124,242,230,.12)) }
+    .cta-title{font-size:26px;margin:0 0 var(--space)}
+    .cta-sub{color:var(--muted,#aeb9d4);margin:0 0 var(--space)}
+    .cta-actions{display:flex;gap:var(--space);justify-content:center;flex-wrap:wrap}
+    .cta-primary, .cta-secondary{display:inline-block;padding:12px 18px;border-radius:14px;font-weight:700;text-decoration:none}
+    .cta-primary{color:#0b0f1a;background:linear-gradient(90deg,#7db2ff,#7cf2e6);box-shadow:0 10px 26px rgba(117,194,255,.28)}
+    .cta-secondary{color:var(--ink,#e9eefc);border:1px solid rgba(255,255,255,.08);background:#0f1830}
   </style>
   <style>
     .cart-card{ padding:16px; max-width:980px; margin:0 auto; }
@@ -72,6 +81,18 @@
         <a class="btn" href="index.html">Checkout → Contact</a>
       </div>
     </div>
+  </div>
+
+  <!-- Bottom CTA (wrapped for consistent width) -->
+  <div class="wrap">
+    <section class="cta-card" style="margin-top:var(--space)">
+      <div class="cta-title">Ready for a build that’s actually right for you?</div>
+      <p class="cta-sub">Tell us what you do—we’ll design, verify, and deliver a PC that fits your workload and budget.</p>
+      <div class="cta-actions">
+        <a class="cta-primary" href="index.html#request">Start a Custom PC →</a>
+        <a class="cta-secondary" href="contact.html">Just have a question?</a>
+      </div>
+    </section>
   </div>
 
   <script type="module">
