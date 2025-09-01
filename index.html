@@ -49,9 +49,11 @@
     form{display:grid;gap:var(--space)}
     label{font-weight:600;margin-bottom:6px;display:block}
     input, textarea, select{
-      width:100%;padding:18px 16px;border-radius:16px;border:1px solid var(--border);
-      background:#0c1426;color:var(--ink);outline:none;font-size:1.05rem
+      width:100%;padding:16px;border-radius:12px;border:1px solid var(--border);
+      background:#0c1426;color:var(--ink);outline:none;font-size:1rem;
+      height:52px;box-sizing:border-box;line-height:1.2;vertical-align:middle
     }
+    textarea{height:auto;min-height:120px;resize:vertical}
     textarea{min-height:190px;resize:vertical}
     .btn{
       display:block;border:0;cursor:pointer;font-weight:800;padding:18px;border-radius:16px;width:100%;
