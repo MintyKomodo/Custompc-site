@@ -9,12 +9,13 @@ body{
 .hidden{display:none !important}
 
 /* Nav */
-nav{
-  display:flex; align-items:center; justify-content:flex-start;
-  padding:14px; background:rgba(17,17,17,.9); border-bottom:1px solid #111;
+/* Scope to .topnav so we don't override per-page header styles */
+.topnav{
+  display:flex; align-items:center; justify-content:flex-start; gap:10px; flex-wrap:wrap;
+  padding:0; background:transparent; border-bottom:0;
 }
-nav a{ color:#e5e7eb; text-decoration:none; margin:0 8px; padding:8px 10px; border-radius:8px; }
-nav a:hover{ background:#1f2937 }
+.topnav a{ color:inherit; text-decoration:none; margin:0 0; padding:0; border-radius:8px; }
+.topnav a:hover{ background:#1f2937 }
 #nav-user{ margin-left:auto; margin-right:10px; color:#93c5fd }
 
 /* Logo image (used in top-left of nav) */

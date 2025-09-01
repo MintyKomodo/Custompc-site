@@ -168,25 +168,46 @@
           <div class="thumb"><img src="images/build_01.png" alt="Esports build"></div>
           <div class="t">Esports 1080p/1440p</div>
           <div class="spec">High FPS for Valorant/CS2. Air-cooled, low noise.</div>
-          <a class="mini-btn" href="#request">Request this build</a>
+          <a class="mini-btn" href="index.html?build=Esports%201080p%2F1440p&message=Interested%20in%20Esports%201080p%2F1440p%20build#request">Request this build</a>
         </div>
         <div class="card pad">
           <div class="thumb"><img src="images/build_02.png" alt="Creator build"></div>
           <div class="t">Creator 4K</div>
           <div class="spec">Premiere/DaVinci & Lightroom. GPU-accelerated, quiet case.</div>
-          <a class="mini-btn" href="#request">Request this build</a>
+          <a class="mini-btn" href="index.html?build=Creator%204K&message=Interested%20in%20Creator%204K%20build#request">Request this build</a>
         </div>
         <div class="card pad">
           <div class="thumb"><img src="images/build_03.png" alt="Workstation build"></div>
           <div class="t">CAD / AI Workstation</div>
           <div class="spec">SolidWorks, Blender, SD inference. Verified PSU & thermals.</div>
-          <a class="mini-btn" href="#request">Request this build</a>
+          <a class="mini-btn" href="index.html?build=CAD%20%2F%20AI%20Workstation&message=Interested%20in%20CAD%20%2F%20AI%20Workstation%20build#request">Request this build</a>
         </div>
       </div>
     </section>
   </div>
 
   <script>
+    // Prefill from query params: build, message
+    (function(){
+      try{
+        const p = new URLSearchParams(location.search);
+        const build = p.get('build');
+        const msg = p.get('message');
+        const sel = document.getElementById('rq_build');
+        const ta  = document.getElementById('rq_msg');
+        if (sel && build){
+          // Try to set value to existing option; if not present, append one
+          const has = Array.from(sel.options).some(o => (o.value||o.textContent) === build);
+          if (!has){
+            const opt = document.createElement('option');
+            opt.value = build; opt.textContent = build; sel.appendChild(opt);
+          }
+          sel.value = build;
+        }
+        if (ta && msg){ ta.value = msg; }
+        if (build){ document.getElementById('request')?.scrollIntoView({ behavior:'smooth' }); }
+      }catch{}
+    })();
 
     // AJAX submit to Formspree with inline success/fail UI
     (function () {
