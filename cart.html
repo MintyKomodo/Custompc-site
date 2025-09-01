@@ -7,11 +7,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <style>
-    :root{ --max:1200px; --ink:#e9eefc }
+    :root{ --max:1200px; --ink:#e9eefc; --space:15px }
     .wrap{max-width:var(--max);margin:0 auto;padding:28px}
-    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space)}
     .brand a{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;font-weight:700;letter-spacing:.3px;white-space:nowrap}
-    .topnav{display:flex;gap:10px;flex-wrap:wrap}
+    .topnav{display:flex;gap:var(--space);flex-wrap:wrap}
     .pill{display:inline-block;padding:10px 14px;border-radius:999px;color:var(--ink);text-decoration:none;border:1px solid transparent}
     .pill:hover{background:#0f1830}
     .pill.active{background:linear-gradient(120deg,rgba(125,178,255,.15),rgba(124,242,230,.15));border-color:rgba(255,255,255,.08)}

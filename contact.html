@@ -6,6 +6,7 @@
   <title>Contact | CustomPC.tech</title>
   <style>
     :root{
+      --space:15px;
       --bg:#0a0f1a; --ink:#e9eefc; --muted:#aeb9d4;
       --panel:#111729; --panel2:#0d1426; --border:rgba(255,255,255,.08);
       --accent1:#7db2ff; --accent2:#7cf2e6;
@@ -21,12 +22,12 @@
     .wrap{max-width:var(--max);margin:0 auto;padding:28px}
 
     /* HEADER — exact match with other pages */
-    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space)}
     .brand a{
       display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;
       font-weight:700;letter-spacing:.3px;white-space:nowrap; /* keep on one line */
     }
-    nav{display:flex;gap:10px;flex-wrap:wrap}
+    nav{display:flex;gap:var(--space);flex-wrap:wrap}
     .pill{
       display:inline-block;padding:10px 14px;border-radius:999px;
       color:var(--ink);text-decoration:none;border:1px solid transparent
@@ -35,12 +36,12 @@
     .pill.active{background:linear-gradient(120deg,rgba(125,178,255,.15),rgba(124,242,230,.15));border-color:rgba(255,255,255,.08)}
 
     /* PAGE TITLE — same as others */
-    h1{margin:0 0 6px;font-size:32px}
-    .lead{color:var(--muted);margin:0 0 14px}
+    h1{margin:0 0 var(--space);font-size:32px}
+    .lead{color:var(--muted);margin:0 0 var(--space)}
 
     /* FORM CARD */
-    .card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px}
-    form{display:grid;gap:12px;margin-top:6px}
+    .card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:var(--space)}
+    form{display:grid;gap:var(--space);margin-top:6px}
     label{display:block;font-weight:600;margin:0 0 6px}
     input, textarea{
       width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--border);
