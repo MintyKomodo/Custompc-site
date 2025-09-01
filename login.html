@@ -22,7 +22,19 @@
     .pill.active{background:linear-gradient(120deg,rgba(125,178,255,.15),rgba(124,242,230,.15));border-color:rgba(255,255,255,.08)}
     
     /* Bottom CTA (shared) */
-    .cta-card{ text-align:center;border:1px solid var(--border);border-radius:calc(var(--radius,18px) + 6px);box-shadow:0 28px 60px rgba(0,0,0,.45);padding:34px 26px;background:linear-gradient(135deg, rgba(125,178,255,.12), rgba(124,242,230,.12)) }
+    .cta-card{
+      text-align:center;
+      border:1px solid var(--border);
+      border-left:0;border-right:0;
+      border-radius:0; /* no rounded corners */
+      box-shadow:none; /* flush edges */
+      padding:34px 26px;
+      background:linear-gradient(135deg, rgba(125,178,255,.12), rgba(124,242,230,.12));
+      /* full-bleed to viewport width */
+      margin-left:calc(50% - 50vw);
+      margin-right:calc(50% - 50vw);
+      width:100vw;
+    }
     .cta-title{font-size:26px;margin:0 0 var(--space)}
     .cta-sub{color:var(--muted);margin:0 0 var(--space)}
     .cta-actions{display:flex;gap:var(--space);justify-content:center;flex-wrap:wrap}
