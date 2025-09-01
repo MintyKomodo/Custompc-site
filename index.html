@@ -21,7 +21,13 @@
         linear-gradient(#081021, #0a0f1a 40%, #0a0f1a);
       line-height:1.55
     }
-    .wrap{max-width:100%;margin:0 auto;padding:28px}
+    .wrap{max-width:var(--max);margin:0 auto;padding:28px}
+    /* Compact two-column hero layout */
+    .hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:var(--space);align-items:start}
+    @media (max-width:900px){ .hero-grid{grid-template-columns:1fr} }
+    .hero-grid .request{grid-row:1 / span 2}
+    .hero-grid .info{grid-column:2}
+    .hero-grid .samples{grid-column:2}
 
     /* Header (shared) */
     header{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space)}
@@ -36,30 +42,32 @@
     .panel{background:var(--panel2);border:1px solid var(--border);border-radius:var(--radius)}
     .pad{padding:var(--space)}
     .muted{color:var(--muted)}
-    h1{margin:0 0 var(--space);font-size:34px}
+    h1{margin:0 0 var(--space);font-size:28px}
     h2{margin:0 0 var(--space);font-size:26px}
-    .section{margin-top:var(--space)}
+    .section{margin-top:10px}
 
     /* Request a PC */
     .request{
       background:linear-gradient(135deg, rgba(125,178,255,.16), rgba(124,242,230,.12)), var(--panel);
       border:1px solid rgba(125,178,255,.25);
-      padding:34px 28px;
+      padding:16px 16px;
     }
-    form{display:grid;gap:var(--space)}
+    form{display:grid;gap:8px;grid-template-columns:1fr 1fr}
+    @media (max-width:700px){ form{grid-template-columns:1fr} }
+    .full{grid-column:1 / -1}
     label{font-weight:600;margin-bottom:6px;display:block}
     input, textarea, select{
       width:100%;padding:16px;border-radius:12px;border:1px solid var(--border);
       background:#0c1426;color:var(--ink);outline:none;font-size:1rem;
-      height:46px;box-sizing:border-box;line-height:1.2;vertical-align:middle
+      height:42px;box-sizing:border-box;line-height:1.2;vertical-align:middle
     }
-    textarea{height:auto;min-height:110px;resize:vertical}
-    textarea{min-height:140px;resize:vertical}
+    textarea{height:auto;min-height:100px;resize:vertical}
+    textarea{min-height:120px;resize:vertical}
     .btn{
-      display:block;border:0;cursor:pointer;font-weight:800;padding:18px;border-radius:16px;width:100%;
+      display:block;border:0;cursor:pointer;font-weight:800;padding:14px;border-radius:14px;width:100%;
       color:#0b0f1a;background:linear-gradient(90deg,var(--accent1),var(--accent2));
-      box-shadow:0 10px 26px rgba(117,194,255,.28), inset 0 -2px 0 rgba(0,0,0,.2);
-      font-size:1.15rem;letter-spacing:.2px
+      box-shadow:0 8px 22px rgba(117,194,255,.24), inset 0 -2px 0 rgba(0,0,0,.2);
+      font-size:1.05rem;letter-spacing:.2px
     }
     .btn:active{transform:translateY(1px)}
     .tiny{font-size:.95rem;color:var(--muted);margin-top:6px}
@@ -68,15 +76,16 @@
     .err{background:rgba(255,99,132,.12);border:1px solid rgba(255,99,132,.35)}
 
     /* Value props */
-    .badges{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space);margin-top:var(--space)}
-    .badge{background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center}
-    .badge b{display:block;font-size:18px}
+    .badges{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+    .badge{background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:6px;text-align:center}
+    .badge b{display:block;font-size:16px}
 
-    /* Sample builds (compact) */
-    .builds{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space)}
-    @media (max-width:1000px){.builds{grid-template-columns:1fr 1fr}}
-    @media (max-width:650px){.builds{grid-template-columns:1fr}}
-    .thumb{border-radius:12px;overflow:hidden;border:1px solid var(--border);height:220px;background:#0c1426}
+    /* Sample builds (single-row scroll) */
+    .builds{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px}
+    .builds > .card{min-width:260px}
+    .builds::-webkit-scrollbar{height:8px}
+    .builds::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:8px}
+    .thumb{border-radius:12px;overflow:hidden;border:1px solid var(--border);height:100px;background:#0c1426}
     .thumb img{width:100%;height:100%;object-fit:cover;display:block}
     .t{font-weight:700;margin:8px 0 2px}
     .spec{font-size:.95rem;color:var(--muted);margin:0}
@@ -86,7 +95,7 @@
     .inline-link{display:inline-block;margin-top:6px;text-decoration:none;font-weight:700;color:var(--ink);border-bottom:1px dashed rgba(255,255,255,.35)}
 
     /* Bottom CTA (shared) */
-    .cta-card{ text-align:center;border:1px solid var(--border);border-radius:calc(var(--radius) + 6px);box-shadow:0 28px 60px rgba(0,0,0,.45);padding:34px 26px;background:linear-gradient(135deg, rgba(125,178,255,.12), rgba(124,242,230,.12)) }
+    .cta-card{ text-align:center;border:1px solid var(--border);border-radius:calc(var(--radius) + 6px);box-shadow:0 24px 50px rgba(0,0,0,.45);padding:18px 16px;background:linear-gradient(135deg, rgba(125,178,255,.12), rgba(124,242,230,.12)) }
     .cta-title{font-size:26px;margin:0 0 var(--space)}
     .cta-sub{color:var(--muted);margin:0 0 var(--space)}
     .cta-actions{display:flex;gap:var(--space);justify-content:center;flex-wrap:wrap}
@@ -110,6 +119,8 @@
       </nav>
     </header>
 
+    <!-- Compact hero grid containing the primary sections -->
+    <div class="hero-grid">
     <!-- 1) Request a PC (posts directly to Formspree) -->
     <section class="card request section" id="request">
       <h2>Request a PC</h2>
@@ -147,21 +158,21 @@
           <input id="rq_budget" name="budget" type="text" placeholder="$1500–$2500">
         </div>
 
-        <div>
+        <div class="full">
           <label for="rq_msg">What do you want?</label>
           <textarea id="rq_msg" name="message" placeholder="Tell us any specifics (games/apps, resolution, size/noise, etc.)" required></textarea>
         </div>
 
-        <button class="btn" type="submit">Get My Build Plan →</button>
-        <p class="tiny">We’ll reply by email within 24–48 hours.</p>
+        <button class="btn full" type="submit">Get My Build Plan →</button>
+        <p class="tiny full">We’ll reply by email within 24–48 hours.</p>
 
-        <div class="alert ok" id="rq_ok" aria-live="polite">Thanks! Your request was sent — we’ll reply within 24–48 hours.</div>
-        <div class="alert err" id="rq_err" aria-live="polite">Something went wrong. Please try again or email us directly.</div>
+        <div class="alert ok full" id="rq_ok" aria-live="polite">Thanks! Your request was sent — we’ll reply within 24–48 hours.</div>
+        <div class="alert err full" id="rq_err" aria-live="polite">Something went wrong. Please try again or email us directly.</div>
       </form>
     </section>
 
     <!-- 2) Get Your Perfect PC -->
-    <section class="card pad section">
+    <section class="card pad section info">
       <h1>Get Your Perfect PC — No Guesswork</h1>
       <p class="muted">Tell us what you actually do. We’ll return a clean parts list, expected performance, and an upgrade path.</p>
       <div class="badges">
@@ -169,11 +180,10 @@
         <div class="badge"><b>+20%</b><span class="muted">Avg perf vs. prebuilts*</span></div>
         <div class="badge"><b>$0</b><span class="muted">Quote cost</span></div>
       </div>
-      <p class="muted" style="margin-top:8px;font-size:.9rem">*Based on published benchmarks for similarly priced prebuilts vs tuned parts lists.</p>
     </section>
 
     <!-- 3) Sample Builds (photos kept, compact) -->
-    <section class="section">
+    <section class="section samples">
       <h3 style="margin:0 0 10px">Sample Builds</h3>
       <div class="builds">
         <div class="card pad">
@@ -196,6 +206,7 @@
         </div>
       </div>
     </section>
+    </div>
     
     <!-- Bottom CTA -->
     <section class="cta-card" style="margin-top:var(--space)">
