@@ -22,12 +22,6 @@
       line-height:1.55
     }
     .wrap{max-width:var(--max);margin:0 auto;padding:28px}
-    /* Compact two-column hero layout */
-    .hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:var(--space);align-items:start}
-    @media (max-width:900px){ .hero-grid{grid-template-columns:1fr} }
-    .hero-grid .request{grid-row:1 / span 2}
-    .hero-grid .info{grid-column:2}
-    .hero-grid .samples{grid-column:2}
 
     /* Header (shared) */
     header{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space)}
@@ -119,8 +113,6 @@
       </nav>
     </header>
 
-    <!-- Compact hero grid containing the primary sections -->
-    <div class="hero-grid">
     <!-- 1) Request a PC (posts directly to Formspree) -->
     <section class="card request section" id="request">
       <h2>Request a PC</h2>
@@ -172,7 +164,7 @@
     </section>
 
     <!-- 2) Get Your Perfect PC -->
-    <section class="card pad section info">
+    <section class="card pad section">
       <h1>Get Your Perfect PC — No Guesswork</h1>
       <p class="muted">Tell us what you actually do. We’ll return a clean parts list, expected performance, and an upgrade path.</p>
       <div class="badges">
@@ -183,7 +175,7 @@
     </section>
 
     <!-- 3) Sample Builds (photos kept, compact) -->
-    <section class="section samples">
+    <section class="section">
       <h3 style="margin:0 0 10px">Sample Builds</h3>
       <div class="builds">
         <div class="card pad">
@@ -206,7 +198,6 @@
         </div>
       </div>
     </section>
-    </div>
     
     <!-- Bottom CTA -->
     <section class="cta-card" style="margin-top:var(--space)">
