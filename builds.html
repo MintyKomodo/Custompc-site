@@ -43,6 +43,7 @@
     }
     .card:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,0,0,0.4);}
     .card:focus{box-shadow:0 0 0 2px rgba(125,178,255,.45), 0 8px 30px rgba(0,0,0,0.4);}
+    .card{cursor: pointer;}
     .thumb{border-radius:12px;overflow:hidden;border:1px solid var(--border);height:350px;background:#000000}
     .thumb img{width:100%;height:100%;object-fit:cover;display:block}
     .t{font-weight:700;margin:2px 0}
@@ -68,7 +69,144 @@
     .cta-primary, .cta-secondary{display:inline-block;padding:12px 18px;border-radius:14px;font-weight:700;text-decoration:none}
     .cta-primary{color:#0b0f1a;background:linear-gradient(90deg,var(--accent1),var(--accent2));box-shadow:0 10px 26px rgba(117,194,255,.28)}
     .cta-secondary{color:var(--ink);border:1px solid var(--border);background:#0f1830}
+
+    /* Modal styles */
+    .modal{position:fixed;inset:0;display:none;z-index:9999}
+    .modal.open{display:block}
+    .backdrop{
+      position:absolute;inset:0;background:linear-gradient(180deg, rgba(10,15,26,.75), rgba(10,15,26,.92));
+      backdrop-filter:blur(6px)
+    }
+    .dialog{
+      position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:20px
+    }
+    .sheet{
+      width:min(1100px, 96vw);height:min(92vh, 900px);
+      background:var(--panel);border:1px solid var(--border);border-radius:calc(var(--radius) + 6px);
+      box-shadow:0 28px 80px rgba(0,0,0,.6);display:grid;grid-template-columns:1.1fr .9fr;gap:var(--space);padding:var(--space);overflow:auto
+    }
+    @media (max-width:900px){.sheet{grid-template-columns:1fr;height:min(96vh, 1000px)}}
+    .sheet .left{display:flex;flex-direction:column;gap:var(--space)}
+    .heroimg{border-radius:14px;border:1px solid var(--border);overflow:hidden;height:500px;background:#0c1426}
+    .heroimg img{width:100%;height:100%;object-fit:cover;display:block}
+    .close{
+      position:absolute;top:14px;right:14px;border-radius:12px;border:1px solid var(--border);
+      background:#0f1830;color:var(--ink);padding:8px 12px;font-weight:700;cursor:pointer
+    }
+    .close:focus{outline:2px solid rgba(125,178,255,.45)}
+    .modal-actions {
+      display: flex;
+      gap: var(--space);
+      flex-wrap: wrap;
+    }
+    .btn-secondary {
+      background: var(--panel2) !important;
+      color: var(--ink) !important;
+      box-shadow: none !important;
+      border: 1px solid var(--border);
+    }
   </style>
+  <script>
+    (function () {
+      const modal = document.getElementById('modal');
+      const sheet = modal.querySelector('.sheet');
+      const img = document.getElementById('modalImg');
+      const title = document.getElementById('modalTitle');
+      const spec = document.getElementById('modalSpec');
+      const list = document.getElementById('modalList');
+      const chips = document.getElementById('modalChips');
+      const cta = document.getElementById('modalCta');
+      const newTabBtn = document.getElementById('modalNewTab');
+      let currentLink = '';
+      let lastFocus = null;
+
+      function openFromCard(card){
+        // Fill content
+        const src = card.querySelector('img')?.src || '';
+        const t = card.querySelector('.t')?.textContent || 'Build';
+        const s = card.querySelector('.spec')?.textContent || '';
+        currentLink = card.dataset.link || '#';
+
+        // Set the new tab link
+        newTabBtn.href = currentLink;
+
+        // Extract template content
+        list.innerHTML = '';
+        chips.innerHTML = '';
+        const tpl = card.querySelector('template.tpl');
+        if (tpl) {
+          const frag = tpl.content.cloneNode(true);
+          frag.querySelectorAll('.spec-list li').forEach(li => {
+            const clone = document.createElement('li'); clone.textContent = li.textContent; list.appendChild(clone);
+          });
+          frag.querySelectorAll('.chips .chip').forEach(ch => {
+            const span = document.createElement('span'); span.className = 'chip'; span.textContent = ch.textContent; chips.appendChild(span);
+          });
+        }
+
+        img.src = src; img.alt = t;
+        title.textContent = t;
+        spec.textContent = s;
+        cta.href = 'index.html?build=' + currentLink.split('/').pop().replace('.html', '');
+
+        // Open modal
+        lastFocus = document.activeElement;
+        modal.classList.add('open');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        // focus close button
+        const closeBtn = modal.querySelector('.close');
+        closeBtn && closeBtn.focus();
+      }
+
+      function closeModal(){
+        modal.classList.remove('open');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        // restore focus
+        if (lastFocus && lastFocus.focus) lastFocus.focus();
+      }
+
+      // Click handlers
+      document.addEventListener('click', (e) => {
+        const card = e.target.closest('.card.build');
+        if (card) {
+          e.preventDefault();
+          openFromCard(card);
+        }
+        if (e.target.matches('[data-close]')) {
+          closeModal();
+        }
+      });
+
+      // Keyboard: Enter/Space to open, Esc to close, trap focus
+      document.addEventListener('keydown', (e) => {
+        if (modal.classList.contains('open')) {
+          if (e.key === 'Escape') { e.preventDefault(); closeModal(); }
+          if (e.key === 'Tab') {
+            // simple focus trap
+            const focusables = modal.querySelectorAll('a, button, [tabindex]:not([tabindex="-1"])');
+            const listArr = Array.from(focusables).filter(el => !el.hasAttribute('disabled'));
+            if (!listArr.length) return;
+            const first = listArr[0], last = listArr[listArr.length - 1];
+            if (e.shiftKey && document.activeElement === first) { last.focus(); e.preventDefault(); }
+            else if (!e.shiftKey && document.activeElement === last) { first.focus(); e.preventDefault(); }
+          }
+        } else {
+          // Open from focused card
+          if ((e.key === 'Enter' || e.key === ' ') && document.activeElement?.classList?.contains('build')) {
+            e.preventDefault();
+            openFromCard(document.activeElement);
+          }
+        }
+      });
+
+      // Close if clicking backdrop outside the sheet
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+      });
+    })();
+  </script>
 </head>
 <body>
   <div class="wrap">
@@ -85,14 +223,14 @@
     </header>
 
     <h1 style="margin:0 0 10px">Inspiration Builds</h1>
-    <p class="intro">Click any build to view detailed specifications and features in a new tab.</p>
+    <p class="intro">Click any build to see detailed specifications. Use the 'Open in new tab' link in the modal to view in a separate tab.</p>
 
     <section class="gallery">
       <!-- Card template pattern:
            data-link: href to index with prefill
            template.tpl contains <ul.spec-list> and <div.chips> for modal content -->
       <!-- 1: Esports -->
-      <a href="builds/esports-1080p-1440p.html" target="_blank" class="card build" tabindex="0" role="link" aria-label="View Esports 1080p/1440p build details">
+      <div class="card build" tabindex="0" role="button" aria-label="View Esports 1080p/1440p build details" data-link="builds/esports-1080p-1440p.html">
         <div class="thumb"><img src="images/build_01.png" alt="Compact gaming PC with RGB lighting"></div>
         <div class="t">Esports 1080p/1440p</div>
         <div class="spec">High FPS for Valorant/CS2. Air-cooled, low noise.</div>
@@ -164,7 +302,7 @@
       </a>
 
       <!-- 4: Small Form Factor -->
-      <a href="builds/small-form-factor.html" target="_blank" class="card build" tabindex="0" role="link" aria-label="View Small Form Factor build details">
+      <div class="card build" tabindex="0" role="button" aria-label="View Small Form Factor build details" data-link="builds/small-form-factor.html">
         <div class="thumb"><img src="images/build_04.png" alt="Small form factor PC on minimalist desk"></div>
         <div class="t">Small Form Factor (SFF)</div>
         <div class="spec">Compact ITX with strong thermals and clean cable runs.</div>
@@ -259,7 +397,7 @@
       </a>
 
       <!-- 8: Photo Pro -->
-      <a href="builds/photo-pro.html" target="_blank" class="card build" tabindex="0" role="link" aria-label="View Photo Pro build details">
+      <div class="card build" tabindex="0" role="button" aria-label="View Photo Pro build details" data-link="builds/photo-pro.html">
         <div class="thumb"><img src="images/build_08.png" alt="Desktop with calibration tools for photo editing"></div>
         <div class="t">Photo Pro</div>
         <div class="spec">Lightroom/Photoshop snappy previews, calibrated workflow.</div>
@@ -282,6 +420,35 @@
         </template>
       </a>
     </section>
+
+    <!-- Full-screen modal -->
+    <div class="modal" id="modal" aria-hidden="true">
+      <div class="backdrop" data-close></div>
+      <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalSpec">
+        <div class="sheet">
+          <button class="close" type="button" data-close aria-label="Close">✕</button>
+          <div class="left">
+            <div class="heroimg"><img id="modalImg" alt=""></div>
+            <div class="box">
+              <h4>Sample spec</h4>
+              <ul class="clean" id="modalList"></ul>
+            </div>
+          </div>
+          <div class="right">
+            <h2 id="modalTitle">Build</h2>
+            <p class="muted" id="modalSpec">Spec</p>
+            <div class="box" style="margin-bottom:12px">
+              <h4>Why this build</h4>
+              <div class="chips" id="modalChips"></div>
+            </div>
+            <div class="modal-actions">
+              <a class="btn" id="modalCta" href="#">Request this build</a>
+              <a class="btn btn-secondary" id="modalNewTab" href="#" target="_blank">Open in new tab</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Bottom CTA -->
     <section class="cta-card" style="margin-top:var(--space)">
