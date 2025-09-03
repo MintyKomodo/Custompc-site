@@ -33,16 +33,17 @@
 
     /* Gallery grid */
     .intro{color:var(--muted);margin:0 0 var(--space)}
-    .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space)}
+    .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);background:var(--panel2)}
     @media (max-width:1100px){.gallery{grid-template-columns:1fr 1fr}}
     @media (max-width:650px){.gallery{grid-template-columns:1fr}}
     .card{
-      background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);
+      background:var(--panel);border:none;border-right:1px solid var(--border);
       padding:var(--space);display:flex;flex-direction:column;gap:var(--space);cursor:pointer;outline:none;text-decoration:none;color:inherit;
-      transition:transform 0.2s ease, box-shadow 0.2s ease;
+      transition:all 0.2s ease; height:100%;
     }
-    .card:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,0,0,0.4);}
-    .card:focus{box-shadow:0 0 0 2px rgba(125,178,255,.45), 0 8px 30px rgba(0,0,0,0.4);}
+    .card:last-child{border-right:none}
+    .card:hover{background:var(--panel2);}
+    .card:focus{box-shadow:inset 0 0 0 2px rgba(125,178,255,.45);}
     .card{cursor: pointer;}
     .thumb{border-radius:12px;overflow:hidden;border:1px solid var(--border);height:350px;background:#000000}
     .thumb img{width:100%;height:100%;object-fit:cover;display:block}
@@ -226,9 +227,6 @@
     <p class="intro">Click any build to see detailed specifications. Use the 'Open in new tab' link in the modal to view in a separate tab.</p>
 
     <section class="gallery">
-      <!-- Card template pattern:
-           data-link: href to index with prefill
-           template.tpl contains <ul.spec-list> and <div.chips> for modal content -->
       <!-- 1: Esports -->
       <div class="card build" tabindex="0" role="button" aria-label="View Esports 1080p/1440p build details" data-link="builds/esports-1080p-1440p.html">
         <div class="thumb"><img src="images/build_01.png" alt="Compact gaming PC with RGB lighting"></div>
@@ -299,8 +297,56 @@
             <span class="chip">Documented upgrade path</span>
           </div>
         </template>
-      </a>
+      </div>
 
+      <!-- 2: Creator 4K -->
+      <div class="card build" tabindex="0" role="button" aria-label="View Creator 4K build details" data-link="builds/creator-4k.html">
+        <div class="thumb"><img src="images/build_02.png" alt="High-end workstation with multiple monitors"></div>
+        <div class="t">Creator 4K</div>
+        <div class="spec">Video editing, 3D rendering, and 4K content creation.</div>
+        <div class="hint">View in new tab</div>
+        <template class="tpl">
+          <ul class="spec-list">
+            <li>CPU: 12–16 core “current-gen” class</li>
+            <li>GPU: High-end workstation card</li>
+            <li>RAM: 64–128GB DDR5</li>
+            <li>Storage: 2TB NVMe + 4TB HDD</li>
+            <li>Cooling: 240mm+ AIO</li>
+            <li>PSU: 1000W 80+ Gold</li>
+          </ul>
+          <div class="chips">
+            <span class="chip">Fast renders/exports</span>
+            <span class="chip">4K/8K capable</span>
+            <span class="chip">Future-proof</span>
+          </div>
+        </template>
+      </div>
+
+      <!-- 3: CAD/AI Workstation -->
+      <div class="card build" tabindex="0" role="button" aria-label="View CAD/AI Workstation build details" data-link="builds/cad-ai-workstation.html">
+        <div class="thumb"><img src="images/build_03.png" alt="Professional workstation with CAD software"></div>
+        <div class="t">CAD / AI Workstation</div>
+        <div class="spec">Engineering, architecture, and AI/ML workloads.</div>
+        <div class="hint">View in new tab</div>
+        <template class="tpl">
+          <ul class="spec-list">
+            <li>CPU: 16–24 core workstation</li>
+            <li>GPU: Professional workstation card</li>
+            <li>RAM: 128GB+ ECC</li>
+            <li>Storage: 2TB NVMe + 8TB HDD</li>
+            <li>Cooling: 360mm AIO</li>
+            <li>PSU: 1200W 80+ Platinum</li>
+          </ul>
+          <div class="chips">
+            <span class="chip">Stable under heavy load</span>
+            <span class="chip">VRAM headroom</span>
+            <span class="chip">Documented upgrade path</span>
+          </div>
+        </template>
+      </div>
+    </section>
+
+    <section class="gallery" style="margin-top:var(--space)">
       <!-- 4: Small Form Factor -->
       <div class="card build" tabindex="0" role="button" aria-label="View Small Form Factor build details" data-link="builds/small-form-factor.html">
         <div class="thumb"><img src="images/build_04.png" alt="Small form factor PC on minimalist desk"></div>
@@ -394,9 +440,9 @@
             <span class="chip">Sync’d lighting</span>
           </div>
         </template>
-      </a>
+      </div>
 
-      <!-- 8: Photo Pro -->
+      <!-- 5: Photo Pro -->
       <div class="card build" tabindex="0" role="button" aria-label="View Photo Pro build details" data-link="builds/photo-pro.html">
         <div class="thumb"><img src="images/build_08.png" alt="Desktop with calibration tools for photo editing"></div>
         <div class="t">Photo Pro</div>
@@ -418,7 +464,7 @@
             <span class="chip">Low noise</span>
           </div>
         </template>
-      </a>
+      </div>
     </section>
 
     <!-- Full-screen modal -->
