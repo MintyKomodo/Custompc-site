@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Small Form Factor (SFF) Build | CustomPC.tech</title>
+  <style>
+    :root{
+      --space:15px;
+      --bg:#0a0f1a; --ink:#e9eefc; --muted:#aeb9d4;
+      --panel:#111729; --panel2:#0d1426; --border:rgba(255,255,255,.08);
+      --accent1:#7db2ff; --accent2:#7cf2e6;
+      --radius:18px; --shadow:0 20px 40px rgba(0,0,0,.35);
+      --max:1200px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;font-family:system-ui,Segoe UI,Roboto,Inter,Arial;color:var(--ink);
+      background:radial-gradient(1200px 600px at 50% -10%, #0f162b 8%, transparent 55%), linear-gradient(#081021, #0a0f1a 40%, #0a0f1a);
+      line-height:1.55
+    }
+    .wrap{max-width:var(--max);margin:0 auto;padding:28px}
+
+    /* Header */
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space)}
+    .brand a{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;font-weight:700;letter-spacing:.3px}
+    nav{display:flex;gap:var(--space);flex-wrap:wrap}
+    .pill{display:inline-block;padding:10px 14px;border-radius:999px;color:var(--ink);text-decoration:none;border:1px solid transparent}
+    .pill:hover{background:#0f1830}
+    .pill.active{background:linear-gradient(120deg,rgba(125,178,255,.15),rgba(124,242,230,.15));border-color:rgba(255,255,255,.08)}
+
+    /* Build Content */
+    .build-container {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: var(--space);
+      margin: var(--space) 0;
+    }
+    @media (max-width: 900px) {
+      .build-container {
+        grid-template-columns: 1fr;
+      }
+    }
+    .build-image {
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      height: 500px;
+      background: #0c1426;
+    }
+    .build-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .build-specs {
+      background: var(--panel2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: var(--space);
+    }
+    .build-specs h2 {
+      margin-top: 0;
+      margin-bottom: var(--space);
+      font-size: 26px;
+    }
+    .spec-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 var(--space) 0;
+    }
+    .spec-list li {
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .spec-list li:last-child {
+      border-bottom: none;
+    }
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: var(--space) 0;
+    }
+    .chip {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 0.9rem;
+    }
+    .btn-request {
+      display: inline-block;
+      padding: 12px 24px;
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      color: #0b0f1a;
+      text-decoration: none;
+      border-radius: 12px;
+      font-weight: 700;
+      margin-top: var(--space);
+      box-shadow: 0 8px 22px rgba(117, 194, 255, 0.25);
+    }
+    .build-description {
+      margin-bottom: var(--space);
+      color: var(--muted);
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <a href="../index.html"><img src="../images/logo.png" alt="CustomPC.tech logo" style="height:24px;width:auto;display:inline-block" /> <span style="margin-left:8px">CustomPC.tech</span></a>
+      </div>
+      <nav>
+        <a class="pill" href="../builds.html">Builds</a>
+        <a class="pill" href="../index.html">Custom PC</a>
+        <a class="pill" href="../about.html">About</a>
+        <a class="pill" href="../contact.html">Contact</a>
+      </nav>
+    </header>
+
+    <div class="build-container">
+      <div class="build-content">
+        <div class="build-image">
+          <img src="../images/build_04.png" alt="Small Form Factor (SFF) Build">
+        </div>
+        <div class="build-description">
+          <p>This compact ITX build delivers powerful performance in a small footprint, perfect for minimalist workspaces or living room gaming setups. Despite its size, it features excellent thermal management with carefully selected components and optimized airflow. The clean cable management and premium build quality make it as beautiful as it is powerful.</p>
+        </div>
+      </div>
+      
+      <div class="build-specs">
+        <h2>Small Form Factor (SFF)</h2>
+        <p class="muted">Compact ITX with strong thermals and clean cable runs.</p>
+        
+        <h3>Specifications</h3>
+        <ul class="spec-list">
+          <li><strong>CPU:</strong> 6–12 core "current-gen" class</li>
+          <li><strong>GPU:</strong> Short/dual-slot options</li>
+          <li><strong>RAM:</strong> 32GB DDR5, low-profile</li>
+          <li><strong>Storage:</strong> 2TB NVMe (Gen4)</li>
+          <li><strong>Cooling:</strong> Low-profile air or 240mm AIO</li>
+          <li><strong>Case:</strong> Premium ITX chassis</li>
+          <li><strong>PSU:</strong> SFX 600–750W 80+ Gold</li>
+        </ul>
+
+        <div class="chips">
+          <span class="chip">Desk-friendly size</span>
+          <span class="chip">Optimized airflow</span>
+          <span class="chip">Clean cable management</span>
+        </div>
+
+        <a href="../index.html?build=Small%20Form%20Factor%20(SFF)&message=Interested%20in%20Small%20Form%20Factor%20build" class="btn-request">Request This Build</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

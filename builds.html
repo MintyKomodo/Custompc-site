@@ -38,52 +38,27 @@
     @media (max-width:650px){.gallery{grid-template-columns:1fr}}
     .card{
       background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);
-      padding:var(--space);display:flex;flex-direction:column;gap:var(--space);cursor:pointer;outline:none
+      padding:var(--space);display:flex;flex-direction:column;gap:var(--space);cursor:pointer;outline:none;text-decoration:none;color:inherit;
+      transition:transform 0.2s ease, box-shadow 0.2s ease;
     }
-    .card:focus{box-shadow:0 0 0 2px rgba(125,178,255,.45), var(--shadow)}
+    .card:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,0,0,0.4);}
+    .card:focus{box-shadow:0 0 0 2px rgba(125,178,255,.45), 0 8px 30px rgba(0,0,0,0.4);}
     .thumb{border-radius:12px;overflow:hidden;border:1px solid var(--border);height:350px;background:#000000}
     .thumb img{width:100%;height:100%;object-fit:cover;display:block}
     .t{font-weight:700;margin:2px 0}
     .spec{color:var(--muted);font-size:.95rem;margin:0 0 2px}
     .hint{color:var(--muted);font-size:.85rem}
 
-    /* FULL-SCREEN MODAL */
-    .modal{position:fixed;inset:0;display:none;z-index:9999}
-    .modal.open{display:block}
-    .backdrop{
-      position:absolute;inset:0;background:linear-gradient(180deg, rgba(10,15,26,.75), rgba(10,15,26,.92));
-      backdrop-filter:blur(6px)
-    }
-    .dialog{
-      position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:20px
-    }
-    .sheet{
-      width:min(1100px, 96vw);height:min(92vh, 900px);
-      background:var(--panel);border:1px solid var(--border);border-radius:calc(var(--radius) + 6px);
-      box-shadow:0 28px 80px rgba(0,0,0,.6);display:grid;grid-template-columns:1.1fr .9fr;gap:var(--space);padding:var(--space);overflow:auto
-    }
-    @media (max-width:900px){.sheet{grid-template-columns:1fr;height:min(96vh, 1000px)}}
-    .sheet .left{display:flex;flex-direction:column;gap:var(--space)}
-    .heroimg{border-radius:14px;border:1px solid var(--border);overflow:hidden;height:500px;background:#0c1426}
-    .heroimg img{width:100%;height:100%;object-fit:cover;display:block}
     .box{border:1px solid var(--border);border-radius:12px;padding:var(--space);background:var(--panel2)}
     .box h4{margin:0 0 8px}
     ul.clean{margin:0;padding-left:18px}
     .chips{display:flex;flex-wrap:wrap;gap:var(--space)}
     .chip{border:1px solid var(--border);background:#0f1830;border-radius:999px;padding:6px 10px;font-size:.9rem}
-
-    .right h2{margin:2px 0 6px;font-size:26px}
-    .right p{margin:0 0 10px}
+    
     .btn{
       display:inline-block;border:0;cursor:pointer;font-weight:700;padding:12px 16px;border-radius:12px;text-decoration:none;
       color:#0b0f1a;background:linear-gradient(90deg,var(--accent1),var(--accent2));box-shadow:0 8px 22px rgba(117,194,255,.25)
     }
-
-    .close{
-      position:absolute;top:14px;right:14px;border-radius:12px;border:1px solid var(--border);
-      background:#0f1830;color:var(--ink);padding:8px 12px;font-weight:700;cursor:pointer
-    }
-    .close:focus{outline:2px solid rgba(125,178,255,.45)}
 
     /* Bottom CTA (shared) */
     .cta-card{ text-align:center;border:1px solid var(--border);border-radius:calc(var(--radius) + 6px);box-shadow:0 28px 60px rgba(0,0,0,.45);padding:34px 26px;background:linear-gradient(135deg, rgba(125,178,255,.12), rgba(124,242,230,.12)) }
@@ -110,18 +85,18 @@
     </header>
 
     <h1 style="margin:0 0 10px">Inspiration Builds</h1>
-    <p class="intro">Click a build to see example specs and why it’s a fit. The modal covers the screen; close with the ✕, Esc, or by clicking outside.</p>
+    <p class="intro">Click any build to view detailed specifications and features in a new tab.</p>
 
     <section class="gallery">
       <!-- Card template pattern:
            data-link: href to index with prefill
            template.tpl contains <ul.spec-list> and <div.chips> for modal content -->
       <!-- 1: Esports -->
-      <div class="card build" tabindex="0" role="button" aria-label="Open Esports 1080p/1440p" data-link="index.html?build=Esports%201080p%2F1440p&message=Interested%20in%20Esports%201080p/1440p%20build">
+      <a href="builds/esports-1080p-1440p.html" target="_blank" class="card build" tabindex="0" role="link" aria-label="View Esports 1080p/1440p build details">
         <div class="thumb"><img src="images/build_01.png" alt="Compact gaming PC with RGB lighting"></div>
         <div class="t">Esports 1080p/1440p</div>
         <div class="spec">High FPS for Valorant/CS2. Air-cooled, low noise.</div>
-        <div class="hint">Click to view</div>
+        <div class="hint">View in new tab</div>
         <template class="tpl">
           <ul class="spec-list">
             <li>CPU: 6–8 core “current-gen” class</li>
@@ -138,14 +113,14 @@
             <span class="chip">Simple upgrades later</span>
           </div>
         </template>
-      </div>
+      </a>
 
       <!-- 2: Creator 4K -->
-      <div class="card build" tabindex="0" role="button" aria-label="Open Creator 4K" data-link="index.html?build=Creator%204K&message=Interested%20in%20Creator%204K%20build">
+      <a href="builds/creator-4k.html" target="_blank" class="card build" tabindex="0" role="link" aria-label="View Creator 4K build details">
         <div class="thumb"><img src="images/build_02.png" alt="Workstation PC and monitor setup for video editing"></div>
         <div class="t">Creator 4K</div>
         <div class="spec">Premiere/DaVinci & Lightroom. Quiet and fast scratch.</div>
-        <div class="hint">Click to view</div>
+        <div class="hint">View in new tab</div>
         <template class="tpl">
           <ul class="spec-list">
             <li>CPU: 8–16 core “current-gen” class</li>
@@ -162,14 +137,14 @@
             <span class="chip">Scratch-disk ready</span>
           </div>
         </template>
-      </div>
+      </a>
 
       <!-- 3: CAD / AI Workstation -->
-      <div class="card build" tabindex="0" role="button" aria-label="Open CAD / AI Workstation" data-link="index.html?build=CAD%20%2F%20AI%20Workstation&message=Interested%20in%20CAD%20%2F%20AI%20Workstation">
+      <a href="builds/cad-ai-workstation.html" target="_blank" class="card build" tabindex="0" role="link" aria-label="View CAD / AI Workstation build details">
         <div class="thumb"><img src="images/build_03.png" alt="Professional workstation tower on desk"></div>
         <div class="t">CAD / AI Workstation</div>
         <div class="spec">SolidWorks, Blender, SD inference. Verified PSU & thermals.</div>
-        <div class="hint">Click to view</div>
+        <div class="hint">View in new tab</div>
         <template class="tpl">
           <ul class="spec-list">
             <li>CPU: High-performance “current-gen” class</li>
@@ -186,14 +161,14 @@
             <span class="chip">Documented upgrade path</span>
           </div>
         </template>
-      </div>
+      </a>
 
       <!-- 4: Small Form Factor -->
-      <div class="card build" tabindex="0" role="button" aria-label="Open Small Form Factor (SFF)" data-link="index.html?build=Small%20Form%20Factor%20(SFF)&message=Interested%20in%20Small%20Form%20Factor%20build">
+      <a href="builds/small-form-factor.html" target="_blank" class="card build" tabindex="0" role="link" aria-label="View Small Form Factor build details">
         <div class="thumb"><img src="images/build_04.png" alt="Small form factor PC on minimalist desk"></div>
         <div class="t">Small Form Factor (SFF)</div>
         <div class="spec">Compact ITX with strong thermals and clean cable runs.</div>
-        <div class="hint">Click to view</div>
+        <div class="hint">View in new tab</div>
         <template class="tpl">
           <ul class="spec-list">
             <li>CPU: 6–12 core “current-gen” class</li>
@@ -210,14 +185,14 @@
             <span class="chip">Aesthetic cable management</span>
           </div>
         </template>
-      </div>
+      </a>
 
       <!-- 5: Silence-Optimized -->
-      <div class="card build" tabindex="0" role="button" aria-label="Open Silence-Optimized" data-link="index.html?build=Silence-Optimized&message=Interested%20in%20Silence-Optimized%20build">
+      <a href="builds/silence-optimized.html" target="_blank" class="card build" tabindex="0" role="link" aria-label="View Silence-Optimized build details">
         <div class="thumb"><img src="images/build_05.png" alt="Silent PC build in acoustic-damped case"></div>
         <div class="t">Silence-Optimized</div>
         <div class="spec">Acoustic-first: damped case, tuned fan curves, zero-RPM profiles.</div>
-        <div class="hint">Click to view</div>
+        <div class="hint">View in new tab</div>
         <template class="tpl">
           <ul class="spec-list">
             <li>CPU: Efficient “current-gen” class</li>
@@ -234,14 +209,14 @@
             <span class="chip">Great for studios</span>
           </div>
         </template>
-      </div>
+      </a>
 
       <!-- 6: Streaming + Gaming -->
-      <div class="card build" tabindex="0" role="button" aria-label="Open Streaming + Gaming" data-link="index.html?build=Streaming%20%2B%20Gaming&message=Interested%20in%20Streaming%20%2B%20Gaming%20build">
+      <a href="builds/streaming-gaming.html" target="_blank" class="card build" tabindex="0" role="link" aria-label="View Streaming + Gaming build details">
         <div class="thumb"><img src="images/build_06.png" alt="Gaming and streaming dual-monitor setup"></div>
         <div class="t">Streaming + Gaming</div>
         <div class="spec">NVENC/x264 tuned, capture-friendly I/O, dual SSDs.</div>
-        <div class="hint">Click to view</div>
+        <div class="hint">View in new tab</div>
         <template class="tpl">
           <ul class="spec-list">
             <li>CPU: 8–12 core “current-gen” class</li>
@@ -258,14 +233,14 @@
             <span class="chip">Creator-ready layout</span>
           </div>
         </template>
-      </div>
+      </a>
 
       <!-- 7: RGB Showcase -->
-      <div class="card build" tabindex="0" role="button" aria-label="Open RGB Showcase" data-link="index.html?build=RGB%20Showcase&message=Interested%20in%20RGB%20Showcase%20build">
+      <a href="builds/rgb-showcase.html" target="_blank" class="card build" tabindex="0" role="link" aria-label="View RGB Showcase build details">
         <div class="thumb"><img src="images/build_07.png" alt="Glass side-panel PC with RGB lighting"></div>
         <div class="t">RGB Showcase</div>
         <div class="spec">Tempered glass, addressable RGB, airflow still prioritized.</div>
-        <div class="hint">Click to view</div>
+        <div class="hint">View in new tab</div>
         <template class="tpl">
           <ul class="spec-list">
             <li>CPU/GPU: Balanced “current-gen” pair</li>
@@ -281,14 +256,14 @@
             <span class="chip">Sync’d lighting</span>
           </div>
         </template>
-      </div>
+      </a>
 
       <!-- 8: Photo Pro -->
-      <div class="card build" tabindex="0" role="button" aria-label="Open Photo Pro" data-link="index.html?build=Photo%20Pro&message=Interested%20in%20Photo%20Pro%20build">
+      <a href="builds/photo-pro.html" target="_blank" class="card build" tabindex="0" role="link" aria-label="View Photo Pro build details">
         <div class="thumb"><img src="images/build_08.png" alt="Desktop with calibration tools for photo editing"></div>
         <div class="t">Photo Pro</div>
         <div class="spec">Lightroom/Photoshop snappy previews, calibrated workflow.</div>
-        <div class="hint">Click to view</div>
+        <div class="hint">View in new tab</div>
         <template class="tpl">
           <ul class="spec-list">
             <li>CPU: High single-core “current-gen” class</li>
@@ -305,142 +280,18 @@
             <span class="chip">Low noise</span>
           </div>
         </template>
-      </div>
+      </a>
     </section>
 
     <!-- Bottom CTA -->
     <section class="cta-card" style="margin-top:var(--space)">
-      <div class="cta-title">Ready for a build that’s actually right for you?</div>
-      <p class="cta-sub">Tell us what you do—we’ll design, verify, and deliver a PC that fits your workload and budget.</p>
+      <div class="cta-title">Ready for a build that's actually right for you?</div>
+      <p class="cta-sub">Tell us what you do—we'll design, verify, and deliver a PC that fits your workload and budget.</p>
       <div class="cta-actions">
         <a class="cta-primary" href="index.html">Start a Custom PC →</a>
         <a class="cta-secondary" href="contact.html">Just have a question?</a>
       </div>
     </section>
   </div>
-
-  <!-- Full-screen modal -->
-  <div class="modal" id="modal" aria-hidden="true">
-    <div class="backdrop" data-close></div>
-    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalSpec">
-      <div class="sheet">
-        <button class="close" type="button" data-close aria-label="Close">✕</button>
-        <div class="left">
-          <div class="heroimg"><img id="modalImg" alt=""></div>
-          <div class="box">
-            <h4>Sample spec</h4>
-            <ul class="clean" id="modalList"></ul>
-          </div>
-        </div>
-        <div class="right">
-          <h2 id="modalTitle">Build</h2>
-          <p class="muted" id="modalSpec">Spec</p>
-          <div class="box" style="margin-bottom:12px">
-            <h4>Why this build</h4>
-            <div class="chips" id="modalChips"></div>
-          </div>
-          <a class="btn" id="modalCta" href="#">Request this build</a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    (function () {
-      const modal = document.getElementById('modal');
-      const sheet = modal.querySelector('.sheet');
-      const img = document.getElementById('modalImg');
-      const title = document.getElementById('modalTitle');
-      const spec = document.getElementById('modalSpec');
-      const list = document.getElementById('modalList');
-      const chips = document.getElementById('modalChips');
-      const cta = document.getElementById('modalCta');
-      let lastFocus = null;
-
-      function openFromCard(card){
-        // Fill content
-        const src = card.querySelector('img')?.src || '';
-        const t = card.querySelector('.t')?.textContent || 'Build';
-        const s = card.querySelector('.spec')?.textContent || '';
-        const link = card.dataset.link || '#';
-
-        // Extract template content
-        list.innerHTML = '';
-        chips.innerHTML = '';
-        const tpl = card.querySelector('template.tpl');
-        if (tpl) {
-          const frag = tpl.content.cloneNode(true);
-          frag.querySelectorAll('.spec-list li').forEach(li => {
-            const clone = document.createElement('li'); clone.textContent = li.textContent; list.appendChild(clone);
-          });
-          frag.querySelectorAll('.chips .chip').forEach(ch => {
-            const span = document.createElement('span'); span.className = 'chip'; span.textContent = ch.textContent; chips.appendChild(span);
-          });
-        }
-
-        img.src = src; img.alt = t;
-        title.textContent = t;
-        spec.textContent = s;
-        cta.href = link;
-
-        // Open modal
-        lastFocus = document.activeElement;
-        modal.classList.add('open');
-        modal.setAttribute('aria-hidden', 'false');
-        document.body.style.overflow = 'hidden';
-        // focus close button
-        const closeBtn = modal.querySelector('.close');
-        closeBtn && closeBtn.focus();
-      }
-
-      function closeModal(){
-        modal.classList.remove('open');
-        modal.setAttribute('aria-hidden', 'true');
-        document.body.style.overflow = '';
-        // restore focus
-        if (lastFocus && lastFocus.focus) lastFocus.focus();
-      }
-
-      // Click handlers
-      document.addEventListener('click', (e) => {
-        const card = e.target.closest('.card.build');
-        if (card) {
-          // Ignore if user clicked an actual link inside (we don't have any in the card)
-          e.preventDefault();
-          openFromCard(card);
-        }
-        if (e.target.matches('[data-close]')) {
-          closeModal();
-        }
-      });
-
-      // Keyboard: Enter/Space to open, Esc to close, trap focus
-      document.addEventListener('keydown', (e) => {
-        if (modal.classList.contains('open')) {
-          if (e.key === 'Escape') { e.preventDefault(); closeModal(); }
-          if (e.key === 'Tab') {
-            // simple focus trap
-            const focusables = modal.querySelectorAll('a, button, [tabindex]:not([tabindex="-1"])');
-            const listArr = Array.from(focusables).filter(el => !el.hasAttribute('disabled'));
-            if (!listArr.length) return;
-            const first = listArr[0], last = listArr[listArr.length - 1];
-            if (e.shiftKey && document.activeElement === first) { last.focus(); e.preventDefault(); }
-            else if (!e.shiftKey && document.activeElement === last) { first.focus(); e.preventDefault(); }
-          }
-        } else {
-          // Open from focused card
-          if ((e.key === 'Enter' || e.key === ' ') && document.activeElement?.classList?.contains('build')) {
-            e.preventDefault();
-            openFromCard(document.activeElement);
-          }
-        }
-      });
-
-      // Close if clicking backdrop outside the sheet
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) closeModal();
-      });
-    })();
-  </script>
 </body>
 </html>
