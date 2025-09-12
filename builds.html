@@ -311,16 +311,28 @@
         if (lastFocus && lastFocus.focus) lastFocus.focus();
       }
 
-      // Click handlers
-      document.addEventListener('click', (e) => {
+      // Enhanced click handler for cards and modal close
+      document.addEventListener('click', function(e) {
+        // Handle card clicks
         const card = e.target.closest('.card.build');
         if (card) {
           e.preventDefault();
+          e.stopPropagation();
           openFromCard(card);
+          return false;
         }
-        if (e.target.matches('[data-close]')) {
+        
+        // Handle modal close
+        if (e.target.matches('[data-close], .close, .backdrop')) {
+          e.preventDefault();
           closeModal();
+          return false;
         }
+      }, true);
+      
+      // Make sure the modal is properly initialized
+      document.addEventListener('DOMContentLoaded', function() {
+        console.log('Modal initialized');
       });
 
       // Keyboard: Enter/Space to open, Esc to close, trap focus
