@@ -24,12 +24,49 @@
     .wrap{max-width:100%;margin:0 auto;padding:28px}
 
     /* Shared header */
-    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space)}
-    .brand a{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;font-weight:700;letter-spacing:.3px;white-space:nowrap}
-    nav{display:flex;gap:var(--space);flex-wrap:wrap}
-    .pill{display:inline-block;padding:10px 14px;border-radius:999px;color:var(--ink);text-decoration:none;border:1px solid transparent}
-    .pill:hover{background:#0f1830}
-    .pill.active{background:linear-gradient(120deg,rgba(125,178,255,.15),rgba(124,242,230,.15));border-color:rgba(255,255,255,.08)}
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space);
+      padding: 0 var(--space);
+      max-width: var(--max);
+      margin-left: auto;
+      margin-right: auto;
+      width: 100%;
+    }
+    .brand a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: inherit;
+      font-weight: 700;
+      letter-spacing: .3px;
+      white-space: nowrap;
+    }
+    nav {
+      display: flex;
+      gap: var(--space);
+      flex-wrap: wrap;
+    }
+    .pill {
+      display: inline-block;
+      padding: 10px 14px;
+      border-radius: 999px;
+      color: var(--ink);
+      text-decoration: none;
+      border: 1px solid transparent;
+      transition: all 0.2s ease;
+    }
+    .pill:hover {
+      background: #0f1830;
+    }
+    .pill.active {
+      background: linear-gradient(120deg, rgba(125,178,255,.15), rgba(124,242,230,.15));
+      border-color: rgba(125, 178, 255, 0.2);
+      color: var(--accent1);
+    }
 
     /* Gallery grid */
     .intro{color:var(--muted);margin:0 0 var(--space); text-align: center; max-width: 800px; margin-left: auto; margin-right: auto;}
@@ -151,19 +188,46 @@
     .cta-secondary{color:var(--ink);border:1px solid var(--border);background:#0f1830}
 
     /* Modal styles */
-    .modal{position:fixed;inset:0;display:none;z-index:9999}
-    .modal.open{display:block}
-    .backdrop{
-      position:absolute;inset:0;background:linear-gradient(180deg, rgba(10,15,26,.75), rgba(10,15,26,.92));
-      backdrop-filter:blur(6px)
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      z-index: 10000;
+      padding: 20px;
+      overflow-y: auto;
     }
-    .dialog{
-      position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:20px
+    .modal.open {
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .sheet{
-      width:min(1100px, 96vw);height:min(92vh, 900px);
-      background:var(--panel);border:1px solid var(--border);border-radius:calc(var(--radius) + 6px);
-      box-shadow:0 28px 80px rgba(0,0,0,.6);display:grid;grid-template-columns:1.1fr .9fr;gap:var(--space);padding:var(--space);overflow:auto
+    .backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 15, 26, 0.92);
+      backdrop-filter: blur(8px);
+      z-index: 10001;
+    }
+    .dialog {
+      position: relative;
+      z-index: 10002;
+      width: 100%;
+      max-width: min(1100px, 96vw);
+      max-height: 90vh;
+      margin: 20px 0;
+    }
+    .sheet {
+      width: 100%;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: calc(var(--radius) + 6px);
+      box-shadow: 0 28px 80px rgba(0,0,0,0.6);
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: var(--space);
+      padding: var(--space);
+      overflow: hidden;
+      max-height: 90vh;
     }
     @media (max-width:900px){.sheet{grid-template-columns:1fr;height:min(96vh, 1000px)}}
     .sheet .left{display:flex;flex-direction:column;gap:var(--space)}
@@ -294,11 +358,11 @@
       <div class="brand">
         <a href="index.html" target="_blank"><img src="images/logo.png" alt="CustomPC.tech logo" style="height:24px;width:auto;display:inline-block" /> <span style="margin-left:8px">CustomPC.tech</span></a>
       </div>
-      <nav>
+      <nav class="topnav" role="navigation" aria-label="Primary">
         <a class="pill active" href="builds.html">Builds</a>
-        <a class="pill" href="index.html" target="_blank">Custom PC</a>
-        <a class="pill" href="about.html" target="_blank">About</a>
-        <a class="pill" href="contact.html" target="_blank">Contact</a>
+        <a class="pill" href="index.html">Custom PC</a>
+        <a class="pill" href="about.html">About</a>
+        <a class="pill" href="contact.html">Contact</a>
       </nav>
     </header>
 
@@ -522,9 +586,13 @@
               <h4>Why this build</h4>
               <div class="chips" id="modalChips"></div>
             </div>
-            <div class="modal-actions">
-              <a class="btn" id="modalCta" href="#">Request this build</a>
-              <a class="btn btn-secondary" id="modalNewTab" href="#" target="_blank">Open in new tab</a>
+            <div class="modal-actions" style="display: flex; gap: 12px; margin-top: 24px;">
+              <a id="new-tab-btn" class="cta-secondary" target="_blank" style="flex: 1; text-align: center;">
+                <span>Open in new tab</span>
+              </a>
+              <a id="cta-btn" class="cta-primary" href="#" style="flex: 1; text-align: center;">
+                <span>Get this build</span>
+              </a>
             </div>
           </div>
         </div>
