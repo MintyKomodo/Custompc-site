@@ -419,6 +419,11 @@
   <script>
     (function () {
       const modal = document.getElementById('modal');
+      if (!modal) {
+        console.error('Modal element not found');
+        return;
+      }
+
       const sheet = modal.querySelector('.sheet');
       const img = document.getElementById('modalImg');
       const title = document.getElementById('modalTitle');
@@ -431,6 +436,11 @@
       let lastFocus = null;
 
       function openFromCard(card) {
+        if (!card) {
+          console.error('No card provided to openFromCard');
+          return;
+        }
+
         // Fill content
         const src = card.querySelector('img')?.src || '';
         const t = card.querySelector('.t')?.textContent || 'Build';
@@ -438,7 +448,9 @@
         currentLink = card.dataset.link || '#';
 
         // Set the new tab link
-        newTabBtn.href = currentLink;
+        if (newTabBtn) {
+          newTabBtn.href = currentLink;
+        }
 
         // Extract template content
         list.innerHTML = '';
@@ -454,29 +466,35 @@
           });
         }
 
-        img.src = src || 'images/placeholder-build.png';
-        img.alt = t;
-        img.onerror = function () { this.src = 'images/placeholder-build.png'; };
-        title.textContent = t;
-        spec.textContent = s;
-        cta.href = 'index.html?build=' + currentLink.split('/').pop().replace('.html', '');
+        if (img) {
+          img.src = src || 'images/placeholder-build.png';
+          img.alt = t;
+          img.onerror = function () { this.src = 'images/placeholder-build.png'; };
+        }
+        if (title) title.textContent = t;
+        if (spec) spec.textContent = s;
+        if (cta) cta.href = 'index.html?build=' + currentLink.split('/').pop().replace('.html', '');
 
         // Open modal
         lastFocus = document.activeElement;
-        modal.classList.add('open');
-        modal.setAttribute('aria-hidden', 'false');
-        document.body.style.overflow = 'hidden';
-        // focus close button
-        const closeBtn = modal.querySelector('.close');
-        closeBtn && closeBtn.focus();
+        if (modal) {
+          modal.classList.add('open');
+          modal.setAttribute('aria-hidden', 'false');
+          document.body.style.overflow = 'hidden';
+          // focus close button
+          const closeBtn = modal.querySelector('.close');
+          closeBtn && closeBtn.focus();
+        }
       }
 
       function closeModal() {
-        modal.classList.remove('open');
-        modal.setAttribute('aria-hidden', 'true');
-        document.body.style.overflow = '';
-        // restore focus
-        if (lastFocus && lastFocus.focus) lastFocus.focus();
+        if (modal) {
+          modal.classList.remove('open');
+          modal.setAttribute('aria-hidden', 'true');
+          document.body.style.overflow = '';
+          // restore focus
+          if (lastFocus && lastFocus.focus) lastFocus.focus();
+        }
       }
 
       // Enhanced click handler for cards and modal close
@@ -501,6 +519,11 @@
       // Make sure the modal is properly initialized
       document.addEventListener('DOMContentLoaded', function () {
         console.log('Modal initialized');
+        // Verify modal elements exist
+        if (!modal) console.error('Modal element not found');
+        if (!newTabBtn) console.error('New tab button not found');
+        if (!img) console.error('Modal image not found');
+        if (!title) console.error('Modal title not found');
       });
 
       // Keyboard: Enter/Space to open, Esc to close, trap focus
@@ -794,8 +817,8 @@
               </a>
               <a id="modalCta" class="cta-primary" href="#"
                 style="flex: 1; text-align: center; min-height: 44px; display: flex; align-items: center; justify-content: center;"
-                aria-label="Request this build"></a>
-              <span>Get this build</span>
+                aria-label="Request this build">
+                <span>Get this build</span>
               </a>
             </div>
           </div>

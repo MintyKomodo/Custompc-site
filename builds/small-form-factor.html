@@ -233,9 +233,104 @@
       `).join('');
     }
 
+    function submitReview(buildId, reviewData) {
+      const reviews = JSON.parse(localStorage.getItem(`buildReviews_${buildId}`) || '[]');
+      reviews.unshift(reviewData);
+      localStorage.setItem(`buildReviews_${buildId}`, JSON.stringify(reviews));
+      loadReviews(buildId);
+    }
+
+    function initializeRatingSelector() {
+      const stars = document.querySelectorAll('.rating-star');
+      let selectedRating = 0;
+
+      stars.forEach(star => {
+        star.addEventListener('click', function() {
+          selectedRating = parseInt(this.dataset.rating);
+          updateStarDisplay(selectedRating);
+        });
+
+        star.addEventListener('mouseenter', function() {
+          const hoverRating = parseInt(this.dataset.rating);
+          updateStarDisplay(hoverRating);
+        });
+      });
+
+      document.querySelector('.star-rating').addEventListener('mouseleave', function() {
+        updateStarDisplay(selectedRating);
+      });
+
+      function updateStarDisplay(rating) {
+        stars.forEach((star, index) => {
+          if (index < rating) {
+            star.textContent = '★';
+            star.style.color = 'var(--accent1)';
+          } else {
+            star.textContent = '☆';
+            star.style.color = 'var(--muted)';
+          }
+        });
+      }
+
+      return () => selectedRating;
+    }
+
     // Load reviews when page loads
     document.addEventListener('DOMContentLoaded', function() {
       loadReviews('small-form-factor');
+      
+      const getRating = initializeRatingSelector();
+      const leaveReviewBtn = document.getElementById('leave-review-btn');
+      const reviewForm = document.getElementById('review-form');
+      const submitBtn = document.getElementById('submit-review');
+      const cancelBtn = document.getElementById('cancel-review');
+      const reviewText = document.getElementById('review-text');
+
+      leaveReviewBtn.addEventListener('click', function() {
+        reviewForm.style.display = 'block';
+        leaveReviewBtn.style.display = 'none';
+        reviewText.focus();
+      });
+
+      cancelBtn.addEventListener('click', function() {
+        reviewForm.style.display = 'none';
+        leaveReviewBtn.style.display = 'block';
+        reviewText.value = '';
+        document.querySelectorAll('.rating-star').forEach(star => {
+          star.textContent = '☆';
+          star.style.color = 'var(--muted)';
+        });
+      });
+
+      submitBtn.addEventListener('click', function() {
+        const text = reviewText.value.trim();
+        const rating = getRating();
+
+        if (text.length < 10) {
+          alert('Please write at least 10 characters for your review.');
+          return;
+        }
+
+        const review = {
+          id: 'review_' + Date.now(),
+          author: 'Anonymous',
+          date: new Date().toLocaleDateString(),
+          rating: rating,
+          text: text
+        };
+
+        submitReview('small-form-factor', review);
+        
+        reviewForm.style.display = 'none';
+        leaveReviewBtn.style.display = 'block';
+        reviewText.value = '';
+        document.querySelectorAll('.rating-star').forEach(star => {
+          star.textContent = '☆';
+          star.style.color = 'var(--muted)';
+        });
+
+        alert('Review submitted successfully!');
+      });
     });
   </script>
 
