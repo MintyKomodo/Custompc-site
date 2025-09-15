@@ -157,6 +157,229 @@
         <a href="../index.html?build=Creator%204K&message=Interested%20in%20Creator%204K%20build" class="btn-request">Request This Build</a>
       </div>
     </div>
+
+    <!-- Size & Dimensions Section -->
+    <section class="dimensions-section" style="margin-top: var(--space); background: var(--panel2); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--space);">
+      <h3 style="margin-top: 0; margin-bottom: var(--space); color: var(--accent1);">Size & Dimensions</h3>
+      <div class="dimensions-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space);">
+        <div class="dimension-item">
+          <strong>Height:</strong> 465mm (18.3")
+        </div>
+        <div class="dimension-item">
+          <strong>Width:</strong> 220mm (8.7")
+        </div>
+        <div class="dimension-item">
+          <strong>Depth:</strong> 450mm (17.7")
+        </div>
+        <div class="dimension-item">
+          <strong>Weight:</strong> ~15kg (33 lbs)
+        </div>
+        <div class="dimension-item">
+          <strong>Form Factor:</strong> ATX Mid-Tower
+        </div>
+        <div class="dimension-item">
+          <strong>Clearance:</strong> 170mm CPU, 380mm GPU
+        </div>
+      </div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section class="reviews-section" style="margin-top: var(--space); background: var(--panel2); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--space);">
+      <h3 style="margin-top: 0; margin-bottom: var(--space); color: var(--accent1);">Reviews</h3>
+      <div id="reviews-container-creator-4k" class="reviews-list">
+        <!-- Reviews will be loaded here by JavaScript -->
+      </div>
+      
+      <!-- Review Submission Form -->
+      <div class="review-form-container" style="margin-top: var(--space); padding-top: var(--space); border-top: 1px solid var(--border);">
+        <button id="leave-review-btn" class="btn-secondary" style="background: var(--panel); border: 1px solid var(--border); color: var(--ink); padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: 700;">
+          Leave a Review
+        </button>
+        
+        <div id="review-form" class="review-form" style="display: none; margin-top: var(--space); background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: var(--space);">
+          <h4 style="margin-top: 0; margin-bottom: var(--space);">Write a Review</h4>
+          
+          <div class="rating-selector" style="margin-bottom: var(--space);">
+            <label style="display: block; margin-bottom: 8px; font-weight: 700;">Rating:</label>
+            <div class="star-rating" style="font-size: 1.5rem; margin-bottom: 8px;">
+              <span class="rating-star" data-rating="1" style="cursor: pointer; color: var(--muted); margin-right: 4px;">☆</span>
+              <span class="rating-star" data-rating="2" style="cursor: pointer; color: var(--muted); margin-right: 4px;">☆</span>
+              <span class="rating-star" data-rating="3" style="cursor: pointer; color: var(--muted); margin-right: 4px;">☆</span>
+              <span class="rating-star" data-rating="4" style="cursor: pointer; color: var(--muted); margin-right: 4px;">☆</span>
+              <span class="rating-star" data-rating="5" style="cursor: pointer; color: var(--muted); margin-right: 4px;">☆</span>
+            </div>
+            <div class="rating-text" style="color: var(--muted); font-size: 0.9rem;">Click stars to rate (optional)</div>
+          </div>
+          
+          <div class="review-text-input" style="margin-bottom: var(--space);">
+            <label for="review-text" style="display: block; margin-bottom: 8px; font-weight: 700;">Review:</label>
+            <textarea id="review-text" placeholder="Share your experience with this build..." style="width: 100%; min-height: 100px; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--ink); resize: vertical; font-family: inherit;"></textarea>
+            <div class="char-count" style="color: var(--muted); font-size: 0.8rem; margin-top: 4px;">Minimum 10 characters</div>
+          </div>
+          
+          <div class="form-actions" style="display: flex; gap: 12px;">
+            <button id="submit-review" class="btn-primary" style="background: linear-gradient(90deg, var(--accent1), var(--accent2)); color: #0b0f1a; border: 0; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: 700;">
+              Submit Review
+            </button>
+            <button id="cancel-review" class="btn-secondary" style="background: var(--panel2); border: 1px solid var(--border); color: var(--ink); padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: 700;">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
+
+  <script>
+    // Review system JavaScript
+    function createStarRating(rating) {
+      let stars = '';
+      for (let i = 1; i <= 5; i++) {
+        if (i <= rating) {
+          stars += '<span class="star filled">★</span>';
+        } else {
+          stars += '<span class="star">☆</span>';
+        }
+      }
+      return stars;
+    }
+
+    function loadReviews(buildId) {
+      const container = document.getElementById(`reviews-container-${buildId}`);
+      const reviews = JSON.parse(localStorage.getItem(`buildReviews_${buildId}`) || '[]');
+      
+      if (reviews.length === 0) {
+        container.innerHTML = '<p style="color: var(--muted); text-align: center; padding: var(--space);">No reviews yet. Be the first to review this build!</p>';
+        return;
+      }
+
+      container.innerHTML = reviews.map(review => `
+        <div class="review-card" style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: var(--space); margin-bottom: var(--space);">
+          <div class="review-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <div class="review-author" style="font-weight: 700;">${review.author}</div>
+            <div class="review-date" style="color: var(--muted); font-size: 0.9rem;">${review.date}</div>
+          </div>
+          <div class="review-rating" style="margin-bottom: 8px;">
+            <div class="stars" style="color: var(--accent1); font-size: 1.2rem;">
+              ${createStarRating(review.rating)}
+            </div>
+          </div>
+          <div class="review-text" style="line-height: 1.5;">
+            ${review.text}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function submitReview(buildId, reviewData) {
+      const reviews = JSON.parse(localStorage.getItem(`buildReviews_${buildId}`) || '[]');
+      reviews.unshift(reviewData);
+      localStorage.setItem(`buildReviews_${buildId}`, JSON.stringify(reviews));
+      loadReviews(buildId);
+    }
+
+    function initializeRatingSelector() {
+      const stars = document.querySelectorAll('.rating-star');
+      let selectedRating = 0;
+
+      stars.forEach(star => {
+        star.addEventListener('click', function() {
+          selectedRating = parseInt(this.dataset.rating);
+          updateStarDisplay(selectedRating);
+        });
+
+        star.addEventListener('mouseenter', function() {
+          const hoverRating = parseInt(this.dataset.rating);
+          updateStarDisplay(hoverRating);
+        });
+      });
+
+      document.querySelector('.star-rating').addEventListener('mouseleave', function() {
+        updateStarDisplay(selectedRating);
+      });
+
+      function updateStarDisplay(rating) {
+        stars.forEach((star, index) => {
+          if (index < rating) {
+            star.textContent = '★';
+            star.style.color = 'var(--accent1)';
+          } else {
+            star.textContent = '☆';
+            star.style.color = 'var(--muted)';
+          }
+        });
+      }
+
+      return () => selectedRating;
+    }
+
+    // Load reviews when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      loadReviews('creator-4k');
+      
+      const getRating = initializeRatingSelector();
+      const leaveReviewBtn = document.getElementById('leave-review-btn');
+      const reviewForm = document.getElementById('review-form');
+      const submitBtn = document.getElementById('submit-review');
+      const cancelBtn = document.getElementById('cancel-review');
+      const reviewText = document.getElementById('review-text');
+
+      leaveReviewBtn.addEventListener('click', function() {
+        reviewForm.style.display = 'block';
+        leaveReviewBtn.style.display = 'none';
+        reviewText.focus();
+      });
+
+      cancelBtn.addEventListener('click', function() {
+        reviewForm.style.display = 'none';
+        leaveReviewBtn.style.display = 'block';
+        reviewText.value = '';
+        document.querySelectorAll('.rating-star').forEach(star => {
+          star.textContent = '☆';
+          star.style.color = 'var(--muted)';
+        });
+      });
+
+      submitBtn.addEventListener('click', function() {
+        const text = reviewText.value.trim();
+        const rating = getRating();
+
+        if (text.length < 10) {
+          alert('Please write at least 10 characters for your review.');
+          return;
+        }
+
+        const review = {
+          id: 'review_' + Date.now(),
+          author: 'Anonymous',
+          date: new Date().toLocaleDateString(),
+          rating: rating,
+          text: text
+        };
+
+        submitReview('creator-4k', review);
+        
+        reviewForm.style.display = 'none';
+        leaveReviewBtn.style.display = 'block';
+        reviewText.value = '';
+        document.querySelectorAll('.rating-star').forEach(star => {
+          star.textContent = '☆';
+          star.style.color = 'var(--muted)';
+        });
+
+        alert('Review submitted successfully!');
+      });
+    });
+  </script>
+
+  <style>
+    .star {
+      color: var(--muted);
+      margin-right: 2px;
+    }
+    .star.filled {
+      color: var(--accent1);
+    }
+  </style>
 </body>
 </html>

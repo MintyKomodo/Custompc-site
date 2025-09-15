@@ -1,27 +1,45 @@
 <!doctype html>
- <html lang="en">
+<html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Builds | CustomPC.tech</title>
   <style>
-    :root{
-      --space:15px;
-      --bg:#0a0f1a; --ink:#e9eefc; --muted:#aeb9d4;
-      --panel:#111729; --panel2:#0d1426; --border:rgba(255,255,255,.08);
-      --accent1:#7db2ff; --accent2:#7cf2e6;
-      --radius:18px; --shadow:0 20px 40px rgba(0,0,0,.35);
-      --max:1200px;
+    :root {
+      --space: 15px;
+      --bg: #0a0f1a;
+      --ink: #e9eefc;
+      --muted: #aeb9d4;
+      --panel: #111729;
+      --panel2: #0d1426;
+      --border: rgba(255, 255, 255, .08);
+      --accent1: #7db2ff;
+      --accent2: #7cf2e6;
+      --radius: 18px;
+      --shadow: 0 20px 40px rgba(0, 0, 0, .35);
+      --max: 1200px;
     }
-    *{box-sizing:border-box}
-    body{
-      margin:0;font-family:system-ui,Segoe UI,Roboto,Inter,Arial;color:var(--ink);
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, Segoe UI, Roboto, Inter, Arial;
+      color: var(--ink);
       background:
         radial-gradient(1200px 600px at 50% -10%, #0f162b 8%, transparent 55%),
         linear-gradient(#081021, #0a0f1a 40%, #0a0f1a);
-      line-height:1.55
+      line-height: 1.55
     }
-    .wrap{max-width:100%;margin:0 auto;padding:28px}
+
+    .wrap {
+      max-width: 100%;
+      margin: 0 auto;
+      padding: 28px
+    }
 
     /* Shared header */
     header {
@@ -35,6 +53,7 @@
       margin-right: auto;
       width: 100%;
     }
+
     .brand a {
       display: flex;
       align-items: center;
@@ -45,11 +64,13 @@
       letter-spacing: .3px;
       white-space: nowrap;
     }
+
     nav {
       display: flex;
       gap: var(--space);
       flex-wrap: wrap;
     }
+
     .pill {
       display: inline-block;
       padding: 10px 14px;
@@ -59,18 +80,49 @@
       border: 1px solid transparent;
       transition: all 0.2s ease;
     }
+
     .pill:hover {
       background: #0f1830;
     }
+
     .pill.active {
-      background: linear-gradient(120deg, rgba(125,178,255,.15), rgba(124,242,230,.15));
+      background: linear-gradient(120deg, rgba(125, 178, 255, .15), rgba(124, 242, 230, .15));
       border-color: rgba(125, 178, 255, 0.2);
       color: var(--accent1);
     }
 
     /* Gallery grid */
-    .intro{color:var(--muted);margin:0 0 var(--space); text-align: center; max-width: 800px; margin-left: auto; margin-right: auto;}
-    .gallery{display:grid;grid-template-columns:repeat(auto-fill, minmax(350px, 1fr));gap:24px;margin:0 auto var(--space);width:100%;max-width:var(--max);padding:0 var(--space)}
+    .intro {
+      color: var(--muted);
+      margin: 0 0 var(--space);
+      text-align: center;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin: 0 auto var(--space);
+      width: 100%;
+      max-width: var(--max);
+      padding: 0 var(--space)
+    }
+
+    @media (max-width: 1024px) {
+      .gallery {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .gallery {
+        grid-template-columns: 1fr;
+      }
+    }
+
     .card {
       background: var(--panel);
       border: 1px solid var(--border);
@@ -84,22 +136,25 @@
       text-decoration: none;
       color: inherit;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
-      height: 100%;
+      height: 500px;
       width: 100%;
       min-width: 0;
       position: relative;
       overflow: hidden;
     }
+
     .card:hover {
       transform: translateY(-4px);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
       border-color: rgba(125, 178, 255, 0.3);
     }
+
     .card:focus {
-      box-shadow: 0 0 0 2px rgba(125,178,255,.6), 0 8px 30px rgba(0,0,0,0.4);
+      box-shadow: 0 0 0 2px rgba(125, 178, 255, .6), 0 8px 30px rgba(0, 0, 0, 0.4);
     }
+
     .thumb-container {
-      height: 220px;
+      height: 350px;
       width: 100%;
       overflow: hidden;
       border-radius: 12px;
@@ -107,6 +162,7 @@
       background: #0a0f1a;
       position: relative;
     }
+
     .thumb {
       width: 100%;
       height: 100%;
@@ -114,15 +170,18 @@
       display: block;
       transition: transform 0.3s ease;
     }
+
     .card:hover .thumb {
       transform: scale(1.03);
     }
+
     .t {
       font-weight: 700;
       margin: 0 0 8px;
       font-size: 1.3rem;
       color: var(--accent1);
     }
+
     .spec {
       color: var(--muted);
       font-size: 1rem;
@@ -130,6 +189,7 @@
       line-height: 1.5;
       min-height: 4.5em;
     }
+
     .hint {
       color: var(--accent2);
       font-size: 0.9rem;
@@ -139,23 +199,39 @@
       gap: 6px;
       opacity: 0.9;
     }
+
     .hint::after {
       content: '→';
       transition: transform 0.2s ease;
     }
+
     .card:hover .hint::after {
       transform: translateX(4px);
     }
 
-    .box{border:1px solid var(--border);border-radius:12px;padding:var(--space);background:var(--panel2)}
-    .box h4{margin:0 0 8px}
-    ul.clean{margin:0;padding-left:18px}
+    .box {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: var(--space);
+      background: var(--panel2)
+    }
+
+    .box h4 {
+      margin: 0 0 8px
+    }
+
+    ul.clean {
+      margin: 0;
+      padding-left: 18px
+    }
+
     .chips {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
       margin: 12px 0 0;
     }
+
     .chip {
       border: 1px solid rgba(125, 178, 255, 0.15);
       background: rgba(125, 178, 255, 0.08);
@@ -168,24 +244,72 @@
       align-items: center;
       line-height: 1.2;
     }
+
     .card:hover .chip {
       background: rgba(125, 178, 255, 0.15);
       border-color: rgba(125, 178, 255, 0.3);
     }
-    
-    .btn{
-      display:inline-block;border:0;cursor:pointer;font-weight:700;padding:12px 16px;border-radius:12px;text-decoration:none;
-      color:#0b0f1a;background:linear-gradient(90deg,var(--accent1),var(--accent2));box-shadow:0 8px 22px rgba(117,194,255,.25)
+
+    .btn {
+      display: inline-block;
+      border: 0;
+      cursor: pointer;
+      font-weight: 700;
+      padding: 12px 16px;
+      border-radius: 12px;
+      text-decoration: none;
+      color: #0b0f1a;
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      box-shadow: 0 8px 22px rgba(117, 194, 255, .25)
     }
 
     /* Bottom CTA (shared) */
-    .cta-card{ text-align:center;border:1px solid var(--border);border-radius:calc(var(--radius) + 6px);box-shadow:0 28px 60px rgba(0,0,0,.45);padding:34px 26px;background:linear-gradient(135deg, rgba(125,178,255,.12), rgba(124,242,230,.12)) }
-    .cta-title{font-size:26px;margin:0 0 var(--space)}
-    .cta-sub{color:var(--muted);margin:0 0 var(--space)}
-    .cta-actions{display:flex;gap:var(--space);justify-content:center;flex-wrap:wrap}
-    .cta-primary, .cta-secondary{display:inline-block;padding:12px 18px;border-radius:14px;font-weight:700;text-decoration:none}
-    .cta-primary{color:#0b0f1a;background:linear-gradient(90deg,var(--accent1),var(--accent2));box-shadow:0 10px 26px rgba(117,194,255,.28)}
-    .cta-secondary{color:var(--ink);border:1px solid var(--border);background:#0f1830}
+    .cta-card {
+      text-align: center;
+      border: 1px solid var(--border);
+      border-radius: calc(var(--radius) + 6px);
+      box-shadow: 0 28px 60px rgba(0, 0, 0, .45);
+      padding: 34px 26px;
+      background: linear-gradient(135deg, rgba(125, 178, 255, .12), rgba(124, 242, 230, .12))
+    }
+
+    .cta-title {
+      font-size: 26px;
+      margin: 0 0 var(--space)
+    }
+
+    .cta-sub {
+      color: var(--muted);
+      margin: 0 0 var(--space)
+    }
+
+    .cta-actions {
+      display: flex;
+      gap: var(--space);
+      justify-content: center;
+      flex-wrap: wrap
+    }
+
+    .cta-primary,
+    .cta-secondary {
+      display: inline-block;
+      padding: 12px 18px;
+      border-radius: 14px;
+      font-weight: 700;
+      text-decoration: none
+    }
+
+    .cta-primary {
+      color: #0b0f1a;
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      box-shadow: 0 10px 26px rgba(117, 194, 255, .28)
+    }
+
+    .cta-secondary {
+      color: var(--ink);
+      border: 1px solid var(--border);
+      background: #0f1830
+    }
 
     /* Modal styles */
     .modal {
@@ -196,11 +320,13 @@
       padding: 20px;
       overflow-y: auto;
     }
+
     .modal.open {
       display: flex;
       align-items: center;
       justify-content: center;
     }
+
     .backdrop {
       position: fixed;
       inset: 0;
@@ -208,6 +334,7 @@
       backdrop-filter: blur(8px);
       z-index: 10001;
     }
+
     .dialog {
       position: relative;
       z-index: 10002;
@@ -216,12 +343,13 @@
       max-height: 90vh;
       margin: 20px 0;
     }
+
     .sheet {
       width: 100%;
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: calc(var(--radius) + 6px);
-      box-shadow: 0 28px 80px rgba(0,0,0,0.6);
+      box-shadow: 0 28px 80px rgba(0, 0, 0, 0.6);
       display: grid;
       grid-template-columns: 1.1fr 0.9fr;
       gap: var(--space);
@@ -229,20 +357,58 @@
       overflow: hidden;
       max-height: 90vh;
     }
-    @media (max-width:900px){.sheet{grid-template-columns:1fr;height:min(96vh, 1000px)}}
-    .sheet .left{display:flex;flex-direction:column;gap:var(--space)}
-    .heroimg{border-radius:14px;border:1px solid var(--border);overflow:hidden;height:500px;background:#0c1426}
-    .heroimg img{width:100%;height:100%;object-fit:cover;display:block}
-    .close{
-      position:absolute;top:14px;right:14px;border-radius:12px;border:1px solid var(--border);
-      background:#0f1830;color:var(--ink);padding:8px 12px;font-weight:700;cursor:pointer
+
+    @media (max-width:900px) {
+      .sheet {
+        grid-template-columns: 1fr;
+        height: min(96vh, 1000px)
+      }
     }
-    .close:focus{outline:2px solid rgba(125,178,255,.45)}
+
+    .sheet .left {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space)
+    }
+
+    .heroimg {
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      height: 500px;
+      background: #0c1426
+    }
+
+    .heroimg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block
+    }
+
+    .close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #0f1830;
+      color: var(--ink);
+      padding: 8px 12px;
+      font-weight: 700;
+      cursor: pointer
+    }
+
+    .close:focus {
+      outline: 2px solid rgba(125, 178, 255, .45)
+    }
+
     .modal-actions {
       display: flex;
       gap: var(--space);
       flex-wrap: wrap;
     }
+
     .btn-secondary {
       background: var(--panel2) !important;
       color: var(--ink) !important;
@@ -264,7 +430,7 @@
       let currentLink = '';
       let lastFocus = null;
 
-      function openFromCard(card){
+      function openFromCard(card) {
         // Fill content
         const src = card.querySelector('img')?.src || '';
         const t = card.querySelector('.t')?.textContent || 'Build';
@@ -288,7 +454,9 @@
           });
         }
 
-        img.src = src; img.alt = t;
+        img.src = src || 'images/placeholder-build.png';
+        img.alt = t;
+        img.onerror = function () { this.src = 'images/placeholder-build.png'; };
         title.textContent = t;
         spec.textContent = s;
         cta.href = 'index.html?build=' + currentLink.split('/').pop().replace('.html', '');
@@ -303,7 +471,7 @@
         closeBtn && closeBtn.focus();
       }
 
-      function closeModal(){
+      function closeModal() {
         modal.classList.remove('open');
         modal.setAttribute('aria-hidden', 'true');
         document.body.style.overflow = '';
@@ -312,7 +480,7 @@
       }
 
       // Enhanced click handler for cards and modal close
-      document.addEventListener('click', function(e) {
+      document.addEventListener('click', function (e) {
         // Handle card clicks
         const card = e.target.closest('.card.build');
         if (card) {
@@ -321,7 +489,7 @@
           openFromCard(card);
           return false;
         }
-        
+
         // Handle modal close
         if (e.target.matches('[data-close], .close, .backdrop')) {
           e.preventDefault();
@@ -329,9 +497,9 @@
           return false;
         }
       }, true);
-      
+
       // Make sure the modal is properly initialized
-      document.addEventListener('DOMContentLoaded', function() {
+      document.addEventListener('DOMContentLoaded', function () {
         console.log('Modal initialized');
       });
 
@@ -364,11 +532,14 @@
     })();
   </script>
 </head>
+
 <body>
   <div class="wrap">
     <header>
       <div class="brand">
-        <a href="index.html" target="_blank"><img src="images/logo.png" alt="CustomPC.tech logo" style="height:24px;width:auto;display:inline-block" /> <span style="margin-left:8px">CustomPC.tech</span></a>
+        <a href="index.html" target="_blank"><img src="images/logo.png" alt="CustomPC.tech logo"
+            style="height:24px;width:auto;display:inline-block" /> <span
+            style="margin-left:8px">CustomPC.tech</span></a>
       </div>
       <nav class="topnav" role="navigation" aria-label="Primary">
         <a class="pill active" href="builds.html">Builds</a>
@@ -379,12 +550,15 @@
     </header>
 
     <h1 style="margin:0 0 10px">Inspiration Builds</h1>
-    <p class="intro">Click any build to see detailed specifications. Use the 'Open in new tab' link in the modal to view in a separate tab.</p>
+    <p class="intro">Click any build to see detailed specifications. Use the 'Open in new tab' link in the modal to view
+      in a separate tab.</p>
 
     <section class="gallery">
       <!-- 1: Esports -->
-      <div class="card build" tabindex="0" role="button" aria-label="View Esports 1080p/1440p build details" data-link="builds/esports-1080p-1440p.html">
-        <div class="thumb-container"><img class="thumb" src="images/build_01.png" alt="Compact gaming PC with RGB lighting"></div>
+      <div class="card build" tabindex="0" role="button" aria-label="View Esports 1080p/1440p build details"
+        data-link="builds/esports-1080p-1440p.html">
+        <div class="thumb-container"><img class="thumb" src="images/build_01.png"
+            alt="Compact gaming PC with RGB lighting"></div>
         <div class="t">Esports 1080p/1440p</div>
         <div class="spec">High FPS for Valorant/CS2. Air-cooled, low noise.</div>
         <div class="hint">View in new tab</div>
@@ -407,8 +581,10 @@
       </div>
 
       <!-- 2: Creator 4K -->
-      <div class="card build" tabindex="0" role="button" aria-label="View Creator 4K build details" data-link="builds/creator-4k.html">
-        <div class="thumb-container"><img class="thumb" src="images/build_02.png" alt="Workstation PC and monitor setup for video editing"></div>
+      <div class="card build" tabindex="0" role="button" aria-label="View Creator 4K build details"
+        data-link="builds/creator-4k.html">
+        <div class="thumb-container"><img class="thumb" src="images/build_02.png"
+            alt="Workstation PC and monitor setup for video editing"></div>
         <div class="t">Creator 4K</div>
         <div class="spec">Premiere/DaVinci & Lightroom. Quiet and fast scratch.</div>
         <div class="hint">View in new tab</div>
@@ -431,8 +607,10 @@
       </div>
 
       <!-- 3: CAD / AI Workstation -->
-      <div class="card build" tabindex="0" role="button" aria-label="View CAD / AI Workstation build details" data-link="builds/cad-ai-workstation.html">
-        <div class="thumb-container"><img class="thumb" src="images/build_03.png" alt="Professional workstation tower on desk"></div>
+      <div class="card build" tabindex="0" role="button" aria-label="View CAD / AI Workstation build details"
+        data-link="builds/cad-ai-workstation.html">
+        <div class="thumb-container"><img class="thumb" src="images/build_03.png"
+            alt="Professional workstation tower on desk"></div>
         <div class="t">CAD / AI Workstation</div>
         <div class="spec">SolidWorks, Blender, SD inference. Verified PSU & thermals.</div>
         <div class="hint">View in new tab</div>
@@ -454,13 +632,15 @@
         </template>
       </div>
 
-      
+
     </section>
 
     <section class="gallery">
       <!-- 4: Small Form Factor -->
-      <div class="card build" tabindex="0" role="button" aria-label="View Small Form Factor build details" data-link="builds/small-form-factor.html">
-        <div class="thumb-container"><img class="thumb" src="images/build_04.png" alt="Small form factor PC on minimalist desk"></div>
+      <div class="card build" tabindex="0" role="button" aria-label="View Small Form Factor build details"
+        data-link="builds/small-form-factor.html">
+        <div class="thumb-container"><img class="thumb" src="images/build_04.png"
+            alt="Small form factor PC on minimalist desk"></div>
         <div class="t">Small Form Factor (SFF)</div>
         <div class="spec">Compact ITX with strong thermals and clean cable runs.</div>
         <div class="hint">View in new tab</div>
@@ -483,8 +663,10 @@
       </div>
 
       <!-- 5: Silence-Optimized -->
-      <div class="card build" tabindex="0" role="button" aria-label="View Silence-Optimized build details" data-link="builds/silence-optimized.html">
-        <div class="thumb-container"><img class="thumb" src="images/build_05.png" alt="Silent PC build in acoustic-damped case"></div>
+      <div class="card build" tabindex="0" role="button" aria-label="View Silence-Optimized build details"
+        data-link="builds/silence-optimized.html">
+        <div class="thumb-container"><img class="thumb" src="images/build_05.png"
+            alt="Silent PC build in acoustic-damped case"></div>
         <div class="t">Silence-Optimized</div>
         <div class="spec">Acoustic-first: damped case, tuned fan curves, zero-RPM profiles.</div>
         <div class="hint">View in new tab</div>
@@ -507,8 +689,10 @@
       </div>
 
       <!-- 6: Streaming + Gaming -->
-      <div class="card build" tabindex="0" role="button" aria-label="View Streaming + Gaming build details" data-link="builds/streaming-gaming.html">
-        <div class="thumb-container"><img class="thumb" src="images/build_06.png" alt="Gaming and streaming dual-monitor setup"></div>
+      <div class="card build" tabindex="0" role="button" aria-label="View Streaming + Gaming build details"
+        data-link="builds/streaming-gaming.html">
+        <div class="thumb-container"><img class="thumb" src="images/build_06.png"
+            alt="Gaming and streaming dual-monitor setup"></div>
         <div class="t">Streaming + Gaming</div>
         <div class="spec">NVENC/x264 tuned, capture-friendly I/O, dual SSDs.</div>
         <div class="hint">View in new tab</div>
@@ -531,8 +715,10 @@
       </div>
 
       <!-- 7: RGB Showcase -->
-      <div class="card build" tabindex="0" role="button" aria-label="View RGB Showcase build details" data-link="builds/rgb-showcase.html">
-        <div class="thumb-container"><img class="thumb" src="images/build_07.png" alt="Glass side-panel PC with RGB lighting"></div>
+      <div class="card build" tabindex="0" role="button" aria-label="View RGB Showcase build details"
+        data-link="builds/rgb-showcase.html">
+        <div class="thumb-container"><img class="thumb" src="images/build_07.png"
+            alt="Glass side-panel PC with RGB lighting"></div>
         <div class="t">RGB Showcase</div>
         <div class="spec">Tempered glass, addressable RGB, airflow still prioritized.</div>
         <div class="hint">View in new tab</div>
@@ -554,8 +740,10 @@
       </div>
 
       <!-- 5: Photo Pro -->
-      <div class="card build" tabindex="0" role="button" aria-label="View Photo Pro build details" data-link="builds/photo-pro.html">
-        <div class="thumb-container"><img class="thumb" src="images/build_08.png" alt="Desktop with calibration tools for photo editing"></div>
+      <div class="card build" tabindex="0" role="button" aria-label="View Photo Pro build details"
+        data-link="builds/photo-pro.html">
+        <div class="thumb-container"><img class="thumb" src="images/build_08.png"
+            alt="Desktop with calibration tools for photo editing"></div>
         <div class="t">Photo Pro</div>
         <div class="spec">Lightroom/Photoshop snappy previews, calibrated workflow.</div>
         <div class="hint">View in new tab</div>
@@ -599,11 +787,15 @@
               <div class="chips" id="modalChips"></div>
             </div>
             <div class="modal-actions" style="display: flex; gap: 12px; margin-top: 24px;">
-              <a id="new-tab-btn" class="cta-secondary" target="_blank" style="flex: 1; text-align: center;">
+              <a id="modalNewTab" class="cta-secondary" target="_blank"
+                style="flex: 1; text-align: center; min-height: 44px; display: flex; align-items: center; justify-content: center;"
+                aria-label="Open build details in new tab">
                 <span>Open in new tab</span>
               </a>
-              <a id="cta-btn" class="cta-primary" href="#" style="flex: 1; text-align: center;">
-                <span>Get this build</span>
+              <a id="modalCta" class="cta-primary" href="#"
+                style="flex: 1; text-align: center; min-height: 44px; display: flex; align-items: center; justify-content: center;"
+                aria-label="Request this build"></a>
+              <span>Get this build</span>
               </a>
             </div>
           </div>
@@ -614,7 +806,8 @@
     <!-- Bottom CTA -->
     <section class="cta-card" style="margin-top:var(--space)">
       <div class="cta-title">Ready for a build that's actually right for you?</div>
-      <p class="cta-sub">Tell us what you do—we'll design, verify, and deliver a PC that fits your workload and budget.</p>
+      <p class="cta-sub">Tell us what you do—we'll design, verify, and deliver a PC that fits your workload and budget.
+      </p>
       <div class="cta-actions">
         <a class="cta-primary" href="index.html">Start a Custom PC →</a>
         <a class="cta-secondary" href="contact.html">Just have a question?</a>
@@ -622,4 +815,5 @@
     </section>
   </div>
 </body>
+
 </html>

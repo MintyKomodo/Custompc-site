@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Esports 1080p/1440p Build | CustomPC.tech</title>
+  <title>Streaming + Gaming Build | CustomPC.tech</title>
   <style>
     :root{
       --space:15px;
@@ -126,35 +126,35 @@
     <div class="build-container">
       <div class="build-content">
         <div class="build-image">
-          <img src="../images/build_01.png" alt="Esports 1080p/1440p Build">
+          <img src="../images/build_06.png" alt="Streaming + Gaming Build">
         </div>
         <div class="build-description">
-          <p>This high-performance gaming PC is optimized for competitive esports titles like Valorant and CS2, delivering buttery-smooth frame rates at 1080p and 1440p resolutions. The air-cooled design ensures quiet operation even during intense gaming sessions, while the carefully selected components provide excellent thermals and low input latency.</p>
+          <p>Optimized for content creators who game and stream simultaneously. Features powerful NVENC encoding, stable USB connectivity for capture devices, and dual NVMe storage for smooth recording and streaming workflows. Perfect for Twitch streamers and YouTube creators.</p>
         </div>
       </div>
       
       <div class="build-specs">
-        <h2>Esports 1080p/1440p</h2>
-        <p class="muted">High FPS for competitive gaming. Air-cooled, low noise.</p>
+        <h2>Streaming + Gaming</h2>
+        <p class="muted">NVENC/x264 tuned, capture-friendly I/O, dual SSDs.</p>
         
         <h3>Specifications</h3>
         <ul class="spec-list">
-          <li><strong>CPU:</strong> 6–8 core "current-gen" class</li>
-          <li><strong>GPU:</strong> Mid–high tier (great for 1440p esports)</li>
-          <li><strong>RAM:</strong> 32GB DDR5, dual-channel</li>
-          <li><strong>Storage:</strong> 1TB NVMe Gen4</li>
-          <li><strong>Cooling:</strong> Quiet tower air cooler</li>
-          <li><strong>Case:</strong> Airflow-focused ATX</li>
-          <li><strong>PSU:</strong> 750W 80+ Gold</li>
+          <li><strong>CPU:</strong> 8–12 core "current-gen" class</li>
+          <li><strong>GPU:</strong> Strong NVENC support</li>
+          <li><strong>RAM:</strong> 32–64GB DDR5</li>
+          <li><strong>Storage:</strong> OS NVMe + scratch NVMe</li>
+          <li><strong>Capture:</strong> PCIe/USB as needed</li>
+          <li><strong>Cooling:</strong> Quiet air/AIO</li>
+          <li><strong>PSU:</strong> 750–850W 80+ Gold</li>
         </ul>
 
         <div class="chips">
-          <span class="chip">Low input latency</span>
-          <span class="chip">Thermals under control</span>
-          <span class="chip">Simple upgrades later</span>
+          <span class="chip">Smooth streams</span>
+          <span class="chip">Stable USB for capture</span>
+          <span class="chip">Creator-ready layout</span>
         </div>
 
-        <a href="../index.html?build=Esports%201080p%2F1440p&message=Interested%20in%20Esports%201080p/1440p%20build" class="btn-request">Request This Build</a>
+        <a href="../index.html?build=Streaming%20%2B%20Gaming&message=Interested%20in%20Streaming%20%2B%20Gaming%20build" class="btn-request">Request This Build</a>
       </div>
     </div>
 
@@ -163,22 +163,22 @@
       <h3 style="margin-top: 0; margin-bottom: var(--space); color: var(--accent1);">Size & Dimensions</h3>
       <div class="dimensions-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space);">
         <div class="dimension-item">
-          <strong>Height:</strong> 450mm (17.7")
+          <strong>Height:</strong> 470mm (18.5")
         </div>
         <div class="dimension-item">
-          <strong>Width:</strong> 200mm (7.9")
+          <strong>Width:</strong> 220mm (8.7")
         </div>
         <div class="dimension-item">
-          <strong>Depth:</strong> 400mm (15.7")
+          <strong>Depth:</strong> 450mm (17.7")
         </div>
         <div class="dimension-item">
-          <strong>Weight:</strong> ~12kg (26.5 lbs)
+          <strong>Weight:</strong> ~15kg (33 lbs)
         </div>
         <div class="dimension-item">
           <strong>Form Factor:</strong> ATX Mid-Tower
         </div>
         <div class="dimension-item">
-          <strong>Clearance:</strong> 165mm CPU, 320mm GPU
+          <strong>Clearance:</strong> 170mm CPU, 380mm GPU
         </div>
       </div>
     </section>
@@ -186,7 +186,7 @@
     <!-- Reviews Section -->
     <section class="reviews-section" style="margin-top: var(--space); background: var(--panel2); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--space);">
       <h3 style="margin-top: 0; margin-bottom: var(--space); color: var(--accent1);">Reviews</h3>
-      <div id="reviews-container-esports-1080p-1440p" class="reviews-list">
+      <div id="reviews-container-streaming-gaming" class="reviews-list">
         <!-- Reviews will be loaded here by JavaScript -->
       </div>
       
@@ -273,9 +273,9 @@
 
     function submitReview(buildId, reviewData) {
       const reviews = JSON.parse(localStorage.getItem(`buildReviews_${buildId}`) || '[]');
-      reviews.unshift(reviewData); // Add new review at the beginning
+      reviews.unshift(reviewData);
       localStorage.setItem(`buildReviews_${buildId}`, JSON.stringify(reviews));
-      loadReviews(buildId); // Reload reviews display
+      loadReviews(buildId);
     }
 
     function initializeRatingSelector() {
@@ -313,35 +313,9 @@
       return () => selectedRating;
     }
 
-    // Add sample reviews for demonstration (only if no reviews exist)
-    function addSampleReviews() {
-      const buildId = 'esports-1080p-1440p';
-      const existing = localStorage.getItem(`buildReviews_${buildId}`);
-      if (!existing || JSON.parse(existing).length === 0) {
-        const sampleReviews = [
-          {
-            id: 'sample_1',
-            author: 'ProGamer_2024',
-            date: '12/15/2024',
-            rating: 5,
-            text: 'Incredible build for competitive gaming! Getting 400+ FPS in Valorant consistently. The thermals are excellent and it runs whisper quiet even during intense matches.'
-          },
-          {
-            id: 'sample_2', 
-            author: 'StreamerLife',
-            date: '12/10/2024',
-            rating: 4,
-            text: 'Great performance for the price point. Perfect for 1440p esports gaming. Only minor complaint is I wish it had a bit more RGB, but the performance more than makes up for it.'
-          }
-        ];
-        localStorage.setItem(`buildReviews_${buildId}`, JSON.stringify(sampleReviews));
-      }
-    }
-
     // Load reviews when page loads
     document.addEventListener('DOMContentLoaded', function() {
-      addSampleReviews();
-      loadReviews('esports-1080p-1440p');
+      loadReviews('streaming-gaming');
       
       const getRating = initializeRatingSelector();
       const leaveReviewBtn = document.getElementById('leave-review-btn');
@@ -360,7 +334,6 @@
         reviewForm.style.display = 'none';
         leaveReviewBtn.style.display = 'block';
         reviewText.value = '';
-        // Reset rating
         document.querySelectorAll('.rating-star').forEach(star => {
           star.textContent = '☆';
           star.style.color = 'var(--muted)';
@@ -384,9 +357,8 @@
           text: text
         };
 
-        submitReview('esports-1080p-1440p', review);
+        submitReview('streaming-gaming', review);
         
-        // Reset form
         reviewForm.style.display = 'none';
         leaveReviewBtn.style.display = 'block';
         reviewText.value = '';

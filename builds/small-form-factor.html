@@ -157,6 +157,96 @@
         <a href="../index.html?build=Small%20Form%20Factor%20(SFF)&message=Interested%20in%20Small%20Form%20Factor%20build" class="btn-request">Request This Build</a>
       </div>
     </div>
+
+    <!-- Size & Dimensions Section -->
+    <section class="dimensions-section" style="margin-top: var(--space); background: var(--panel2); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--space);">
+      <h3 style="margin-top: 0; margin-bottom: var(--space); color: var(--accent1);">Size & Dimensions</h3>
+      <div class="dimensions-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space);">
+        <div class="dimension-item">
+          <strong>Height:</strong> 280mm (11.0")
+        </div>
+        <div class="dimension-item">
+          <strong>Width:</strong> 160mm (6.3")
+        </div>
+        <div class="dimension-item">
+          <strong>Depth:</strong> 320mm (12.6")
+        </div>
+        <div class="dimension-item">
+          <strong>Weight:</strong> ~6kg (13 lbs)
+        </div>
+        <div class="dimension-item">
+          <strong>Form Factor:</strong> Mini-ITX SFF
+        </div>
+        <div class="dimension-item">
+          <strong>Clearance:</strong> 70mm CPU, 240mm GPU
+        </div>
+      </div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section class="reviews-section" style="margin-top: var(--space); background: var(--panel2); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--space);">
+      <h3 style="margin-top: 0; margin-bottom: var(--space); color: var(--accent1);">Reviews</h3>
+      <div id="reviews-container-small-form-factor" class="reviews-list">
+        <!-- Reviews will be loaded here by JavaScript -->
+      </div>
+    </section>
   </div>
+
+  <script>
+    // Review system JavaScript
+    function createStarRating(rating) {
+      let stars = '';
+      for (let i = 1; i <= 5; i++) {
+        if (i <= rating) {
+          stars += '<span class="star filled">★</span>';
+        } else {
+          stars += '<span class="star">☆</span>';
+        }
+      }
+      return stars;
+    }
+
+    function loadReviews(buildId) {
+      const container = document.getElementById(`reviews-container-${buildId}`);
+      const reviews = JSON.parse(localStorage.getItem(`buildReviews_${buildId}`) || '[]');
+      
+      if (reviews.length === 0) {
+        container.innerHTML = '<p style="color: var(--muted); text-align: center; padding: var(--space);">No reviews yet. Be the first to review this build!</p>';
+        return;
+      }
+
+      container.innerHTML = reviews.map(review => `
+        <div class="review-card" style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: var(--space); margin-bottom: var(--space);">
+          <div class="review-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <div class="review-author" style="font-weight: 700;">${review.author}</div>
+            <div class="review-date" style="color: var(--muted); font-size: 0.9rem;">${review.date}</div>
+          </div>
+          <div class="review-rating" style="margin-bottom: 8px;">
+            <div class="stars" style="color: var(--accent1); font-size: 1.2rem;">
+              ${createStarRating(review.rating)}
+            </div>
+          </div>
+          <div class="review-text" style="line-height: 1.5;">
+            ${review.text}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Load reviews when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      loadReviews('small-form-factor');
+    });
+  </script>
+
+  <style>
+    .star {
+      color: var(--muted);
+      margin-right: 2px;
+    }
+    .star.filled {
+      color: var(--accent1);
+    }
+  </style>
 </body>
 </html>
