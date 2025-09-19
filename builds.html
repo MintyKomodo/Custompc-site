@@ -430,7 +430,6 @@
       let lastFocus = null;
 
       function openFromCard(card) {
-        console.log('openFromCard called with:', card);
         if (!card) return;
 
         // Fill content
@@ -438,8 +437,6 @@
         const t = card.querySelector('.t')?.textContent || 'Build';
         const s = card.querySelector('.spec')?.textContent || '';
         currentLink = card.dataset.link || '#';
-
-        console.log('Modal elements:', { modal, img, title, spec, list, chips });
 
         // Set the new tab link
         if (newTabBtn) {
@@ -498,19 +495,14 @@
 
       // Click handler for cards and modal close
       document.addEventListener('click', function (e) {
-        console.log('Click detected on:', e.target);
-
         // Handle card clicks
         const card = e.target.closest('.card.build');
-        console.log('Found card:', card);
-
         if (card) {
-          console.log('Opening modal for card:', card);
           e.preventDefault();
           openFromCard(card);
           return;
         }
- 
+
         // Handle modal close
         if (e.target.matches('[data-close], .close, .backdrop')) {
           e.preventDefault();
@@ -557,16 +549,7 @@
         });
       }
 
-      // Test function
-      window.testModal = function () {
-        console.log('Test modal function called');
-        const firstCard = document.querySelector('.card.build');
-        if (firstCard) {
-          openFromCard(firstCard);
-        } else {
-          console.error('No build card found');
-        }
-      };
+
     });
   </script>
 </head>
@@ -588,8 +571,6 @@
     </header>
 
     <h1 style="margin:0 0 10px">Inspiration Builds</h1>
-    <p class="intro">Click any build to see detailed specifications. Use the 'Open in new tab' link in the modal to view
-      in a separate tab.</p>
 
     <!-- Test button -->
     <button onclick="testModal()"
