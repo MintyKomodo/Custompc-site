@@ -417,14 +417,8 @@
     }
   </style>
   <script>
-    (function () {
+    document.addEventListener('DOMContentLoaded', function () {
       const modal = document.getElementById('modal');
-      if (!modal) {
-        console.error('Modal element not found');
-        return;
-      }
-
-      const sheet = modal.querySelector('.sheet');
       const img = document.getElementById('modalImg');
       const title = document.getElementById('modalTitle');
       const spec = document.getElementById('modalSpec');
@@ -436,16 +430,16 @@
       let lastFocus = null;
 
       function openFromCard(card) {
-        if (!card) {
-          console.error('No card provided to openFromCard');
-          return;
-        }
+        console.log('openFromCard called with:', card);
+        if (!card) return;
 
         // Fill content
         const src = card.querySelector('img')?.src || '';
         const t = card.querySelector('.t')?.textContent || 'Build';
         const s = card.querySelector('.spec')?.textContent || '';
         currentLink = card.dataset.link || '#';
+
+        console.log('Modal elements:', { modal, img, title, spec, list, chips });
 
         // Set the new tab link
         if (newTabBtn) {
@@ -459,10 +453,15 @@
         if (tpl) {
           const frag = tpl.content.cloneNode(true);
           frag.querySelectorAll('.spec-list li').forEach(li => {
-            const clone = document.createElement('li'); clone.textContent = li.textContent; list.appendChild(clone);
+            const clone = document.createElement('li');
+            clone.textContent = li.textContent;
+            list.appendChild(clone);
           });
           frag.querySelectorAll('.chips .chip').forEach(ch => {
-            const span = document.createElement('span'); span.className = 'chip'; span.textContent = ch.textContent; chips.appendChild(span);
+            const span = document.createElement('span');
+            span.className = 'chip';
+            span.textContent = ch.textContent;
+            chips.appendChild(span);
           });
         }
 
@@ -483,7 +482,7 @@
           document.body.style.overflow = 'hidden';
           // focus close button
           const closeBtn = modal.querySelector('.close');
-          closeBtn && closeBtn.focus();
+          if (closeBtn) closeBtn.focus();
         }
       }
 
@@ -497,47 +496,50 @@
         }
       }
 
-      // Enhanced click handler for cards and modal close
+      // Click handler for cards and modal close
       document.addEventListener('click', function (e) {
+        console.log('Click detected on:', e.target);
+
         // Handle card clicks
         const card = e.target.closest('.card.build');
+        console.log('Found card:', card);
+
         if (card) {
+          console.log('Opening modal for card:', card);
           e.preventDefault();
-          e.stopPropagation();
           openFromCard(card);
-          return false;
+          return;
         }
 
         // Handle modal close
         if (e.target.matches('[data-close], .close, .backdrop')) {
           e.preventDefault();
           closeModal();
-          return false;
+          return;
         }
-      }, true);
-
-      // Make sure the modal is properly initialized
-      document.addEventListener('DOMContentLoaded', function () {
-        console.log('Modal initialized');
-        // Verify modal elements exist
-        if (!modal) console.error('Modal element not found');
-        if (!newTabBtn) console.error('New tab button not found');
-        if (!img) console.error('Modal image not found');
-        if (!title) console.error('Modal title not found');
       });
 
-      // Keyboard: Enter/Space to open, Esc to close, trap focus
+      // Keyboard handlers
       document.addEventListener('keydown', (e) => {
-        if (modal.classList.contains('open')) {
-          if (e.key === 'Escape') { e.preventDefault(); closeModal(); }
+        if (modal && modal.classList.contains('open')) {
+          if (e.key === 'Escape') {
+            e.preventDefault();
+            closeModal();
+          }
           if (e.key === 'Tab') {
             // simple focus trap
             const focusables = modal.querySelectorAll('a, button, [tabindex]:not([tabindex="-1"])');
             const listArr = Array.from(focusables).filter(el => !el.hasAttribute('disabled'));
             if (!listArr.length) return;
             const first = listArr[0], last = listArr[listArr.length - 1];
-            if (e.shiftKey && document.activeElement === first) { last.focus(); e.preventDefault(); }
-            else if (!e.shiftKey && document.activeElement === last) { first.focus(); e.preventDefault(); }
+            if (e.shiftKey && document.activeElement === first) {
+              last.focus();
+              e.preventDefault();
+            }
+            else if (!e.shiftKey && document.activeElement === last) {
+              first.focus();
+              e.preventDefault();
+            }
           }
         } else {
           // Open from focused card
@@ -548,11 +550,24 @@
         }
       });
 
-      // Close if clicking backdrop outside the sheet
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) closeModal();
-      });
-    })();
+      // Close if clicking backdrop
+      if (modal) {
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) closeModal();
+        });
+      }
+
+      // Test function
+      window.testModal = function () {
+        console.log('Test modal function called');
+        const firstCard = document.querySelector('.card.build');
+        if (firstCard) {
+          openFromCard(firstCard);
+        } else {
+          console.error('No build card found');
+        }
+      };
+    });
   </script>
 </head>
 
@@ -575,6 +590,11 @@
     <h1 style="margin:0 0 10px">Inspiration Builds</h1>
     <p class="intro">Click any build to see detailed specifications. Use the 'Open in new tab' link in the modal to view
       in a separate tab.</p>
+
+    <!-- Test button -->
+    <button onclick="testModal()"
+      style="background: #7db2ff; color: #0b0f1a; padding: 10px 20px; border: none; border-radius: 8px; margin: 10px 0; cursor: pointer;">Test
+      Modal</button>
 
     <section class="gallery">
       <!-- 1: Esports -->
