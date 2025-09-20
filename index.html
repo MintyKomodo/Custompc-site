@@ -51,8 +51,11 @@
       background:linear-gradient(135deg, rgba(125,178,255,.16), rgba(124,242,230,.12)), var(--panel);
       border:1px solid rgba(125,178,255,.25);
       padding:16px 16px;
+      overflow:visible;
+      position:relative
     }
-    form{display:grid;gap:8px;grid-template-columns:1fr 1fr}
+    form{display:grid;gap:8px;grid-template-columns:1fr 1fr;overflow:visible}
+    form > div{position:relative;overflow:visible}
     @media (max-width:700px){ form{grid-template-columns:1fr} }
     .full{grid-column:1 / -1}
     label{font-weight:600;margin-bottom:6px;display:block}
@@ -60,6 +63,15 @@
       width:100%;padding:16px;border-radius:12px;border:1px solid var(--border);
       background:#0c1426;color:var(--ink);outline:none;font-size:1rem;
       height:42px;box-sizing:border-box;line-height:1.2;vertical-align:middle
+    }
+    select{
+      position:relative;z-index:10;
+      appearance:none;
+      background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23e9eefc' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+      background-position:right 12px center;
+      background-repeat:no-repeat;
+      background-size:16px;
+      padding-right:40px
     }
     textarea{height:auto;min-height:100px;resize:vertical}
     textarea{min-height:120px;resize:vertical}
