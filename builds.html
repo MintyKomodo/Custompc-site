@@ -24,6 +24,10 @@
     * {
       box-sizing: border-box
     }
+    
+    html {
+      scrollbar-gutter: stable;
+    }
 
     body {
       margin: 0;
@@ -32,13 +36,16 @@
       background:
         radial-gradient(1200px 600px at 50% -10%, #0f162b 8%, transparent 55%),
         linear-gradient(#081021, #0a0f1a 40%, #0a0f1a);
-      line-height: 1.55
+      line-height: 1.55;
+      overflow-x: hidden;
     }
 
     .wrap {
       max-width: 100%;
       margin: 0 auto;
-      padding: 28px
+      padding: 28px;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     /* Shared header */

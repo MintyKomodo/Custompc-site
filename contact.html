@@ -14,12 +14,13 @@
       --max:1200px; /* unified width */
     }
     *{box-sizing:border-box}
+    html{scrollbar-gutter:stable}
     body{
       margin:0;font-family:system-ui,Segoe UI,Roboto,Inter,Arial;color:var(--ink);
       background:radial-gradient(1200px 600px at 50% -10%, #0f162b 8%, transparent 55%), linear-gradient(#081021, #0a0f1a 40%, #0a0f1a);
-      line-height:1.55
+      line-height:1.55;overflow-x:hidden
     }
-    .wrap{max-width:var(--max);margin:0 auto;padding:28px}
+    .wrap{max-width:var(--max);margin:0 auto;padding:28px;width:100%;box-sizing:border-box}
 
     /* HEADER — exact match with other pages */
     header{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space)}
