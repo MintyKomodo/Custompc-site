@@ -7,7 +7,7 @@
   <title>Builds | CustomPC.tech</title>
   <style>
     :root {
-      --space: 15px;
+      --space: 20px; --space-sm: 12px; --space-lg: 32px;
       --bg: #0a0f1a;
       --ink: #e9eefc;
       --muted: #aeb9d4;
@@ -43,7 +43,7 @@
     .wrap {
       max-width: var(--max);
       margin: 0 auto;
-      padding: 28px;
+      padding: var(--space-lg);
       width: 100%;
       box-sizing: border-box;
     }
@@ -53,7 +53,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: var(--space);
+      margin-bottom: var(--space-lg);
       padding: 0 var(--space);
       max-width: var(--max);
       margin-left: auto;
@@ -111,11 +111,11 @@
     .gallery {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      margin: 0 auto var(--space);
+      gap: var(--space);
+      margin: 0 auto var(--space-lg);
       width: 100%;
       max-width: var(--max);
-      padding: 0 var(--space)
+      padding: 0 var(--space);
     }
 
     @media (max-width: 1024px) {
@@ -134,10 +134,10 @@
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 24px;
+      padding: var(--space);
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: var(--space-sm);
       cursor: pointer;
       outline: none;
       text-decoration: none;
