@@ -14,7 +14,11 @@
       --accent1:#7db2ff; --accent2:#7cf2e6; --radius:18px; --max:1200px;
     }
     .wrap{max-width:var(--max);margin:0 auto;padding:28px}
-    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space)}
+    header{
+      display:flex;align-items:center;justify-content:space-between;
+      margin-bottom:var(--space);padding:0 var(--space);
+      max-width:var(--max);margin-left:auto;margin-right:auto;width:100%
+    }
     .brand a{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;font-weight:700;letter-spacing:.3px;white-space:nowrap}
     .topnav{display:flex;gap:var(--space);flex-wrap:wrap}
     .pill{display:inline-block;padding:10px 14px;border-radius:999px;color:var(--ink);text-decoration:none;border:1px solid transparent}
