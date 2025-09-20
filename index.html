@@ -22,6 +22,7 @@
         linear-gradient(#081021, #0a0f1a 40%, #0a0f1a);
       line-height:1.55;
       overflow-x:hidden;
+      min-height:100vh
     }
     .wrap{max-width:var(--max);margin:0 auto;padding:var(--space-lg);width:100%;box-sizing:border-box;overflow:visible}
 
@@ -50,10 +51,11 @@
     .request{
       background:linear-gradient(135deg, rgba(125,178,255,.16), rgba(124,242,230,.12)), var(--panel);
       border:1px solid rgba(125,178,255,.25);
-      padding:16px 16px;
+      padding:16px 16px 60px 16px;
       overflow:visible;
       position:relative;
-      z-index:1
+      z-index:1;
+      margin-bottom:40px
     }
     form{display:grid;gap:8px;grid-template-columns:1fr 1fr;overflow:visible;position:relative}
     form > div{position:relative;overflow:visible;z-index:auto}
@@ -80,13 +82,22 @@
       background-size:16px;
       padding-right:40px;
       height:42px;
-      cursor:pointer
+      cursor:pointer;
+      max-height:none
     }
     
     /* Force dropdown to appear above everything */
     select:focus, select:active {
       z-index:9999;
-      position:relative
+      position:relative;
+      overflow:visible
+    }
+    
+    /* Ensure dropdown options are visible */
+    select[size], select[multiple] {
+      height:auto;
+      max-height:200px;
+      overflow-y:auto
     }
     select option{
       background:#0c1426;
