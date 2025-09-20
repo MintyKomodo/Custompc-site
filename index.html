@@ -67,7 +67,13 @@
     /* Specific fix for build type dropdown container */
     form > div:has(select) {
       overflow:visible !important;
-      z-index:100
+      z-index:100;
+      position:static !important
+    }
+    
+    /* Ensure all parent containers allow dropdown to show */
+    .request, .wrap, body {
+      overflow:visible !important
     }
     @media (max-width:700px){ form{grid-template-columns:1fr} }
     .full{grid-column:1 / -1}
@@ -86,29 +92,23 @@
       background-size:16px;
       padding-right:40px;
       height:42px;
-      cursor:pointer;
-      max-height:none
+      cursor:pointer
     }
     
-    /* Force dropdown to appear above everything */
-    select:focus, select:active {
-      z-index:9999;
-      position:relative;
-      overflow:visible
-    }
-    
-    /* Ensure dropdown options are visible */
-    select[size], select[multiple] {
-      height:auto;
-      max-height:200px;
-      overflow-y:auto
-    }
+    /* Custom dropdown styling to ensure visibility */
     select option{
-      background:#0c1426;
-      color:var(--ink);
-      padding:12px 16px;
-      border:none;
-      min-height:40px
+      background:#0c1426 !important;
+      color:var(--ink) !important;
+      padding:12px 16px !important;
+      border:none !important;
+      min-height:40px !important;
+      line-height:1.4 !important
+    }
+    
+    /* Force dropdown to render above everything */
+    select:focus, select:active, select:hover {
+      z-index:99999 !important;
+      position:relative !important
     }
     textarea{height:auto;min-height:100px;resize:vertical}
     textarea{min-height:120px;resize:vertical}
@@ -290,6 +290,35 @@
         if (ta && msg){ ta.value = msg; }
         if (build){ document.getElementById('request')?.scrollIntoView({ behavior:'smooth' }); }
       }catch{}
+    })();
+
+    // Fix dropdown visibility issue
+    (function() {
+      const select = document.getElementById('rq_build');
+      if (select) {
+        select.addEventListener('focus', function() {
+          // Ensure dropdown is fully visible
+          this.style.position = 'relative';
+          this.style.zIndex = '99999';
+          
+          // Temporarily increase container height
+          const container = this.closest('.request');
+          if (container) {
+            container.style.paddingBottom = '120px';
+            container.style.overflow = 'visible';
+          }
+        });
+        
+        select.addEventListener('blur', function() {
+          // Reset container height
+          const container = this.closest('.request');
+          if (container) {
+            setTimeout(() => {
+              container.style.paddingBottom = '60px';
+            }, 200);
+          }
+        });
+      }
     })();
 
     // AJAX submit to Formspree with inline success/fail UI
