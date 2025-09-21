@@ -263,12 +263,18 @@
 
     // Get or create user ID for review ownership
     function getUserId() {
-      let userId = localStorage.getItem('custompc_user_id');
-      if (!userId) {
-        userId = 'user_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
-        localStorage.setItem('custompc_user_id', userId);
+      // Use password-based hash as user ID for better security
+      let userHash = localStorage.getItem('custompc_user_hash');
+      if (!userHash) {
+        // If no hash exists, create a temporary anonymous ID
+        let userId = localStorage.getItem('custompc_user_id');
+        if (!userId) {
+          userId = 'user_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+          localStorage.setItem('custompc_user_id', userId);
+        }
+        return userId;
       }
-      return userId;
+      return userHash;
     }
 
     async function loadReviews(buildId) {
@@ -696,14 +702,21 @@
       loginBtn.addEventListener('click', () => {
         const username = prompt('Enter your name:');
         if (username && username.trim()) {
-          localStorage.setItem('custompc_username', username.trim());
-          showLoggedInState(username.trim());
+          const password = prompt('Enter your password:');
+          if (password && password.trim()) {
+            // Create user account hash for security
+            const userHash = btoa(username.trim() + ':' + password.trim());
+            localStorage.setItem('custompc_username', username.trim());
+            localStorage.setItem('custompc_user_hash', userHash);
+            showLoggedInState(username.trim());
+          }
         }
       });
       
       logoutBtn.addEventListener('click', () => {
         if (confirm('Are you sure you want to logout?')) {
           localStorage.removeItem('custompc_username');
+          localStorage.removeItem('custompc_user_hash');
           showLoggedOutState();
         }
       });
