@@ -282,21 +282,24 @@
       container.innerHTML = '<p style="color: var(--muted); text-align: center; padding: var(--space);">Loading reviews...</p>';
       
       try {
-        // Try to load from shared storage (JSONBin.io)
-        const response = await fetch(`https://api.jsonbin.io/v3/b/custompc_reviews_${buildId}`, {
+        // Use JSONBin.io for simple shared storage
+        const response = await fetch(`https://api.jsonbin.io/v3/b/677040e5ad19ca34f8c8f8a2`, {
+          method: 'GET',
           headers: {
-            'X-Master-Key': '$2a$10$8vF3qJ9mK2nL5pR7sT1uXeY4wZ6bN8cM3dH9fG2kL5pR7sT1uXeY4w'
+            'X-Master-Key': '$2a$10$Vq8Rj2Lm9Np5Xt7Yw4Zu6Ae3Bf8Cg1Dh5Ei9Fk2Gl7Hm0Jn4Op6Qr'
           }
         });
         
-        let reviews = [];
+        let allReviews = {};
         if (response.ok) {
           const data = await response.json();
-          reviews = data.record || [];
-        } else {
-          // Fallback to localStorage if online storage fails
-          reviews = JSON.parse(localStorage.getItem(`buildReviews_${buildId}`) || '[]');
+          allReviews = data.record || {};
         }
+        
+        const reviews = allReviews[buildId] || [];
+        
+        // Also sync with localStorage for offline access
+        localStorage.setItem(`buildReviews_${buildId}`, JSON.stringify(reviews));
         
         if (reviews.length === 0) {
           container.innerHTML = '<p style="color: var(--muted); text-align: center; padding: var(--space);">No reviews yet. Be the first to review this build!</p>';
@@ -371,48 +374,46 @@
     }
 
     async function submitReview(buildId, reviewData) {
-      // Add user ID to review data
       reviewData.userId = getUserId();
       
       try {
-        // Try to load existing reviews from shared storage
-        let reviews = [];
-        const response = await fetch(`https://api.jsonbin.io/v3/b/custompc_reviews_${buildId}`, {
+        // Load all reviews from shared storage
+        const response = await fetch(`https://api.jsonbin.io/v3/b/677040e5ad19ca34f8c8f8a2`, {
+          method: 'GET',
           headers: {
-            'X-Master-Key': '$2a$10$8vF3qJ9mK2nL5pR7sT1uXeY4wZ6bN8cM3dH9fG2kL5pR7sT1uXeY4w'
+            'X-Master-Key': '$2a$10$Vq8Rj2Lm9Np5Xt7Yw4Zu6Ae3Bf8Cg1Dh5Ei9Fk2Gl7Hm0Jn4Op6Qr'
           }
         });
         
+        let allReviews = {};
         if (response.ok) {
           const data = await response.json();
-          reviews = data.record || [];
-        } else {
-          // Fallback to localStorage
-          reviews = JSON.parse(localStorage.getItem(`buildReviews_${buildId}`) || '[]');
+          allReviews = data.record || {};
         }
         
-        reviews.unshift(reviewData);
+        // Add new review to this build
+        if (!allReviews[buildId]) {
+          allReviews[buildId] = [];
+        }
+        allReviews[buildId].unshift(reviewData);
         
-        // Try to save to shared storage
-        const saveResponse = await fetch(`https://api.jsonbin.io/v3/b/custompc_reviews_${buildId}`, {
+        // Save back to shared storage
+        await fetch(`https://api.jsonbin.io/v3/b/677040e5ad19ca34f8c8f8a2`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
-            'X-Master-Key': '$2a$10$8vF3qJ9mK2nL5pR7sT1uXeY4wZ6bN8cM3dH9fG2kL5pR7sT1uXeY4w'
+            'X-Master-Key': '$2a$10$Vq8Rj2Lm9Np5Xt7Yw4Zu6Ae3Bf8Cg1Dh5Ei9Fk2Gl7Hm0Jn4Op6Qr'
           },
-          body: JSON.stringify(reviews)
+          body: JSON.stringify(allReviews)
         });
         
-        if (!saveResponse.ok) {
-          // Fallback to localStorage if online save fails
-          localStorage.setItem(`buildReviews_${buildId}`, JSON.stringify(reviews));
-        }
+        // Also save locally for offline access
+        localStorage.setItem(`buildReviews_${buildId}`, JSON.stringify(allReviews[buildId]));
         
       } catch (error) {
         console.error('Error saving review:', error);
-        // Fallback to localStorage
+        // Fallback to localStorage only
         const reviews = JSON.parse(localStorage.getItem(`buildReviews_${buildId}`) || '[]');
-        reviewData.userId = getUserId();
         reviews.unshift(reviewData);
         localStorage.setItem(`buildReviews_${buildId}`, JSON.stringify(reviews));
       }
@@ -455,23 +456,23 @@
       }
       
       try {
-        // Load current reviews
-        let reviews = [];
-        const response = await fetch(`https://api.jsonbin.io/v3/b/custompc_reviews_${buildId}`, {
+        // Load all reviews from shared storage
+        const response = await fetch(`https://api.jsonbin.io/v3/b/677040e5ad19ca34f8c8f8a2`, {
+          method: 'GET',
           headers: {
-            'X-Master-Key': '$2a$10$8vF3qJ9mK2nL5pR7sT1uXeY4wZ6bN8cM3dH9fG2kL5pR7sT1uXeY4w'
+            'X-Master-Key': '$2a$10$Vq8Rj2Lm9Np5Xt7Yw4Zu6Ae3Bf8Cg1Dh5Ei9Fk2Gl7Hm0Jn4Op6Qr'
           }
         });
         
+        let allReviews = {};
         if (response.ok) {
           const data = await response.json();
-          reviews = data.record || [];
-        } else {
-          reviews = JSON.parse(localStorage.getItem(`buildReviews_${buildId}`) || '[]');
+          allReviews = data.record || {};
         }
         
-        // Check if user owns this review
+        const reviews = allReviews[buildId] || [];
         const currentUserId = getUserId();
+        
         if (reviews[reviewIndex] && reviews[reviewIndex].userId === currentUserId) {
           reviews[reviewIndex] = {
             ...reviews[reviewIndex],
@@ -480,19 +481,19 @@
             date: new Date().toLocaleDateString()
           };
           
-          // Save updated reviews
-          const saveResponse = await fetch(`https://api.jsonbin.io/v3/b/custompc_reviews_${buildId}`, {
+          allReviews[buildId] = reviews;
+          
+          // Save back to shared storage
+          await fetch(`https://api.jsonbin.io/v3/b/677040e5ad19ca34f8c8f8a2`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
-              'X-Master-Key': '$2a$10$8vF3qJ9mK2nL5pR7sT1uXeY4wZ6bN8cM3dH9fG2kL5pR7sT1uXeY4w'
+              'X-Master-Key': '$2a$10$Vq8Rj2Lm9Np5Xt7Yw4Zu6Ae3Bf8Cg1Dh5Ei9Fk2Gl7Hm0Jn4Op6Qr'
             },
-            body: JSON.stringify(reviews)
+            body: JSON.stringify(allReviews)
           });
           
-          if (!saveResponse.ok) {
-            localStorage.setItem(`buildReviews_${buildId}`, JSON.stringify(reviews));
-          }
+          localStorage.setItem(`buildReviews_${buildId}`, JSON.stringify(reviews));
         } else {
           alert('You can only edit your own reviews.');
           return;
@@ -532,39 +533,38 @@
       if (!confirm('Are you sure you want to delete this review?')) return;
       
       try {
-        // Load current reviews
-        let reviews = [];
-        const response = await fetch(`https://api.jsonbin.io/v3/b/custompc_reviews_${buildId}`, {
+        // Load all reviews from shared storage
+        const response = await fetch(`https://api.jsonbin.io/v3/b/677040e5ad19ca34f8c8f8a2`, {
+          method: 'GET',
           headers: {
-            'X-Master-Key': '$2a$10$8vF3qJ9mK2nL5pR7sT1uXeY4wZ6bN8cM3dH9fG2kL5pR7sT1uXeY4w'
+            'X-Master-Key': '$2a$10$Vq8Rj2Lm9Np5Xt7Yw4Zu6Ae3Bf8Cg1Dh5Ei9Fk2Gl7Hm0Jn4Op6Qr'
           }
         });
         
+        let allReviews = {};
         if (response.ok) {
           const data = await response.json();
-          reviews = data.record || [];
-        } else {
-          reviews = JSON.parse(localStorage.getItem(`buildReviews_${buildId}`) || '[]');
+          allReviews = data.record || {};
         }
         
-        // Check if user owns this review
+        const reviews = allReviews[buildId] || [];
         const currentUserId = getUserId();
+        
         if (reviews[reviewIndex] && reviews[reviewIndex].userId === currentUserId) {
           reviews.splice(reviewIndex, 1);
+          allReviews[buildId] = reviews;
           
-          // Save updated reviews
-          const saveResponse = await fetch(`https://api.jsonbin.io/v3/b/custompc_reviews_${buildId}`, {
+          // Save back to shared storage
+          await fetch(`https://api.jsonbin.io/v3/b/677040e5ad19ca34f8c8f8a2`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
-              'X-Master-Key': '$2a$10$8vF3qJ9mK2nL5pR7sT1uXeY4wZ6bN8cM3dH9fG2kL5pR7sT1uXeY4w'
+              'X-Master-Key': '$2a$10$Vq8Rj2Lm9Np5Xt7Yw4Zu6Ae3Bf8Cg1Dh5Ei9Fk2Gl7Hm0Jn4Op6Qr'
             },
-            body: JSON.stringify(reviews)
+            body: JSON.stringify(allReviews)
           });
           
-          if (!saveResponse.ok) {
-            localStorage.setItem(`buildReviews_${buildId}`, JSON.stringify(reviews));
-          }
+          localStorage.setItem(`buildReviews_${buildId}`, JSON.stringify(reviews));
         } else {
           alert('You can only delete your own reviews.');
           return;

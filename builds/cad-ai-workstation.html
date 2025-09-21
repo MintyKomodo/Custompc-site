@@ -256,9 +256,30 @@
       return stars;
     }
 
-    function loadReviews(buildId) {
+    async function loadReviews(buildId) {
       const container = document.getElementById(`reviews-container-${buildId}`);
-      const reviews = JSON.parse(localStorage.getItem(`buildReviews_${buildId}`) || '[]');
+      container.innerHTML = '<p style="color: var(--muted); text-align: center; padding: var(--space);">Loading reviews...</p>';
+      
+      try {
+        const response = await fetch(`https://api.jsonbin.io/v3/b/677040e5ad19ca34f8c8f8a2`, {
+          method: 'GET',
+          headers: {
+            'X-Master-Key': '$2a$10$Vq8Rj2Lm9Np5Xt7Yw4Zu6Ae3Bf8Cg1Dh5Ei9Fk2Gl7Hm0Jn4Op6Qr'
+          }
+        });
+        
+        let allReviews = {};
+        if (response.ok) {
+          const data = await response.json();
+          allReviews = data.record || {};
+        }
+        
+        const reviews = allReviews[buildId] || [];
+        localStorage.setItem(`buildReviews_${buildId}`, JSON.stringify(reviews));
+      } catch (error) {
+        console.error('Error loading reviews:', error);
+        const reviews = JSON.parse(localStorage.getItem(`buildReviews_${buildId}`) || '[]');
+      }
       
       if (reviews.length === 0) {
         container.innerHTML = '<p style="color: var(--muted); text-align: center; padding: var(--space);">No reviews yet. Be the first to review this build!</p>';
@@ -289,10 +310,45 @@
       `).join('');
     }
 
-    function submitReview(buildId, reviewData) {
-      const reviews = JSON.parse(localStorage.getItem(`buildReviews_${buildId}`) || '[]');
-      reviews.unshift(reviewData);
-      localStorage.setItem(`buildReviews_${buildId}`, JSON.stringify(reviews));
+    async function submitReview(buildId, reviewData) {
+      reviewData.userId = getUserId();
+      
+      try {
+        const response = await fetch(`https://api.jsonbin.io/v3/b/677040e5ad19ca34f8c8f8a2`, {
+          method: 'GET',
+          headers: {
+            'X-Master-Key': '$2a$10$Vq8Rj2Lm9Np5Xt7Yw4Zu6Ae3Bf8Cg1Dh5Ei9Fk2Gl7Hm0Jn4Op6Qr'
+          }
+        });
+        
+        let allReviews = {};
+        if (response.ok) {
+          const data = await response.json();
+          allReviews = data.record || {};
+        }
+        
+        if (!allReviews[buildId]) {
+          allReviews[buildId] = [];
+        }
+        allReviews[buildId].unshift(reviewData);
+        
+        await fetch(`https://api.jsonbin.io/v3/b/677040e5ad19ca34f8c8f8a2`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Master-Key': '$2a$10$Vq8Rj2Lm9Np5Xt7Yw4Zu6Ae3Bf8Cg1Dh5Ei9Fk2Gl7Hm0Jn4Op6Qr'
+          },
+          body: JSON.stringify(allReviews)
+        });
+        
+        localStorage.setItem(`buildReviews_${buildId}`, JSON.stringify(allReviews[buildId]));
+      } catch (error) {
+        console.error('Error saving review:', error);
+        const reviews = JSON.parse(localStorage.getItem(`buildReviews_${buildId}`) || '[]');
+        reviews.unshift(reviewData);
+        localStorage.setItem(`buildReviews_${buildId}`, JSON.stringify(reviews));
+      }
+      
       loadReviews(buildId);
     }
 
