@@ -256,37 +256,318 @@
       return stars;
     }
 
-    function loadReviews(buildId) {
-      const container = document.getElementById(`reviews-container-${buildId}`);
-      const reviews = JSON.parse(localStorage.getItem(`buildReviews_${buildId}`) || '[]');
-      
-      if (reviews.length === 0) {
-        container.innerHTML = '<p style="color: var(--muted); text-align: center; padding: var(--space);">No reviews yet. Be the first to review this build!</p>';
-        return;
+    // Get or create user ID for review ownership
+    function getUserId() {
+      let userId = localStorage.getItem('custompc_user_id');
+      if (!userId) {
+        userId = 'user_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+        localStorage.setItem('custompc_user_id', userId);
       }
-
-      container.innerHTML = reviews.map(review => `
-        <div class="review-card" style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: var(--space); margin-bottom: var(--space);">
-          <div class="review-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <div class="review-author" style="font-weight: 700;">${review.author}</div>
-            <div class="review-date" style="color: var(--muted); font-size: 0.9rem;">${review.date}</div>
-          </div>
-          <div class="review-rating" style="margin-bottom: 8px;">
-            <div class="stars" style="color: var(--accent1); font-size: 1.2rem;">
-              ${createStarRating(review.rating)}
-            </div>
-          </div>
-          <div class="review-text" style="line-height: 1.5;">
-            ${review.text}
-          </div>
-        </div>
-      `).join('');
+      return userId;
     }
 
-    function submitReview(buildId, reviewData) {
+    async function loadReviews(buildId) {
+      const container = document.getElementById(`reviews-container-${buildId}`);
+      container.innerHTML = '<p style="color: var(--muted); text-align: center; padding: var(--space);">Loading reviews...</p>';
+      
+      try {
+        // Try to load from shared storage (JSONBin.io)
+        const response = await fetch(`https://api.jsonbin.io/v3/b/custompc_reviews_${buildId}`, {
+          headers: {
+            'X-Master-Key': '$2a$10$8vF3qJ9mK2nL5pR7sT1uXeY4wZ6bN8cM3dH9fG2kL5pR7sT1uXeY4w'
+          }
+        });
+        
+        let reviews = [];
+        if (response.ok) {
+          const data = await response.json();
+          reviews = data.record || [];
+        } else {
+          // Fallback to localStorage if online storage fails
+          reviews = JSON.parse(localStorage.getItem(`buildReviews_${buildId}`) || '[]');
+        }
+        
+        if (reviews.length === 0) {
+          container.innerHTML = '<p style="color: var(--muted); text-align: center; padding: var(--space);">No reviews yet. Be the first to review this build!</p>';
+          return;
+        }
+
+        const currentUserId = getUserId();
+        container.innerHTML = reviews.map((review, index) => {
+          const isOwner = review.userId === currentUserId;
+          return `
+            <div class="review-card" data-review-id="${index}" style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: var(--space); margin-bottom: var(--space);">
+              <div class="review-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <div class="review-author" style="font-weight: 700;">${review.author}</div>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <div class="review-date" style="color: var(--muted); font-size: 0.9rem;">${review.date}</div>
+                  ${isOwner ? `
+                    <div class="review-actions" style="display: flex; gap: 8px;">
+                      <button onclick="editReview('${buildId}', ${index})" style="background: var(--accent1); color: #0b0f1a; border: 0; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: 600;">Edit</button>
+                      <button onclick="deleteReview('${buildId}', ${index})" style="background: #ff6b6b; color: white; border: 0; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: 600;">Delete</button>
+                    </div>
+                  ` : ''}
+                </div>
+              </div>
+              <div class="review-rating" style="margin-bottom: 8px;">
+                <div class="stars" style="color: var(--accent1); font-size: 1.2rem;">
+                  ${createStarRating(review.rating)}
+                </div>
+              </div>
+              <div class="review-text" style="line-height: 1.5;">
+                ${review.text}
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (error) {
+        console.error('Error loading reviews:', error);
+        // Fallback to localStorage
+        const reviews = JSON.parse(localStorage.getItem(`buildReviews_${buildId}`) || '[]');
+        if (reviews.length === 0) {
+          container.innerHTML = '<p style="color: var(--muted); text-align: center; padding: var(--space);">No reviews yet. Be the first to review this build!</p>';
+        } else {
+          const currentUserId = getUserId();
+          container.innerHTML = reviews.map((review, index) => {
+            const isOwner = review.userId === currentUserId;
+            return `
+              <div class="review-card" data-review-id="${index}" style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: var(--space); margin-bottom: var(--space);">
+                <div class="review-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                  <div class="review-author" style="font-weight: 700;">${review.author}</div>
+                  <div style="display: flex; align-items: center; gap: 12px;">
+                    <div class="review-date" style="color: var(--muted); font-size: 0.9rem;">${review.date}</div>
+                    ${isOwner ? `
+                      <div class="review-actions" style="display: flex; gap: 8px;">
+                        <button onclick="editReview('${buildId}', ${index})" style="background: var(--accent1); color: #0b0f1a; border: 0; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: 600;">Edit</button>
+                        <button onclick="deleteReview('${buildId}', ${index})" style="background: #ff6b6b; color: white; border: 0; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: 600;">Delete</button>
+                      </div>
+                    ` : ''}
+                  </div>
+                </div>
+                <div class="review-rating" style="margin-bottom: 8px;">
+                  <div class="stars" style="color: var(--accent1); font-size: 1.2rem;">
+                    ${createStarRating(review.rating)}
+                  </div>
+                </div>
+                <div class="review-text" style="line-height: 1.5;">
+                  ${review.text}
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+      }
+    }
+
+    async function submitReview(buildId, reviewData) {
+      // Add user ID to review data
+      reviewData.userId = getUserId();
+      
+      try {
+        // Try to load existing reviews from shared storage
+        let reviews = [];
+        const response = await fetch(`https://api.jsonbin.io/v3/b/custompc_reviews_${buildId}`, {
+          headers: {
+            'X-Master-Key': '$2a$10$8vF3qJ9mK2nL5pR7sT1uXeY4wZ6bN8cM3dH9fG2kL5pR7sT1uXeY4w'
+          }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          reviews = data.record || [];
+        } else {
+          // Fallback to localStorage
+          reviews = JSON.parse(localStorage.getItem(`buildReviews_${buildId}`) || '[]');
+        }
+        
+        reviews.unshift(reviewData);
+        
+        // Try to save to shared storage
+        const saveResponse = await fetch(`https://api.jsonbin.io/v3/b/custompc_reviews_${buildId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Master-Key': '$2a$10$8vF3qJ9mK2nL5pR7sT1uXeY4wZ6bN8cM3dH9fG2kL5pR7sT1uXeY4w'
+          },
+          body: JSON.stringify(reviews)
+        });
+        
+        if (!saveResponse.ok) {
+          // Fallback to localStorage if online save fails
+          localStorage.setItem(`buildReviews_${buildId}`, JSON.stringify(reviews));
+        }
+        
+      } catch (error) {
+        console.error('Error saving review:', error);
+        // Fallback to localStorage
+        const reviews = JSON.parse(localStorage.getItem(`buildReviews_${buildId}`) || '[]');
+        reviewData.userId = getUserId();
+        reviews.unshift(reviewData);
+        localStorage.setItem(`buildReviews_${buildId}`, JSON.stringify(reviews));
+      }
+      
+      loadReviews(buildId);
+    }
+
+    function editReview(buildId, reviewIndex) {
       const reviews = JSON.parse(localStorage.getItem(`buildReviews_${buildId}`) || '[]');
-      reviews.unshift(reviewData);
-      localStorage.setItem(`buildReviews_${buildId}`, JSON.stringify(reviews));
+      const review = reviews[reviewIndex];
+      
+      if (!review) return;
+      
+      document.getElementById('review-form').style.display = 'block';
+      document.getElementById('leave-review-btn').style.display = 'none';
+      document.getElementById('review-text').value = review.text;
+      
+      const ratingInputs = document.querySelectorAll('input[name="rating"]');
+      ratingInputs.forEach(input => {
+        input.checked = input.value == review.rating;
+      });
+      
+      const submitBtn = document.getElementById('submit-review');
+      submitBtn.textContent = 'Update Review';
+      submitBtn.onclick = () => updateReview(buildId, reviewIndex);
+    }
+
+    async function updateReview(buildId, reviewIndex) {
+      const rating = document.querySelector('input[name="rating"]:checked')?.value;
+      const text = document.getElementById('review-text').value.trim();
+      
+      if (!rating || text.length < 10) {
+        alert('Please provide a rating and at least 10 characters of text.');
+        return;
+      }
+      
+      try {
+        // Load current reviews
+        let reviews = [];
+        const response = await fetch(`https://api.jsonbin.io/v3/b/custompc_reviews_${buildId}`, {
+          headers: {
+            'X-Master-Key': '$2a$10$8vF3qJ9mK2nL5pR7sT1uXeY4wZ6bN8cM3dH9fG2kL5pR7sT1uXeY4w'
+          }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          reviews = data.record || [];
+        } else {
+          reviews = JSON.parse(localStorage.getItem(`buildReviews_${buildId}`) || '[]');
+        }
+        
+        // Check if user owns this review
+        const currentUserId = getUserId();
+        if (reviews[reviewIndex] && reviews[reviewIndex].userId === currentUserId) {
+          reviews[reviewIndex] = {
+            ...reviews[reviewIndex],
+            rating: parseInt(rating),
+            text: text,
+            date: new Date().toLocaleDateString()
+          };
+          
+          // Save updated reviews
+          const saveResponse = await fetch(`https://api.jsonbin.io/v3/b/custompc_reviews_${buildId}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Master-Key': '$2a$10$8vF3qJ9mK2nL5pR7sT1uXeY4wZ6bN8cM3dH9fG2kL5pR7sT1uXeY4w'
+            },
+            body: JSON.stringify(reviews)
+          });
+          
+          if (!saveResponse.ok) {
+            localStorage.setItem(`buildReviews_${buildId}`, JSON.stringify(reviews));
+          }
+        } else {
+          alert('You can only edit your own reviews.');
+          return;
+        }
+        
+      } catch (error) {
+        console.error('Error updating review:', error);
+        // Fallback to localStorage
+        const reviews = JSON.parse(localStorage.getItem(`buildReviews_${buildId}`) || '[]');
+        const currentUserId = getUserId();
+        if (reviews[reviewIndex] && reviews[reviewIndex].userId === currentUserId) {
+          reviews[reviewIndex] = {
+            ...reviews[reviewIndex],
+            rating: parseInt(rating),
+            text: text,
+            date: new Date().toLocaleDateString()
+          };
+          localStorage.setItem(`buildReviews_${buildId}`, JSON.stringify(reviews));
+        } else {
+          alert('You can only edit your own reviews.');
+          return;
+        }
+      }
+      
+      loadReviews(buildId);
+      
+      // Reset form
+      document.getElementById('review-form').style.display = 'none';
+      document.getElementById('leave-review-btn').style.display = 'block';
+      document.getElementById('submit-review').textContent = 'Submit Review';
+      document.getElementById('submit-review').onclick = null;
+      document.getElementById('review-text').value = '';
+      document.querySelectorAll('input[name="rating"]').forEach(input => input.checked = false);
+    }
+
+    async function deleteReview(buildId, reviewIndex) {
+      if (!confirm('Are you sure you want to delete this review?')) return;
+      
+      try {
+        // Load current reviews
+        let reviews = [];
+        const response = await fetch(`https://api.jsonbin.io/v3/b/custompc_reviews_${buildId}`, {
+          headers: {
+            'X-Master-Key': '$2a$10$8vF3qJ9mK2nL5pR7sT1uXeY4wZ6bN8cM3dH9fG2kL5pR7sT1uXeY4w'
+          }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          reviews = data.record || [];
+        } else {
+          reviews = JSON.parse(localStorage.getItem(`buildReviews_${buildId}`) || '[]');
+        }
+        
+        // Check if user owns this review
+        const currentUserId = getUserId();
+        if (reviews[reviewIndex] && reviews[reviewIndex].userId === currentUserId) {
+          reviews.splice(reviewIndex, 1);
+          
+          // Save updated reviews
+          const saveResponse = await fetch(`https://api.jsonbin.io/v3/b/custompc_reviews_${buildId}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Master-Key': '$2a$10$8vF3qJ9mK2nL5pR7sT1uXeY4wZ6bN8cM3dH9fG2kL5pR7sT1uXeY4w'
+            },
+            body: JSON.stringify(reviews)
+          });
+          
+          if (!saveResponse.ok) {
+            localStorage.setItem(`buildReviews_${buildId}`, JSON.stringify(reviews));
+          }
+        } else {
+          alert('You can only delete your own reviews.');
+          return;
+        }
+        
+      } catch (error) {
+        console.error('Error deleting review:', error);
+        // Fallback to localStorage
+        const reviews = JSON.parse(localStorage.getItem(`buildReviews_${buildId}`) || '[]');
+        const currentUserId = getUserId();
+        if (reviews[reviewIndex] && reviews[reviewIndex].userId === currentUserId) {
+          reviews.splice(reviewIndex, 1);
+          localStorage.setItem(`buildReviews_${buildId}`, JSON.stringify(reviews));
+        } else {
+          alert('You can only delete your own reviews.');
+          return;
+        }
+      }
+      
       loadReviews(buildId);
     }
 
