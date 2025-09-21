@@ -227,11 +227,17 @@
         return;
       }
 
-      container.innerHTML = reviews.map(review => `
-        <div class="review-card" style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: var(--space); margin-bottom: var(--space);">
+      container.innerHTML = reviews.map((review, index) => `
+        <div class="review-card" data-review-id="${index}" style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: var(--space); margin-bottom: var(--space);">
           <div class="review-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
             <div class="review-author" style="font-weight: 700;">${review.author}</div>
-            <div class="review-date" style="color: var(--muted); font-size: 0.9rem;">${review.date}</div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <div class="review-date" style="color: var(--muted); font-size: 0.9rem;">${review.date}</div>
+              <div class="review-actions" style="display: flex; gap: 8px;">
+                <button onclick="editReview('${buildId}', ${index})" style="background: var(--accent1); color: #0b0f1a; border: 0; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: 600;">Edit</button>
+                <button onclick="deleteReview('${buildId}', ${index})" style="background: #ff6b6b; color: white; border: 0; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: 600;">Delete</button>
+              </div>
+            </div>
           </div>
           <div class="review-rating" style="margin-bottom: 8px;">
             <div class="stars" style="color: var(--accent1); font-size: 1.2rem;">
