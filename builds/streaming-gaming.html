@@ -247,35 +247,9 @@
     </section>
   </div>
 
+  <script src="../review-system.js"></script>
+  <script src="../shared-auth.js"></script>
   <script>
-    // Review system JavaScript
-    function createStarRating(rating) {
-      let stars = '';
-      for (let i = 1; i <= 5; i++) {
-        if (i <= rating) {
-          stars += '<span class="star filled">★</span>';
-        } else {
-          stars += '<span class="star">☆</span>';
-        }
-      }
-      return stars;
-    }
-
-    // Get or create user ID for review ownership
-    function getUserId() {
-      // Use password-based hash as user ID for better security
-      let userHash = localStorage.getItem('custompc_user_hash');
-      if (!userHash) {
-        // If no hash exists, create a temporary anonymous ID
-        let userId = localStorage.getItem('custompc_user_id');
-        if (!userId) {
-          userId = 'user_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
-          localStorage.setItem('custompc_user_id', userId);
-        }
-        return userId;
-      }
-      return userHash;
-    }
 
     async function loadReviews(buildId) {
       const container = document.getElementById(`reviews-container-${buildId}`);
