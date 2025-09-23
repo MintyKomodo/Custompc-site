@@ -198,6 +198,37 @@
     <!-- Reviews Section -->
     <section class="reviews-section" style="margin-top: var(--space); background: var(--panel2); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--space);">
       <h3 style="margin-top: 0; margin-bottom: var(--space); color: var(--accent1);">Reviews</h3>
+      
+      <!-- Review Form -->
+      <div id="review-form" style="margin-bottom: var(--space);">
+        <h4 style="margin-top: 0; margin-bottom: 12px;">Write a Review</h4>
+        <form id="review-form-content" onsubmit="event.preventDefault(); reviewSystem.handleSubmit('esports-1080p-1440p');">
+          <div style="margin-bottom: 12px;">
+            <div class="star-rating" style="font-size: 24px; margin-bottom: 8px;">
+              <span class="star" data-rating="1" style="cursor: pointer;">☆</span>
+              <span class="star" data-rating="2" style="cursor: pointer;">☆</span>
+              <span class="star" data-rating="3" style="cursor: pointer;">☆</span>
+              <span class="star" data-rating="4" style="cursor: pointer;">☆</span>
+              <span class="star" data-rating="5" style="cursor: pointer;">☆</span>
+              <input type="hidden" id="review-rating" value="0">
+            </div>
+          </div>
+          <div style="margin-bottom: 12px;">
+            <textarea id="review-text" 
+              style="width: 100%; min-height: 100px; padding: 12px; border-radius: 8px; background: var(--panel); border: 1px solid var(--border); color: var(--ink);" 
+              placeholder="Share your thoughts about this build..." required></textarea>
+          </div>
+          <button type="submit" 
+            style="background: var(--accent1); color: #0b0f1a; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer;">
+            Submit Review
+          </button>
+        </form>
+      </div>
+      
+      <!-- Reviews Container -->
+      <div id="reviews-container-esports-1080p-1440p">
+        <!-- Reviews will be loaded here -->
+      </div>
       <div id="reviews-container-esports-1080p-1440p" class="reviews-list">
         <!-- Reviews will be loaded here by JavaScript -->
       </div>
@@ -237,13 +268,64 @@
               Cancel
             </button>
           </div>
-        </div>
-      </div>
     </section>
   </div>
 
+  <!-- Include Review System -->
+  <script src="../review-system.js"></script>
   <script>
-    // Review system JavaScript
+    // Initialize review system
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize the review system
+      window.reviewSystem = new ReviewSystem();
+      
+      // Load reviews for this build
+      reviewSystem.loadReviews('esports-1080p-1440p');
+      
+      // Initialize star rating selector
+      const stars = document.querySelectorAll('.star-rating .star');
+      const ratingInput = document.getElementById('review-rating');
+      
+      stars.forEach(star => {
+        star.addEventListener('click', function() {
+          const rating = this.getAttribute('data-rating');
+          ratingInput.value = rating;
+          
+          // Update star display
+          stars.forEach((s, index) => {
+            s.textContent = index < rating ? '★' : '☆';
+            s.style.color = index < rating ? '#ffd700' : '#666';
+          });
+        });
+      });
+    });
+    
+    // Add handleSubmit function to global scope
+    window.handleReviewSubmit = function(buildId) {
+      const rating = parseInt(document.getElementById('review-rating').value);
+      const text = document.getElementById('review-text').value.trim();
+      
+      if (!rating) {
+        alert('Please select a rating');
+        return;
+      }
+      
+      if (!text) {
+        alert('Please enter your review text');
+        return;
+      }
+      
+      reviewSystem.submitReview(buildId, { rating, text });
+      document.getElementById('review-text').value = '';
+      document.getElementById('review-rating').value = '0';
+      document.querySelectorAll('.star-rating .star').forEach(star => {
+        star.textContent = '☆';
+        star.style.color = '#666';
+      });
+    };
+  </script>
+  <script>
+    // Other page-specific scripts
     function createStarRating(rating) {
       let stars = '';
       for (let i = 1; i <= 5; i++) {
