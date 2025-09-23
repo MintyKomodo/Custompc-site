@@ -14,27 +14,13 @@
 </head>
 
 <body class="auth-page">
-  <!-- Site Header Navigation -->
-  <header style="position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
-    <div style="max-width: 1200px; margin: 0 auto; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; height: 70px;">
-      <div class="brand">
-        <a href="index.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #e9eefc; font-weight: 700;">
-          <img src="images/logo.png" alt="CustomPC.tech logo" style="height: 40px; width: 40px; border-radius: 50%; object-fit: contain;" />
-          <span>CustomPC.tech</span>
+  <div class="auth-container">
+    <div class="auth-card" role="main" aria-labelledby="login-title">
+      <div style="text-align: center; margin-bottom: 1rem;">
+        <a href="index.html" style="color: #7db2ff; text-decoration: none; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.5rem;">
+          ← Back to CustomPC.tech
         </a>
       </div>
-      <nav style="display: flex; gap: 10px; align-items: center;">
-        <a href="builds.html" style="padding: 8px 12px; border-radius: 999px; color: #e9eefc; text-decoration: none; transition: background 0.2s;">Builds</a>
-        <a href="index.html" style="padding: 8px 12px; border-radius: 999px; color: #e9eefc; text-decoration: none; transition: background 0.2s;">Custom PC</a>
-        <a href="about.html" style="padding: 8px 12px; border-radius: 999px; color: #e9eefc; text-decoration: none; transition: background 0.2s;">About</a>
-        <a href="contact.html" style="padding: 8px 12px; border-radius: 999px; color: #e9eefc; text-decoration: none; transition: background 0.2s;">Contact</a>
-        <a href="signup.html" style="padding: 8px 12px; border-radius: 999px; color: #7db2ff; text-decoration: none; font-weight: 600; transition: background 0.2s;">Sign Up</a>
-      </nav>
-    </div>
-  </header>
-
-  <div class="auth-container" style="padding-top: 90px;">
-    <div class="auth-card" role="main" aria-labelledby="login-title">
       <h2 id="login-title">Login</h2>
       <form id="login-form" class="auth-form" novalidate aria-describedby="form-instructions">
         <div id="form-instructions" class="sr-only">

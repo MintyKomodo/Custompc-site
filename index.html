@@ -380,8 +380,30 @@
       const logoutBtn = document.getElementById('logout-btn');
       const userDisplay = document.getElementById('user-display');
       
-      // Check if user is logged in
-      const currentUser = localStorage.getItem('custompc_username');
+      // Check if user is logged in - check both storage formats
+      function getCurrentUser() {
+        // Check new format first
+        const userData = localStorage.getItem('custompc_user');
+        if (userData) {
+          try {
+            const user = JSON.parse(userData);
+            return user.username;
+          } catch (e) {
+            console.warn('Invalid user data format, clearing...');
+            localStorage.removeItem('custompc_user');
+          }
+        }
+        
+        // Check legacy format
+        const legacyUser = localStorage.getItem('custompc_username');
+        if (legacyUser) {
+          return legacyUser;
+        }
+        
+        return null;
+      }
+      
+      const currentUser = getCurrentUser();
       if (currentUser) {
         showLoggedInState(currentUser);
       }
@@ -393,8 +415,10 @@
       
       logoutBtn.addEventListener('click', () => {
         if (confirm('Are you sure you want to logout?')) {
+          // Clear all auth-related storage
           localStorage.removeItem('custompc_username');
           localStorage.removeItem('custompc_user_hash');
+          localStorage.removeItem('custompc_user');
           showLoggedOutState();
         }
       });
@@ -411,6 +435,18 @@
         loginBtn.style.display = 'inline-block';
         logoutBtn.style.display = 'none';
       }
+      
+      // Listen for storage changes (when user logs in from another tab)
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'custompc_user' || e.key === 'custompc_username') {
+          const user = getCurrentUser();
+          if (user) {
+            showLoggedInState(user);
+          } else {
+            showLoggedOutState();
+          }
+        }
+      });
     }
     
     // Initialize auth when page loads
