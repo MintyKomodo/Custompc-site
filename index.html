@@ -181,11 +181,7 @@
         <a class="pill active" href="index.html">Custom PC</a>
         <a class="pill" href="about.html">About</a>
         <a class="pill" href="contact.html">Contact</a>
-        <div id="user-auth" style="display: flex; align-items: center; gap: 8px; margin-left: 20px;">
-          <span id="user-display" style="display: none; color: var(--accent1); font-weight: 600;"></span>
-          <button id="login-btn" class="pill" style="background: var(--accent1); color: #0b0f1a; border: 0; cursor: pointer;">Login</button>
-          <button id="logout-btn" class="pill" style="display: none; background: var(--panel2); border: 1px solid var(--border); cursor: pointer;">Logout</button>
-        </div>
+
       </nav>
     </header>
 
@@ -374,83 +370,9 @@
       });
     })();
 
-    // User Authentication System
-    function initAuth() {
-      const loginBtn = document.getElementById('login-btn');
-      const logoutBtn = document.getElementById('logout-btn');
-      const userDisplay = document.getElementById('user-display');
-      
-      // Check if user is logged in - check both storage formats
-      function getCurrentUser() {
-        // Check new format first
-        const userData = localStorage.getItem('custompc_user');
-        if (userData) {
-          try {
-            const user = JSON.parse(userData);
-            return user.username;
-          } catch (e) {
-            console.warn('Invalid user data format, clearing...');
-            localStorage.removeItem('custompc_user');
-          }
-        }
-        
-        // Check legacy format
-        const legacyUser = localStorage.getItem('custompc_username');
-        if (legacyUser) {
-          return legacyUser;
-        }
-        
-        return null;
-      }
-      
-      const currentUser = getCurrentUser();
-      if (currentUser) {
-        showLoggedInState(currentUser);
-      }
-      
-      loginBtn.addEventListener('click', () => {
-        // Redirect to login page instead of using prompt
-        window.location.href = 'login.html';
-      });
-      
-      logoutBtn.addEventListener('click', () => {
-        if (confirm('Are you sure you want to logout?')) {
-          // Clear all auth-related storage
-          localStorage.removeItem('custompc_username');
-          localStorage.removeItem('custompc_user_hash');
-          localStorage.removeItem('custompc_user');
-          showLoggedOutState();
-        }
-      });
-      
-      function showLoggedInState(username) {
-        userDisplay.textContent = `Welcome, ${username}`;
-        userDisplay.style.display = 'inline';
-        loginBtn.style.display = 'none';
-        logoutBtn.style.display = 'inline-block';
-      }
-      
-      function showLoggedOutState() {
-        userDisplay.style.display = 'none';
-        loginBtn.style.display = 'inline-block';
-        logoutBtn.style.display = 'none';
-      }
-      
-      // Listen for storage changes (when user logs in from another tab)
-      window.addEventListener('storage', (e) => {
-        if (e.key === 'custompc_user' || e.key === 'custompc_username') {
-          const user = getCurrentUser();
-          if (user) {
-            showLoggedInState(user);
-          } else {
-            showLoggedOutState();
-          }
-        }
-      });
-    }
-    
-    // Initialize auth when page loads
-    document.addEventListener('DOMContentLoaded', initAuth);
+
   </script>
+  
+  <script src="shared-auth.js"></script>
 </body>
 </html>

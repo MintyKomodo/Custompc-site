@@ -226,6 +226,11 @@
           localStorage.setItem('custompc_username', formData.username);
           localStorage.setItem('custompc_user_hash', btoa(formData.username + ':' + formData.password));
           
+          // Trigger auth state change for other tabs/windows
+          if (window.SharedAuth) {
+            SharedAuth.triggerAuthStateChange();
+          }
+          
           this.showSuccess('Account created successfully! You are now logged in. Redirecting...');
           
           // Redirect to main page after short delay
