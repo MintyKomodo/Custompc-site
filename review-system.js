@@ -84,28 +84,55 @@ class ReviewSystem {
     container.innerHTML = '<p style="color: var(--muted); text-align: center; padding: var(--space);">Loading reviews...</p>';
     
     try {
-      const reviews = this.getReviewsFromStorage(buildId);
+      const allReviews = this.getReviewsFromStorage(buildId);
       
-      if (reviews.length === 0) {
+      // Group reviews by user
+      const reviewsByUser = {};
+      allReviews.forEach(review => {
+        if (!reviewsByUser[review.userId]) {
+          reviewsByUser[review.userId] = [];
+        }
+        reviewsByUser[review.userId].push(review);
+      });
+      
+      // Sort each user's reviews by timestamp (newest first) and take the 2 most recent
+      const sortedReviews = [];
+      Object.values(reviewsByUser).forEach(userReviews => {
+        userReviews
+          .sort((a, b) => b.timestamp - a.timestamp)
+          .slice(0, 2)
+          .forEach(review => sortedReviews.push(review));
+      });
+      
+      // Sort all reviews by timestamp (newest first)
+      sortedReviews.sort((a, b) => b.timestamp - a.timestamp);
+      
+      if (sortedReviews.length === 0) {
         container.innerHTML = '<p style="color: var(--muted); text-align: center; padding: var(--space);">No reviews yet. Be the first to review this build!</p>';
         return;
       }
 
       const currentUser = this.getCurrentUser();
-      container.innerHTML = reviews.map((review, index) => {
+      container.innerHTML = sortedReviews.map((review, index) => {
         const isOwner = review.userId === currentUser.id;
         const reviewDate = new Date(review.timestamp).toLocaleDateString();
+        
+        // Count how many reviews this user has
+        const userReviewCount = (reviewsByUser[review.userId] || []).length;
         
         return `
           <div class="review-card" data-review-id="${index}" style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: var(--space); margin-bottom: var(--space);">
             <div class="review-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-              <div class="review-author" style="font-weight: 700; color: var(--accent1);">${review.author}</div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <div class="review-author" style="font-weight: 700; color: var(--accent1);">${review.author}</div>
+                ${userReviewCount > 1 ? `<span style="font-size: 0.8rem; color: var(--muted);">(${userReviewCount} reviews)</span>` : ''}
+              </div>
               <div style="display: flex; align-items: center; gap: 12px;">
                 <div class="review-date" style="color: var(--muted); font-size: 0.9rem;">${reviewDate}</div>
                 ${isOwner ? `
                   <div class="review-actions" style="display: flex; gap: 8px;">
-                    <button onclick="reviewSystem.editReview('${buildId}', ${index})" style="background: var(--accent1); color: #0b0f1a; border: 0; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: 600;">Edit</button>
-                    <button onclick="reviewSystem.deleteReview('${buildId}', ${index})" style="background: #ff6b6b; color: white; border: 0; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: 600;">Delete</button>
+                    <button onclick="reviewSystem.editReview('${buildId}', '${review.id}')" style="background: var(--accent1); color: #0b0f1a; border: 0; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: 600;">Edit</button>
+                    <button onclick="reviewSystem.deleteReview('${buildId}', '${review.id}')" style="background: #ff6b6b; color: white; border: 0; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: 600;">Delete</button>
                   </div>
                 ` : ''}
               </div>
@@ -158,7 +185,7 @@ class ReviewSystem {
       userId: currentUser.id,
       author: currentUser.username,
       timestamp: Date.now(),
-      id: 'review_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5)
+      id: 'review_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9) // More unique ID
     };
     
     try {
@@ -171,6 +198,10 @@ class ReviewSystem {
       const userReviews = {};
       const filteredReviews = [];
       
+      // First, sort all reviews by timestamp (newest first)
+      reviews.sort((a, b) => b.timestamp - a.timestamp);
+      
+      // Then filter to keep only the 2 most recent per user
       reviews.forEach(review => {
         if (!userReviews[review.userId]) {
           userReviews[review.userId] = [];
@@ -182,19 +213,27 @@ class ReviewSystem {
         }
       });
       
+      // Sort filtered reviews by timestamp (newest first)
+      filteredReviews.sort((a, b) => b.timestamp - a.timestamp);
+      
       this.saveReviewsToStorage(buildId, filteredReviews);
       await this.loadReviews(buildId);
+      
+      // Reset the form
+      const reviewForm = document.getElementById('review-form');
+      if (reviewForm) {
+        reviewForm.reset();
+        this.setStarRating(0);
+      }
       
       return { success: true };
     } catch (error) {
       console.error('Error submitting review:', error);
-      return { success: false, error: error.message };
-    }
-  }
 
   // Edit a review
-  editReview(buildId, reviewIndex) {
+  editReview(buildId, reviewId) {
     const reviews = this.getReviewsFromStorage(buildId);
+    const reviewIndex = reviews.findIndex(r => r.id === reviewId);
     const review = reviews[reviewIndex];
     
     if (!review) return;
@@ -220,17 +259,23 @@ class ReviewSystem {
       // Set rating stars
       this.setStarRating(review.rating || 0);
       
+      // Store the review ID in a data attribute for the update
+      form.setAttribute('data-edit-review-id', reviewId);
+      
       // Change submit button to update mode
       const submitBtn = document.getElementById('submit-review');
       if (submitBtn) {
         submitBtn.textContent = 'Update Review';
-        submitBtn.onclick = () => this.updateReview(buildId, reviewIndex);
+        submitBtn.onclick = (e) => {
+          e.preventDefault();
+          this.updateReview(buildId, reviewId);
+        };
       }
     }
   }
 
   // Update an existing review
-  async updateReview(buildId, reviewIndex) {
+  async updateReview(buildId, reviewId) {
     const rating = this.getSelectedRating();
     const text = document.getElementById('review-text')?.value?.trim();
     
@@ -240,28 +285,59 @@ class ReviewSystem {
     }
     
     const reviews = this.getReviewsFromStorage(buildId);
-    if (reviews[reviewIndex]) {
-      reviews[reviewIndex].text = text;
-      reviews[reviewIndex].rating = rating;
-      reviews[reviewIndex].timestamp = Date.now(); // Update timestamp
+    const reviewIndex = reviews.findIndex(r => r.id === reviewId);
+    
+    if (reviewIndex !== -1) {
+      // Create a new review object to maintain all properties
+      const updatedReview = {
+        ...reviews[reviewIndex],
+        text,
+        rating,
+        timestamp: Date.now()
+      };
+      
+      // Replace the old review with the updated one
+      reviews[reviewIndex] = updatedReview;
+      
+      // Sort reviews by timestamp (newest first)
+      reviews.sort((a, b) => b.timestamp - a.timestamp);
       
       this.saveReviewsToStorage(buildId, reviews);
       await this.loadReviews(buildId);
       this.hideReviewForm();
+      
+      // Reset the form
+      const reviewForm = document.getElementById('review-form');
+      if (reviewForm) {
+        reviewForm.reset();
+        this.setStarRating(0);
+        reviewForm.removeAttribute('data-edit-review-id');
+      }
     }
   }
 
   // Delete a review
-  async deleteReview(buildId, reviewIndex) {
+  async deleteReview(buildId, reviewId) {
     if (!confirm('Are you sure you want to delete this review?')) return;
     
     const reviews = this.getReviewsFromStorage(buildId);
+    const reviewIndex = reviews.findIndex(r => r.id === reviewId);
     const currentUser = this.getCurrentUser();
     
-    if (reviews[reviewIndex] && reviews[reviewIndex].userId === currentUser.id) {
+    if (reviewIndex !== -1 && reviews[reviewIndex].userId === currentUser.id) {
+      // Remove the review
       reviews.splice(reviewIndex, 1);
+      
+      // Save the updated reviews
       this.saveReviewsToStorage(buildId, reviews);
+      
+      // Reload the reviews to update the UI
       await this.loadReviews(buildId);
+      
+      // Show a success message
+      this.showMessage('Review deleted successfully!', 'success');
+    } else {
+      this.showMessage('You can only delete your own reviews.', 'error');
     }
   }
 
@@ -300,7 +376,7 @@ class ReviewSystem {
   showReviewForm() {
     const currentUser = this.getCurrentUser();
     if (!currentUser || currentUser.username === 'Anonymous') {
-      alert('Please log in to leave a review.');
+      this.showMessage('Please log in to leave a review.', 'info');
       return;
     }
     
@@ -316,11 +392,17 @@ class ReviewSystem {
       if (textArea) textArea.value = '';
       this.setStarRating(0);
       
+      // Clear any edit mode
+      form.removeAttribute('data-edit-review-id');
+      
       // Reset submit button
       const submitBtn = document.getElementById('submit-review');
       if (submitBtn) {
         submitBtn.textContent = 'Submit Review';
-        submitBtn.onclick = () => this.handleReviewSubmission();
+        submitBtn.onclick = (e) => {
+          e.preventDefault();
+          this.handleReviewSubmission();
+        };
       }
     }
   }
@@ -332,7 +414,61 @@ class ReviewSystem {
     
     if (form && leaveBtn) {
       form.style.display = 'none';
+      form.reset();
+      form.removeAttribute('data-edit-review-id');
       leaveBtn.style.display = 'block';
+      this.setStarRating(0);
+    }
+  }
+  
+  // Show a message to the user
+  showMessage(message, type = 'info') {
+    // Remove any existing messages
+    const existingMessages = document.querySelectorAll('.review-message');
+    existingMessages.forEach(msg => msg.remove());
+    
+    // Create message element
+    const messageEl = document.createElement('div');
+    messageEl.className = `review-message ${type}`;
+    messageEl.textContent = message;
+    messageEl.style.padding = '10px';
+    messageEl.style.margin = '10px 0';
+    messageEl.style.borderRadius = '4px';
+    messageEl.style.fontWeight = '500';
+    
+    // Style based on message type
+    switch (type) {
+      case 'success':
+        messageEl.style.backgroundColor = 'rgba(40, 167, 69, 0.2)';
+        messageEl.style.color = '#28a745';
+        messageEl.style.border = '1px solid #28a745';
+        break;
+      case 'error':
+        messageEl.style.backgroundColor = 'rgba(220, 53, 69, 0.2)';
+        messageEl.style.color = '#dc3545';
+        messageEl.style.border = '1px solid #dc3545';
+        break;
+      case 'info':
+      default:
+        messageEl.style.backgroundColor = 'rgba(23, 162, 184, 0.2)';
+        messageEl.style.color = '#17a2b8';
+        messageEl.style.border = '1px solid #17a2b8';
+    }
+    
+    // Insert message above the reviews container
+    const buildId = this.getCurrentBuildId();
+    if (buildId) {
+      const container = document.getElementById(`reviews-container-${buildId}`);
+      if (container) {
+        container.parentNode.insertBefore(messageEl, container);
+        
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+          messageEl.style.opacity = '0';
+          messageEl.style.transition = 'opacity 0.5s ease';
+          setTimeout(() => messageEl.remove(), 500);
+        }, 5000);
+      }
     }
   }
 
@@ -341,26 +477,46 @@ class ReviewSystem {
     const rating = this.getSelectedRating();
     const text = document.getElementById('review-text')?.value?.trim();
     
+    if (!rating) {
+      this.showMessage('Please select a rating', 'error');
+      return;
+    }
+    
     if (!text || text.length < 10) {
-      alert('Review must be at least 10 characters long.');
+      this.showMessage('Review must be at least 10 characters long', 'error');
       return;
     }
     
     const buildId = this.getCurrentBuildId();
     if (!buildId) {
-      alert('Error: Could not determine build ID.');
+      this.showMessage('Error: Could not determine build ID', 'error');
       return;
     }
     
-    const result = await this.submitReview(buildId, { rating, text });
+    // Check if we're editing an existing review
+    const reviewForm = document.getElementById('review-form');
+    const reviewId = reviewForm?.getAttribute('data-edit-review-id');
     
-    if (result.success) {
-      this.hideReviewForm();
-      // Show success message briefly
-      this.showMessage('Review submitted successfully!', 'success');
-    } else {
-      alert('Error submitting review: ' + (result.error || 'Unknown error'));
+    try {
+      if (reviewId) {
+        // Update existing review
+        await this.updateReview(buildId, reviewId);
+      } else {
+        // Submit new review
+        const result = await this.submitReview(buildId, { rating, text });
+        
+        if (result.success) {
+          this.hideReviewForm();
+          this.showMessage('Review submitted successfully!', 'success');
+        } else {
+          throw new Error(result.error || 'Failed to submit review');
+        }
+      }
+    } catch (error) {
+      console.error('Error handling review submission:', error);
+      this.showMessage('Error: ' + (error.message || 'Failed to process review'), 'error');
     }
+  }
   }
 
   // Get currently selected rating
