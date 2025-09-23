@@ -164,17 +164,25 @@ class ReviewSystem {
     try {
       const reviews = this.getReviewsFromStorage(buildId);
       
-      // Check if user already has a review
-      const existingReviewIndex = reviews.findIndex(r => r.userId === currentUser.id);
-      if (existingReviewIndex !== -1) {
-        // Update existing review
-        reviews[existingReviewIndex] = review;
-      } else {
-        // Add new review at the beginning
-        reviews.unshift(review);
-      }
+      // Add new review at the beginning
+      reviews.unshift(review);
       
-      this.saveReviewsToStorage(buildId, reviews);
+      // Keep only the 2 most recent reviews per user
+      const userReviews = {};
+      const filteredReviews = [];
+      
+      reviews.forEach(review => {
+        if (!userReviews[review.userId]) {
+          userReviews[review.userId] = [];
+        }
+        
+        if (userReviews[review.userId].length < 2) {
+          userReviews[review.userId].push(review);
+          filteredReviews.push(review);
+        }
+      });
+      
+      this.saveReviewsToStorage(buildId, filteredReviews);
       await this.loadReviews(buildId);
       
       return { success: true };
