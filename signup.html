@@ -4,7 +4,8 @@
 <head>
   <meta charset="utf-8" />
   <title>Sign Up – CustomPC.tech</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Create your CustomPC.tech account to get personalized PC builds and save your preferences." />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover" />
   <link rel="icon" type="image/png" sizes="32x32" href="images/logo.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="images/logo.png" />
   <link rel="shortcut icon" href="images/logo.png" />
@@ -13,260 +14,247 @@
 </head>
 
 <body class="auth-page">
-  <div class="auth-container">
-    <div class="auth-card">
-      <h2>Sign Up</h2>
-      <form id="signup-form" class="auth-form">
-        <input 
-          id="username" 
-          type="text" 
-          class="auth-input" 
-          placeholder="Username" 
-          required 
-          aria-label="Username"
-          autocomplete="username"
-        />
-        <input 
-          id="email" 
-          type="email" 
-          class="auth-input" 
-          placeholder="Email" 
-          required 
-          aria-label="Email"
-          autocomplete="email"
-        />
-        <input 
-          id="password" 
-          type="password" 
-          class="auth-input" 
-          placeholder="Password" 
-          required 
-          aria-label="Password"
-          autocomplete="new-password"
-        />
-        <input 
-          id="confirm-password" 
-          type="password" 
-          class="auth-input" 
-          placeholder="Confirm Password" 
-          required 
-          aria-label="Confirm Password"
-          autocomplete="new-password"
-        />
+  <!-- Site Header Navigation -->
+  <header style="position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; height: 70px;">
+      <div class="brand">
+        <a href="index.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #e9eefc; font-weight: 700;">
+          <img src="images/logo.png" alt="CustomPC.tech logo" style="height: 40px; width: 40px; border-radius: 50%; object-fit: contain;" />
+          <span>CustomPC.tech</span>
+        </a>
+      </div>
+      <nav style="display: flex; gap: 10px; align-items: center;">
+        <a href="builds.html" style="padding: 8px 12px; border-radius: 999px; color: #e9eefc; text-decoration: none; transition: background 0.2s;">Builds</a>
+        <a href="index.html" style="padding: 8px 12px; border-radius: 999px; color: #e9eefc; text-decoration: none; transition: background 0.2s;">Custom PC</a>
+        <a href="about.html" style="padding: 8px 12px; border-radius: 999px; color: #e9eefc; text-decoration: none; transition: background 0.2s;">About</a>
+        <a href="contact.html" style="padding: 8px 12px; border-radius: 999px; color: #e9eefc; text-decoration: none; transition: background 0.2s;">Contact</a>
+        <a href="login.html" style="padding: 8px 12px; border-radius: 999px; color: #7db2ff; text-decoration: none; font-weight: 600; transition: background 0.2s;">Log In</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="auth-container" style="padding-top: 90px;">
+    <div class="auth-card" role="main" aria-labelledby="signup-title">
+      <h2 id="signup-title">Sign Up</h2>
+      <form id="signup-form" class="auth-form" novalidate aria-describedby="form-instructions">
+        <div id="form-instructions" class="sr-only">
+          Please fill out all fields to create your new account. Password must be at least 8 characters with uppercase, lowercase, and numbers.
+        </div>
         
-        <div class="error-message" id="error-display" role="alert" aria-live="polite"></div>
+        <div class="field-container">
+          <label for="username" class="sr-only">Username</label>
+          <input 
+            id="username" 
+            type="text" 
+            class="auth-input" 
+            placeholder="Username" 
+            required 
+            aria-label="Username"
+            aria-describedby="username-validation username-help"
+            autocomplete="username"
+            spellcheck="false"
+          />
+          <div id="username-help" class="sr-only">
+            Username must be 3-20 characters and contain only letters, numbers, and underscores.
+          </div>
+          <div class="field-validation hidden" id="username-validation" aria-live="polite"></div>
+        </div>
+        
+        <div class="field-container">
+          <label for="email" class="sr-only">Email Address</label>
+          <input 
+            id="email" 
+            type="email" 
+            class="auth-input" 
+            placeholder="Email" 
+            required 
+            aria-label="Email Address"
+            aria-describedby="email-validation email-help"
+            autocomplete="email"
+            spellcheck="false"
+          />
+          <div id="email-help" class="sr-only">
+            Enter a valid email address for account verification and password recovery.
+          </div>
+          <div class="field-validation hidden" id="email-validation" aria-live="polite"></div>
+        </div>
+        
+        <div class="field-container">
+          <label for="password" class="sr-only">Password</label>
+          <input 
+            id="password" 
+            type="password" 
+            class="auth-input" 
+            placeholder="Password" 
+            required 
+            aria-label="Password"
+            aria-describedby="password-validation password-help password-strength"
+            autocomplete="new-password"
+          />
+          <div id="password-help" class="sr-only">
+            Password must be at least 8 characters with uppercase, lowercase, and numbers.
+          </div>
+          <div class="password-strength" id="password-strength" style="display: none;" aria-live="polite"></div>
+          <div class="field-validation hidden" id="password-validation" aria-live="polite"></div>
+        </div>
+        
+        <div class="field-container">
+          <label for="confirm-password" class="sr-only">Confirm Password</label>
+          <input 
+            id="confirm-password" 
+            type="password" 
+            class="auth-input" 
+            placeholder="Confirm Password" 
+            required 
+            aria-label="Confirm Password"
+            aria-describedby="confirm-password-validation confirm-password-help"
+            autocomplete="new-password"
+          />
+          <div id="confirm-password-help" class="sr-only">
+            Re-enter your password to confirm it matches.
+          </div>
+          <div class="field-validation hidden" id="confirm-password-validation" aria-live="polite"></div>
+        </div>
+        
+        <div class="error-message" id="error-display" role="alert" aria-live="assertive"></div>
         <div class="success-message" id="success-display" role="alert" aria-live="polite"></div>
         
-        <button type="submit" class="gradient-btn">Create Account</button>
+        <button type="submit" class="gradient-btn" aria-describedby="submit-help">
+          <span>Create Account</span>
+        </button>
+        <div id="submit-help" class="sr-only">
+          Submit the form to create your new account.
+        </div>
         
-        <div class="auth-links">
-          <p class="switch-text">Already have an account? <a href="login.html">Log In</a></p>
+        <div class="auth-links" role="navigation" aria-label="Authentication options">
+          <p class="switch-text">
+            Already have an account? 
+            <a href="login.html" aria-describedby="login-help">Log In</a>
+          </p>
+          <div id="login-help" class="sr-only">
+            Navigate to the login page to access your existing account.
+          </div>
         </div>
       </form>
     </div>
   </div>
 
+  <script src="auth-validation.js"></script>
   <script>
-    // Signup form validation and submission
-    document.addEventListener('DOMContentLoaded', function() {
-      const form = document.getElementById('signup-form');
-      const usernameInput = document.getElementById('username');
-      const emailInput = document.getElementById('email');
-      const passwordInput = document.getElementById('password');
-      const confirmPasswordInput = document.getElementById('confirm-password');
-      const errorDisplay = document.getElementById('error-display');
-      const successDisplay = document.getElementById('success-display');
-      const submitButton = form.querySelector('.gradient-btn');
-
-      // Clear messages function
-      function clearMessages() {
-        errorDisplay.classList.remove('show');
-        successDisplay.classList.remove('show');
-        errorDisplay.textContent = '';
-        successDisplay.textContent = '';
+    // Enhanced signup form with validation
+    class SignupFormHandler extends AuthFormHandler {
+      constructor() {
+        const validator = new AuthValidator();
+        super('signup-form', validator);
       }
 
-      // Show error message
-      function showError(message) {
-        clearMessages();
-        errorDisplay.textContent = message;
-        errorDisplay.classList.add('show');
-      }
-
-      // Show success message
-      function showSuccess(message) {
-        clearMessages();
-        successDisplay.textContent = message;
-        successDisplay.classList.add('show');
-      }
-
-      // Validate username
-      function validateUsername(username) {
-        if (!username) return 'Username is required';
-        if (username.length < 3) return 'Username must be at least 3 characters';
-        if (username.length > 20) return 'Username must be less than 20 characters';
-        if (!/^[a-zA-Z0-9_]+$/.test(username)) return 'Username can only contain letters, numbers, and underscores';
-        return null;
-      }
-
-      // Validate email
-      function validateEmail(email) {
-        if (!email) return 'Email is required';
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) return 'Please enter a valid email address';
-        return null;
-      }
-
-      // Validate password
-      function validatePassword(password) {
-        if (!password) return 'Password is required';
-        if (password.length < 8) return 'Password must be at least 8 characters';
-        if (!/(?=.*[a-z])/.test(password)) return 'Password must contain at least one lowercase letter';
-        if (!/(?=.*[A-Z])/.test(password)) return 'Password must contain at least one uppercase letter';
-        if (!/(?=.*\d)/.test(password)) return 'Password must contain at least one number';
-        return null;
-      }
-
-      // Validate confirm password
-      function validateConfirmPassword(password, confirmPassword) {
-        if (!confirmPassword) return 'Please confirm your password';
-        if (password !== confirmPassword) return 'Passwords do not match';
-        return null;
-      }
-
-      // Real-time validation on blur
-      usernameInput.addEventListener('blur', function() {
-        const error = validateUsername(this.value.trim());
-        if (error) {
-          this.classList.add('error');
-          showError(error);
-        } else {
-          this.classList.remove('error');
-          clearMessages();
+      setupEventListeners() {
+        super.setupEventListeners();
+        
+        // Add password strength indicator
+        if (this.inputs.password) {
+          this.inputs.password.addEventListener('input', (e) => {
+            this.updatePasswordStrength(e.target.value);
+          });
         }
-      });
+      }
 
-      emailInput.addEventListener('blur', function() {
-        const error = validateEmail(this.value.trim());
-        if (error) {
-          this.classList.add('error');
-          showError(error);
-        } else {
-          this.classList.remove('error');
-          clearMessages();
-        }
-      });
+      updatePasswordStrength(password) {
+        const strengthIndicator = document.getElementById('password-strength');
+        if (!strengthIndicator) return;
 
-      passwordInput.addEventListener('blur', function() {
-        const error = validatePassword(this.value);
-        if (error) {
-          this.classList.add('error');
-          showError(error);
-        } else {
-          this.classList.remove('error');
-          clearMessages();
-        }
-      });
-
-      confirmPasswordInput.addEventListener('blur', function() {
-        const error = validateConfirmPassword(passwordInput.value, this.value);
-        if (error) {
-          this.classList.add('error');
-          showError(error);
-        } else {
-          this.classList.remove('error');
-          clearMessages();
-        }
-      });
-
-      // Clear error state on input
-      [usernameInput, emailInput, passwordInput, confirmPasswordInput].forEach(input => {
-        input.addEventListener('input', function() {
-          this.classList.remove('error');
-        });
-      });
-
-      // Form submission
-      form.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        clearMessages();
-
-        const username = usernameInput.value.trim();
-        const email = emailInput.value.trim();
-        const password = passwordInput.value;
-        const confirmPassword = confirmPasswordInput.value;
-
-        // Validate all fields
-        const usernameError = validateUsername(username);
-        const emailError = validateEmail(email);
-        const passwordError = validatePassword(password);
-        const confirmPasswordError = validateConfirmPassword(password, confirmPassword);
-
-        // Show first error found
-        if (usernameError) {
-          usernameInput.classList.add('error');
-          showError(usernameError);
-          usernameInput.focus();
+        if (!password) {
+          strengthIndicator.style.display = 'none';
           return;
         }
 
-        if (emailError) {
-          emailInput.classList.add('error');
-          showError(emailError);
-          emailInput.focus();
-          return;
+        const score = this.validator.getPasswordStrength(password);
+        const strength = this.validator.getPasswordStrengthText(score);
+        
+        strengthIndicator.textContent = `Password Strength: ${strength.text}`;
+        strengthIndicator.className = `password-strength ${strength.class}`;
+        strengthIndicator.style.display = 'block';
+      }
+
+      validateField(fieldName) {
+        const input = this.inputs[fieldName];
+        const validationDiv = document.getElementById(`${fieldName}-validation`);
+        
+        if (!input || !validationDiv) return super.validateField(fieldName);
+
+        let error = null;
+        const value = input.value.trim();
+
+        switch (fieldName) {
+          case 'username':
+            error = this.validator.validateUsername(value);
+            break;
+          case 'email':
+            error = this.validator.validateEmail(value);
+            break;
+          case 'password':
+            error = this.validator.validatePassword(value);
+            this.updatePasswordStrength(value);
+            break;
+          case 'confirmPassword':
+            const password = this.inputs.password ? this.inputs.password.value : '';
+            error = this.validator.validateConfirmPassword(password, value);
+            break;
         }
 
-        if (passwordError) {
-          passwordInput.classList.add('error');
-          showError(passwordError);
-          passwordInput.focus();
-          return;
+        // Update field validation display
+        if (error) {
+          input.classList.add('error');
+          input.classList.remove('valid');
+          validationDiv.textContent = error;
+          validationDiv.className = 'field-validation error';
+        } else if (value) {
+          input.classList.remove('error');
+          input.classList.add('valid');
+          validationDiv.textContent = '✓ Valid';
+          validationDiv.className = 'field-validation success';
+        } else {
+          input.classList.remove('error', 'valid');
+          validationDiv.className = 'field-validation hidden';
         }
 
-        if (confirmPasswordError) {
-          confirmPasswordInput.classList.add('error');
-          showError(confirmPasswordError);
-          confirmPasswordInput.focus();
-          return;
-        }
+        return !error;
+      }
 
-        // Show loading state
-        submitButton.classList.add('loading');
-        submitButton.disabled = true;
-
-        try {
-          // Simulate signup process (replace with actual registration)
-          await new Promise(resolve => setTimeout(resolve, 2000));
+      async onSubmit(formData) {
+        // Simulate signup process
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        // For demo purposes, accept any valid data
+        if (formData.username && formData.email && formData.password) {
+          // Store user data (compatible with main site)
+          const userData = {
+            username: formData.username,
+            email: formData.email,
+            signupTime: new Date().toISOString()
+          };
           
-          // For demo purposes, accept any valid data
-          if (username && email && password && confirmPassword) {
-            // Store user data (simple localStorage for demo)
-            const userData = {
-              username: username,
-              email: email,
-              signupTime: new Date().toISOString()
-            };
-            
-            localStorage.setItem('custompc_user', JSON.stringify(userData));
-            
-            showSuccess('Account created successfully! Redirecting to login...');
-            
-            // Redirect to login page after short delay
-            setTimeout(() => {
-              window.location.href = 'login.html';
-            }, 2000);
-          } else {
-            throw new Error('Registration failed');
-          }
-        } catch (error) {
-          showError('Registration failed. Please try again.');
-        } finally {
-          // Remove loading state
-          submitButton.classList.remove('loading');
-          submitButton.disabled = false;
+          localStorage.setItem('custompc_user', JSON.stringify(userData));
+          
+          // Also set the legacy format for compatibility
+          localStorage.setItem('custompc_username', formData.username);
+          localStorage.setItem('custompc_user_hash', btoa(formData.username + ':' + formData.password));
+          
+          this.showSuccess('Account created successfully! You are now logged in. Redirecting...');
+          
+          // Redirect to main page after short delay
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 2000);
+        } else {
+          throw new Error('Registration failed');
         }
-      });
+      }
+    }
+
+    // Initialize the signup form when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      new SignupFormHandler();
     });
   </script>
 </body>

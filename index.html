@@ -387,17 +387,8 @@
       }
       
       loginBtn.addEventListener('click', () => {
-        const username = prompt('Enter your name:');
-        if (username && username.trim()) {
-          const password = prompt('Enter your password:');
-          if (password && password.trim()) {
-            // Create user account hash for security
-            const userHash = btoa(username.trim() + ':' + password.trim());
-            localStorage.setItem('custompc_username', username.trim());
-            localStorage.setItem('custompc_user_hash', userHash);
-            showLoggedInState(username.trim());
-          }
-        }
+        // Redirect to login page instead of using prompt
+        window.location.href = 'login.html';
       });
       
       logoutBtn.addEventListener('click', () => {

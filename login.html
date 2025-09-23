@@ -1,118 +1,190 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <title>Log In – CustomPC.tech</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Log in to your CustomPC.tech account to access personalized PC builds and saved preferences." />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover" />
   <link rel="icon" type="image/png" sizes="32x32" href="images/logo.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="images/logo.png" />
   <link rel="shortcut icon" href="images/logo.png" />
   <link rel="apple-touch-icon" href="images/logo.png" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
-  <style>
-    :root{
-      --space:10px; --space-sm:6px; --space-lg:16px;
-      --bg:#0a0f1a; --ink:#e9eefc; --muted:#aeb9d4;
-      --panel:#111729; --panel2:#0d1426; --border:rgba(255,255,255,.08);
-      --accent1:#7db2ff; --accent2:#7cf2e6; --radius:18px; --max:1200px;
-    }
-    .wrap{max-width:var(--max);margin:0 auto;padding:var(--space-lg)}
-    header{
-      display:flex;align-items:center;justify-content:space-between;
-      margin-bottom:var(--space-lg);padding:0 var(--space);
-      max-width:var(--max);margin-left:auto;margin-right:auto;width:100%
-    }
-    .brand a{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;font-weight:700;letter-spacing:.3px;white-space:nowrap}
-    .topnav{display:flex;gap:var(--space);flex-wrap:wrap}
-    .pill{display:inline-block;padding:10px 14px;border-radius:999px;color:var(--ink);text-decoration:none;border:1px solid transparent}
-    .pill:hover{background:#0f1830}
-    .pill.active{background:linear-gradient(120deg,rgba(125,178,255,.15),rgba(124,242,230,.15));border-color:rgba(255,255,255,.08)}
-    
-    /* Bottom CTA (shared) */
-    .cta-card{
-      text-align:center;
-      border:1px solid var(--border);
-      border-left:0;border-right:0;
-      border-radius:0; /* no rounded corners */
-      box-shadow:none; /* flush edges */
-      padding:34px 26px;
-      background:linear-gradient(135deg, rgba(125,178,255,.12), rgba(124,242,230,.12));
-      /* full-bleed to viewport width */
-      margin-left:calc(50% - 50vw);
-      margin-right:calc(50% - 50vw);
-      width:100vw;
-    }
-    .cta-title{font-size:26px;margin:0 0 var(--space)}
-    .cta-sub{color:var(--muted);margin:0 0 var(--space)}
-    .cta-actions{display:flex;gap:var(--space);justify-content:center;flex-wrap:wrap}
-    .cta-primary, .cta-secondary{display:inline-block;padding:12px 18px;border-radius:14px;font-weight:700;text-decoration:none}
-    .cta-primary{color:#0b0f1a;background:linear-gradient(90deg,var(--accent1,#7db2ff),var(--accent2,#7cf2e6));box-shadow:0 10px 26px rgba(117,194,255,.28)}
-    .cta-secondary{color:var(--ink);border:1px solid var(--border);background:#0f1830}
-  </style>
-  
+  <link rel="stylesheet" href="auth-styles.css">
 </head>
-<body>
-  <div class="wrap">
-    <header>
+
+<body class="auth-page">
+  <!-- Site Header Navigation -->
+  <header style="position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(10, 15, 26, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; height: 70px;">
       <div class="brand">
-        <a href="index.html">
-          <img src="images/logo.png" alt="CustomPC.tech logo"
-            style="height:100px;width:100px;display:inline-block;vertical-align:middle;object-fit:contain;border-radius:50%;" />
-          <span style="margin-left:8px;vertical-align:middle;">CustomPC.tech</span>
+        <a href="index.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #e9eefc; font-weight: 700;">
+          <img src="images/logo.png" alt="CustomPC.tech logo" style="height: 40px; width: 40px; border-radius: 50%; object-fit: contain;" />
+          <span>CustomPC.tech</span>
         </a>
       </div>
-      <nav class="topnav" role="navigation" aria-label="Primary">
-        <a class="pill" href="builds.html">Builds</a>
-        <a class="pill" href="index.html">Custom PC</a>
-        <a class="pill" href="about.html">About</a>
-        <a class="pill" href="contact.html">Contact</a>
+      <nav style="display: flex; gap: 10px; align-items: center;">
+        <a href="builds.html" style="padding: 8px 12px; border-radius: 999px; color: #e9eefc; text-decoration: none; transition: background 0.2s;">Builds</a>
+        <a href="index.html" style="padding: 8px 12px; border-radius: 999px; color: #e9eefc; text-decoration: none; transition: background 0.2s;">Custom PC</a>
+        <a href="about.html" style="padding: 8px 12px; border-radius: 999px; color: #e9eefc; text-decoration: none; transition: background 0.2s;">About</a>
+        <a href="contact.html" style="padding: 8px 12px; border-radius: 999px; color: #e9eefc; text-decoration: none; transition: background 0.2s;">Contact</a>
+        <a href="signup.html" style="padding: 8px 12px; border-radius: 999px; color: #7db2ff; text-decoration: none; font-weight: 600; transition: background 0.2s;">Sign Up</a>
       </nav>
-    </header>
-    
+    </div>
+  </header>
 
-    <div class="formwrap">
-      <h1>Log In</h1>
-      <form id="login-form">
-        <label>Email</label>
-        <input id="email" type="email" required placeholder="you@example.com" />
-        <label>Password</label>
-        <input id="pass" type="password" required placeholder="••••••••" />
-        <div class="err" id="err"></div>
-        <div class="row">
-          <button class="btn" type="submit">Log In</button>
-          <a class="btn" style="background:#1f2937" href="signup.html">Need an account?</a>
+  <div class="auth-container" style="padding-top: 90px;">
+    <div class="auth-card" role="main" aria-labelledby="login-title">
+      <h2 id="login-title">Login</h2>
+      <form id="login-form" class="auth-form" novalidate aria-describedby="form-instructions">
+        <div id="form-instructions" class="sr-only">
+          Please enter your username and password to log in to your account.
+        </div>
+        
+        <div class="field-container">
+          <label for="username" class="sr-only">Username</label>
+          <input 
+            id="username" 
+            type="text" 
+            class="auth-input" 
+            placeholder="Username" 
+            required 
+            aria-label="Username"
+            aria-describedby="username-validation username-help"
+            autocomplete="username"
+            spellcheck="false"
+          />
+          <div id="username-help" class="sr-only">
+            Username must be 3-20 characters and contain only letters, numbers, and underscores.
+          </div>
+          <div class="field-validation hidden" id="username-validation" aria-live="polite"></div>
+        </div>
+        
+        <div class="field-container">
+          <label for="password" class="sr-only">Password</label>
+          <input 
+            id="password" 
+            type="password" 
+            class="auth-input" 
+            placeholder="Password" 
+            required 
+            aria-label="Password"
+            aria-describedby="password-validation password-help"
+            autocomplete="current-password"
+          />
+          <div id="password-help" class="sr-only">
+            Enter your account password.
+          </div>
+          <div class="field-validation hidden" id="password-validation" aria-live="polite"></div>
+        </div>
+        
+        <div class="error-message" id="error-display" role="alert" aria-live="assertive"></div>
+        <div class="success-message" id="success-display" role="alert" aria-live="polite"></div>
+        
+        <button type="submit" class="gradient-btn" aria-describedby="submit-help">
+          <span>Log In</span>
+        </button>
+        <div id="submit-help" class="sr-only">
+          Submit the login form to access your account.
+        </div>
+        
+        <div class="auth-links" role="navigation" aria-label="Authentication options">
+          <a href="#" class="auth-link" aria-describedby="forgot-help">Forgot Password?</a>
+          <div id="forgot-help" class="sr-only">
+            Click to reset your password via email.
+          </div>
+          <p class="switch-text">
+            Don't have an account? 
+            <a href="signup.html" aria-describedby="signup-help">Sign Up</a>
+          </p>
+          <div id="signup-help" class="sr-only">
+            Navigate to the sign up page to create a new account.
+          </div>
         </div>
       </form>
     </div>
-    
-    <!-- Bottom CTA -->
-    <section class="cta-card" style="margin-top:var(--space)">
-      <div class="cta-title">Ready for a build that’s actually right for you?</div>
-      <p class="cta-sub">Tell us what you do—we’ll design, verify, and deliver a PC that fits your workload and budget.</p>
-      <div class="cta-actions">
-        <a class="cta-primary" href="index.html#request">Start a Custom PC →</a>
-        <a class="cta-secondary" href="contact.html">Just have a question?</a>
-      </div>
-    </section>
   </div>
 
-  <script type="module" src="nav-auth.js"></script>
-  <script type="module">
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
-    const auth = getAuth();
-    const form = document.getElementById('login-form');
-    const err = document.getElementById('err');
-    form.addEventListener('submit', async (e)=>{
-      e.preventDefault();
-      err.textContent='';
-      const email = document.getElementById('email').value.trim();
-      const pass  = document.getElementById('pass').value;
-      try{
-        await signInWithEmailAndPassword(auth, email, pass);
-        window.location.href = "builds.html";
-      }catch(e){ err.textContent = e.message || "Login failed." }
+  <script src="auth-validation.js"></script>
+  <script>
+    // Enhanced login form with validation
+    class LoginFormHandler extends AuthFormHandler {
+      constructor() {
+        const validator = new AuthValidator();
+        super('login-form', validator);
+      }
+
+      validateField(fieldName) {
+        const input = this.inputs[fieldName];
+        const validationDiv = document.getElementById(`${fieldName}-validation`);
+        
+        if (!input || !validationDiv) return super.validateField(fieldName);
+
+        let error = null;
+        const value = input.value.trim();
+
+        switch (fieldName) {
+          case 'username':
+            error = this.validator.validateUsername(value);
+            break;
+          case 'password':
+            // For login, we only check if password is provided
+            error = value ? null : 'Password is required';
+            break;
+        }
+
+        // Update field validation display
+        if (error) {
+          input.classList.add('error');
+          input.classList.remove('valid');
+          validationDiv.textContent = error;
+          validationDiv.className = 'field-validation error';
+        } else if (value) {
+          input.classList.remove('error');
+          input.classList.add('valid');
+          validationDiv.textContent = '✓ Valid';
+          validationDiv.className = 'field-validation success';
+        } else {
+          input.classList.remove('error', 'valid');
+          validationDiv.className = 'field-validation hidden';
+        }
+
+        return !error;
+      }
+
+      async onSubmit(formData) {
+        // Simulate login process
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        // For demo purposes, accept any valid credentials
+        if (formData.username && formData.password) {
+          // Store user session (compatible with main site)
+          localStorage.setItem('custompc_user', JSON.stringify({
+            username: formData.username,
+            loginTime: new Date().toISOString()
+          }));
+          
+          // Also set the legacy format for compatibility
+          localStorage.setItem('custompc_username', formData.username);
+          localStorage.setItem('custompc_user_hash', btoa(formData.username + ':' + formData.password));
+          
+          this.showSuccess('Login successful! Redirecting...');
+          
+          // Redirect after short delay
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 1000);
+        } else {
+          throw new Error('Invalid username or password. Please try again.');
+        }
+      }
+    }
+
+    // Initialize the login form when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      new LoginFormHandler();
     });
   </script>
 </body>
+
 </html>
