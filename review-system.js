@@ -121,7 +121,7 @@ class ReviewSystem {
         const userReviewCount = (reviewsByUser[review.userId] || []).length;
         
         return `
-          <div class="review-card" data-review-id="${index}" style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: var(--space); margin-bottom: var(--space);">
+          <div class="review-card" data-review-id="${review.id}" style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: var(--space); margin-bottom: var(--space);">
             <div class="review-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
               <div style="display: flex; align-items: center; gap: 8px;">
                 <div class="review-author" style="font-weight: 700; color: var(--accent1);">${review.author}</div>
@@ -132,7 +132,7 @@ class ReviewSystem {
                 ${isOwner ? `
                   <div class="review-actions" style="display: flex; gap: 8px;">
                     <button onclick="reviewSystem.editReview('${buildId}', '${review.id}')" style="background: var(--accent1); color: #0b0f1a; border: 0; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: 600;">Edit</button>
-                    <button onclick="reviewSystem.deleteReview('${buildId}', '${review.id}')" style="background: #ff6b6b; color: white; border: 0; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: 600;">Delete</button>
+                    <button onclick="if(confirm('Are you sure you want to delete this review?')) reviewSystem.deleteReview('${buildId}', '${review.id}')" style="background: #ff6b6b; color: white; border: 0; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: 600;">Delete</button>
                   </div>
                 ` : ''}
               </div>
@@ -229,6 +229,9 @@ class ReviewSystem {
       return { success: true };
     } catch (error) {
       console.error('Error submitting review:', error);
+      return { success: false, error: error.message };
+    }
+  }
 
   // Edit a review
   editReview(buildId, reviewId) {
@@ -299,9 +302,6 @@ class ReviewSystem {
       // Replace the old review with the updated one
       reviews[reviewIndex] = updatedReview;
       
-      // Sort reviews by timestamp (newest first)
-      reviews.sort((a, b) => b.timestamp - a.timestamp);
-      
       this.saveReviewsToStorage(buildId, reviews);
       await this.loadReviews(buildId);
       this.hideReviewForm();
@@ -318,30 +318,27 @@ class ReviewSystem {
 
   // Delete a review
   async deleteReview(buildId, reviewId) {
-    if (!confirm('Are you sure you want to delete this review?')) return;
+    if (!confirm('Are you sure you want to delete this review?')) {
+      return;
+    }
     
     const reviews = this.getReviewsFromStorage(buildId);
     const reviewIndex = reviews.findIndex(r => r.id === reviewId);
     const currentUser = this.getCurrentUser();
     
     if (reviewIndex !== -1 && reviews[reviewIndex].userId === currentUser.id) {
-      // Remove the review
       reviews.splice(reviewIndex, 1);
-      
-      // Save the updated reviews
       this.saveReviewsToStorage(buildId, reviews);
-      
-      // Reload the reviews to update the UI
       await this.loadReviews(buildId);
       
-      // Show a success message
+      // Show success message
       this.showMessage('Review deleted successfully!', 'success');
     } else {
       this.showMessage('You can only delete your own reviews.', 'error');
     }
   }
 
-  // Set up event listeners
+  // Setup event listeners
   setupEventListeners() {
     document.addEventListener('click', (e) => {
       // Handle star rating clicks
@@ -466,7 +463,11 @@ class ReviewSystem {
         setTimeout(() => {
           messageEl.style.opacity = '0';
           messageEl.style.transition = 'opacity 0.5s ease';
-          setTimeout(() => messageEl.remove(), 500);
+          setTimeout(() => {
+            if (messageEl.parentNode) {
+              messageEl.parentNode.removeChild(messageEl);
+            }
+          }, 500);
         }, 5000);
       }
     }
