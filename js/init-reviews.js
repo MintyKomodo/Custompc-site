@@ -28,10 +28,6 @@ document.addEventListener('DOMContentLoaded', function() {
             return false;
           }
           
-          if (text.trim().length < 10) {
-            reviewSystem.showMessage('Review must be at least 10 characters long', 'error');
-            return false;
-          }
           
           reviewSystem.submitReview(buildId, { rating: parseInt(rating), text: text.trim() });
           return false;

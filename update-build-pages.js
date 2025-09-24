@@ -4,6 +4,9 @@ const path = require('path');
 
 // List of all build pages
 const buildPages = [
+  'cad-ai-workstation.html',
+  'creator-4k.html',
+  'esports-1080p-1440p.html',
   'photo-pro.html',
   'rgb-showcase.html',
   'silence-optimized.html',
@@ -15,6 +18,7 @@ const buildPages = [
 const reviewSection = `
   <!-- Reviews Section -->
   <section class="reviews-section" style="margin-top: var(--space); background: var(--panel2); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--space);">
+    <div id="message-container" style="position: fixed; top: 20px; right: 20px; z-index: 1000;"></div>
     <h3 style="margin-top: 0; margin-bottom: var(--space); color: var(--accent1);">Reviews</h3>
     
     <!-- Review Form -->
@@ -80,11 +84,14 @@ function updateBuildPage(buildPage) {
     // Read the file
     let content = fs.readFileSync(buildPath, 'utf8');
     
-    // Check if the page already has a reviews section
-    if (content.includes('reviews-container-')) {
-      console.log(`Skipping ${buildPage} - already has reviews section`);
-      return;
+    // Check if the page already has a reviews section and remove it to ensure consistency
+    const reviewSectionRegex = /<!-- Reviews Section -->[\s\S]*?<!-- End Reviews Section -->/;
+    if (content.match(reviewSectionRegex)) {
+      console.log(`Replacing existing reviews section in ${buildPage}`);
+      content = content.replace(reviewSectionRegex, '');
     }
+
+    const reviewsSectionWithEndMarker = reviewSection.replace('</section>', '<!-- End Reviews Section -->\n</section>');
     
     // Find the position to insert the reviews section (before the closing </div> of the wrap div)
     const insertPosition = content.lastIndexOf('</div>', content.lastIndexOf('</div>'));
@@ -97,7 +104,7 @@ function updateBuildPage(buildPage) {
     // Insert the reviews section
     const updatedContent = 
       content.substring(0, insertPosition) + 
-      reviewSection.replace(/{BUILD_ID}/g, buildId) + 
+      reviewsSectionWithEndMarker.replace(/{BUILD_ID}/g, buildId) + 
       content.substring(insertPosition);
     
     // Find the position to insert the script (before the closing </body> tag)
