@@ -84,12 +84,24 @@ function updateBuildPage(buildPage) {
     // Read the file
     let content = fs.readFileSync(buildPath, 'utf8');
     
-    // Check if the page already has a reviews section and remove it to ensure consistency
-    const reviewSectionRegex = /<!-- Reviews Section -->[\s\S]*?<!-- End Reviews Section -->/;
-    if (content.match(reviewSectionRegex)) {
-      console.log(`Replacing existing reviews section in ${buildPage}`);
-      content = content.replace(reviewSectionRegex, '');
-    }
+    // Aggressively remove all traces of old review systems
+    console.log(`Cleaning up old review code in ${buildPage}...`);
+    
+    // Remove old review HTML sections
+    const oldReviewSectionRegex = /<!-- Reviews Section -->[\s\S]*?<\/section>/g;
+    content = content.replace(oldReviewSectionRegex, '');
+
+    // Remove old inline scripts
+    const oldInlineScriptRegex = /<script>[\s\S]*?(loadReviews|handleReviewSubmit|initializeRatingSelector|addSampleReviews)[\s\S]*?<\/script>/g;
+    content = content.replace(oldInlineScriptRegex, '');
+
+    // Remove all script tags pointing to review-system.js or init-reviews.js
+    const reviewScriptTagRegex = /<script src="..\/(js\/)?(review-system|init-reviews)\.js"><\/script>/g;
+    content = content.replace(reviewScriptTagRegex, '');
+
+    // Remove any leftover 'Include Review System' comments
+    const includeCommentRegex = /<!-- Include Review System -->/g;
+    content = content.replace(includeCommentRegex, '');
 
     const reviewsSectionWithEndMarker = reviewSection.replace('</section>', '<!-- End Reviews Section -->\n</section>');
     

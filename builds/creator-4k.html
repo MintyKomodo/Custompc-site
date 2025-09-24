@@ -195,128 +195,66 @@
       </div>
     </section>
 
-    <!-- Reviews Section -->
-    <section class="reviews-section" style="margin-top: var(--space); background: var(--panel2); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--space);">
-      <h3 style="margin-top: 0; margin-bottom: var(--space); color: var(--accent1);">Reviews</h3>
-      
-      <!-- Review Form -->
-      <div id="review-form" style="margin-bottom: var(--space);">
-        <h4 style="margin-top: 0; margin-bottom: 12px;">Write a Review</h4>
-        <form id="review-form-content" onsubmit="event.preventDefault(); handleReviewSubmit('creator-4k');">
-          <div style="margin-bottom: 12px;">
-            <div class="star-rating" style="font-size: 24px; margin-bottom: 8px;">
-              <span class="star" data-rating="1" style="cursor: pointer; color: #666;">☆</span>
-              <span class="star" data-rating="2" style="cursor: pointer; color: #666;">☆</span>
-              <span class="star" data-rating="3" style="cursor: pointer; color: #666;">☆</span>
-              <span class="star" data-rating="4" style="cursor: pointer; color: #666;">☆</span>
-              <span class="star" data-rating="5" style="cursor: pointer; color: #666;">☆</span>
-              <input type="hidden" id="review-rating" value="0">
-            </div>
+    
+  
+  
+
+  <!-- Reviews Section -->
+  <section class="reviews-section" style="margin-top: var(--space); background: var(--panel2); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--space);">
+    <div id="message-container" style="position: fixed; top: 20px; right: 20px; z-index: 1000;"></div>
+    <h3 style="margin-top: 0; margin-bottom: var(--space); color: var(--accent1);">Reviews</h3>
+    
+    <!-- Review Form -->
+    <div id="review-form" style="margin-bottom: var(--space);">
+      <h4 style="margin-top: 0; margin-bottom: 12px;">Write a Review</h4>
+      <form id="review-form-content">
+        <div style="margin-bottom: 12px;">
+          <div class="star-rating" style="font-size: 24px; margin-bottom: 8px;">
+            <span class="star rating-star" data-rating="1" style="cursor: pointer; color: #666;">☆</span>
+            <span class="star rating-star" data-rating="2" style="cursor: pointer; color: #666;">☆</span>
+            <span class="star rating-star" data-rating="3" style="cursor: pointer; color: #666;">☆</span>
+            <span class="star rating-star" data-rating="4" style="cursor: pointer; color: #666;">☆</span>
+            <span class="star rating-star" data-rating="5" style="cursor: pointer; color: #666;">☆</span>
+            <input type="hidden" id="review-rating" value="0">
           </div>
-          <div style="margin-bottom: 12px;">
-            <textarea id="review-text" 
-              style="width: 100%; min-height: 100px; padding: 12px; border-radius: 8px; background: var(--panel); border: 1px solid var(--border); color: var(--ink);" 
-              placeholder="Share your thoughts about this build..." required></textarea>
-          </div>
-          <div style="display: flex; gap: 12px;">
-            <button type="submit" 
-              style="background: var(--accent1); color: #0b0f1a; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer;">
-              Submit Review
-            </button>
-            <button type="button" id="cancel-review"
-              style="background: var(--panel); color: var(--ink); border: 1px solid var(--border); padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer;">
-              Cancel
-            </button>
-          </div>
-        </form>
-      </div>
-      
-      <!-- Reviews Container -->
-      <div id="reviews-container-creator-4k">
-        <!-- Reviews will be loaded here -->
-      </div>
-      
-      <!-- Leave Review Button -->
-      <div style="margin-top: var(--space); padding-top: var(--space); border-top: 1px solid var(--border);">
-        <button id="leave-review-btn" 
-          style="background: var(--accent1); color: #0b0f1a; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 700; cursor: pointer;">
-          Leave a Review
-        </button>
-      </div>
-    </section>
-  </div>
+        </div>
+        <div style="margin-bottom: 12px;">
+          <textarea id="review-text" 
+            style="width: 100%; min-height: 100px; padding: 12px; border-radius: 8px; background: var(--panel); border: 1px solid var(--border); color: var(--ink);" 
+            placeholder="Share your thoughts about this build..." required></textarea>
+        </div>
+        <div style="display: flex; gap: 12px;">
+          <button type="submit" 
+            style="background: var(--accent1); color: #0b0f1a; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer;">
+            Submit Review
+          </button>
+          <button type="button" id="cancel-review"
+            style="background: var(--panel); color: var(--ink); border: 1px solid var(--border); padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer;">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+    
+    <!-- Reviews Container -->
+    <div id="reviews-container-creator-4k">
+      <!-- Reviews will be loaded here -->
+    </div>
+    
+    <!-- Leave Review Button -->
+    <div style="margin-top: var(--space); padding-top: var(--space); border-top: 1px solid var(--border);">
+      <button id="leave-review-btn" 
+        style="background: var(--accent1); color: #0b0f1a; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 700; cursor: pointer;">
+        Leave a Review
+      </button>
+    </div>
+  <!-- End Reviews Section -->
+</section>
+</div>
 
   <!-- Include Review System -->
   <script src="../review-system.js"></script>
-  <script>
-    // Initialize review system
-    document.addEventListener('DOMContentLoaded', function() {
-      // Initialize the review system
-      window.reviewSystem = new ReviewSystem();
-      
-      // Load reviews for this build
-      reviewSystem.loadReviews('creator-4k');
-      
-      // Initialize star rating selector
-      const stars = document.querySelectorAll('.star-rating .star');
-      const ratingInput = document.getElementById('review-rating');
-      
-      stars.forEach(star => {
-        star.addEventListener('click', function() {
-          const rating = this.getAttribute('data-rating');
-          ratingInput.value = rating;
-          
-          // Update star display
-          stars.forEach((s, index) => {
-            s.textContent = index < rating ? '★' : '☆';
-            s.style.color = index < rating ? '#ffd700' : '#666';
-          });
-        });
-      });
-      
-      // Handle leave review button
-      const leaveReviewBtn = document.getElementById('leave-review-btn');
-      const reviewForm = document.getElementById('review-form');
-      const cancelBtn = document.getElementById('cancel-review');
-      
-      if (leaveReviewBtn) {
-        leaveReviewBtn.addEventListener('click', function() {
-          reviewForm.style.display = 'block';
-          this.style.display = 'none';
-        });
-      }
-      
-    });
-    
-    // Add handleSubmit function to global scope
-    window.handleReviewSubmit = function(buildId) {
-      const rating = parseInt(document.getElementById('review-rating').value);
-      const text = document.getElementById('review-text').value.trim();
-      
-      if (!rating) {
-        alert('Please select a rating');
-        return;
-      }
-      
-      if (!text) {
-        alert('Please enter your review text');
-        return;
-      }
-      
-      reviewSystem.submitReview(buildId, { rating, text });
-      document.getElementById('review-text').value = '';
-      document.getElementById('review-rating').value = '0';
-      document.querySelectorAll('.star-rating .star').forEach(star => {
-        star.textContent = '☆';
-        star.style.color = '#666';
-      });
-      
-      // Hide form and show leave review button
-      document.getElementById('review-form').style.display = 'none';
-      const leaveReviewBtn = document.getElementById('leave-review-btn');
-      if (leaveReviewBtn) leaveReviewBtn.style.display = 'block';
-    };
-  </script>
+  
   <script>
     // Star rating is now handled by review-system.js
 
@@ -342,5 +280,13 @@
       color: var(--accent1);
     }
   </style>
+
+  <!-- Include Review System -->
+  <script src="../review-system.js"></script>
+  <script src="../js/init-reviews.js"></script>
+
+  <!-- Include Review System -->
+  <script src="../review-system.js"></script>
+  <script src="../js/init-reviews.js"></script>
 </body>
 </html>
