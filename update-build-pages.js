@@ -18,16 +18,16 @@ const reviewSection = `
     <h3 style="margin-top: 0; margin-bottom: var(--space); color: var(--accent1);">Reviews</h3>
     
     <!-- Review Form -->
-    <div id="review-form" style="display: none; margin-bottom: var(--space);">
+    <div id="review-form" style="margin-bottom: var(--space);">
       <h4 style="margin-top: 0; margin-bottom: 12px;">Write a Review</h4>
-      <form id="review-form-content" onsubmit="event.preventDefault(); handleReviewSubmit('{BUILD_ID}');">
+      <form id="review-form-content">
         <div style="margin-bottom: 12px;">
           <div class="star-rating" style="font-size: 24px; margin-bottom: 8px;">
-            <span class="star" data-rating="1" style="cursor: pointer; color: #666;">☆</span>
-            <span class="star" data-rating="2" style="cursor: pointer; color: #666;">☆</span>
-            <span class="star" data-rating="3" style="cursor: pointer; color: #666;">☆</span>
-            <span class="star" data-rating="4" style="cursor: pointer; color: #666;">☆</span>
-            <span class="star" data-rating="5" style="cursor: pointer; color: #666;">☆</span>
+            <span class="star rating-star" data-rating="1" style="cursor: pointer; color: #666;">☆</span>
+            <span class="star rating-star" data-rating="2" style="cursor: pointer; color: #666;">☆</span>
+            <span class="star rating-star" data-rating="3" style="cursor: pointer; color: #666;">☆</span>
+            <span class="star rating-star" data-rating="4" style="cursor: pointer; color: #666;">☆</span>
+            <span class="star rating-star" data-rating="5" style="cursor: pointer; color: #666;">☆</span>
             <input type="hidden" id="review-rating" value="0">
           </div>
         </div>
@@ -68,87 +68,7 @@ const reviewSection = `
 const scriptToAdd = `
   <!-- Include Review System -->
   <script src="../review-system.js"></script>
-  <script>
-    // Initialize review system
-    document.addEventListener('DOMContentLoaded', function() {
-      // Initialize the review system
-      window.reviewSystem = new ReviewSystem();
-      
-      // Load reviews for this build
-      reviewSystem.loadReviews('{BUILD_ID}');
-      
-      // Initialize star rating selector
-      const stars = document.querySelectorAll('.star-rating .star');
-      const ratingInput = document.getElementById('review-rating');
-      
-      stars.forEach(star => {
-        star.addEventListener('click', function() {
-          const rating = this.getAttribute('data-rating');
-          ratingInput.value = rating;
-          
-          // Update star display
-          stars.forEach((s, index) => {
-            s.textContent = index < rating ? '★' : '☆';
-            s.style.color = index < rating ? '#ffd700' : '#666';
-          });
-        });
-      });
-      
-      // Handle leave review button
-      const leaveReviewBtn = document.getElementById('leave-review-btn');
-      const reviewForm = document.getElementById('review-form');
-      const cancelBtn = document.getElementById('cancel-review');
-      
-      if (leaveReviewBtn) {
-        leaveReviewBtn.addEventListener('click', function() {
-          reviewForm.style.display = 'block';
-          this.style.display = 'none';
-        });
-      }
-      
-      if (cancelBtn) {
-        cancelBtn.addEventListener('click', function() {
-          reviewForm.style.display = 'none';
-          if (leaveReviewBtn) leaveReviewBtn.style.display = 'block';
-          document.getElementById('review-text').value = '';
-          document.getElementById('review-rating').value = '0';
-          document.querySelectorAll('.star-rating .star').forEach(star => {
-            star.textContent = '☆';
-            star.style.color = '#666';
-          });
-        });
-      }
-    });
-    
-    // Add handleSubmit function to global scope
-    window.handleReviewSubmit = function(buildId) {
-      const rating = parseInt(document.getElementById('review-rating').value);
-      const text = document.getElementById('review-text').value.trim();
-      
-      if (!rating) {
-        alert('Please select a rating');
-        return;
-      }
-      
-      if (!text) {
-        alert('Please enter your review text');
-        return;
-      }
-      
-      reviewSystem.submitReview(buildId, { rating, text });
-      document.getElementById('review-text').value = '';
-      document.getElementById('review-rating').value = '0';
-      document.querySelectorAll('.star-rating .star').forEach(star => {
-        star.textContent = '☆';
-        star.style.color = '#666';
-      });
-      
-      // Hide form and show leave review button
-      document.getElementById('review-form').style.display = 'none';
-      const leaveReviewBtn = document.getElementById('leave-review-btn');
-      if (leaveReviewBtn) leaveReviewBtn.style.display = 'block';
-    };
-  </script>
+  <script src="../js/init-reviews.js"></script>
 `;
 
 // Function to update a single build page
