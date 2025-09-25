@@ -382,11 +382,12 @@ class ReviewSystem {
   // Show review form
   showReviewForm() {
     const currentUser = this.getCurrentUser();
+    // Allow Anonymous users to leave reviews; optionally show a gentle note
     if (!currentUser || currentUser.username === 'Anonymous') {
-      this.showMessage('Please log in to leave a review.', 'info');
-      return;
+      // Informational message only; do not block
+      this.showMessage('Leaving an anonymous review. Log in for editing and history.', 'info');
     }
-    
+
     const form = document.getElementById('review-form');
     const leaveBtn = document.getElementById('leave-review-btn');
     
