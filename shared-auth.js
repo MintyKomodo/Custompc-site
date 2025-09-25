@@ -135,6 +135,10 @@ class SharedAuth {
     authSection.appendChild(logoutBtn);
     // Update display based on current user
     this.updateAuthDisplay(userDisplay, loginBtn, logoutBtn);
+    
+    // Ensure the auth section is actually added to the navigation
+    // so the Login/Logout controls are visible site-wide
+    nav.appendChild(authSection);
   }
 
   // Update authentication display
