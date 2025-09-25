@@ -133,21 +133,19 @@ class SharedAuth {
     authSection.appendChild(userDisplay);
     authSection.appendChild(loginBtn);
     authSection.appendChild(logoutBtn);
-    nav.appendChild(authSection);
-
     // Update display based on current user
     this.updateAuthDisplay(userDisplay, loginBtn, logoutBtn);
   }
 
   // Update authentication display
   updateAuthDisplay(userDisplay, loginBtn, logoutBtn) {
+    // Do not show 'Welcome, username'
+    userDisplay.style.display = 'none';
+
     if (this.currentUser) {
-      userDisplay.textContent = `Welcome, ${this.currentUser.username}`;
-      userDisplay.style.display = 'inline';
       loginBtn.style.display = 'none';
       logoutBtn.style.display = 'inline-block';
     } else {
-      userDisplay.style.display = 'none';
       loginBtn.style.display = 'inline-block';
       logoutBtn.style.display = 'none';
     }
@@ -156,21 +154,11 @@ class SharedAuth {
   // Update brand text to show user name
   updateBrandText() {
     const brandElements = document.querySelectorAll('.brand a span, .brand span');
-    
     brandElements.forEach(brandSpan => {
-      if (this.currentUser) {
-        // Store original text if not already stored
-        if (!brandSpan.dataset.originalText) {
-          brandSpan.dataset.originalText = brandSpan.textContent;
-        }
-        brandSpan.textContent = this.currentUser.username;
-        brandSpan.style.color = '#7db2ff';
-      } else {
-        // Restore original text
-        if (brandSpan.dataset.originalText) {
-          brandSpan.textContent = brandSpan.dataset.originalText;
-          brandSpan.style.color = '';
-        }
+      // Always keep original brand text; do not replace with username
+      if (brandSpan.dataset.originalText) {
+        brandSpan.textContent = brandSpan.dataset.originalText;
+        brandSpan.style.color = '';
       }
     });
   }
