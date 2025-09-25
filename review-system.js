@@ -267,14 +267,10 @@ class ReviewSystem {
       // Store the review ID in a data attribute for the update
       form.setAttribute('data-edit-review-id', reviewId);
       
-      // Change submit button to update mode
+      // Change submit button to update mode (form submit handler will route to update)
       const submitBtn = document.getElementById('submit-review');
       if (submitBtn) {
         submitBtn.textContent = 'Update Review';
-        submitBtn.onclick = (e) => {
-          e.preventDefault();
-          this.updateReview(buildId, reviewId);
-        };
       }
     }
   }
@@ -367,51 +363,46 @@ class ReviewSystem {
         this.hideReviewForm();
       }
       
-      // Handle submit review button
-      if (e.target.id === 'submit-review') {
-        this.handleReviewSubmission();
-      }
     });
 
     // Listen for auth state changes
     window.addEventListener('authStateChanged', () => {
       this.currentUser = this.getCurrentUser();
     });
+
+    // Use a single form submit handler to avoid double submissions
+    const formEl = document.getElementById('review-form-content');
+    if (formEl) {
+      formEl.addEventListener('submit', (e) => {
+        e.preventDefault();
+        this.handleReviewSubmission();
+      });
+    }
   }
 
   // Show review form
   showReviewForm() {
     const currentUser = this.getCurrentUser();
-    // Allow Anonymous users to leave reviews; optionally show a gentle note
+    // Allow Anonymous users; show a non-blocking info note
     if (!currentUser || currentUser.username === 'Anonymous') {
-      // Informational message only; do not block
       this.showMessage('Leaving an anonymous review. Log in for editing and history.', 'info');
     }
 
     const form = document.getElementById('review-form');
     const leaveBtn = document.getElementById('leave-review-btn');
-    
     if (form && leaveBtn) {
       form.style.display = 'block';
       leaveBtn.style.display = 'none';
-      
-      // Reset form
+
+      // Reset text and rating
       const textArea = document.getElementById('review-text');
       if (textArea) textArea.value = '';
       this.setStarRating(0);
-      
-      // Clear any edit mode
+
+      // Exit edit mode and set button text back
       form.removeAttribute('data-edit-review-id');
-      
-      // Reset submit button
       const submitBtn = document.getElementById('submit-review');
-      if (submitBtn) {
-        submitBtn.textContent = 'Submit Review';
-        submitBtn.onclick = (e) => {
-          e.preventDefault();
-          this.handleReviewSubmission();
-        };
-      }
+      if (submitBtn) submitBtn.textContent = 'Submit Review';
     }
   }
 
@@ -486,6 +477,17 @@ class ReviewSystem {
 
   // Handle review submission
   async handleReviewSubmission() {
+    // Prevent double-submits by disabling the submit button while processing
+    const submitBtn = document.getElementById('submit-review');
+    if (submitBtn && submitBtn.disabled) {
+      return; // already submitting
+    }
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.style.opacity = '0.7';
+      submitBtn.style.cursor = 'not-allowed';
+    }
+
     const rating = this.getSelectedRating();
     const text = document.getElementById('review-text')?.value?.trim();
     
@@ -527,6 +529,12 @@ class ReviewSystem {
     } catch (error) {
       console.error('Error handling review submission:', error);
       this.showMessage('Error: ' + (error.message || 'Failed to process review'), 'error');
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '';
+        submitBtn.style.cursor = '';
+      }
     }
   }
 
