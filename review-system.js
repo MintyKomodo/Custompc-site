@@ -222,9 +222,9 @@ class ReviewSystem {
       await this.loadReviews(buildId);
       
       // Reset the form
-      const reviewForm = document.getElementById('review-form');
-      if (reviewForm) {
-        reviewForm.reset();
+      const reviewFormEl = document.getElementById('review-form-content');
+      if (reviewFormEl) {
+        reviewFormEl.reset();
         this.setStarRating(0);
       }
       
@@ -413,7 +413,8 @@ class ReviewSystem {
     
     if (form && leaveBtn) {
       form.style.display = 'none';
-      form.reset();
+      const reviewFormEl = document.getElementById('review-form-content');
+      if (reviewFormEl) reviewFormEl.reset();
       form.removeAttribute('data-edit-review-id');
       leaveBtn.style.display = 'block';
       this.setStarRating(0);
