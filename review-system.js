@@ -69,6 +69,8 @@ class ReviewSystem {
     for (let i = 1; i <= 5; i++) {
       if (i <= rating) {
         stars += '<span class="star filled" style="color: #ffd700;">★</span>';
+      } else if (i - 0.5 === rating) {
+        stars += '<span class="star half">★</span>';
       } else {
         stars += '<span class="star empty" style="color: #666;">☆</span>';
       }
@@ -343,8 +345,16 @@ class ReviewSystem {
     document.addEventListener('click', (e) => {
       // Handle star rating clicks
       if (e.target.classList.contains('rating-star')) {
-        const rating = parseInt(e.target.dataset.rating);
-        this.setStarRating(rating);
+        const star = e.target;
+        const rect = star.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const rating = parseInt(star.dataset.rating);
+        
+        if (clickX < rect.width / 2) {
+          this.setStarRating(rating - 0.5);
+        } else {
+          this.setStarRating(rating);
+        }
       }
       
       // Handle leave review button
@@ -518,109 +528,92 @@ class ReviewSystem {
       this.showMessage('Error: ' + (error.message || 'Failed to process review'), 'error');
     }
   }
-  }
 
   // Get currently selected rating
   getSelectedRating() {
-    const stars = document.querySelectorAll('.rating-star');
-    let rating = 0;
-    stars.forEach(star => {
-      if (star.style.color === 'rgb(255, 215, 0)' || star.style.color === '#ffd700') {
-        rating = Math.max(rating, parseInt(star.dataset.rating));
-      }
-    });
-    return rating;
+    const ratingInput = document.getElementById('review-rating');
+    return ratingInput ? parseFloat(ratingInput.value) : 0;
   }
 
   // Set star rating visually
   setStarRating(rating) {
     const stars = document.querySelectorAll('.rating-star');
+    const ratingInput = document.getElementById('review-rating');
+    if (ratingInput) {
+      ratingInput.value = rating;
+    }
+
     stars.forEach(star => {
       const starRating = parseInt(star.dataset.rating);
       if (starRating <= rating) {
-        star.style.color = '#ffd700';
         star.textContent = '★';
+        star.style.color = '#ffd700';
+      } else if (starRating - 0.5 === rating) {
+        star.textContent = '★'; // Visually it's a full star, but CSS will clip it
+        star.style.color = 'var(--muted)'; // Base color
+        star.classList.add('half');
       } else {
-        star.style.color = 'var(--muted)';
         star.textContent = '☆';
+        star.style.color = 'var(--muted)';
+      }
+
+      // Clean up half-star class if not needed
+      if (starRating - 0.5 !== rating) {
+        star.classList.remove('half');
       }
     });
   }
 
   // Get current build ID from page
   getCurrentBuildId() {
-    // Try to extract from URL or page elements
     const path = window.location.pathname;
     const match = path.match(/builds\/(.+)\.html/);
     if (match) {
       return match[1];
     }
-    
-    // Fallback: look for reviews container
     const container = document.querySelector('[id^="reviews-container-"]');
     if (container) {
       return container.id.replace('reviews-container-', '');
     }
-    
     return null;
-  }
-
-  // Show temporary message
-  showMessage(text, type = 'info') {
-    const message = document.createElement('div');
-    message.style.cssText = `
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: ${type === 'success' ? 'var(--accent2)' : 'var(--accent1)'};
-      color: #0b0f1a;
-      padding: 12px 20px;
-      border-radius: 8px;
-      font-weight: 600;
-      z-index: 10000;
-      animation: slideIn 0.3s ease;
-    `;
-    message.textContent = text;
-    
-    document.body.appendChild(message);
-    
-    setTimeout(() => {
-      message.style.animation = 'slideOut 0.3s ease';
-      setTimeout(() => message.remove(), 300);
-    }, 3000);
   }
 }
 
 // Initialize review system when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
   window.reviewSystem = new ReviewSystem();
-  
-  // Auto-load reviews for current build
   const buildId = window.reviewSystem.getCurrentBuildId();
   if (buildId) {
     window.reviewSystem.loadReviews(buildId);
   }
 });
 
-// Add CSS animations
+// Add CSS animations and styles
 const style = document.createElement('style');
 style.textContent = `
   @keyframes slideIn {
     from { transform: translateX(100%); opacity: 0; }
     to { transform: translateX(0); opacity: 1; }
   }
-  
   @keyframes slideOut {
     from { transform: translateX(0); opacity: 1; }
     to { transform: translateX(100%); opacity: 0; }
   }
-  
   .rating-star {
-    transition: color 0.2s ease;
+    transition: color 0.2s ease, transform 0.2s ease;
+    position: relative;
   }
-  
   .rating-star:hover {
     transform: scale(1.1);
+  }
+  .rating-star.half::before {
+    content: '★';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 50%;
+    overflow: hidden;
+    color: #ffd700;
   }
 `;
 document.head.appendChild(style);
