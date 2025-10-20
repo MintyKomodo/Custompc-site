@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Reviews</title>
+    <style>
+        :root{
+            --space:15px;
+            --bg:#0a0f1a; --ink:#e9eefc; --muted:#aeb9d4;
+            --panel:#111729; --panel2:#0d1426; --border:rgba(255,255,255,.08);
+            --accent1:#7db2ff; --accent2:#7cf2e6;
+            --radius:18px; --shadow:0 20px 40px rgba(0,0,0,.35);
+            --max:1200px;
+        }
+        body {
+            background: var(--bg);
+            color: var(--ink);
+            font-family: system-ui;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Review System Test</h1>
+        <p>Testing the review system functionality...</p>
+        
+        <!-- Reviews Section -->
+        <section class="reviews-section" style="margin-top: var(--space); background: var(--panel2); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--space);">
+            <h3 style="margin-top: 0; margin-bottom: var(--space); color: var(--accent1);">Reviews</h3>
+            
+            <!-- Review Form -->
+            <div id="review-form" style="margin-bottom: var(--space); display: none;">
+                <h4 style="margin-top: 0; margin-bottom: 12px;">Write a Review</h4>
+                <form id="review-form-content">
+                    <div style="margin-bottom: 12px;">
+                        <div class="star-rating" style="font-size: 24px; margin-bottom: 8px;">
+                            <span class="star rating-star" data-rating="1" style="cursor: pointer; color: #666;">☆</span>
+                            <span class="star rating-star" data-rating="2" style="cursor: pointer; color: #666;">☆</span>
+                            <span class="star rating-star" data-rating="3" style="cursor: pointer; color: #666;">☆</span>
+                            <span class="star rating-star" data-rating="4" style="cursor: pointer; color: #666;">☆</span>
+                            <span class="star rating-star" data-rating="5" style="cursor: pointer; color: #666;">☆</span>
+                            <input type="hidden" id="review-rating" value="0">
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 12px;">
+                        <textarea id="review-text" 
+                            style="width: 100%; min-height: 100px; padding: 12px; border-radius: 8px; background: var(--panel); border: 1px solid var(--border); color: var(--ink);" 
+                            placeholder="Share your thoughts about this build..." required></textarea>
+                    </div>
+                    <div style="display: flex; gap: 12px;">
+                        <button type="submit" id="submit-review"
+                            style="background: var(--accent1); color: #0b0f1a; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer;">
+                            Submit Review
+                        </button>
+                        <button type="button" id="cancel-review"
+                            style="background: var(--panel); color: var(--ink); border: 1px solid var(--border); padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer;">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Reviews Container -->
+            <div id="reviews-container-test-build">
+                <!-- Reviews will be loaded here -->
+            </div>
+            
+            <!-- Leave Review Button -->
+            <div style="margin-top: var(--space); padding-top: var(--space); border-top: 1px solid var(--border);">
+                <button id="leave-review-btn" 
+                    style="background: var(--accent1); color: #0b0f1a; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 700; cursor: pointer;">
+                    Leave a Review
+                </button>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Override getCurrentBuildId for testing
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                if (window.reviewSystem) {
+                    window.reviewSystem.getCurrentBuildId = () => 'test-build';
+                    window.reviewSystem.loadReviews('test-build');
+                }
+            }, 200);
+        });
+    </script>
+    
+    <script src="shared-auth.js"></script>
+    <script src="review-system.js"></script>
+</body>
+</html>
+</script>

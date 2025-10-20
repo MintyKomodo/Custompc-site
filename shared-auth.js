@@ -159,8 +159,16 @@ class SharedAuth {
   updateBrandText() {
     const brandElements = document.querySelectorAll('.brand a span, .brand span');
     brandElements.forEach(brandSpan => {
-      // Always keep original brand text; do not replace with username
-      if (brandSpan.dataset.originalText) {
+      // Store original text if not already stored
+      if (!brandSpan.dataset.originalText) {
+        brandSpan.dataset.originalText = brandSpan.textContent;
+      }
+      
+      // Show user name if logged in, otherwise show original brand text
+      if (this.currentUser && this.currentUser.username) {
+        brandSpan.textContent = this.currentUser.username;
+        brandSpan.style.color = '#7db2ff';
+      } else {
         brandSpan.textContent = brandSpan.dataset.originalText;
         brandSpan.style.color = '';
       }

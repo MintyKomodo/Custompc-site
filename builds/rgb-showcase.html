@@ -29,10 +29,17 @@
     header{
       display:flex;align-items:center;justify-content:space-between;
       margin-bottom:var(--space);padding:0 var(--space);
-      max-width:var(--max);margin-left:auto;margin-right:auto;width:100%
+      max-width:var(--max);margin-left:auto;margin-right:auto;width:100%;
+      flex-wrap:wrap;gap:var(--space);
     }
     .brand a{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;font-weight:700;letter-spacing:.3px;white-space:nowrap}
+    .build-type-indicator{flex-shrink:0}
     nav{display:flex;gap:var(--space);flex-wrap:wrap}
+    @media (max-width: 768px) {
+      header{flex-direction:column;align-items:flex-start}
+      .build-type-indicator{order:2;margin:8px 0}
+      nav{order:3}
+    }
     .pill{display:inline-block;padding:10px 14px;border-radius:999px;color:var(--ink);text-decoration:none;border:1px solid transparent}
     .pill:hover{background:#0f1830}
     .pill.active{background:linear-gradient(120deg,rgba(125,178,255,.15),rgba(124,242,230,.15));border-color:rgba(255,255,255,.08)}
@@ -126,6 +133,11 @@
             style="height:100px;width:100px;display:inline-block;vertical-align:middle;object-fit:contain;border-radius:50%;" />
           <span style="margin-left:8px;vertical-align:middle;">CustomPC.tech</span>
         </a>
+      </div>
+      <div class="build-type-indicator" style="display: flex; align-items: center; gap: 12px;">
+        <div class="build-badge" style="background: linear-gradient(120deg, rgba(125,178,255,.2), rgba(124,242,230,.2)); border: 1px solid rgba(125,178,255,.3); border-radius: 999px; padding: 8px 16px; color: var(--accent1); font-weight: 600; font-size: 0.9rem;">
+          🌈 RGB Showcase Build
+        </div>
       </div>
       <nav>
         <a class="pill" href="../builds.html">Builds</a>
@@ -261,7 +273,8 @@
     }
   </style>
 
-  <!-- Include Review System -->
+  <!-- Include Shared Auth and Review System -->
+  <script src="../shared-auth.js"></script>
   <script src="../review-system.js"></script>
 </body>
 </html>

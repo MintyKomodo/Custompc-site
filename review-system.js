@@ -371,13 +371,12 @@ class ReviewSystem {
     });
 
     // Use a single form submit handler to avoid double submissions
-    const formEl = document.getElementById('review-form-content');
-    if (formEl) {
-      formEl.addEventListener('submit', (e) => {
+    document.addEventListener('submit', (e) => {
+      if (e.target.id === 'review-form-content') {
         e.preventDefault();
         this.handleReviewSubmission();
-      });
-    }
+      }
+    });
   }
 
   // Show review form
@@ -591,11 +590,14 @@ class ReviewSystem {
 
 // Initialize review system when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-  window.reviewSystem = new ReviewSystem();
-  const buildId = window.reviewSystem.getCurrentBuildId();
-  if (buildId) {
-    window.reviewSystem.loadReviews(buildId);
-  }
+  // Add a small delay to ensure all other scripts are loaded
+  setTimeout(() => {
+    window.reviewSystem = new ReviewSystem();
+    const buildId = window.reviewSystem.getCurrentBuildId();
+    if (buildId) {
+      window.reviewSystem.loadReviews(buildId);
+    }
+  }, 100);
 });
 
 // Add CSS animations and styles
