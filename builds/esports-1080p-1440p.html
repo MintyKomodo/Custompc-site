@@ -203,7 +203,7 @@
     <h3 style="margin-top: 0; margin-bottom: var(--space); color: var(--accent1);">Reviews</h3>
     
     <!-- Review Form -->
-    <div id="review-form" style="margin-bottom: var(--space);">
+    <div id="review-form" style="margin-bottom: var(--space); display: none;">
       <h4 style="margin-top: 0; margin-bottom: 12px;">Write a Review</h4>
       <form id="review-form-content">
         <div style="margin-bottom: 12px;">
@@ -222,7 +222,7 @@
             placeholder="Share your thoughts about this build..." required></textarea>
         </div>
         <div style="display: flex; gap: 12px;">
-          <button type="submit" 
+          <button type="submit" id="submit-review"
             style="background: var(--accent1); color: #0b0f1a; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer;">
             Submit Review
           </button>
@@ -267,10 +267,5 @@
 
   <!-- Include Review System -->
   <script src="../review-system.js"></script>
-  <script src="../js/init-reviews.js"></script>
-
-  <!-- Include Review System -->
-  <script src="../review-system.js"></script>
-  <script src="../js/init-reviews.js"></script>
 </body>
 </html>

@@ -4,52 +4,9 @@
  */
 
 document.addEventListener('DOMContentLoaded', function() {
-  // Initialize the review system
-  if (typeof ReviewSystem === 'function') {
-    window.reviewSystem = window.reviewSystem || new ReviewSystem();
-    
-    // Get build ID from the page (extract from URL or use a data attribute)
-    const buildId = getBuildId();
-    
-    if (buildId) {
-      // Load reviews for this build
-      reviewSystem.loadReviews(buildId);
-      
-      // Set up review form submission
-      const reviewForm = document.getElementById('review-form-content');
-      if (reviewForm) {
-        reviewForm.onsubmit = function(e) {
-          e.preventDefault();
-          const rating = document.getElementById('review-rating')?.value || 0;
-          const text = document.getElementById('review-text')?.value || '';
-          
-          if (parseInt(rating) <= 0) {
-            reviewSystem.showMessage('Please select a rating', 'error');
-            return false;
-          }
-          
-          
-          reviewSystem.submitReview(buildId, { rating: parseInt(rating), text: text.trim() });
-          return false;
-        };
-      }
-      
-      // Set up star rating interaction
-      setupStarRating();
-      
-      // Handle leave review button
-      const leaveReviewBtn = document.getElementById('leave-review-btn');
-      const reviewFormElement = document.getElementById('review-form');
-      
-      if (leaveReviewBtn && reviewFormElement) {
-        leaveReviewBtn.addEventListener('click', function() {
-          reviewFormElement.style.display = 'block';
-          this.style.display = 'none';
-          document.getElementById('review-text').focus();
-        });
-      }
-    }
-  }
+  // The ReviewSystem class handles its own initialization
+  // This file is kept for compatibility but functionality is in review-system.js
+  console.log('Review system initialization delegated to ReviewSystem class');
 });
 
 /**
