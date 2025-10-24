@@ -59,93 +59,39 @@ class SharedAuth {
   // Add authentication elements to a navigation container
   addAuthToNav(nav) {
     // Check if auth elements already exist
-    if (nav.querySelector('.auth-section')) return;
+    if (nav.querySelector('#login-btn') || nav.querySelector('#logout-btn')) return;
 
-    // Create auth section
-    const authSection = document.createElement('div');
-    authSection.className = 'auth-section';
-    authSection.style.cssText = `
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-left: auto;
-    `;
-
-    // User display span
-    const userDisplay = document.createElement('span');
-    userDisplay.id = 'user-display';
-    userDisplay.style.cssText = `
-      display: none;
-      color: #7db2ff;
-      font-weight: 600;
-      font-size: 0.9rem;
-    `;
-
-    // Login button
-    const loginBtn = document.createElement('button');
+    // Login button as a navigation pill
+    const loginBtn = document.createElement('a');
     loginBtn.id = 'login-btn';
     loginBtn.textContent = 'Login';
     loginBtn.className = 'pill';
+    loginBtn.href = '#';
     loginBtn.style.cssText = `
-      background: #7db2ff;
-      color: #0b0f1a;
-      border: 0;
       cursor: pointer;
-      padding: 8px 14px;
-      border-radius: 999px;
-      font-weight: 600;
-      transition: all 0.2s ease;
     `;
 
-    // Logout button
-    const logoutBtn = document.createElement('button');
+    // Logout button as a navigation pill
+    const logoutBtn = document.createElement('a');
     logoutBtn.id = 'logout-btn';
     logoutBtn.textContent = 'Logout';
     logoutBtn.className = 'pill';
+    logoutBtn.href = '#';
     logoutBtn.style.cssText = `
       display: none;
-      background: #111729;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      color: #e9eefc;
       cursor: pointer;
-      padding: 8px 14px;
-      border-radius: 999px;
-      font-weight: 600;
-      transition: all 0.2s ease;
     `;
 
-    // Add hover effects
-    loginBtn.addEventListener('mouseenter', () => {
-      loginBtn.style.background = '#6ba3ff';
-    });
-    loginBtn.addEventListener('mouseleave', () => {
-      loginBtn.style.background = '#7db2ff';
-    });
-
-    logoutBtn.addEventListener('mouseenter', () => {
-      logoutBtn.style.background = '#1a2332';
-    });
-    logoutBtn.addEventListener('mouseleave', () => {
-      logoutBtn.style.background = '#111729';
-    });
-
-    // Append elements
-    authSection.appendChild(userDisplay);
-    authSection.appendChild(loginBtn);
-    authSection.appendChild(logoutBtn);
     // Update display based on current user
-    this.updateAuthDisplay(userDisplay, loginBtn, logoutBtn);
+    this.updateAuthDisplay(null, loginBtn, logoutBtn);
     
-    // Ensure the auth section is actually added to the navigation
-    // so the Login/Logout controls are visible site-wide
-    nav.appendChild(authSection);
+    // Add buttons directly to nav as pills
+    nav.appendChild(loginBtn);
+    nav.appendChild(logoutBtn);
   }
 
   // Update authentication display
   updateAuthDisplay(userDisplay, loginBtn, logoutBtn) {
-    // Do not show 'Welcome, username'
-    userDisplay.style.display = 'none';
-
     if (this.currentUser) {
       loginBtn.style.display = 'none';
       logoutBtn.style.display = 'inline-block';
@@ -180,13 +126,17 @@ class SharedAuth {
     // Login button clicks
     document.addEventListener('click', (e) => {
       if (e.target.id === 'login-btn') {
-        window.location.href = 'login.html';
+        e.preventDefault();
+        // Check if we're in a builds subdirectory
+        const isInBuilds = window.location.pathname.includes('/builds/');
+        window.location.href = isInBuilds ? '../login.html' : 'login.html';
       }
     });
 
     // Logout button clicks
     document.addEventListener('click', (e) => {
       if (e.target.id === 'logout-btn') {
+        e.preventDefault();
         this.logout();
       }
     });
@@ -227,13 +177,12 @@ class SharedAuth {
 
   // Refresh all auth UI elements
   refreshAuthUI() {
-    // Update all user displays
-    const userDisplays = document.querySelectorAll('#user-display');
+    // Update all auth buttons
     const loginBtns = document.querySelectorAll('#login-btn');
     const logoutBtns = document.querySelectorAll('#logout-btn');
 
-    for (let i = 0; i < userDisplays.length; i++) {
-      this.updateAuthDisplay(userDisplays[i], loginBtns[i], logoutBtns[i]);
+    for (let i = 0; i < loginBtns.length; i++) {
+      this.updateAuthDisplay(null, loginBtns[i], logoutBtns[i]);
     }
 
     // Update brand text

@@ -56,9 +56,32 @@
       .build-type-indicator{grid-row:2}
       nav{grid-row:3;justify-self:center}
     }
-    .pill{display:inline-block;padding:10px 14px;border-radius:999px;color:var(--ink);text-decoration:none;border:1px solid transparent}
-    .pill:hover{background:#0f1830}
-    .pill.active{background:linear-gradient(120deg,rgba(125,178,255,.15),rgba(124,242,230,.15));border-color:rgba(255,255,255,.08)}
+    .pill{
+      display:inline-block;padding:12px 20px;border-radius:999px;
+      color:var(--ink);text-decoration:none;border:1px solid transparent;
+      background:linear-gradient(135deg,rgba(125,178,255,.12),rgba(124,242,230,.12));
+      border:1px solid rgba(125,178,255,.2);
+      font-weight:600;font-size:0.95rem;
+      transition:all 0.3s ease;
+      position:relative;overflow:hidden;
+    }
+    .pill::before{
+      content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.1),transparent);
+      transition:left 0.5s ease;
+    }
+    .pill:hover{
+      background:linear-gradient(135deg,rgba(125,178,255,.25),rgba(124,242,230,.25));
+      border-color:rgba(125,178,255,.4);
+      transform:translateY(-2px);
+      box-shadow:0 8px 25px rgba(125,178,255,.2);
+    }
+    .pill:hover::before{left:100%}
+    .pill.active{
+      background:linear-gradient(135deg,var(--accent1),var(--accent2));
+      color:#0b0f1a;border-color:transparent;
+      box-shadow:0 8px 25px rgba(125,178,255,.3);
+    }
 
     /* Build Content */
     .build-container {
