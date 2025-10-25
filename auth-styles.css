@@ -44,8 +44,8 @@ header a:hover {
   --auth-card-bg: rgba(20, 30, 45, 0.9);
   --auth-input-bg: #111a24;
   --auth-input-border: #2a3b4d;
-  --auth-accent-blue: #00aeef;
-  --auth-accent-green: #00c98f;
+  --auth-accent-blue: #7db2ff;
+  --auth-accent-green: #7cf2e6;
   --auth-text-primary: #ffffff;
   --auth-text-muted: #aeb9d4;
   --auth-error-color: #ff6b6b;
@@ -197,24 +197,25 @@ body.auth-page {
   box-shadow: 0 0 8px rgba(255, 107, 107, 0.5);
 }
 
-/* Gradient button styling */
+/* Gradient button styling - matching "Get My Build Plan" style */
 .gradient-btn {
   width: 100%;
-  padding: 0.75rem;
+  padding: 0.875rem 1.5rem;
   margin-top: var(--auth-button-margin);
   border: none;
-  border-radius: var(--auth-button-radius);
-  background: linear-gradient(90deg, var(--auth-accent-blue), var(--auth-accent-green));
-  color: var(--auth-text-primary);
+  border-radius: 25px;
+  background: linear-gradient(135deg, #7db2ff 0%, #7cf2e6 100%);
+  color: #0b0f1a;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-family: inherit;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-transform: none;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.5px;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 8px 25px rgba(125, 178, 255, 0.3);
 }
 
 .gradient-btn::before {
@@ -224,16 +225,16 @@ body.auth-page {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
   transition: left 0.5s ease;
 }
 
 .gradient-btn:hover {
+  background: linear-gradient(135deg, #6ba3ff 0%, #5ef0e3 100%);
   box-shadow: 
-    0 0 15px var(--auth-accent-green),
-    0 0 30px rgba(124, 242, 230, 0.3),
-    0 4px 15px rgba(0, 0, 0, 0.2);
-  transform: translateY(-2px);
+    0 12px 35px rgba(125, 178, 255, 0.4),
+    0 0 25px rgba(124, 242, 230, 0.3);
+  transform: translateY(-3px);
 }
 
 .gradient-btn:hover::before {
@@ -243,12 +244,14 @@ body.auth-page {
 .gradient-btn:active {
   transform: translateY(-1px);
   transition: transform 0.1s ease;
+  box-shadow: 0 6px 20px rgba(125, 178, 255, 0.35);
 }
 
 .gradient-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
+  box-shadow: none;
 }
 
 /* Authentication links styling */
