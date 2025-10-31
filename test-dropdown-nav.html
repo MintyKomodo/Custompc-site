@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dropdown Navigation Test</title>
+  <style>
+    body {
+      font-family: system-ui;
+      margin: 20px;
+      background: #0a0f1a;
+      color: #e9eefc;
+    }
+    .test-section {
+      background: #111729;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+    .status {
+      padding: 10px;
+      border-radius: 8px;
+      margin: 10px 0;
+    }
+    .success { background: rgba(124,242,230,.12); border: 1px solid rgba(124,242,230,.35); }
+    .error { background: rgba(255,99,132,.12); border: 1px solid rgba(255,99,132,.35); }
+    .info { background: rgba(125,178,255,.12); border: 1px solid rgba(125,178,255,.35); }
+  </style>
+</head>
+<body>
+  <h1>🧪 Dropdown Navigation Test</h1>
+  
+  <div class="test-section">
+    <h2>Test Results</h2>
+    <div id="test-results"></div>
+    
+    <button onclick="runTests()" style="
+      padding: 12px 20px;
+      background: linear-gradient(90deg, #7db2ff, #7cf2e6);
+      color: #0b0f1a;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      margin: 10px 0;
+    ">Run Tests</button>
+  </div>
+
+  <div class="test-section">
+    <h2>Manual Tests</h2>
+    <ol>
+      <li>Go to <a href="index.html" style="color: #7db2ff;">index.html</a></li>
+      <li>Look for "Services" dropdown in navigation</li>
+      <li>Click on "Services" to open dropdown</li>
+      <li>Verify "Contact & Messaging" option is visible</li>
+      <li>Verify "Payment Processing" option visibility based on admin status</li>
+      <li>Test keyboard shortcuts: Alt+S (services), Alt+M (messaging), Alt+P (payments)</li>
+    </ol>
+  </div>
+
+  <div class="test-section">
+    <h2>Authentication Integration</h2>
+    <p>Current user status: <span id="auth-status">Loading...</span></p>
+    <p>Admin access: <span id="admin-status">Loading...</span></p>
+    <p>Payments accessible: <span id="payments-status">Loading...</span></p>
+    
+    <button onclick="testLogin()" style="
+      padding: 8px 16px;
+      background: #7db2ff;
+      color: #0b0f1a;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin: 5px;
+    ">Test Admin Login</button>
+    
+    <button onclick="testLogout()" style="
+      padding: 8px 16px;
+      background: #ff6b6b;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin: 5px;
+    ">Test Logout</button>
+  </div>
+
+  <script>
+    function runTests() {
+      const results = document.getElementById('test-results');
+      results.innerHTML = '';
+      
+      const tests = [
+        {
+          name: 'Index.html exists',
+          test: () => fetch('index.html').then(r => r.ok)
+        },
+        {
+          name: 'Contact.html exists', 
+          test: () => fetch('contact.html').then(r => r.ok)
+        },
+        {
+          name: 'Payments.html exists',
+          test: () => fetch('payments.html').then(r => r.ok)
+        },
+        {
+          name: 'SharedAuth script exists',
+          test: () => fetch('shared-auth.js').then(r => r.ok)
+        }
+      ];
+      
+      tests.forEach(async (test, index) => {
+        try {
+          const result = await test.test();
+          addResult(test.name, result, result ? 'Test passed' : 'Test failed');
+        } catch (error) {
+          addResult(test.name, false, error.message);
+        }
+      });
+    }
+    
+    function addResult(name, success, message) {
+      const results = document.getElementById('test-results');
+      const div = document.createElement('div');
+      div.className = `status ${success ? 'success' : 'error'}`;
+      div.innerHTML = `<strong>${name}:</strong> ${message}`;
+      results.appendChild(div);
+    }
+    
+    function testLogin() {
+      // Simulate admin login
+      const adminUser = {
+        username: "Minty-Komodo",
+        email: "griffin@crowhurst.ws",
+        loginTime: new Date().toISOString()
+      };
+      
+      localStorage.setItem('custompc_user', JSON.stringify(adminUser));
+      updateAuthStatus();
+      
+      addResult('Admin Login Test', true, 'Simulated admin login successful');
+    }
+    
+    function testLogout() {
+      localStorage.removeItem('custompc_user');
+      localStorage.removeItem('custompc_username');
+      updateAuthStatus();
+      
+      addResult('Logout Test', true, 'Logout successful');
+    }
+    
+    function updateAuthStatus() {
+      const userData = localStorage.getItem('custompc_user');
+      const user = userData ? JSON.parse(userData) : null;
+      
+      document.getElementById('auth-status').textContent = user ? user.username : 'Not logged in';
+      
+      const isAdmin = user && user.username === "Minty-Komodo" && user.email === "griffin@crowhurst.ws";
+      document.getElementById('admin-status').textContent = isAdmin ? 'Yes' : 'No';
+      document.getElementById('payments-status').textContent = isAdmin ? 'Yes' : 'No';
+    }
+    
+    // Initial status update
+    updateAuthStatus();
+    
+    // Auto-run tests on load
+    setTimeout(runTests, 1000);
+  </script>
+</body>
+</html>
