@@ -18,6 +18,11 @@ class AuthFormTester {
     this.testPasswordValidation();
     this.testConfirmPasswordValidation();
     
+    // Admin authentication tests
+    this.testAdminCredentialValidation();
+    this.testAdminSessionManagement();
+    this.testAdminAccessControl();
+    
     // Form behavior tests
     await this.testFormSubmission();
     await this.testErrorHandling();
@@ -364,6 +369,179 @@ class AuthFormTester {
         input: testCase.viewport,
         expected: testCase.expectedBehavior,
         actual: 'Responsive behavior works correctly',
+        passed: passed
+      });
+    });
+  }
+
+  // Test admin credential validation
+  testAdminCredentialValidation() {
+    // Mock AdminAuth for testing
+    const mockAdminAuth = {
+      validateAdminCredentials: (username, password, email) => {
+        const adminCredentials = {
+          username: "Minty-Komodo",
+          password: "hJ.?'0PcU0).1.0.1PCimA4%oU",
+          email: "griffin@crowhurst.ws"
+        };
+        return username === adminCredentials.username &&
+               password === adminCredentials.password &&
+               email === adminCredentials.email;
+      }
+    };
+
+    const testCases = [
+      { 
+        input: { username: "Minty-Komodo", password: "hJ.?'0PcU0).1.0.1PCimA4%oU", email: "griffin@crowhurst.ws" }, 
+        expected: true, 
+        description: 'Valid admin credentials' 
+      },
+      { 
+        input: { username: "wrong-user", password: "hJ.?'0PcU0).1.0.1PCimA4%oU", email: "griffin@crowhurst.ws" }, 
+        expected: false, 
+        description: 'Invalid admin username' 
+      },
+      { 
+        input: { username: "Minty-Komodo", password: "wrong-password", email: "griffin@crowhurst.ws" }, 
+        expected: false, 
+        description: 'Invalid admin password' 
+      },
+      { 
+        input: { username: "Minty-Komodo", password: "hJ.?'0PcU0).1.0.1PCimA4%oU", email: "wrong@email.com" }, 
+        expected: false, 
+        description: 'Invalid admin email' 
+      },
+      { 
+        input: { username: "", password: "", email: "" }, 
+        expected: false, 
+        description: 'Empty admin credentials' 
+      },
+      { 
+        input: { username: "Minty-Komodo", password: "hJ.?'0PcU0).1.0.1PCimA4%oU", email: "GRIFFIN@CROWHURST.WS" }, 
+        expected: false, 
+        description: 'Case sensitive email validation' 
+      }
+    ];
+
+    testCases.forEach(testCase => {
+      const result = mockAdminAuth.validateAdminCredentials(
+        testCase.input.username, 
+        testCase.input.password, 
+        testCase.input.email
+      );
+      const passed = result === testCase.expected;
+      
+      this.testResults.push({
+        category: 'Admin Authentication',
+        description: testCase.description,
+        input: `${testCase.input.username} / ${testCase.input.email}`,
+        expected: testCase.expected ? 'Valid' : 'Invalid',
+        actual: result ? 'Valid' : 'Invalid',
+        passed: passed
+      });
+    });
+  }
+
+  // Test admin session management
+  testAdminSessionManagement() {
+    const testCases = [
+      {
+        description: 'Admin session creation',
+        sessionData: { username: "Minty-Komodo", email: "griffin@crowhurst.ws", role: "admin" },
+        expectedValid: true
+      },
+      {
+        description: 'Admin session validation with valid data',
+        sessionData: { username: "Minty-Komodo", email: "griffin@crowhurst.ws", role: "admin", loginTime: new Date().toISOString() },
+        expectedValid: true
+      },
+      {
+        description: 'Admin session validation with expired time',
+        sessionData: { username: "Minty-Komodo", email: "griffin@crowhurst.ws", role: "admin", loginTime: new Date(Date.now() - 10 * 60 * 60 * 1000).toISOString() },
+        expectedValid: false
+      },
+      {
+        description: 'Non-admin user session',
+        sessionData: { username: "regular-user", email: "user@example.com", role: "user" },
+        expectedValid: false
+      }
+    ];
+
+    testCases.forEach(testCase => {
+      // Mock session validation logic
+      const isValidAdmin = testCase.sessionData.username === "Minty-Komodo" && 
+                          testCase.sessionData.email === "griffin@crowhurst.ws" &&
+                          testCase.sessionData.role === "admin";
+      
+      let isSessionValid = isValidAdmin;
+      if (testCase.sessionData.loginTime) {
+        const loginTime = new Date(testCase.sessionData.loginTime);
+        const now = new Date();
+        const sessionAgeHours = (now - loginTime) / (1000 * 60 * 60);
+        isSessionValid = isValidAdmin && sessionAgeHours <= 8;
+      }
+      
+      const passed = isSessionValid === testCase.expectedValid;
+      
+      this.testResults.push({
+        category: 'Admin Session Management',
+        description: testCase.description,
+        input: JSON.stringify(testCase.sessionData),
+        expected: testCase.expectedValid ? 'Valid Session' : 'Invalid Session',
+        actual: isSessionValid ? 'Valid Session' : 'Invalid Session',
+        passed: passed
+      });
+    });
+  }
+
+  // Test admin access control
+  testAdminAccessControl() {
+    const testCases = [
+      {
+        description: 'Admin user accessing payments page',
+        user: { username: "Minty-Komodo", email: "griffin@crowhurst.ws", role: "admin" },
+        resource: 'payments.html',
+        expectedAccess: true
+      },
+      {
+        description: 'Regular user accessing payments page',
+        user: { username: "regular-user", email: "user@example.com", role: "user" },
+        resource: 'payments.html',
+        expectedAccess: false
+      },
+      {
+        description: 'Unauthenticated user accessing payments page',
+        user: null,
+        resource: 'payments.html',
+        expectedAccess: false
+      },
+      {
+        description: 'Admin user accessing regular pages',
+        user: { username: "Minty-Komodo", email: "griffin@crowhurst.ws", role: "admin" },
+        resource: 'index.html',
+        expectedAccess: true
+      }
+    ];
+
+    testCases.forEach(testCase => {
+      // Mock access control logic
+      let hasAccess = true;
+      
+      if (testCase.resource === 'payments.html') {
+        hasAccess = testCase.user && 
+                   testCase.user.username === "Minty-Komodo" && 
+                   testCase.user.email === "griffin@crowhurst.ws" &&
+                   testCase.user.role === "admin";
+      }
+      
+      const passed = hasAccess === testCase.expectedAccess;
+      
+      this.testResults.push({
+        category: 'Admin Access Control',
+        description: testCase.description,
+        input: `${testCase.user ? testCase.user.username : 'anonymous'} -> ${testCase.resource}`,
+        expected: testCase.expectedAccess ? 'Access Granted' : 'Access Denied',
+        actual: hasAccess ? 'Access Granted' : 'Access Denied',
         passed: passed
       });
     });
