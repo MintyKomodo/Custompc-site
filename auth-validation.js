@@ -7,12 +7,12 @@ class AuthValidator {
         required: true,
         minLength: 3,
         maxLength: 20,
-        pattern: /^[a-zA-Z0-9_]+$/,
+        pattern: /^[a-zA-Z0-9_-]+$/,
         messages: {
           required: 'Username is required',
           minLength: 'Username must be at least 3 characters',
           maxLength: 'Username must be less than 20 characters',
-          pattern: 'Username can only contain letters, numbers, and underscores'
+          pattern: 'Username can only contain letters, numbers, underscores, and hyphens'
         }
       },
       email: {
