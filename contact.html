@@ -92,7 +92,7 @@
           <span style="margin-left:8px;vertical-align:middle;">CustomPC.tech</span>
         </a>
       </div>
-      <nav style="display: flex; align-items: center; gap: var(--space);">
+      <nav>
         <a class="pill" href="builds.html">Builds</a>
         <a class="pill" href="index.html">Custom PC</a>
         <a class="pill" href="about.html">About</a>
@@ -108,54 +108,6 @@
 
     <h1>Contact us</h1>
     <p class="lead">Questions or support—send a message and we’ll reply fast.</p>
-
-    <!-- Quick Actions -->
-    <section class="card" style="margin-bottom: var(--space);">
-      <h3 style="margin:0 0 12px">Quick Actions</h3>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
-        <button onclick="prefillForm('support')" style="
-          padding: 12px;
-          background: var(--panel2);
-          border: 1px solid var(--border);
-          border-radius: 12px;
-          color: var(--ink);
-          cursor: pointer;
-          text-align: left;
-          transition: all 0.2s ease;
-        " onmouseover="this.style.background='rgba(125,178,255,0.1)'" onmouseout="this.style.background='var(--panel2)'">
-          <div style="font-weight: 600;">🛠️ Technical Support</div>
-          <div style="font-size: 0.9em; color: var(--muted);">PC issues or questions</div>
-        </button>
-        
-        <button onclick="prefillForm('quote')" style="
-          padding: 12px;
-          background: var(--panel2);
-          border: 1px solid var(--border);
-          border-radius: 12px;
-          color: var(--ink);
-          cursor: pointer;
-          text-align: left;
-          transition: all 0.2s ease;
-        " onmouseover="this.style.background='rgba(125,178,255,0.1)'" onmouseout="this.style.background='var(--panel2)'">
-          <div style="font-weight: 600;">💰 Get a Quote</div>
-          <div style="font-size: 0.9em; color: var(--muted);">Pricing for custom build</div>
-        </button>
-        
-        <button onclick="prefillForm('general')" style="
-          padding: 12px;
-          background: var(--panel2);
-          border: 1px solid var(--border);
-          border-radius: 12px;
-          color: var(--ink);
-          cursor: pointer;
-          text-align: left;
-          transition: all 0.2s ease;
-        " onmouseover="this.style.background='rgba(125,178,255,0.1)'" onmouseout="this.style.background='var(--panel2)'">
-          <div style="font-weight: 600;">❓ General Question</div>
-          <div style="font-size: 0.9em; color: var(--muted);">Other inquiries</div>
-        </button>
-      </div>
-    </section>
 
     <section class="card">
       <h3 style="margin:0 0 8px">Send a message</h3>
@@ -199,63 +151,6 @@
   </div>
 
   <script>
-    // Enhanced messaging system with quick actions
-    function prefillForm(type) {
-      const messageField = document.getElementById('message');
-      const nameField = document.getElementById('name');
-      const emailField = document.getElementById('email');
-      
-      // Get current user info if available
-      const sharedAuth = window.sharedAuth;
-      const currentUser = sharedAuth ? sharedAuth.getCurrentUser() : null;
-      
-      // Prefill user info if logged in
-      if (currentUser && currentUser.username !== 'Anonymous') {
-        if (nameField && !nameField.value) {
-          nameField.value = currentUser.username;
-        }
-        if (emailField && !emailField.value && currentUser.email) {
-          emailField.value = currentUser.email;
-        }
-      }
-      
-      // Prefill message based on type
-      const templates = {
-        support: `Hi CustomPC.tech team,
-
-I need technical support with:
-- Issue description: [Please describe your issue]
-- When did it start: [When did you first notice this?]
-- What you've tried: [Any troubleshooting steps you've taken]
-- System specs: [If relevant, include your PC specifications]
-
-Thanks for your help!`,
-        
-        quote: `Hi CustomPC.tech team,
-
-I'd like to get a quote for a custom PC build:
-- Primary use: [Gaming, Work, Content Creation, etc.]
-- Budget range: $[Your budget]
-- Specific requirements: [Any specific needs or preferences]
-- Timeline: [When do you need it by?]
-
-Looking forward to hearing from you!`,
-        
-        general: `Hi CustomPC.tech team,
-
-I have a question about:
-[Please describe your question or inquiry]
-
-Thanks!`
-      };
-      
-      if (messageField && templates[type]) {
-        messageField.value = templates[type];
-        messageField.focus();
-        messageField.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    }
-    
     // Prefill from query params (name, email, message)
     (function () {
       const p = new URLSearchParams(location.search);
@@ -266,12 +161,6 @@ Thanks!`
         const v = p.get(q);
         const el = document.getElementById(id);
         if (v && el && id !== 'message') el.value = v; // Don't override build message
-      }
-      
-      // Check for quick action type
-      const actionType = p.get('type');
-      if (actionType && ['support', 'quote', 'general'].includes(actionType)) {
-        setTimeout(() => prefillForm(actionType), 100);
       }
     })();
 
