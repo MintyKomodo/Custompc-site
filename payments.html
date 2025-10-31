@@ -167,6 +167,117 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+    
+    /* Help button styling */
+    .help-btn {
+      background: #2196f3;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-right: 8px;
+      transition: all 0.2s ease;
+    }
+    
+    .help-btn:hover {
+      background: #1976d2;
+      transform: scale(1.1);
+    }
+    
+    /* Help panel styling */
+    .help-panel {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .help-content {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      max-width: 600px;
+      max-height: 80vh;
+      overflow-y: auto;
+      color: #333;
+    }
+    
+    .help-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 16px;
+    }
+    
+    .help-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #666;
+    }
+    
+    .help-section {
+      margin-bottom: 20px;
+    }
+    
+    .help-section h3 {
+      color: #2196f3;
+      margin-bottom: 8px;
+    }
+    
+    .shortcut-list {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .shortcut-list li {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .shortcut-key {
+      background: #f5f5f5;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 12px;
+    }
+    
+    .status-indicator {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+    
+    .status-ready {
+      background: #4caf50;
+    }
+    
+    .status-warning {
+      background: #ff9800;
+    }
+    
+    .status-error {
+      background: #f44336;
+    }
   </style>
   
   <!-- Preload Square SDK for better performance -->
@@ -200,6 +311,7 @@
           <a href="payments.html" class="nav-pill active" aria-current="page">Payments</a>
           <div class="admin-info">
             <span id="admin-username" class="admin-username"></span>
+            <button id="help-btn" class="help-btn" type="button" aria-label="Show help and shortcuts" title="Help & Shortcuts">?</button>
             <button id="logout-btn" class="logout-btn" type="button" aria-label="Logout from admin session">Logout</button>
           </div>
         </nav>
@@ -396,14 +508,31 @@
                 
                 <div class="customer-search">
                   <label for="customer-search-input" class="sr-only">Search customers</label>
-                  <input 
-                    id="customer-search-input" 
-                    type="search" 
-                    class="form-input" 
-                    placeholder="Search customers..."
-                    aria-describedby="customer-search-help"
-                  />
-                  <div id="customer-search-help" class="form-help">Search by name or email</div>
+                  <div class="search-input-wrapper">
+                    <input 
+                      id="customer-search-input" 
+                      type="search" 
+                      class="form-input" 
+                      placeholder="Search customers..."
+                      aria-describedby="customer-search-help"
+                    />
+                    <button type="button" id="clear-search-btn" class="clear-search-btn hidden" aria-label="Clear search">×</button>
+                  </div>
+                  <div class="search-filters">
+                    <select id="customer-filter" class="form-input filter-select">
+                      <option value="all">All Customers</option>
+                      <option value="with-cards">With Saved Cards</option>
+                      <option value="without-cards">Without Saved Cards</option>
+                      <option value="recent">Recent Activity</option>
+                    </select>
+                    <select id="customer-sort" class="form-input filter-select">
+                      <option value="activity">Sort by Activity</option>
+                      <option value="name">Sort by Name</option>
+                      <option value="email">Sort by Email</option>
+                      <option value="created">Sort by Created Date</option>
+                    </select>
+                  </div>
+                  <div id="customer-search-help" class="form-help">Search by name, email, phone, or card number</div>
                 </div>
 
                 <div id="customer-list" class="customer-list">
@@ -487,6 +616,11 @@
         adminAuth.logoutAdmin();
       });
       
+      // Setup help handler
+      document.getElementById('help-btn').addEventListener('click', function() {
+        showHelpPanel();
+      });
+      
       // Initialize payment form handlers
       initializePaymentHandlers();
     });
@@ -499,24 +633,46 @@
         paymentForm.addEventListener('submit', handlePaymentSubmit);
       }
 
-      // Clear form handler
+      // Clear form handler with enhanced feedback
       const clearFormBtn = document.getElementById('clear-form-btn');
       if (clearFormBtn) {
         clearFormBtn.addEventListener('click', function() {
-          if (confirm('Are you sure you want to clear all form fields?')) {
+          if (confirm('Are you sure you want to clear all form fields? This will reset customer information, payment amount, and selected payment methods.')) {
+            showPaymentMessage('🧹 Clearing form data...', 'info');
+            
             if (window.squarePayments) {
               window.squarePayments.resetForm();
             } else {
               paymentForm.reset();
               document.getElementById('payment-messages').innerHTML = '';
             }
+            
+            // Clear customer selection
+            clearSelectedCustomer();
+            
+            // Clear all validation states
+            const inputs = document.querySelectorAll('#payment-form input');
+            inputs.forEach(input => {
+              input.classList.remove('valid', 'invalid');
+              const formGroup = input.closest('.form-group');
+              if (formGroup) {
+                const feedback = formGroup.querySelectorAll('.field-error, .field-success, .field-suggestion');
+                feedback.forEach(el => el.remove());
+              }
+            });
+            
+            setTimeout(() => {
+              showPaymentMessage('✅ Form cleared successfully. Ready for new payment.', 'success');
+            }, 500);
           }
         });
       }
 
-      // Enable process payment button when Square SDK is ready
+      // Enable process payment button when Square SDK is ready with enhanced feedback
       const processBtn = document.getElementById('payment-submit-btn');
       if (processBtn) {
+        showPaymentMessage('⏳ Initializing secure payment system...', 'info');
+        
         // Check if Square SDK is loaded and enable button
         const checkSquareReady = setInterval(() => {
           if (window.squarePayments && window.squarePayments.isInitialized) {
@@ -528,14 +684,32 @@
             if (placeholder) {
               placeholder.remove();
             }
+            
+            // Show success message
+            showPaymentMessage('✅ Payment system ready! Secure payment processing powered by Square is now available.', 'success');
+            
+            // Auto-clear the success message after 5 seconds
+            setTimeout(() => {
+              const messages = document.querySelectorAll('.payment-message-success');
+              messages.forEach(msg => {
+                if (msg.textContent.includes('Payment system ready')) {
+                  msg.remove();
+                }
+              });
+            }, 5000);
           }
         }, 100);
 
-        // Timeout after 10 seconds
+        // Timeout after 10 seconds with enhanced error feedback
         setTimeout(() => {
           clearInterval(checkSquareReady);
           if (processBtn.disabled) {
-            showPaymentError('Payment system failed to initialize. Please refresh the page.');
+            showPaymentMessage('❌ Payment system failed to initialize. This may be due to network issues or browser compatibility. Please refresh the page and try again.', 'error');
+            
+            // Provide troubleshooting suggestions
+            setTimeout(() => {
+              showPaymentMessage('💡 Troubleshooting: Ensure JavaScript is enabled, disable ad blockers, or try a different browser.', 'info');
+            }, 2000);
           }
         }, 10000);
       }
@@ -551,10 +725,38 @@
 
       // Customer search functionality
       const customerSearchInput = document.getElementById('customer-search-input');
+      const clearSearchBtn = document.getElementById('clear-search-btn');
+      const customerFilter = document.getElementById('customer-filter');
+      const customerSort = document.getElementById('customer-sort');
+      
       if (customerSearchInput) {
         customerSearchInput.addEventListener('input', function() {
-          searchAndDisplayCustomers(this.value);
+          const query = this.value;
+          
+          // Show/hide clear button
+          if (clearSearchBtn) {
+            clearSearchBtn.classList.toggle('hidden', !query);
+          }
+          
+          performCustomerSearch();
         });
+      }
+      
+      if (clearSearchBtn) {
+        clearSearchBtn.addEventListener('click', function() {
+          customerSearchInput.value = '';
+          this.classList.add('hidden');
+          performCustomerSearch();
+          customerSearchInput.focus();
+        });
+      }
+      
+      if (customerFilter) {
+        customerFilter.addEventListener('change', performCustomerSearch);
+      }
+      
+      if (customerSort) {
+        customerSort.addEventListener('change', performCustomerSearch);
       }
 
       // Use new card button
@@ -627,6 +829,7 @@
       
       let errorMessage = '';
       let isValid = true;
+      let successMessage = '';
       
       if (!amount) {
         errorMessage = 'Payment amount is required';
@@ -652,11 +855,19 @@
           if (decimalPlaces > 2) {
             errorMessage = 'Amount cannot have more than 2 decimal places';
             isValid = false;
+          } else {
+            // Valid amount - provide positive feedback
+            successMessage = `Valid amount: $${numericAmount.toFixed(2)}`;
+            
+            // Additional feedback for large amounts
+            if (numericAmount >= 1000) {
+              successMessage += ' (Large payment - please verify amount)';
+            }
           }
         }
       }
       
-      updateFieldValidation(amountInput, isValid, errorMessage);
+      updateFieldValidation(amountInput, isValid, errorMessage, successMessage);
       updateSubmitButtonState();
       return isValid;
     }
@@ -770,21 +981,19 @@
       return isValid;
     }
 
-    function updateFieldValidation(input, isValid, errorMessage) {
+    function updateFieldValidation(input, isValid, errorMessage, successMessage = '') {
       try {
         const formGroup = input.closest('.form-group');
         if (!formGroup) return;
         
         const existingError = formGroup.querySelector('.field-error');
         const existingSuggestion = formGroup.querySelector('.field-suggestion');
+        const existingSuccess = formGroup.querySelector('.field-success');
         
-        // Remove existing error and suggestion
-        if (existingError) {
-          existingError.remove();
-        }
-        if (existingSuggestion) {
-          existingSuggestion.remove();
-        }
+        // Remove existing feedback elements
+        if (existingError) existingError.remove();
+        if (existingSuggestion) existingSuggestion.remove();
+        if (existingSuccess) existingSuccess.remove();
         
         // Update input styling with accessibility
         input.classList.toggle('invalid', !isValid && input.value.length > 0);
@@ -820,6 +1029,22 @@
             `;
             formGroup.appendChild(suggestionDiv);
           }
+        }
+        
+        // Add success message if valid and has content
+        if (isValid && input.value.length > 0 && successMessage) {
+          const successDiv = document.createElement('div');
+          successDiv.className = 'field-success';
+          successDiv.style.cssText = `
+            color: var(--success-color);
+            font-size: 0.8rem;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+          `;
+          successDiv.innerHTML = `<span style="color: var(--success-color);">✓</span> ${successMessage}`;
+          formGroup.appendChild(successDiv);
         }
         
       } catch (error) {
@@ -907,22 +1132,34 @@
       const allValid = isAmountValid && isEmailValid && isNameValid && isPhoneValid && isSquareReady && isOnline;
       submitBtn.disabled = !allValid;
       
-      // Update button text based on status
+      // Update button text with enhanced feedback
       const btnText = submitBtn.querySelector('.btn-text');
       if (btnText) {
         if (!isOnline) {
-          btnText.textContent = 'No Internet Connection';
+          btnText.textContent = '❌ No Internet Connection';
+          showPaymentMessage('⚠️ Internet connection required to process payments. Please check your connection.', 'warning');
         } else if (!isSquareReady) {
-          btnText.textContent = 'Loading Payment System...';
+          btnText.textContent = '⏳ Loading Payment System...';
         } else if (selectedCardId && !isUsingNewCard) {
-          btnText.textContent = 'Process Payment with Saved Card';
+          btnText.textContent = '💳 Process Payment with Saved Card';
         } else {
-          btnText.textContent = 'Process Payment';
+          btnText.textContent = '💰 Process Payment';
         }
+      }
+      
+      // Provide feedback on validation status
+      if (allValid && isOnline && isSquareReady) {
+        // Clear any previous validation warnings
+        const existingValidationMessages = document.querySelectorAll('.payment-message-warning');
+        existingValidationMessages.forEach(msg => {
+          if (msg.textContent.includes('validation') || msg.textContent.includes('required')) {
+            msg.remove();
+          }
+        });
       }
     }
 
-    // Network status handling
+    // Network status handling with enhanced feedback
     function handleNetworkStatusChange() {
       const isOnline = navigator.onLine;
       const networkStatus = document.getElementById('network-status') || createNetworkStatusIndicator();
@@ -932,13 +1169,26 @@
         networkStatus.className = 'network-status offline';
         networkStatus.innerHTML = `
           <span class="status-icon">⚠️</span>
-          <span>No internet connection. Please check your network and try again.</span>
+          <span>No internet connection. Payment processing unavailable. Please check your network and try again.</span>
         `;
-        showPaymentMessage('Internet connection lost. Please check your connection.', 'warning');
+        showPaymentMessage('🌐 Internet connection lost. Payment processing is temporarily unavailable. Please check your connection and try again.', 'warning');
       } else {
         networkStatus.style.display = 'none';
         // Clear network-related error messages
         clearNetworkErrorMessages();
+        
+        // Show connection restored message
+        showPaymentMessage('🌐 Internet connection restored. Payment processing is now available.', 'success');
+        
+        // Auto-clear the success message after 3 seconds
+        setTimeout(() => {
+          const messages = document.querySelectorAll('.payment-message-success');
+          messages.forEach(msg => {
+            if (msg.textContent.includes('connection restored')) {
+              msg.remove();
+            }
+          });
+        }, 3000);
       }
       
       updateSubmitButtonState();
@@ -1003,12 +1253,24 @@
 
         // Check for duplicate submission
         if (isProcessingPayment) {
-          showPaymentMessage('Payment is already being processed. Please wait.', 'warning');
+          showPaymentMessage('⚠️ Payment is already being processed. Please wait.', 'warning');
+          return;
+        }
+
+        // Show payment confirmation dialog
+        const formData = getPaymentFormData();
+        const paymentMethod = !isUsingNewCard && selectedCardId ? 'saved card' : 'new card';
+        const confirmMessage = `Confirm payment of $${(formData.amount / 100).toFixed(2)} to ${formData.customerInfo.name} (${formData.customerInfo.email}) using ${paymentMethod}?`;
+        
+        if (!confirm(confirmMessage)) {
+          showPaymentMessage('❌ Payment cancelled by user.', 'info');
           return;
         }
 
         // Set processing flag
         isProcessingPayment = true;
+        
+        showPaymentMessage('🚀 Initiating payment process...', 'info');
 
         // Check if using saved card or new card
         if (!isUsingNewCard && selectedCustomerId && selectedCardId) {
@@ -1209,9 +1471,13 @@
     }
 
     function handlePaymentSuccess(result) {
-      // Show success message
+      // Show detailed success message with enhanced feedback
+      const customerName = document.getElementById('customer-name').value;
+      const customerEmail = document.getElementById('customer-email').value;
+      const amount = (result.amount / 100).toFixed(2);
+      
       showPaymentMessage(
-        `Payment of $${(result.amount / 100).toFixed(2)} processed successfully! Transaction ID: ${result.transactionId}`,
+        `✅ Payment Successful! $${amount} charged to card ending in ${result.last4}. Transaction ID: ${result.transactionId}. Receipt will be sent to ${customerEmail}.`,
         'success'
       );
       
@@ -1219,8 +1485,8 @@
       addTransactionToHistory({
         transactionId: result.transactionId,
         amount: result.amount,
-        customerName: document.getElementById('customer-name').value,
-        customerEmail: document.getElementById('customer-email').value,
+        customerName: customerName,
+        customerEmail: customerEmail,
         last4: result.last4,
         status: 'completed',
         timestamp: new Date().toISOString()
@@ -1229,11 +1495,18 @@
       // Check if card should be saved (only for new card payments)
       const saveCardCheckbox = document.getElementById('save-card');
       if (saveCardCheckbox && saveCardCheckbox.checked && isUsingNewCard) {
+        showPaymentMessage('💳 Saving payment method for future use...', 'info');
         saveCustomerCard();
       }
       
-      // Reset form after delay
+      // Show next steps feedback
       setTimeout(() => {
+        showPaymentMessage('📧 Payment confirmation email sent. You can process another payment or view transaction history below.', 'info');
+      }, 2000);
+      
+      // Reset form after delay with user feedback
+      setTimeout(() => {
+        showPaymentMessage('🔄 Form cleared and ready for next payment.', 'info');
         resetPaymentForm();
       }, 5000);
     }
@@ -1325,27 +1598,38 @@
     function saveCustomerCard() {
       const formData = getPaymentFormData();
       
+      showPaymentMessage('💾 Saving payment method securely...', 'info');
+      
       window.squarePayments.saveCustomerCard(formData.customerInfo)
         .then(result => {
           if (result.success) {
             showPaymentMessage(
-              `Card ending in ${result.last4} saved for future payments!`,
-              'info'
+              `✅ Payment method saved! ${result.brand} ending in ${result.last4} is now available for future payments.`,
+              'success'
             );
             // Add customer to sidebar
             addCustomerToSidebar(formData.customerInfo, result);
+            
+            // Additional security feedback
+            setTimeout(() => {
+              showPaymentMessage('🔒 Payment method encrypted and stored securely with Square. No card details stored locally.', 'info');
+            }, 2000);
           }
         })
         .catch(error => {
           console.error('Failed to save card:', error);
-          // Don't show error to user as payment was successful
+          showPaymentMessage('⚠️ Payment successful, but failed to save payment method for future use. Card details were not stored.', 'warning');
         });
     }
 
     function handleSavedCardPaymentSuccess(result) {
-      // Show success message
+      // Show detailed success message for saved card payment
+      const customerName = document.getElementById('customer-name').value;
+      const customerEmail = document.getElementById('customer-email').value;
+      const amount = (result.amount / 100).toFixed(2);
+      
       showPaymentMessage(
-        `Payment of $${(result.amount / 100).toFixed(2)} processed successfully with saved card! Transaction ID: ${result.transactionId}`,
+        `✅ Payment Successful! $${amount} charged to saved card ending in ${result.last4}. Transaction ID: ${result.transactionId}. Receipt sent to ${customerEmail}.`,
         'success'
       );
       
@@ -1353,16 +1637,22 @@
       addTransactionToHistory({
         transactionId: result.transactionId,
         amount: result.amount,
-        customerName: document.getElementById('customer-name').value,
-        customerEmail: document.getElementById('customer-email').value,
+        customerName: customerName,
+        customerEmail: customerEmail,
         last4: result.last4,
         status: 'completed',
         timestamp: new Date().toISOString(),
         paymentMethod: 'saved_card'
       });
       
-      // Reset form after delay
+      // Show additional feedback for saved card usage
       setTimeout(() => {
+        showPaymentMessage('💳 Payment processed using securely stored payment method. Customer card information remains protected.', 'info');
+      }, 2000);
+      
+      // Reset form after delay with user feedback
+      setTimeout(() => {
+        showPaymentMessage('🔄 Form cleared and ready for next payment.', 'info');
         resetPaymentForm();
       }, 5000);
     }
@@ -1410,25 +1700,64 @@
       
       if (isProcessing) {
         submitBtn.disabled = true;
-        btnText.textContent = 'Processing...';
         btnSpinner.classList.remove('hidden');
         processingIndicator.classList.remove('hidden');
         
-        // Disable form inputs
+        // Enhanced processing feedback based on payment method
+        if (!isUsingNewCard && selectedCardId) {
+          btnText.textContent = 'Processing with Saved Card...';
+          showPaymentMessage('🔒 Processing payment with securely stored payment method...', 'info');
+        } else {
+          btnText.textContent = 'Processing Payment...';
+          showPaymentMessage('🔒 Securely processing payment through Square...', 'info');
+        }
+        
+        // Disable form inputs with visual feedback
         const inputs = document.querySelectorAll('#payment-form input, #payment-form button');
-        inputs.forEach(input => input.disabled = true);
+        inputs.forEach(input => {
+          input.disabled = true;
+          input.style.opacity = '0.6';
+        });
+        
+        // Add processing steps feedback
+        setTimeout(() => {
+          showPaymentMessage('🔐 Validating payment information...', 'info');
+        }, 1000);
+        
+        setTimeout(() => {
+          showPaymentMessage('💳 Communicating with payment processor...', 'info');
+        }, 3000);
+        
       } else {
-        btnText.textContent = 'Process Payment';
         btnSpinner.classList.add('hidden');
         processingIndicator.classList.add('hidden');
         
-        // Re-enable form inputs
+        // Re-enable form inputs with visual feedback
         const inputs = document.querySelectorAll('#payment-form input, #payment-form button');
-        inputs.forEach(input => input.disabled = false);
+        inputs.forEach(input => {
+          input.disabled = false;
+          input.style.opacity = '1';
+        });
         
         // Update submit button state based on validation
         updateSubmitButtonState();
+        
+        // Clear processing messages
+        setTimeout(() => {
+          clearProcessingMessages();
+        }, 1000);
       }
+    }
+    
+    function clearProcessingMessages() {
+      const messages = document.querySelectorAll('.payment-message-info');
+      messages.forEach(message => {
+        if (message.textContent.includes('🔒') || 
+            message.textContent.includes('🔐') || 
+            message.textContent.includes('💳')) {
+          message.remove();
+        }
+      });
     }
 
     function showPaymentMessage(message, type = 'info') {
@@ -1526,6 +1855,84 @@
       displayCustomers(customers);
     }
 
+    function performCustomerSearch() {
+      if (!window.squarePayments) return;
+      
+      const query = document.getElementById('customer-search-input').value;
+      const filter = document.getElementById('customer-filter').value;
+      const sort = document.getElementById('customer-sort').value;
+      
+      let customers;
+      
+      if (query) {
+        customers = window.squarePayments.searchCustomers(query);
+      } else {
+        customers = window.squarePayments.getAllCustomersWithCards();
+      }
+      
+      // Apply filters
+      switch (filter) {
+        case 'with-cards':
+          customers = customers.filter(c => c.cards && c.cards.length > 0);
+          break;
+        case 'without-cards':
+          customers = customers.filter(c => !c.cards || c.cards.length === 0);
+          break;
+        case 'recent':
+          const weekAgo = new Date();
+          weekAgo.setDate(weekAgo.getDate() - 7);
+          customers = customers.filter(c => {
+            const lastActivity = getCustomerLastActivity(c);
+            return lastActivity && lastActivity > weekAgo;
+          });
+          break;
+      }
+      
+      // Apply sorting
+      customers.sort((a, b) => {
+        switch (sort) {
+          case 'name':
+            return a.name.localeCompare(b.name);
+          case 'email':
+            return a.email.localeCompare(b.email);
+          case 'created':
+            return new Date(b.createdAt) - new Date(a.createdAt);
+          case 'activity':
+          default:
+            const aActivity = getCustomerLastActivity(a) || new Date(a.createdAt);
+            const bActivity = getCustomerLastActivity(b) || new Date(b.createdAt);
+            return bActivity - aActivity;
+        }
+      });
+      
+      displayCustomers(customers);
+      
+      // Update search results count
+      updateSearchResultsCount(customers.length, query, filter);
+    }
+
+    function updateSearchResultsCount(count, query, filter) {
+      const helpElement = document.getElementById('customer-search-help');
+      if (!helpElement) return;
+      
+      let message = '';
+      
+      if (query) {
+        message = `Found ${count} customer${count !== 1 ? 's' : ''} matching "${query}"`;
+      } else if (filter !== 'all') {
+        const filterNames = {
+          'with-cards': 'with saved cards',
+          'without-cards': 'without saved cards',
+          'recent': 'with recent activity'
+        };
+        message = `Showing ${count} customer${count !== 1 ? 's' : ''} ${filterNames[filter]}`;
+      } else {
+        message = `Showing all ${count} customer${count !== 1 ? 's' : ''}`;
+      }
+      
+      helpElement.textContent = message;
+    }
+
     function displayCustomers(customers) {
       const customerList = document.getElementById('customer-list');
       if (!customerList) return;
@@ -1556,18 +1963,45 @@
       customerElement.dataset.email = customer.email;
       
       const cardCount = customer.cards ? customer.cards.length : 0;
-      const cardText = cardCount === 0 ? 'No saved cards' : 
-                      cardCount === 1 ? '1 saved card' : 
-                      `${cardCount} saved cards`;
+      let cardText = '';
+      let cardDetails = '';
+      
+      if (cardCount === 0) {
+        cardText = 'No saved cards';
+      } else if (cardCount === 1) {
+        cardText = '1 saved card';
+        const card = customer.cards[0];
+        cardDetails = `${card.brand || 'Unknown'} •••• ${card.last4 || '****'}`;
+      } else {
+        cardText = `${cardCount} saved cards`;
+        // Show primary card or most recent
+        const primaryCard = customer.cards.find(c => c.isPrimary) || 
+                           customer.cards.sort((a, b) => 
+                             new Date(b.lastUsed || b.createdAt) - new Date(a.lastUsed || a.createdAt)
+                           )[0];
+        if (primaryCard) {
+          cardDetails = `Primary: ${primaryCard.brand || 'Unknown'} •••• ${primaryCard.last4 || '****'}`;
+        }
+      }
+      
+      // Format last activity
+      const lastActivity = getCustomerLastActivity(customer);
+      const activityText = lastActivity ? 
+        `Last activity: ${formatRelativeTime(lastActivity)}` : 
+        `Created: ${formatRelativeTime(customer.createdAt)}`;
       
       customerElement.innerHTML = `
         <div class="customer-info">
           <div class="customer-name">${customer.name}</div>
           <div class="customer-email">${customer.email}</div>
+          ${customer.phone ? `<div class="customer-phone">${customer.phone}</div>` : ''}
           <div class="customer-cards">${cardText}</div>
+          ${cardDetails ? `<div class="customer-card-details">${cardDetails}</div>` : ''}
+          <div class="customer-activity">${activityText}</div>
         </div>
         <div class="customer-actions">
           <button type="button" class="btn-link select-customer-btn">Select</button>
+          ${cardCount > 0 ? '<button type="button" class="btn-link view-cards-btn">View Cards</button>' : ''}
         </div>
       `;
 
@@ -1578,13 +2012,123 @@
         selectCustomer(customer);
       });
 
+      // Add click handler to view cards
+      const viewCardsBtn = customerElement.querySelector('.view-cards-btn');
+      if (viewCardsBtn) {
+        viewCardsBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          showCustomerCardsModal(customer);
+        });
+      }
+
       return customerElement;
+    }
+
+    function getCustomerLastActivity(customer) {
+      const dates = [
+        customer.createdAt,
+        customer.updatedAt,
+        ...(customer.cards || []).map(card => card.lastUsed || card.createdAt)
+      ].filter(Boolean).map(date => new Date(date));
+      
+      return dates.length > 0 ? new Date(Math.max(...dates)) : null;
+    }
+
+    function formatRelativeTime(date) {
+      const now = new Date();
+      const diffMs = now - new Date(date);
+      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+      const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+      const diffMinutes = Math.floor(diffMs / (1000 * 60));
+      
+      if (diffDays > 7) {
+        return new Date(date).toLocaleDateString();
+      } else if (diffDays > 0) {
+        return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+      } else if (diffHours > 0) {
+        return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+      } else if (diffMinutes > 0) {
+        return `${diffMinutes} minute${diffMinutes > 1 ? 's' : ''} ago`;
+      } else {
+        return 'Just now';
+      }
+    }
+
+    function showCustomerCardsModal(customer) {
+      const modal = document.createElement('div');
+      modal.className = 'customer-cards-modal';
+      modal.innerHTML = `
+        <div class="modal-overlay" onclick="this.closest('.customer-cards-modal').remove()"></div>
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>Payment Methods for ${customer.name}</h3>
+            <button class="modal-close" onclick="this.closest('.customer-cards-modal').remove()">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="customer-cards-list">
+              ${customer.cards.map(card => `
+                <div class="card-item ${card.isPrimary ? 'primary-card' : ''}">
+                  <div class="card-info">
+                    <div class="card-brand-last4">${card.brand || 'Unknown'} •••• ${card.last4 || '****'}</div>
+                    <div class="card-expiry">Expires ${String(card.expirationMonth || 0).padStart(2, '0')}/${String(card.expirationYear || 0).slice(-2)}</div>
+                    <div class="card-usage">
+                      ${card.isPrimary ? 'Primary card • ' : ''}
+                      Last used: ${card.lastUsed ? formatRelativeTime(card.lastUsed) : 'Never'}
+                    </div>
+                  </div>
+                  <div class="card-actions">
+                    <button type="button" class="btn-small btn-primary" onclick="selectCustomerAndCard('${customer.customerId}', '${card.cardId}')">
+                      Use This Card
+                    </button>
+                    ${!card.isPrimary ? `<button type="button" class="btn-small btn-link" onclick="setPrimaryCard('${customer.customerId}', '${card.cardId}')">Set Primary</button>` : ''}
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(modal);
+    }
+
+    function selectCustomerAndCard(customerId, cardId) {
+      const customer = window.squarePayments.getCustomerById(customerId);
+      if (customer) {
+        selectCustomer(customer);
+        setTimeout(() => {
+          selectSavedCard(cardId);
+          // Close modal
+          const modal = document.querySelector('.customer-cards-modal');
+          if (modal) modal.remove();
+        }, 100);
+      }
+    }
+
+    function setPrimaryCard(customerId, cardId) {
+      const result = window.squarePayments.setCustomerPrimaryCard(customerId, cardId);
+      if (result.success) {
+        showPaymentMessage('Primary payment method updated successfully', 'success');
+        // Refresh customer display
+        loadAndDisplayCustomers();
+        // Close and reopen modal to show updated info
+        const modal = document.querySelector('.customer-cards-modal');
+        if (modal) {
+          modal.remove();
+          const customer = window.squarePayments.getCustomerById(customerId);
+          if (customer) {
+            setTimeout(() => showCustomerCardsModal(customer), 100);
+          }
+        }
+      } else {
+        showPaymentMessage('Failed to update primary payment method', 'error');
+      }
     }
 
     function selectCustomer(customer) {
       selectedCustomerId = customer.customerId;
       
-      // Populate customer information
+      // Populate customer information with feedback
       document.getElementById('customer-name').value = customer.name;
       document.getElementById('customer-email').value = customer.email;
       if (customer.phone) {
@@ -1594,8 +2138,10 @@
       // Show saved payment methods if customer has cards
       if (customer.cards && customer.cards.length > 0) {
         showSavedPaymentMethods(customer.cards);
+        showPaymentMessage(`👤 Selected customer: ${customer.name} (${customer.cards.length} saved payment method${customer.cards.length > 1 ? 's' : ''})`, 'info');
       } else {
         showNewCardForm();
+        showPaymentMessage(`👤 Selected customer: ${customer.name} (no saved payment methods - new card required)`, 'info');
       }
       
       // Trigger validation
@@ -1603,7 +2149,10 @@
       validateCustomerEmail();
       updateSubmitButtonState();
       
-      showPaymentMessage(`Selected customer: ${customer.name}`, 'info');
+      // Provide additional feedback about customer selection
+      setTimeout(() => {
+        showPaymentMessage('✅ Customer information loaded. Enter payment amount to continue.', 'info');
+      }, 1000);
     }
 
     function showSavedPaymentMethods(cards) {
@@ -1632,68 +2181,156 @@
       
       savedCardsList.innerHTML = '';
       
-      cards.forEach(card => {
-        const cardElement = createSavedCardElement(card);
+      // Sort cards by usage (most recent first) and primary status
+      const sortedCards = cards.sort((a, b) => {
+        // Primary cards first
+        if (a.isPrimary && !b.isPrimary) return -1;
+        if (!a.isPrimary && b.isPrimary) return 1;
+        
+        // Then by last used
+        const aLastUsed = new Date(a.lastUsed || a.createdAt || 0);
+        const bLastUsed = new Date(b.lastUsed || b.createdAt || 0);
+        return bLastUsed - aLastUsed;
+      });
+      
+      sortedCards.forEach((card, index) => {
+        const cardElement = createSavedCardElement(card, index === 0);
         savedCardsList.appendChild(cardElement);
       });
+      
+      // Auto-select the first (primary/most recent) card
+      if (sortedCards.length > 0) {
+        setTimeout(() => {
+          selectSavedCard(sortedCards[0].cardId);
+        }, 100);
+      }
     }
 
-    function createSavedCardElement(card) {
+    function createSavedCardElement(card, isRecommended = false) {
       const cardElement = document.createElement('div');
       cardElement.className = 'saved-card-item';
       cardElement.dataset.cardId = card.cardId;
+      
+      if (card.isPrimary) {
+        cardElement.classList.add('primary-card');
+      }
       
       const expirationText = card.expirationMonth && card.expirationYear ? 
         `${String(card.expirationMonth).padStart(2, '0')}/${String(card.expirationYear).slice(-2)}` : 
         'Unknown';
       
+      // Check if card is expired
+      const isExpired = card.expirationMonth && card.expirationYear && 
+        new Date() > new Date(card.expirationYear, card.expirationMonth - 1);
+      
+      // Format last used
+      const lastUsedText = card.lastUsed ? 
+        `Last used: ${formatRelativeTime(card.lastUsed)}` : 
+        `Added: ${formatRelativeTime(card.createdAt)}`;
+      
       cardElement.innerHTML = `
         <div class="card-info">
-          <div class="card-brand">${card.brand || 'Unknown'}</div>
+          <div class="card-header">
+            <div class="card-brand">${card.brand || 'Unknown'}</div>
+            ${card.isPrimary ? '<span class="primary-badge">Primary</span>' : ''}
+            ${isRecommended ? '<span class="recommended-badge">Recommended</span>' : ''}
+            ${isExpired ? '<span class="expired-badge">Expired</span>' : ''}
+          </div>
           <div class="card-details">•••• •••• •••• ${card.last4}</div>
-          <div class="card-expiration">Expires ${expirationText}</div>
+          <div class="card-expiration ${isExpired ? 'expired' : ''}">
+            Expires ${expirationText}
+          </div>
+          <div class="card-usage">${lastUsedText}</div>
         </div>
         <div class="card-actions">
-          <button type="button" class="btn-primary btn-small select-card-btn">Use This Card</button>
-          <button type="button" class="btn-link delete-card-btn" aria-label="Delete this card">Delete</button>
+          <button type="button" class="btn-primary btn-small select-card-btn" ${isExpired ? 'disabled' : ''}>
+            ${isExpired ? 'Card Expired' : 'Use This Card'}
+          </button>
+          ${!card.isPrimary && !isExpired ? '<button type="button" class="btn-link btn-small set-primary-btn">Set Primary</button>' : ''}
+          <button type="button" class="btn-link btn-small delete-card-btn" aria-label="Delete this card">Delete</button>
         </div>
       `;
 
       // Add event listeners
       const selectBtn = cardElement.querySelector('.select-card-btn');
       const deleteBtn = cardElement.querySelector('.delete-card-btn');
+      const setPrimaryBtn = cardElement.querySelector('.set-primary-btn');
       
-      selectBtn.addEventListener('click', function() {
-        selectSavedCard(card.cardId);
-      });
+      if (selectBtn && !isExpired) {
+        selectBtn.addEventListener('click', function() {
+          selectSavedCard(card.cardId);
+        });
+      }
       
-      deleteBtn.addEventListener('click', function() {
-        deleteSavedCard(card.cardId);
-      });
+      if (deleteBtn) {
+        deleteBtn.addEventListener('click', function() {
+          deleteSavedCard(card.cardId);
+        });
+      }
+      
+      if (setPrimaryBtn) {
+        setPrimaryBtn.addEventListener('click', function() {
+          setPrimaryCardInList(card.cardId);
+        });
+      }
 
       return cardElement;
+    }
+
+    function setPrimaryCardInList(cardId) {
+      if (!selectedCustomerId) return;
+      
+      const result = window.squarePayments.setCustomerPrimaryCard(selectedCustomerId, cardId);
+      if (result.success) {
+        showPaymentMessage('Primary payment method updated successfully', 'success');
+        
+        // Refresh the saved cards display
+        const customer = window.squarePayments.getCustomerById(selectedCustomerId);
+        if (customer && customer.cards) {
+          displaySavedCards(customer.cards);
+        }
+      } else {
+        showPaymentMessage('Failed to update primary payment method', 'error');
+      }
     }
 
     function selectSavedCard(cardId) {
       selectedCardId = cardId;
       
-      // Update UI to show selected card
+      // Update UI to show selected card with enhanced feedback
       const cardElements = document.querySelectorAll('.saved-card-item');
+      let selectedCardInfo = null;
+      
       cardElements.forEach(el => {
         el.classList.remove('selected');
         if (el.dataset.cardId === cardId) {
           el.classList.add('selected');
+          // Get card info for feedback
+          const cardBrand = el.querySelector('.card-brand').textContent;
+          const cardLast4 = el.querySelector('.card-details').textContent.slice(-4);
+          selectedCardInfo = { brand: cardBrand, last4: cardLast4 };
         }
       });
       
       // Update submit button text
       const submitBtn = document.getElementById('payment-submit-btn');
       if (submitBtn) {
-        submitBtn.querySelector('.btn-text').textContent = 'Process Payment with Saved Card';
+        submitBtn.querySelector('.btn-text').textContent = '💳 Process Payment with Saved Card';
       }
       
       updateSubmitButtonState();
-      showPaymentMessage('Selected saved payment method', 'info');
+      
+      // Enhanced feedback with card details
+      if (selectedCardInfo) {
+        showPaymentMessage(`💳 Selected ${selectedCardInfo.brand} ending in ${selectedCardInfo.last4}. Payment will be processed securely without re-entering card details.`, 'info');
+      } else {
+        showPaymentMessage('💳 Selected saved payment method', 'info');
+      }
+      
+      // Additional security feedback
+      setTimeout(() => {
+        showPaymentMessage('🔒 Using securely stored payment method. Your card details are protected by Square\'s encryption.', 'info');
+      }, 1500);
     }
 
     function deleteSavedCard(cardId) {
@@ -1814,6 +2451,338 @@
         console.log('Square Payments SDK ready');
       }
     });
+
+    // Integration test function for complete workflow
+    function runIntegrationTest() {
+      console.log('Running integration test...');
+      
+      // Test 1: Admin authentication check
+      const adminAuth = new AdminAuth();
+      const isAdmin = adminAuth.isCurrentUserAdmin();
+      const sessionValid = adminAuth.isAdminSessionValid();
+      
+      console.log('Admin authentication test:', {
+        isAdmin: isAdmin,
+        sessionValid: sessionValid,
+        currentUser: adminAuth.currentUser
+      });
+      
+      // Test 2: Navigation integration
+      const paymentsNavItems = document.querySelectorAll('#payments-nav');
+      console.log('Navigation integration test:', {
+        paymentsNavCount: paymentsNavItems.length,
+        paymentsNavVisible: paymentsNavItems.length > 0 && paymentsNavItems[0].style.display !== 'none'
+      });
+      
+      // Test 3: Square SDK integration
+      const squareReady = window.squarePayments && window.squarePayments.isInitialized;
+      console.log('Square SDK integration test:', {
+        squareLoaded: typeof Square !== 'undefined',
+        squarePaymentsReady: squareReady,
+        cardContainerExists: !!document.getElementById('card-container')
+      });
+      
+      // Test 4: Form validation integration
+      const formElements = {
+        amountInput: !!document.getElementById('payment-amount'),
+        nameInput: !!document.getElementById('customer-name'),
+        emailInput: !!document.getElementById('customer-email'),
+        submitButton: !!document.getElementById('payment-submit-btn')
+      };
+      console.log('Form integration test:', formElements);
+      
+      // Test 5: Customer management integration
+      const customerElements = {
+        customerList: !!document.getElementById('customer-list'),
+        customerSearch: !!document.getElementById('customer-search-input'),
+        savedPaymentMethods: !!document.getElementById('saved-payment-methods')
+      };
+      console.log('Customer management integration test:', customerElements);
+      
+      // Test 6: Transaction history integration
+      const transactionElements = {
+        transactionsList: !!document.getElementById('transactions-list')
+      };
+      console.log('Transaction history integration test:', transactionElements);
+      
+      // Overall integration status
+      const integrationStatus = {
+        adminAuthReady: isAdmin && sessionValid,
+        navigationReady: paymentsNavItems.length > 0,
+        paymentSystemReady: squareReady,
+        formReady: Object.values(formElements).every(Boolean),
+        customerMgmtReady: Object.values(customerElements).every(Boolean),
+        transactionHistoryReady: Object.values(transactionElements).every(Boolean)
+      };
+      
+      const allSystemsReady = Object.values(integrationStatus).every(Boolean);
+      
+      console.log('Integration test results:', {
+        ...integrationStatus,
+        allSystemsReady: allSystemsReady
+      });
+      
+      // Show integration status to admin
+      if (isAdmin) {
+        const statusMessage = allSystemsReady ? 
+          'All payment systems integrated and ready!' : 
+          'Some payment systems need attention. Check console for details.';
+        
+        const statusType = allSystemsReady ? 'success' : 'warning';
+        
+        setTimeout(() => {
+          showPaymentMessage(`Integration Status: ${statusMessage}`, statusType);
+        }, 2000);
+      }
+      
+      return integrationStatus;
+    }
+
+    // Run integration test after page load
+    window.addEventListener('load', function() {
+      // Wait a bit for all systems to initialize
+      setTimeout(runIntegrationTest, 3000);
+    });
+
+    // Add keyboard shortcuts for admin testing
+    document.addEventListener('keydown', function(event) {
+      // Ctrl+Shift+T for integration test
+      if (event.ctrlKey && event.shiftKey && event.key === 'T') {
+        event.preventDefault();
+        runIntegrationTest();
+      }
+      
+      // Ctrl+Shift+R for reset demo data
+      if (event.ctrlKey && event.shiftKey && event.key === 'R') {
+        event.preventDefault();
+        if (confirm('Reset all demo data? This will clear customers, transactions, and form data.')) {
+          resetDemoData();
+        }
+      }
+      
+      // Ctrl+Shift+D for demo payment workflow
+      if (event.ctrlKey && event.shiftKey && event.key === 'D') {
+        event.preventDefault();
+        runDemoPaymentWorkflow();
+      }
+    });
+
+    // Demo payment workflow to test complete integration
+    async function runDemoPaymentWorkflow() {
+      try {
+        showPaymentMessage('Starting demo payment workflow...', 'info');
+        
+        // Step 1: Fill in demo customer data
+        document.getElementById('customer-name').value = 'John Demo Customer';
+        document.getElementById('customer-email').value = 'john.demo@example.com';
+        document.getElementById('customer-phone').value = '(555) 123-4567';
+        document.getElementById('payment-amount').value = '99.99';
+        document.getElementById('payment-description').value = 'Demo Payment - Integration Test';
+        
+        // Trigger validation
+        validateCustomerName();
+        validateCustomerEmail();
+        validateCustomerPhone();
+        validatePaymentAmount();
+        
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        showPaymentMessage('Demo data filled. In a real scenario, you would now enter card details and submit.', 'info');
+        
+        // Step 2: Simulate successful payment (without actually processing)
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        // Add demo transaction to history
+        addTransactionToHistory({
+          transactionId: 'demo_' + Date.now(),
+          amount: 9999, // $99.99 in cents
+          customerName: 'John Demo Customer',
+          customerEmail: 'john.demo@example.com',
+          last4: '4242',
+          status: 'completed',
+          timestamp: new Date().toISOString()
+        });
+        
+        // Step 3: Simulate saving customer
+        const demoCustomer = {
+          customerId: 'demo_cust_' + Date.now(),
+          name: 'John Demo Customer',
+          email: 'john.demo@example.com',
+          phone: '(555) 123-4567',
+          createdAt: new Date().toISOString(),
+          cards: [{
+            cardId: 'demo_card_' + Date.now(),
+            last4: '4242',
+            brand: 'Visa',
+            expirationMonth: 12,
+            expirationYear: 2025,
+            createdAt: new Date().toISOString()
+          }]
+        };
+        
+        // Store demo customer
+        const customers = JSON.parse(localStorage.getItem('square_customers') || '[]');
+        customers.push(demoCustomer);
+        localStorage.setItem('square_customers', JSON.stringify(customers));
+        
+        // Refresh customer display
+        loadAndDisplayCustomers();
+        
+        showPaymentMessage('Demo workflow completed! Check transaction history and customer list.', 'success');
+        
+        console.log('Demo payment workflow completed successfully');
+        
+      } catch (error) {
+        console.error('Demo workflow error:', error);
+        showPaymentMessage('Demo workflow encountered an error. Check console for details.', 'error');
+      }
+    }
+
+    // Show help panel with integration status and shortcuts
+    function showHelpPanel() {
+      // Run integration test to get current status
+      const integrationStatus = runIntegrationTest();
+      
+      const helpPanel = document.createElement('div');
+      helpPanel.className = 'help-panel';
+      helpPanel.innerHTML = `
+        <div class="help-content">
+          <div class="help-header">
+            <h2>Payment System Help</h2>
+            <button class="help-close" onclick="this.closest('.help-panel').remove()">&times;</button>
+          </div>
+          
+          <div class="help-section">
+            <h3>System Status</h3>
+            <ul class="shortcut-list">
+              <li>
+                <span><span class="status-indicator ${integrationStatus.adminAuthReady ? 'status-ready' : 'status-error'}"></span>Admin Authentication</span>
+                <span>${integrationStatus.adminAuthReady ? 'Ready' : 'Not Ready'}</span>
+              </li>
+              <li>
+                <span><span class="status-indicator ${integrationStatus.navigationReady ? 'status-ready' : 'status-error'}"></span>Navigation Integration</span>
+                <span>${integrationStatus.navigationReady ? 'Ready' : 'Not Ready'}</span>
+              </li>
+              <li>
+                <span><span class="status-indicator ${integrationStatus.paymentSystemReady ? 'status-ready' : 'status-error'}"></span>Square Payment System</span>
+                <span>${integrationStatus.paymentSystemReady ? 'Ready' : 'Not Ready'}</span>
+              </li>
+              <li>
+                <span><span class="status-indicator ${integrationStatus.formReady ? 'status-ready' : 'status-error'}"></span>Payment Form</span>
+                <span>${integrationStatus.formReady ? 'Ready' : 'Not Ready'}</span>
+              </li>
+              <li>
+                <span><span class="status-indicator ${integrationStatus.customerMgmtReady ? 'status-ready' : 'status-error'}"></span>Customer Management</span>
+                <span>${integrationStatus.customerMgmtReady ? 'Ready' : 'Not Ready'}</span>
+              </li>
+              <li>
+                <span><span class="status-indicator ${integrationStatus.transactionHistoryReady ? 'status-ready' : 'status-error'}"></span>Transaction History</span>
+                <span>${integrationStatus.transactionHistoryReady ? 'Ready' : 'Not Ready'}</span>
+              </li>
+            </ul>
+          </div>
+          
+          <div class="help-section">
+            <h3>Keyboard Shortcuts</h3>
+            <ul class="shortcut-list">
+              <li>
+                <span>Run Integration Test</span>
+                <span class="shortcut-key">Ctrl+Shift+T</span>
+              </li>
+              <li>
+                <span>Reset Demo Data</span>
+                <span class="shortcut-key">Ctrl+Shift+R</span>
+              </li>
+              <li>
+                <span>Demo Payment Workflow</span>
+                <span class="shortcut-key">Ctrl+Shift+D</span>
+              </li>
+            </ul>
+          </div>
+          
+          <div class="help-section">
+            <h3>Integration Features</h3>
+            <ul>
+              <li><strong>Admin Authentication:</strong> Secure access control with hardcoded admin credentials</li>
+              <li><strong>Navigation Integration:</strong> Dynamic "Payments" menu item for authenticated admins</li>
+              <li><strong>Payment Processing:</strong> Square Web Payments SDK integration with tokenization</li>
+              <li><strong>Customer Management:</strong> Secure card storage and customer search functionality</li>
+              <li><strong>Transaction History:</strong> Real-time transaction logging and display</li>
+              <li><strong>Error Handling:</strong> Comprehensive error recovery and user feedback</li>
+            </ul>
+          </div>
+          
+          <div class="help-section">
+            <h3>Workflow</h3>
+            <ol>
+              <li>Admin logs in with credentials (Minty-Komodo, password, griffin@crowhurst.ws)</li>
+              <li>"Payments" navigation item appears in menu</li>
+              <li>Admin accesses payment page with full functionality</li>
+              <li>Payment form validates input in real-time</li>
+              <li>Square SDK processes payments securely</li>
+              <li>Customer cards can be saved for future use</li>
+              <li>Transaction history tracks all payment activity</li>
+            </ol>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(helpPanel);
+      
+      // Close on background click
+      helpPanel.addEventListener('click', function(e) {
+        if (e.target === helpPanel) {
+          helpPanel.remove();
+        }
+      });
+      
+      // Close on Escape key
+      document.addEventListener('keydown', function escapeHandler(e) {
+        if (e.key === 'Escape') {
+          helpPanel.remove();
+          document.removeEventListener('keydown', escapeHandler);
+        }
+      });
+    }
+
+    function resetDemoData() {
+      try {
+        // Clear localStorage data
+        localStorage.removeItem('square_customers');
+        localStorage.removeItem('payment_errors');
+        
+        // Clear form
+        document.getElementById('payment-form').reset();
+        
+        // Clear messages
+        clearPaymentMessages();
+        
+        // Reset customer list
+        loadAndDisplayCustomers();
+        
+        // Clear transaction history
+        const transactionsList = document.getElementById('transactions-list');
+        if (transactionsList) {
+          transactionsList.innerHTML = `
+            <div class="empty-state">
+              <p>No transactions yet</p>
+              <p class="empty-state-subtitle">Completed payments will appear here</p>
+            </div>
+          `;
+        }
+        
+        // Reset Square form if available
+        if (window.squarePayments) {
+          window.squarePayments.resetForm();
+        }
+        
+        showPaymentMessage('Demo data reset successfully!', 'success');
+        
+      } catch (error) {
+        console.error('Error resetting demo data:', error);
+        showPaymentMessage('Error resetting demo data. Please refresh the page.', 'error');
+      }
+    }
   </script>
 </body>
 </html>

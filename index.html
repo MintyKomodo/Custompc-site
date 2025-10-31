@@ -374,5 +374,37 @@
   </script>
   
   <script src="shared-auth.js"></script>
+  
+  <script>
+    // Integration test for navigation system
+    document.addEventListener('DOMContentLoaded', function() {
+      // Test navigation integration after auth system loads
+      setTimeout(function() {
+        const sharedAuth = window.sharedAuth;
+        if (sharedAuth) {
+          console.log('Navigation integration test:', {
+            authSystemLoaded: true,
+            currentUser: sharedAuth.currentUser,
+            isAdmin: sharedAuth.isCurrentUserAdmin(),
+            paymentsNavVisible: document.querySelector('#payments-nav')?.style.display !== 'none'
+          });
+        }
+      }, 1000);
+      
+      // Listen for auth state changes to test integration
+      window.addEventListener('authStateChanged', function() {
+        console.log('Auth state changed - navigation should update');
+        setTimeout(() => {
+          const paymentsNav = document.querySelector('#payments-nav');
+          if (paymentsNav) {
+            console.log('Payments nav after auth change:', {
+              display: paymentsNav.style.display,
+              visible: paymentsNav.style.display !== 'none'
+            });
+          }
+        }, 100);
+      });
+    });
+  </script>
 </body>
 </html>

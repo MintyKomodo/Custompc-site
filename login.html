@@ -91,6 +91,8 @@
     </div>
   </div>
 
+  <script src="shared-auth.js"></script>
+  <script src="admin-auth.js"></script>
   <script src="auth-validation.js"></script>
   <script>
     // Enhanced login form with validation
@@ -139,6 +141,60 @@
       }
 
       async onSubmit(formData) {
+        // Check if this is an admin login attempt
+        const urlParams = new URLSearchParams(window.location.search);
+        const isAdminLogin = urlParams.get('admin') === 'true';
+        
+        if (isAdminLogin) {
+          // Handle admin authentication
+          await this.handleAdminLogin(formData);
+        } else {
+          // Handle regular user login
+          await this.handleRegularLogin(formData);
+        }
+      }
+
+      async handleAdminLogin(formData) {
+        // Simulate login process
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        // Check if we have email field for admin login
+        const emailInput = document.getElementById('email');
+        const email = emailInput ? emailInput.value.trim() : '';
+        
+        // If no email field, add it dynamically for admin login
+        if (!emailInput && !document.getElementById('admin-email-added')) {
+          this.addEmailFieldForAdmin();
+          throw new Error('Admin login requires email. Please fill in all fields.');
+        }
+        
+        // Initialize AdminAuth for validation
+        const adminAuth = new (window.AdminAuth || class { 
+          validateAdminCredentials() { return false; }
+          authenticateAdmin() { return false; }
+        })();
+        
+        // Validate admin credentials
+        if (adminAuth.validateAdminCredentials(formData.username, formData.password, email)) {
+          // Authenticate admin
+          if (adminAuth.authenticateAdmin(formData.username, formData.password, email)) {
+            this.showSuccess('Admin login successful! Redirecting to payments...');
+            
+            // Redirect to payments page or stored redirect URL
+            setTimeout(() => {
+              const redirectUrl = sessionStorage.getItem('admin_redirect_url') || 'payments.html';
+              sessionStorage.removeItem('admin_redirect_url');
+              window.location.href = redirectUrl;
+            }, 1000);
+          } else {
+            throw new Error('Admin authentication failed. Please try again.');
+          }
+        } else {
+          throw new Error('Invalid admin credentials. Please check your username, password, and email.');
+        }
+      }
+
+      async handleRegularLogin(formData) {
         // Simulate login process
         await new Promise(resolve => setTimeout(resolve, 1500));
         
@@ -169,11 +225,136 @@
           throw new Error('Invalid username or password. Please try again.');
         }
       }
+
+      addEmailFieldForAdmin() {
+        const passwordContainer = document.querySelector('#password').closest('.field-container');
+        const emailContainer = document.createElement('div');
+        emailContainer.className = 'field-container';
+        emailContainer.id = 'admin-email-added';
+        
+        emailContainer.innerHTML = `
+          <label for="email" class="sr-only">Email</label>
+          <input 
+            id="email" 
+            type="email" 
+            class="auth-input" 
+            placeholder="Admin Email" 
+            required 
+            aria-label="Admin Email"
+            aria-describedby="email-validation email-help"
+            autocomplete="email"
+          />
+          <div id="email-help" class="sr-only">
+            Enter your admin email address.
+          </div>
+          <div class="field-validation hidden" id="email-validation" aria-live="polite"></div>
+        `;
+        
+        passwordContainer.insertAdjacentElement('afterend', emailContainer);
+        
+        // Add validation for email field
+        const emailInput = document.getElementById('email');
+        emailInput.addEventListener('input', () => this.validateField('email'));
+        emailInput.addEventListener('blur', () => this.validateField('email'));
+        
+        // Update form title for admin login
+        const title = document.getElementById('login-title');
+        if (title) {
+          title.textContent = 'Admin Login';
+        }
+      }
+
+      validateField(fieldName) {
+        const input = this.inputs[fieldName] || document.getElementById(fieldName);
+        const validationDiv = document.getElementById(`${fieldName}-validation`);
+        
+        if (!input || !validationDiv) return super.validateField(fieldName);
+
+        let error = null;
+        const value = input.value.trim();
+
+        switch (fieldName) {
+          case 'username':
+            error = this.validator.validateUsername(value);
+            break;
+          case 'password':
+            // For login, we only check if password is provided
+            error = value ? null : 'Password is required';
+            break;
+          case 'email':
+            // Validate email format for admin login
+            if (!value) {
+              error = 'Email is required for admin login';
+            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+              error = 'Please enter a valid email address';
+            }
+            break;
+        }
+
+        // Update field validation display
+        if (error) {
+          input.classList.add('error');
+          input.classList.remove('valid');
+          validationDiv.textContent = error;
+          validationDiv.className = 'field-validation error';
+        } else if (value) {
+          input.classList.remove('error');
+          input.classList.add('valid');
+          validationDiv.textContent = '✓ Valid';
+          validationDiv.className = 'field-validation success';
+        } else {
+          input.classList.remove('error', 'valid');
+          validationDiv.className = 'field-validation hidden';
+        }
+
+        return !error;
+      }
     }
 
     // Initialize the login form when DOM is loaded
     document.addEventListener('DOMContentLoaded', function() {
       new LoginFormHandler();
+      
+      // Check if this is an admin login and update UI accordingly
+      const urlParams = new URLSearchParams(window.location.search);
+      const isAdminLogin = urlParams.get('admin') === 'true';
+      
+      if (isAdminLogin) {
+        // Update page title and form for admin login
+        document.title = 'Admin Login – CustomPC.tech';
+        const title = document.getElementById('login-title');
+        if (title) {
+          title.textContent = 'Admin Login';
+        }
+        
+        // Add admin-specific styling
+        const authCard = document.querySelector('.auth-card');
+        if (authCard) {
+          authCard.style.borderTop = '3px solid #7db2ff';
+        }
+        
+        // Add admin notice
+        const form = document.getElementById('login-form');
+        if (form) {
+          const notice = document.createElement('div');
+          notice.className = 'admin-notice';
+          notice.style.cssText = `
+            background: rgba(125, 178, 255, 0.1);
+            border: 1px solid rgba(125, 178, 255, 0.3);
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 16px;
+            text-align: center;
+            color: #7db2ff;
+            font-size: 0.9rem;
+          `;
+          notice.innerHTML = `
+            <strong>Admin Access Required</strong><br>
+            Please enter your admin credentials to access payment processing.
+          `;
+          form.insertBefore(notice, form.firstChild);
+        }
+      }
     });
   </script>
 </body>

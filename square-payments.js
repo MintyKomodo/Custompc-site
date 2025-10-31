@@ -383,6 +383,87 @@ class SquarePayments {
     }
 
     /**
+     * Get all customers with their saved cards
+     */
+    getAllCustomersWithCards() {
+        return this.getStoredCustomers();
+    }
+
+    /**
+     * Get customer by ID with all their cards
+     */
+    getCustomerById(customerId) {
+        const customers = this.getStoredCustomers();
+        return customers.find(c => c.customerId === customerId);
+    }
+
+    /**
+     * Update customer information
+     */
+    updateCustomerInfo(customerId, updatedInfo) {
+        try {
+            const customers = this.getStoredCustomers();
+            const customerIndex = customers.findIndex(c => c.customerId === customerId);
+            
+            if (customerIndex > -1) {
+                customers[customerIndex] = {
+                    ...customers[customerIndex],
+                    ...updatedInfo,
+                    updatedAt: new Date().toISOString()
+                };
+                
+                localStorage.setItem('square_customers', JSON.stringify(customers));
+                return { success: true, customer: customers[customerIndex] };
+            }
+            
+            return { success: false, error: 'Customer not found' };
+        } catch (error) {
+            console.error('Failed to update customer:', error);
+            return { success: false, error: error.message };
+        }
+    }
+
+    /**
+     * Get customer's primary (most recently used) card
+     */
+    getCustomerPrimaryCard(customerId) {
+        const customer = this.getCustomerById(customerId);
+        if (!customer || !customer.cards || customer.cards.length === 0) {
+            return null;
+        }
+        
+        // Return the most recently created card as primary
+        return customer.cards.sort((a, b) => 
+            new Date(b.createdAt) - new Date(a.createdAt)
+        )[0];
+    }
+
+    /**
+     * Set a card as primary for a customer
+     */
+    setCustomerPrimaryCard(customerId, cardId) {
+        try {
+            const customers = this.getStoredCustomers();
+            const customer = customers.find(c => c.customerId === customerId);
+            
+            if (customer && customer.cards) {
+                // Update all cards to not be primary
+                customer.cards.forEach(card => {
+                    card.isPrimary = card.cardId === cardId;
+                });
+                
+                localStorage.setItem('square_customers', JSON.stringify(customers));
+                return { success: true };
+            }
+            
+            return { success: false, error: 'Customer or card not found' };
+        } catch (error) {
+            console.error('Failed to set primary card:', error);
+            return { success: false, error: error.message };
+        }
+    }
+
+    /**
      * Create or get existing customer
      */
     async createOrGetCustomer(customerInfo) {
@@ -453,12 +534,29 @@ class SquarePayments {
                     cards: []
                 };
                 customers.push(customerEntry);
+            } else {
+                // Update customer info if it exists
+                customerEntry.name = customer.name || customerEntry.name;
+                customerEntry.email = customer.email || customerEntry.email;
+                customerEntry.phone = customer.phone || customerEntry.phone;
+                customerEntry.updatedAt = new Date().toISOString();
             }
             
             // Add card if not already exists
             const existingCard = customerEntry.cards.find(c => c.cardId === cardInfo.cardId);
             if (!existingCard) {
-                customerEntry.cards.push(cardInfo);
+                // Set as primary if it's the first card
+                const isPrimary = customerEntry.cards.length === 0;
+                customerEntry.cards.push({
+                    ...cardInfo,
+                    isPrimary: isPrimary,
+                    lastUsed: new Date().toISOString()
+                });
+            } else {
+                // Update existing card info
+                Object.assign(existingCard, cardInfo, {
+                    lastUsed: new Date().toISOString()
+                });
             }
             
             // Store updated customers list
@@ -467,6 +565,49 @@ class SquarePayments {
         } catch (error) {
             console.error('Failed to store customer data locally:', error);
         }
+    }
+
+    /**
+     * Update card last used timestamp
+     */
+    updateCardLastUsed(customerId, cardId) {
+        try {
+            const customers = this.getStoredCustomers();
+            const customer = customers.find(c => c.customerId === customerId);
+            
+            if (customer && customer.cards) {
+                const card = customer.cards.find(c => c.cardId === cardId);
+                if (card) {
+                    card.lastUsed = new Date().toISOString();
+                    localStorage.setItem('square_customers', JSON.stringify(customers));
+                }
+            }
+        } catch (error) {
+            console.error('Failed to update card last used:', error);
+        }
+    }
+
+    /**
+     * Get customer's cards sorted by usage (most recent first)
+     */
+    getCustomerCardsSorted(customerId, sortBy = 'lastUsed') {
+        const customer = this.getCustomerById(customerId);
+        if (!customer || !customer.cards) {
+            return [];
+        }
+        
+        return customer.cards.sort((a, b) => {
+            switch (sortBy) {
+                case 'lastUsed':
+                    return new Date(b.lastUsed || b.createdAt) - new Date(a.lastUsed || a.createdAt);
+                case 'created':
+                    return new Date(b.createdAt) - new Date(a.createdAt);
+                case 'brand':
+                    return (a.brand || '').localeCompare(b.brand || '');
+                default:
+                    return 0;
+            }
+        });
     }
 
     /**
@@ -492,20 +633,114 @@ class SquarePayments {
     }
 
     /**
-     * Search customers by name or email
+     * Search customers by name, email, or phone with enhanced matching
      */
     searchCustomers(query) {
-        if (!query || query.trim().length < 2) {
+        if (!query || query.trim().length < 1) {
             return this.getStoredCustomers();
         }
         
         const customers = this.getStoredCustomers();
         const searchTerm = query.toLowerCase().trim();
         
-        return customers.filter(customer => 
-            customer.name.toLowerCase().includes(searchTerm) ||
-            customer.email.toLowerCase().includes(searchTerm)
-        );
+        return customers.filter(customer => {
+            // Search in name
+            const nameMatch = customer.name.toLowerCase().includes(searchTerm);
+            
+            // Search in email
+            const emailMatch = customer.email.toLowerCase().includes(searchTerm);
+            
+            // Search in phone (if exists)
+            const phoneMatch = customer.phone && 
+                customer.phone.replace(/[\s\-\(\)\+\.]/g, '').includes(searchTerm.replace(/[\s\-\(\)\+\.]/g, ''));
+            
+            // Search in card last 4 digits
+            const cardMatch = customer.cards && customer.cards.some(card => 
+                card.last4 && card.last4.includes(searchTerm)
+            );
+            
+            // Search by customer ID (for admin use)
+            const idMatch = customer.customerId.toLowerCase().includes(searchTerm);
+            
+            return nameMatch || emailMatch || phoneMatch || cardMatch || idMatch;
+        }).sort((a, b) => {
+            // Sort by relevance - exact matches first, then partial matches
+            const aExact = a.name.toLowerCase() === searchTerm || a.email.toLowerCase() === searchTerm;
+            const bExact = b.name.toLowerCase() === searchTerm || b.email.toLowerCase() === searchTerm;
+            
+            if (aExact && !bExact) return -1;
+            if (!aExact && bExact) return 1;
+            
+            // Then sort by most recent activity
+            const aLastActivity = Math.max(
+                new Date(a.createdAt || 0).getTime(),
+                new Date(a.updatedAt || 0).getTime(),
+                ...(a.cards || []).map(card => new Date(card.lastUsed || card.createdAt || 0).getTime())
+            );
+            
+            const bLastActivity = Math.max(
+                new Date(b.createdAt || 0).getTime(),
+                new Date(b.updatedAt || 0).getTime(),
+                ...(b.cards || []).map(card => new Date(card.lastUsed || card.createdAt || 0).getTime())
+            );
+            
+            return bLastActivity - aLastActivity;
+        });
+    }
+
+    /**
+     * Get customers with advanced filtering options
+     */
+    getCustomersFiltered(options = {}) {
+        let customers = this.getStoredCustomers();
+        
+        // Filter by has cards
+        if (options.hasCards !== undefined) {
+            customers = customers.filter(customer => {
+                const hasCards = customer.cards && customer.cards.length > 0;
+                return options.hasCards ? hasCards : !hasCards;
+            });
+        }
+        
+        // Filter by date range
+        if (options.createdAfter) {
+            const afterDate = new Date(options.createdAfter);
+            customers = customers.filter(customer => 
+                new Date(customer.createdAt) >= afterDate
+            );
+        }
+        
+        if (options.createdBefore) {
+            const beforeDate = new Date(options.createdBefore);
+            customers = customers.filter(customer => 
+                new Date(customer.createdAt) <= beforeDate
+            );
+        }
+        
+        // Sort options
+        if (options.sortBy) {
+            customers.sort((a, b) => {
+                switch (options.sortBy) {
+                    case 'name':
+                        return a.name.localeCompare(b.name);
+                    case 'email':
+                        return a.email.localeCompare(b.email);
+                    case 'created':
+                        return new Date(b.createdAt) - new Date(a.createdAt);
+                    case 'cardCount':
+                        return (b.cards?.length || 0) - (a.cards?.length || 0);
+                    default:
+                        return 0;
+                }
+            });
+        }
+        
+        // Limit results
+        if (options.limit && options.limit > 0) {
+            customers = customers.slice(0, options.limit);
+        }
+        
+        return customers;
     }
 
     /**
@@ -520,25 +755,37 @@ class SquarePayments {
             // Show processing state
             this.showProcessing(true);
 
+            // Validate that the card exists for this customer
+            const customer = this.getCustomerById(customerId);
+            if (!customer) {
+                throw new Error('Customer not found');
+            }
+            
+            const card = customer.cards?.find(c => c.cardId === cardId);
+            if (!card) {
+                throw new Error('Payment method not found for this customer');
+            }
+
             // In a real implementation, this would call your backend API
             // which would use the stored card token to process the payment
             const paymentResult = await this.submitSavedCardPayment(amount, customerId, cardId, customerInfo);
             
             if (paymentResult.success) {
-                this.showSuccess('Payment processed successfully with saved card!');
+                // Update card last used timestamp
+                this.updateCardLastUsed(customerId, cardId);
                 
-                // Get card details for response
-                const customers = this.getStoredCustomers();
-                const customer = customers.find(c => c.customerId === customerId);
-                const card = customer?.cards.find(c => c.cardId === cardId);
+                this.showSuccess('Payment processed successfully with saved card!');
                 
                 return {
                     success: true,
                     transactionId: paymentResult.transactionId,
                     amount: amount,
-                    last4: card?.last4 || 'Unknown',
+                    last4: card.last4 || 'Unknown',
+                    brand: card.brand || 'Unknown',
                     customerId: customerId,
-                    cardId: cardId
+                    cardId: cardId,
+                    customerName: customer.name,
+                    customerEmail: customer.email
                 };
             } else {
                 throw new Error(paymentResult.error || 'Payment processing failed');

@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Payment Functionality Test Runner - CustomPC.tech</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #0a0f1a;
+      color: #e9eefc;
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      color: #7db2ff;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .test-controls {
+      background: #111729;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    
+    .btn {
+      background: linear-gradient(90deg, #7db2ff, #7cf2e6);
+      color: #0b0f1a;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-right: 10px;
+      margin-bottom: 10px;
+      transition: all 0.3s ease;
+    }
+    
+    .btn:hover {
+      box-shadow: 0 0 15px rgba(124, 242, 230, 0.5);
+      transform: translateY(-1px);
+    }
+    
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .results {
+      background: #111729;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      margin-bottom: 20px;
+    }
+    
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .stat-card {
+      background: #0d1426;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+    
+    .stat-label {
+      color: #aeb9d4;
+      font-size: 0.9rem;
+    }
+    
+    .passed { color: #51cf66; }
+    .failed { color: #ff6b6b; }
+    .total { color: #7db2ff; }
+    .rate { color: #7cf2e6; }
+    
+    .category {
+      margin-bottom: 30px;
+    }
+    
+    .category-header {
+      background: #0d1426;
+      padding: 15px 20px;
+      border-radius: 8px 8px 0 0;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: none;
+      font-weight: 700;
+      color: #7db2ff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .category-stats {
+      font-size: 0.9rem;
+      color: #aeb9d4;
+    }
+    
+    .category-content {
+      background: rgba(17, 23, 41, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 0 0 8px 8px;
+      padding: 0;
+    }
+    
+    .test-item {
+      padding: 15px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 15px;
+    }
+    
+    .test-item:last-child {
+      border-bottom: none;
+    }
+    
+    .test-info {
+      flex: 1;
+    }
+    
+    .test-description {
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    
+    .test-details {
+      font-size: 0.85rem;
+      color: #aeb9d4;
+      margin-bottom: 4px;
+    }
+    
+    .test-input {
+      font-family: 'Courier New', monospace;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 0.8rem;
+    }
+    
+    .test-expected, .test-actual {
+      font-size: 0.8rem;
+    }
+    
+    .test-expected {
+      color: #51cf66;
+    }
+    
+    .test-actual {
+      color: #aeb9d4;
+    }
+    
+    .test-status {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    
+    .status-passed {
+      background: rgba(81, 207, 102, 0.2);
+      color: #51cf66;
+      border: 1px solid rgba(81, 207, 102, 0.3);
+    }
+    
+    .status-failed {
+      background: rgba(255, 107, 107, 0.2);
+      color: #ff6b6b;
+      border: 1px solid rgba(255, 107, 107, 0.3);
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #aeb9d4;
+    }
+    
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(125, 178, 255, 0.3);
+      border-top: 2px solid #7db2ff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 10px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .links {
+      text-align: center;
+      margin-top: 30px;
+    }
+    
+    .links a {
+      color: #7db2ff;
+      text-decoration: none;
+      margin: 0 15px;
+      padding: 8px 16px;
+      border: 1px solid rgba(125, 178, 255, 0.3);
+      border-radius: 6px;
+      transition: all 0.3s ease;
+    }
+    
+    .links a:hover {
+      background: rgba(125, 178, 255, 0.1);
+      border-color: #7db2ff;
+    }
+    
+    .error-message {
+      background: rgba(255, 107, 107, 0.1);
+      border: 1px solid rgba(255, 107, 107, 0.3);
+      color: #ff6b6b;
+      padding: 15px;
+      border-radius: 6px;
+      margin: 15px 0;
+    }
+    
+    .success-message {
+      background: rgba(81, 207, 102, 0.1);
+      border: 1px solid rgba(81, 207, 102, 0.3);
+      color: #51cf66;
+      padding: 15px;
+      border-radius: 6px;
+      margin: 15px 0;
+    }
+    
+    .test-coverage {
+      background: #0d1426;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .coverage-title {
+      color: #7db2ff;
+      font-weight: 700;
+      margin-bottom: 15px;
+    }
+    
+    .coverage-items {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 10px;
+    }
+    
+    .coverage-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 4px;
+    }
+    
+    .coverage-icon {
+      font-size: 1.2em;
+    }
+    
+    .export-section {
+      background: #0d1426;
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>💳 Payment Functionality Test Runner</h1>
+    
+    <div class="test-coverage">
+      <div class="coverage-title">Test Coverage Areas</div>
+      <div class="coverage-items">
+        <div class="coverage-item">
+          <span class="coverage-icon">🔐</span>
+          <span>Admin Authentication Validation</span>
+        </div>
+        <div class="coverage-item">
+          <span class="coverage-icon">📝</span>
+          <span>Payment Form Validation</span>
+        </div>
+        <div class="coverage-item">
+          <span class="coverage-icon">🏦</span>
+          <span>Square SDK Integration</span>
+        </div>
+        <div class="coverage-item">
+          <span class="coverage-icon">⚠️</span>
+          <span>Error Handling Scenarios</span>
+        </div>
+        <div class="coverage-item">
+          <span class="coverage-icon">🔄</span>
+          <span>Retry Mechanisms</span>
+        </div>
+        <div class="coverage-item">
+          <span class="coverage-icon">💾</span>
+          <span>Customer Card Storage</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="test-controls">
+      <button class="btn" onclick="runAllPaymentTests()">Run All Payment Tests</button>
+      <button class="btn" onclick="runAdminAuthTests()">Admin Auth Tests Only</button>
+      <button class="btn" onclick="runValidationTests()">Validation Tests Only</button>
+      <button class="btn" onclick="runSquareIntegrationTests()">Square Integration Tests</button>
+      <button class="btn" onclick="runErrorHandlingTests()">Error Handling Tests</button>
+      <button class="btn" onclick="clearResults()">Clear Results</button>
+      <button class="btn" onclick="exportResults()">Export Results</button>
+    </div>
+    
+    <div id="results-container" style="display: none;">
+      <div class="results">
+        <div id="summary" class="summary"></div>
+        <div id="detailed-results"></div>
+      </div>
+      
+      <div class="export-section">
+        <button class="btn" onclick="exportResults()">📄 Export Test Report</button>
+        <button class="btn" onclick="generateRecommendations()">💡 Generate Recommendations</button>
+      </div>
+    </div>
+    
+    <div class="links">
+      <a href="payments.html">Test Payment Page</a>
+      <a href="test-runner.html">Auth Test Runner</a>
+      <a href="index.html">Back to Main Site</a>
+    </div>
+  </div>
+
+  <!-- Include test dependencies -->
+  <script src="payment-testing.js"></script>
+  
+  <script>
+    let currentResults = null;
+    let paymentTester = null;
+
+    // Initialize tester when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      paymentTester = new PaymentTester();
+    });
+
+    async function runAllPaymentTests() {
+      showLoading('Running comprehensive payment functionality tests...');
+      try {
+        currentResults = await paymentTester.runAllTests();
+        displayResults(currentResults);
+        showSuccessMessage('All payment tests completed successfully!');
+      } catch (error) {
+        console.error('Payment test execution failed:', error);
+        showError('Payment test execution failed. Check console for details.');
+      }
+    }
+
+    async function runAdminAuthTests() {
+      showLoading('Running admin authentication tests...');
+      try {
+        paymentTester.testResults = [];
+        paymentTester.testAdminCredentialValidation();
+        paymentTester.testAdminSessionManagement();
+        paymentTester.testAdminAccessControl();
+        currentResults = paymentTester.displayResults();
+        displayResults(currentResults);
+        showSuccessMessage('Admin authentication tests completed!');
+      } catch (error) {
+        console.error('Admin auth test execution failed:', error);
+        showError('Admin auth test execution failed. Check console for details.');
+      }
+    }
+
+    async function runValidationTests() {
+      showLoading('Running form validation tests...');
+      try {
+        paymentTester.testResults = [];
+        paymentTester.testPaymentAmountValidation();
+        paymentTester.testCustomerNameValidation();
+        paymentTester.testCustomerEmailValidation();
+        paymentTester.testPhoneNumberValidation();
+        paymentTester.testFormValidationIntegration();
+        currentResults = paymentTester.displayResults();
+        displayResults(currentResults);
+        showSuccessMessage('Form validation tests completed!');
+      } catch (error) {
+        console.error('Validation test execution failed:', error);
+        showError('Validation test execution failed. Check console for details.');
+      }
+    }
+
+    async function runSquareIntegrationTests() {
+      showLoading('Running Square SDK integration tests...');
+      try {
+        paymentTester.testResults = [];
+        await paymentTester.testSquareSDKInitialization();
+        await paymentTester.testPaymentTokenization();
+        await paymentTester.testPaymentProcessing();
+        await paymentTester.testCustomerCardStorage();
+        currentResults = paymentTester.displayResults();
+        displayResults(currentResults);
+        showSuccessMessage('Square integration tests completed!');
+      } catch (error) {
+        console.error('Square integration test execution failed:', error);
+        showError('Square integration test execution failed. Check console for details.');
+      }
+    }
+
+    async function runErrorHandlingTests() {
+      showLoading('Running error handling tests...');
+      try {
+        paymentTester.testResults = [];
+        paymentTester.testNetworkErrorHandling();
+        paymentTester.testPaymentDeclineHandling();
+        paymentTester.testValidationErrorHandling();
+        paymentTester.testRetryMechanisms();
+        currentResults = paymentTester.displayResults();
+        displayResults(currentResults);
+        showSuccessMessage('Error handling tests completed!');
+      } catch (error) {
+        console.error('Error handling test execution failed:', error);
+        showError('Error handling test execution failed. Check console for details.');
+      }
+    }
+
+    function showLoading(message = 'Running tests...') {
+      const container = document.getElementById('results-container');
+      container.style.display = 'block';
+      container.innerHTML = `
+        <div class="loading">
+          <div class="spinner"></div>
+          ${message}
+        </div>
+      `;
+    }
+
+    function showError(message) {
+      const container = document.getElementById('results-container');
+      container.style.display = 'block';
+      container.innerHTML = `
+        <div class="error-message">
+          ❌ ${message}
+        </div>
+      `;
+    }
+
+    function showSuccessMessage(message) {
+      const existingMessage = document.querySelector('.success-message');
+      if (existingMessage) {
+        existingMessage.remove();
+      }
+      
+      const container = document.getElementById('results-container');
+      const successDiv = document.createElement('div');
+      successDiv.className = 'success-message';
+      successDiv.innerHTML = `✅ ${message}`;
+      container.insertBefore(successDiv, container.firstChild);
+      
+      // Auto-remove after 5 seconds
+      setTimeout(() => {
+        if (successDiv.parentNode) {
+          successDiv.remove();
+        }
+      }, 5000);
+    }
+
+    function displayResults(results) {
+      const container = document.getElementById('results-container');
+      container.style.display = 'block';
+      
+      // Create summary
+      const summaryHtml = `
+        <div class="stat-card">
+          <div class="stat-number total">${results.total}</div>
+          <div class="stat-label">Total Tests</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number passed">${results.passed}</div>
+          <div class="stat-label">Passed</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number failed">${results.failed}</div>
+          <div class="stat-label">Failed</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number rate">${results.successRate.toFixed(1)}%</div>
+          <div class="stat-label">Success Rate</div>
+        </div>
+      `;
+      
+      // Group results by category
+      const categories = [...new Set(results.results.map(test => test.category))];
+      let detailedHtml = '';
+      
+      categories.forEach(category => {
+        const categoryTests = results.results.filter(test => test.category === category);
+        const categoryPassed = categoryTests.filter(test => test.passed).length;
+        
+        detailedHtml += `
+          <div class="category">
+            <div class="category-header">
+              <span>${category}</span>
+              <span class="category-stats">${categoryPassed}/${categoryTests.length} passed</span>
+            </div>
+            <div class="category-content">
+        `;
+        
+        categoryTests.forEach(test => {
+          const inputDisplay = test.input.length > 50 ? test.input.substring(0, 50) + '...' : test.input;
+          
+          detailedHtml += `
+            <div class="test-item">
+              <div class="test-info">
+                <div class="test-description">${test.description}</div>
+                <div class="test-details">
+                  <strong>Input:</strong> <span class="test-input">${inputDisplay}</span>
+                </div>
+                <div class="test-details">
+                  <span class="test-expected"><strong>Expected:</strong> ${test.expected}</span> | 
+                  <span class="test-actual"><strong>Actual:</strong> ${test.actual}</span>
+                </div>
+                ${test.errors && test.errors.length > 0 ? `
+                  <div class="test-details" style="color: #ff6b6b;">
+                    <strong>Errors:</strong> ${test.errors.join(', ')}
+                  </div>
+                ` : ''}
+              </div>
+              <div class="test-status ${test.passed ? 'status-passed' : 'status-failed'}">
+                ${test.passed ? '✅ PASS' : '❌ FAIL'}
+              </div>
+            </div>
+          `;
+        });
+        
+        detailedHtml += `
+            </div>
+          </div>
+        `;
+      });
+      
+      container.innerHTML = `
+        <div class="results">
+          <div class="summary">${summaryHtml}</div>
+          <div id="detailed-results">${detailedHtml}</div>
+        </div>
+        
+        <div class="export-section">
+          <button class="btn" onclick="exportResults()">📄 Export Test Report</button>
+          <button class="btn" onclick="generateRecommendations()">💡 Generate Recommendations</button>
+        </div>
+      `;
+    }
+
+    function clearResults() {
+      const container = document.getElementById('results-container');
+      container.style.display = 'none';
+      currentResults = null;
+      
+      // Clear any success messages
+      const successMessage = document.querySelector('.success-message');
+      if (successMessage) {
+        successMessage.remove();
+      }
+    }
+
+    function exportResults() {
+      if (!currentResults) {
+        alert('No test results to export. Run tests first.');
+        return;
+      }
+      
+      const report = paymentTester.generateReport();
+      
+      const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `payment-test-results-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      showSuccessMessage('Test results exported successfully!');
+    }
+
+    function generateRecommendations() {
+      if (!currentResults) {
+        alert('No test results available. Run tests first.');
+        return;
+      }
+      
+      const report = paymentTester.generateReport();
+      const recommendations = report.recommendations;
+      
+      if (recommendations.length === 0) {
+        showSuccessMessage('All tests passed! No recommendations needed.');
+        return;
+      }
+      
+      const recommendationsHtml = `
+        <div class="error-message">
+          <strong>Recommendations for Improvement:</strong>
+          <ul style="margin: 10px 0 0 20px;">
+            ${recommendations.map(rec => `<li>${rec}</li>`).join('')}
+          </ul>
+        </div>
+      `;
+      
+      const container = document.getElementById('results-container');
+      const existingRec = container.querySelector('.error-message');
+      if (existingRec && existingRec.innerHTML.includes('Recommendations')) {
+        existingRec.remove();
+      }
+      
+      container.insertAdjacentHTML('afterbegin', recommendationsHtml);
+    }
+
+    // Auto-run tests if requested via URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('autorun') === 'true') {
+      window.addEventListener('load', () => {
+        setTimeout(runAllPaymentTests, 1000);
+      });
+    }
+  </script>
+</body>
+</html>

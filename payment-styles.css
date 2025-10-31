@@ -606,6 +606,48 @@ body.payment-page {
   border-bottom: 1px solid var(--border);
 }
 
+.search-input-wrapper {
+  position: relative;
+  margin-bottom: var(--space);
+}
+
+.clear-search-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.clear-search-btn:hover {
+  background: var(--panel2);
+  color: var(--ink);
+}
+
+.clear-search-btn.hidden {
+  display: none;
+}
+
+.search-filters {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space);
+  margin-bottom: var(--space);
+}
+
+.filter-select {
+  font-size: 0.85rem;
+  height: 36px;
+  padding: 0 12px;
+}
+
 .customer-list {
   padding: var(--card-padding);
   max-height: 400px;
@@ -1280,6 +1322,7 @@ body.payment-page {
   font-weight: 600;
   color: var(--ink);
   margin-bottom: 4px;
+  font-size: 1rem;
 }
 
 .customer-email {
@@ -1288,14 +1331,170 @@ body.payment-page {
   margin-bottom: 4px;
 }
 
+.customer-phone {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin-bottom: 4px;
+}
+
 .customer-cards {
   color: var(--accent2);
   font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.customer-card-details {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-family: 'Courier New', monospace;
+  margin-bottom: 4px;
+}
+
+.customer-activity {
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-style: italic;
 }
 
 .customer-actions {
   display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  align-items: flex-end;
+}
+
+/* Customer Cards Modal */
+.customer-cards-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg);
+}
+
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  cursor: pointer;
+}
+
+.modal-content {
+  position: relative;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  max-width: 600px;
+  width: 100%;
+  max-height: 80vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-lg);
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 1.25rem;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 24px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+  background: var(--panel2);
+  color: var(--ink);
+}
+
+.modal-body {
+  padding: var(--space-lg);
+  overflow-y: auto;
+  flex: 1;
+}
+
+.customer-cards-list {
+  display: flex;
+  flex-direction: column;
   gap: var(--space);
+}
+
+.card-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-lg);
+  background: var(--form-input-bg);
+  border: 1px solid var(--form-input-border);
+  border-radius: var(--form-input-radius);
+  transition: all 0.2s ease;
+}
+
+.card-item:hover {
+  border-color: var(--accent1);
+  background: rgba(125, 178, 255, 0.05);
+}
+
+.card-item.primary-card {
+  border-color: var(--accent2);
+  background: rgba(124, 242, 230, 0.05);
+}
+
+.card-item.primary-card::before {
+  content: '★';
+  color: var(--accent2);
+  font-size: 1.2rem;
+  margin-right: var(--space);
+}
+
+.card-brand-last4 {
+  font-weight: 600;
+  color: var(--ink);
+  font-family: 'Courier New', monospace;
+  margin-bottom: 4px;
+}
+
+.card-expiry {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+}
+
+.card-usage {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  align-items: flex-end;
 }
 
 /* Saved Payment Methods */
@@ -1338,6 +1537,7 @@ body.payment-page {
   border: 1px solid var(--form-input-border);
   border-radius: var(--form-input-radius);
   transition: all 0.2s ease;
+  position: relative;
 }
 
 .saved-card-item:hover {
@@ -1349,15 +1549,57 @@ body.payment-page {
   background: rgba(125, 178, 255, 0.1);
 }
 
+.saved-card-item.primary-card {
+  border-color: var(--accent2);
+  background: rgba(124, 242, 230, 0.05);
+}
+
 .card-info {
   flex: 1;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: 4px;
+  flex-wrap: wrap;
 }
 
 .card-brand {
   font-weight: 600;
   color: var(--ink);
   text-transform: capitalize;
-  margin-bottom: 4px;
+}
+
+.primary-badge {
+  background: var(--accent2);
+  color: var(--bg);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.recommended-badge {
+  background: var(--accent1);
+  color: var(--bg);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.expired-badge {
+  background: var(--error-color);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
 }
 
 .card-details {
@@ -1365,17 +1607,31 @@ body.payment-page {
   font-family: 'Courier New', monospace;
   font-size: 0.9rem;
   margin-bottom: 4px;
+  letter-spacing: 0.5px;
 }
 
 .card-expiration {
   color: var(--muted);
   font-size: 0.85rem;
+  margin-bottom: 4px;
+}
+
+.card-expiration.expired {
+  color: var(--error-color);
+  font-weight: 600;
+}
+
+.card-usage {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-style: italic;
 }
 
 .card-actions {
   display: flex;
-  gap: var(--space);
-  align-items: center;
+  flex-direction: column;
+  gap: var(--space-sm);
+  align-items: flex-end;
 }
 
 /* Button styles for customer management */

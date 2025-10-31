@@ -160,6 +160,20 @@ class SharedAuth {
     
     paymentsNavItems.forEach(nav => {
       nav.style.display = isAdmin ? 'inline-block' : 'none';
+      
+      // Add visual indicator for admin status
+      if (isAdmin) {
+        nav.setAttribute('title', 'Admin Payment Processing');
+        nav.style.background = 'linear-gradient(120deg,rgba(125,178,255,.15),rgba(124,242,230,.15))';
+        nav.style.borderColor = 'rgba(125,178,255,.3)';
+      }
+    });
+    
+    // Log navigation update for debugging
+    console.log('Navigation updated:', {
+      isAdmin: isAdmin,
+      paymentsNavCount: paymentsNavItems.length,
+      currentUser: this.currentUser
     });
   }
 
