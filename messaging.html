@@ -49,13 +49,28 @@
     /* Messaging Interface */
     .messaging-container {
       display: flex;
-      flex-direction: column;
       height: calc(100vh - 200px);
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       overflow: hidden;
+    }
+    
+    /* Chat Area (Left Side) */
+    .chat-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--border);
+    }
+    
+    /* Contact Sidebar (Right Side) */
+    .contact-sidebar {
+      width: 300px;
+      background: var(--panel2);
+      display: flex;
+      flex-direction: column;
     }
     
     .messaging-header {
@@ -65,6 +80,104 @@
       padding: 20px;
       border-bottom: 1px solid var(--border);
       background: linear-gradient(135deg, rgba(125,178,255,.1), rgba(124,242,230,.1));
+    }
+    
+    /* Contact Info Header */
+    .contact-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+    }
+    
+    .contact-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #7db2ff, #7cf2e6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px;
+      font-size: 24px;
+      font-weight: 600;
+      color: #0b0f1a;
+    }
+    
+    .contact-name {
+      font-weight: 600;
+      font-size: 18px;
+      margin-bottom: 4px;
+    }
+    
+    .contact-status {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+    
+    .contact-status.online {
+      color: #00ff88;
+    }
+    
+    /* Contact Details */
+    .contact-details {
+      padding: 20px;
+      flex: 1;
+    }
+    
+    .detail-section {
+      margin-bottom: 24px;
+    }
+    
+    .detail-title {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+    
+    .detail-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 0;
+      font-size: 14px;
+    }
+    
+    .detail-icon {
+      width: 16px;
+      text-align: center;
+      color: var(--accent1);
+    }
+    
+    .quick-actions-sidebar {
+      padding: 20px;
+      border-top: 1px solid var(--border);
+    }
+    
+    .quick-action-btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--ink);
+      text-decoration: none;
+      text-align: center;
+      margin-bottom: 8px;
+      transition: all 0.2s ease;
+      font-size: 14px;
+    }
+    
+    .quick-action-btn:hover {
+      background: rgba(125, 178, 255, 0.1);
+      border-color: rgba(125, 178, 255, 0.3);
     }
     
     .messaging-title {
@@ -288,6 +401,18 @@
     @media (max-width: 768px) {
       .messaging-container {
         height: calc(100vh - 160px);
+        flex-direction: column;
+      }
+      
+      .contact-sidebar {
+        width: 100%;
+        height: 200px;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      
+      .chat-area {
+        border-right: none;
       }
       
       .messaging-input-container {
@@ -300,6 +425,14 @@
       
       .quick-actions {
         grid-template-columns: 1fr;
+      }
+      
+      .contact-details {
+        padding: 12px;
+      }
+      
+      .detail-section {
+        margin-bottom: 16px;
       }
     }
     
@@ -384,38 +517,113 @@
 
     <!-- Main Messaging Interface -->
     <div class="messaging-container">
-      <div class="messaging-header">
-        <div class="messaging-title">
-          <div class="live-indicator"></div>
-          Live Chat Support
-        </div>
-        <div style="font-size: 14px; color: var(--muted);">
-          <span id="connection-status">Connecting...</span>
-        </div>
-      </div>
-      
-      <div class="messaging-status">
-        <div class="status-indicator"></div>
-        <span id="status-text">Notifying our team to join the chat...</span>
-      </div>
-      
-      <div class="messaging-chat" id="messaging-chat">
-        <div class="message system">
-          <div class="message-content">
-            Welcome to CustomPC.tech live support! 🎮<br><br>
-            We're notifying our team to join the chat. Please describe what you need help with and we'll be with you shortly.
+      <!-- Chat Area (Left Side) -->
+      <div class="chat-area">
+        <div class="messaging-header">
+          <div class="messaging-title">
+            <div class="live-indicator"></div>
+            Live Chat Support
+          </div>
+          <div style="font-size: 14px; color: var(--muted);">
+            <span id="connection-status">Connecting...</span>
           </div>
         </div>
+        
+        <div class="messaging-status">
+          <div class="status-indicator"></div>
+          <span id="status-text">Notifying our team to join the chat...</span>
+        </div>
+        
+        <div class="messaging-chat" id="messaging-chat">
+          <div class="message system">
+            <div class="message-content">
+              Welcome to CustomPC.tech live support! 🎮<br><br>
+              We're notifying our team to join the chat. Please describe what you need help with and we'll be with you shortly.
+            </div>
+          </div>
+        </div>
+        
+        <div class="messaging-input-container">
+          <textarea 
+            id="messaging-input" 
+            class="messaging-input" 
+            placeholder="Type your message here..."
+            rows="1"
+          ></textarea>
+          <button id="send-btn" class="send-btn" onclick="sendMessage()">Send</button>
+        </div>
       </div>
       
-      <div class="messaging-input-container">
-        <textarea 
-          id="messaging-input" 
-          class="messaging-input" 
-          placeholder="Type your message here..."
-          rows="1"
-        ></textarea>
-        <button id="send-btn" class="send-btn" onclick="sendMessage()">Send</button>
+      <!-- Contact Sidebar (Right Side) -->
+      <div class="contact-sidebar">
+        <div class="contact-header">
+          <div class="contact-avatar" id="contact-avatar">
+            PC
+          </div>
+          <div class="contact-name" id="contact-name">CustomPC.tech Support</div>
+          <div class="contact-status online" id="contact-status">
+            <div class="status-indicator"></div>
+            <span>Online - Ready to help</span>
+          </div>
+        </div>
+        
+        <div class="contact-details">
+          <div class="detail-section">
+            <div class="detail-title">Contact Information</div>
+            <div class="detail-item">
+              <div class="detail-icon">📧</div>
+              <div>griffin@crowhurst.ws</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-icon">🌐</div>
+              <div>CustomPC.tech</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-icon">⏰</div>
+              <div>Response time: ~5 minutes</div>
+            </div>
+          </div>
+          
+          <div class="detail-section">
+            <div class="detail-title">Specialties</div>
+            <div class="detail-item">
+              <div class="detail-icon">🎮</div>
+              <div>Gaming PC Builds</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-icon">💼</div>
+              <div>Workstation Systems</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-icon">🔧</div>
+              <div>Technical Support</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-icon">💰</div>
+              <div>Custom Quotes</div>
+            </div>
+          </div>
+          
+          <div class="detail-section">
+            <div class="detail-title">Session Info</div>
+            <div class="detail-item">
+              <div class="detail-icon">🕐</div>
+              <div id="session-time">Started just now</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-icon">💬</div>
+              <div><span id="message-count">1</span> messages</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="quick-actions-sidebar">
+          <div class="detail-title">Quick Actions</div>
+          <a href="#" class="quick-action-btn" onclick="startQuickChat('support')">🛠️ Technical Support</a>
+          <a href="#" class="quick-action-btn" onclick="startQuickChat('quote')">💰 Get Quote</a>
+          <a href="#" class="quick-action-btn" onclick="startQuickChat('general')">❓ General Question</a>
+          <a href="contact.html" class="quick-action-btn">📧 Email Instead</a>
+        </div>
       </div>
     </div>
   </div>
@@ -427,6 +635,8 @@
       constructor() {
         this.messageQueue = [];
         this.isTyping = false;
+        this.messageCount = 1;
+        this.sessionStartTime = new Date();
         this.init();
       }
       
@@ -435,6 +645,8 @@
         this.notifyAdmin();
         this.updateConnectionStatus();
         this.autoResizeTextarea();
+        this.updateSessionInfo();
+        this.startSessionTimer();
       }
       
       setupInputHandlers() {
@@ -541,6 +753,12 @@ This is an automated notification from the CustomPC.tech live messaging system.`
         chat.appendChild(messageDiv);
         chat.scrollTop = chat.scrollHeight;
         
+        // Update message count
+        if (type === 'user' || type === 'admin') {
+          this.messageCount++;
+          this.updateMessageCount();
+        }
+        
         // Add smooth scroll animation
         messageDiv.style.opacity = '0';
         messageDiv.style.transform = 'translateY(20px)';
@@ -549,6 +767,51 @@ This is an automated notification from the CustomPC.tech live messaging system.`
           messageDiv.style.opacity = '1';
           messageDiv.style.transform = 'translateY(0)';
         }, 10);
+      }
+      
+      updateSessionInfo() {
+        // Update user info if available
+        const sharedAuth = window.sharedAuth;
+        const currentUser = sharedAuth ? sharedAuth.getCurrentUser() : null;
+        
+        if (currentUser && currentUser.username !== 'Anonymous') {
+          const contactAvatar = document.getElementById('contact-avatar');
+          const contactName = document.getElementById('contact-name');
+          
+          if (contactAvatar && contactName) {
+            contactAvatar.textContent = currentUser.username.substring(0, 2).toUpperCase();
+            contactName.textContent = `Chat with ${currentUser.username}`;
+          }
+        }
+      }
+      
+      updateMessageCount() {
+        const messageCountEl = document.getElementById('message-count');
+        if (messageCountEl) {
+          messageCountEl.textContent = this.messageCount;
+        }
+      }
+      
+      startSessionTimer() {
+        setInterval(() => {
+          const now = new Date();
+          const diff = now - this.sessionStartTime;
+          const minutes = Math.floor(diff / 60000);
+          const seconds = Math.floor((diff % 60000) / 1000);
+          
+          const sessionTimeEl = document.getElementById('session-time');
+          if (sessionTimeEl) {
+            if (minutes === 0) {
+              sessionTimeEl.textContent = `Started ${seconds}s ago`;
+            } else if (minutes < 60) {
+              sessionTimeEl.textContent = `Started ${minutes}m ${seconds}s ago`;
+            } else {
+              const hours = Math.floor(minutes / 60);
+              const remainingMinutes = minutes % 60;
+              sessionTimeEl.textContent = `Started ${hours}h ${remainingMinutes}m ago`;
+            }
+          }
+        }, 1000);
       }
       
       showTypingIndicator() {
