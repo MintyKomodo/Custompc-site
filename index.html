@@ -50,9 +50,122 @@
     }
     .brand a{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;font-weight:700;letter-spacing:.3px;white-space:nowrap}
     nav{display:flex;gap:var(--space);flex-wrap:wrap}
-    .pill{display:inline-block;padding:10px 14px;border-radius:999px;color:var(--ink);text-decoration:none;border:1px solid transparent}
+    .pill{display:inline-block;padding:10px 14px;border-radius:999px;color:var(--ink);text-decoration:none;border:1px solid transparent;position:relative}
     .pill:hover{background:#0f1830}
     .pill.active{background:linear-gradient(120deg,rgba(125,178,255,.15),rgba(124,242,230,.15));border-color:rgba(255,255,255,.08)}
+
+    /* Custom PC Hover Dropdown */
+    .custom-pc-nav {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .custom-pc-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0,0,0,.4);
+      min-width: 280px;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(-50%) translateY(-10px);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      margin-top: 8px;
+      overflow: hidden;
+    }
+    
+    .custom-pc-nav:hover .custom-pc-dropdown {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(0);
+    }
+    
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      padding: 16px 20px;
+      color: var(--ink);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border);
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    
+    .dropdown-item:last-child {
+      border-bottom: none;
+    }
+    
+    .dropdown-item:hover {
+      background: rgba(125, 178, 255, 0.1);
+    }
+    
+    .dropdown-item-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 16px;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    
+    .messaging-icon {
+      background: linear-gradient(135deg, #7cf2e6, #7db2ff);
+    }
+    
+    .payments-icon {
+      background: linear-gradient(135deg, #ffd700, #ff8c00);
+    }
+    
+    .dropdown-item-content {
+      flex: 1;
+    }
+    
+    .dropdown-item-title {
+      font-weight: 600;
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+    
+    .dropdown-item-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.3;
+    }
+    
+    .dropdown-item.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .dropdown-item.disabled:hover {
+      background: transparent;
+    }
+    
+    /* Live chat indicator */
+    .live-indicator {
+      width: 8px;
+      height: 8px;
+      background: #00ff88;
+      border-radius: 50%;
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.2); }
+      100% { opacity: 1; transform: scale(1); }
+    }
 
     /* Utilities */
     .card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
@@ -178,10 +291,36 @@
       </div>
       <nav style="display: flex; align-items: center; gap: var(--space);">
         <a class="pill" href="builds.html">Builds</a>
-        <a class="pill active" href="index.html">Custom PC</a>
+        
+        <!-- Custom PC with Hover Dropdown -->
+        <div class="custom-pc-nav">
+          <a class="pill active" href="index.html">Custom PC</a>
+          <div class="custom-pc-dropdown">
+            <div class="dropdown-item" onclick="openLiveMessaging()">
+              <div class="dropdown-item-icon messaging-icon">
+                💬
+                <div class="live-indicator"></div>
+              </div>
+              <div class="dropdown-item-content">
+                <div class="dropdown-item-title">Live Messaging</div>
+                <div class="dropdown-item-desc">Chat with our team in real-time</div>
+              </div>
+            </div>
+            
+            <div class="dropdown-item" id="payments-dropdown-item" onclick="openPayments()">
+              <div class="dropdown-item-icon payments-icon">
+                💳
+              </div>
+              <div class="dropdown-item-content">
+                <div class="dropdown-item-title">Payment Processing</div>
+                <div class="dropdown-item-desc">Square payment management</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
         <a class="pill" href="about.html">About</a>
         <a class="pill" href="contact.html">Contact</a>
-
       </nav>
     </header>
 
@@ -376,6 +515,540 @@
   <script src="shared-auth.js"></script>
   
   <script>
+    // Live Messaging System
+    class LiveMessaging {
+      constructor() {
+        this.isOpen = false;
+        this.messageQueue = [];
+        this.init();
+      }
+      
+      init() {
+        this.setupAuthIntegration();
+        this.createMessagingInterface();
+      }
+      
+      setupAuthIntegration() {
+        // Update payments access based on auth state
+        this.updatePaymentsAccess();
+        
+        // Listen for auth state changes
+        window.addEventListener('authStateChanged', () => {
+          this.updatePaymentsAccess();
+        });
+        
+        // Check periodically for auth system initialization
+        const checkAuth = setInterval(() => {
+          if (window.sharedAuth) {
+            this.updatePaymentsAccess();
+            clearInterval(checkAuth);
+          }
+        }, 100);
+      }
+      
+      updatePaymentsAccess() {
+        const paymentsItem = document.getElementById('payments-dropdown-item');
+        if (!paymentsItem) return;
+        
+        const sharedAuth = window.sharedAuth;
+        const isAdmin = sharedAuth && sharedAuth.isCurrentUserAdmin();
+        
+        if (isAdmin) {
+          paymentsItem.classList.remove('disabled');
+          paymentsItem.style.opacity = '1';
+          paymentsItem.style.pointerEvents = 'auto';
+        } else {
+          paymentsItem.classList.add('disabled');
+          paymentsItem.style.opacity = '0.5';
+          paymentsItem.style.pointerEvents = 'none';
+        }
+      }
+      
+      createMessagingInterface() {
+        // Create messaging modal HTML
+        const modalHTML = `
+          <div id="live-messaging-modal" class="messaging-modal" style="display: none;">
+            <div class="messaging-overlay" onclick="closeLiveMessaging()"></div>
+            <div class="messaging-container">
+              <div class="messaging-header">
+                <div class="messaging-title">
+                  <div class="live-indicator" style="position: relative; margin-right: 8px;"></div>
+                  Live Messaging
+                </div>
+                <button onclick="closeLiveMessaging()" class="messaging-close">×</button>
+              </div>
+              
+              <div class="messaging-content">
+                <div class="messaging-status">
+                  <div class="status-indicator online"></div>
+                  <span>Connecting to support team...</span>
+                </div>
+                
+                <div class="messaging-chat" id="messaging-chat">
+                  <div class="system-message">
+                    <div class="message-content">
+                      Welcome! We're notifying our team to join the chat. 
+                      Please describe what you need help with.
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="messaging-input-container">
+                  <input type="text" id="messaging-input" placeholder="Type your message..." />
+                  <button onclick="sendMessage()" class="send-btn">Send</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        
+        // Add modal to body
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        
+        // Add CSS styles
+        this.addMessagingStyles();
+        
+        // Setup input handlers
+        this.setupInputHandlers();
+      }
+      
+      addMessagingStyles() {
+        const style = document.createElement('style');
+        style.textContent = `
+          .messaging-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+          }
+          
+          .messaging-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(4px);
+          }
+          
+          .messaging-container {
+            position: relative;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 500px;
+            max-height: 600px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          }
+          
+          @keyframes slideUp {
+            from {
+              opacity: 0;
+              transform: translateY(30px) scale(0.95);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0) scale(1);
+            }
+          }
+          
+          .messaging-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            background: linear-gradient(135deg, rgba(125,178,255,.1), rgba(124,242,230,.1));
+          }
+          
+          .messaging-title {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            font-size: 18px;
+          }
+          
+          .messaging-close {
+            background: none;
+            border: none;
+            color: var(--ink);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 8px;
+            transition: background 0.2s;
+          }
+          
+          .messaging-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+          }
+          
+          .messaging-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+          }
+          
+          .messaging-status {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            background: var(--panel2);
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+            color: var(--muted);
+          }
+          
+          .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+          }
+          
+          .status-indicator.online {
+            background: #00ff88;
+            animation: pulse 2s infinite;
+          }
+          
+          .messaging-chat {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            min-height: 300px;
+          }
+          
+          .system-message {
+            margin-bottom: 16px;
+          }
+          
+          .user-message {
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: flex-end;
+          }
+          
+          .admin-message {
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: flex-start;
+          }
+          
+          .message-content {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.4;
+          }
+          
+          .system-message .message-content {
+            background: rgba(125, 178, 255, 0.1);
+            border: 1px solid rgba(125, 178, 255, 0.2);
+            color: var(--ink);
+          }
+          
+          .user-message .message-content {
+            background: linear-gradient(135deg, #7db2ff, #7cf2e6);
+            color: #0b0f1a;
+            font-weight: 500;
+          }
+          
+          .admin-message .message-content {
+            background: var(--panel2);
+            border: 1px solid var(--border);
+            color: var(--ink);
+          }
+          
+          .messaging-input-container {
+            display: flex;
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            gap: 12px;
+          }
+          
+          .messaging-input-container input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--panel2);
+            color: var(--ink);
+            outline: none;
+            font-size: 14px;
+          }
+          
+          .messaging-input-container input:focus {
+            border-color: var(--accent1);
+            box-shadow: 0 0 0 2px rgba(125, 178, 255, 0.2);
+          }
+          
+          .send-btn {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #7db2ff, #7cf2e6);
+            color: #0b0f1a;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+          }
+          
+          .send-btn:hover {
+            transform: translateY(-1px);
+          }
+          
+          .send-btn:active {
+            transform: translateY(0);
+          }
+        `;
+        document.head.appendChild(style);
+      }
+      
+      setupInputHandlers() {
+        const input = document.getElementById('messaging-input');
+        if (input) {
+          input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+              sendMessage();
+            }
+          });
+        }
+      }
+      
+      open() {
+        const modal = document.getElementById('live-messaging-modal');
+        if (modal) {
+          modal.style.display = 'flex';
+          this.isOpen = true;
+          
+          // Focus input
+          setTimeout(() => {
+            const input = document.getElementById('messaging-input');
+            if (input) input.focus();
+          }, 300);
+          
+          // Send notification email to admin
+          this.notifyAdmin();
+          
+          // Update status after a delay
+          setTimeout(() => {
+            this.updateStatus('Admin notified - joining chat soon...');
+          }, 2000);
+        }
+      }
+      
+      close() {
+        const modal = document.getElementById('live-messaging-modal');
+        if (modal) {
+          modal.style.display = 'none';
+          this.isOpen = false;
+        }
+      }
+      
+      async notifyAdmin() {
+        try {
+          // Get user info
+          const sharedAuth = window.sharedAuth;
+          const currentUser = sharedAuth ? sharedAuth.getCurrentUser() : null;
+          const userName = currentUser && currentUser.username !== 'Anonymous' ? currentUser.username : 'Anonymous User';
+          const userEmail = currentUser && currentUser.email ? currentUser.email : 'No email provided';
+          
+          // Send notification email
+          const formData = new FormData();
+          formData.append('_replyto', 'griffin@crowhurst.ws');
+          formData.append('name', 'CustomPC Live Chat System');
+          formData.append('message', `🚨 LIVE CHAT REQUEST 🚨
+
+User: ${userName}
+Email: ${userEmail}
+Time: ${new Date().toLocaleString()}
+Page: ${window.location.href}
+
+A user has opened the live chat and is waiting for assistance. Please log into the CustomPC admin panel to respond.
+
+This is an automated notification from the CustomPC.tech live messaging system.`);
+          
+          await fetch('https://formspree.io/f/xrblokly', {
+            method: 'POST',
+            headers: { 'Accept': 'application/json' },
+            body: formData
+          });
+          
+          console.log('Admin notification sent successfully');
+        } catch (error) {
+          console.error('Failed to notify admin:', error);
+        }
+      }
+      
+      updateStatus(message) {
+        const statusElement = document.querySelector('.messaging-status span');
+        if (statusElement) {
+          statusElement.textContent = message;
+        }
+      }
+      
+      addMessage(content, type = 'user') {
+        const chat = document.getElementById('messaging-chat');
+        if (!chat) return;
+        
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `${type}-message`;
+        messageDiv.innerHTML = `
+          <div class="message-content">${content}</div>
+        `;
+        
+        chat.appendChild(messageDiv);
+        chat.scrollTop = chat.scrollHeight;
+      }
+    }
+    
+    // Global functions
+    function openLiveMessaging() {
+      if (!window.liveMessaging) {
+        window.liveMessaging = new LiveMessaging();
+      }
+      window.liveMessaging.open();
+    }
+    
+    function closeLiveMessaging() {
+      if (window.liveMessaging) {
+        window.liveMessaging.close();
+      }
+    }
+    
+    function sendMessage() {
+      const input = document.getElementById('messaging-input');
+      if (!input || !input.value.trim()) return;
+      
+      const message = input.value.trim();
+      input.value = '';
+      
+      // Add user message to chat
+      if (window.liveMessaging) {
+        window.liveMessaging.addMessage(message, 'user');
+        
+        // Simulate admin response (in real implementation, this would come from WebSocket)
+        setTimeout(() => {
+          window.liveMessaging.addMessage(
+            "Thanks for your message! An admin will respond shortly. In the meantime, you can also email us directly at griffin@crowhurst.ws for immediate assistance.",
+            'system'
+          );
+        }, 1000);
+      }
+    }
+    
+    function openPayments() {
+      const sharedAuth = window.sharedAuth;
+      const isAdmin = sharedAuth && sharedAuth.isCurrentUserAdmin();
+      
+      if (isAdmin) {
+        window.location.href = 'payments.html';
+      } else {
+        // Show admin required message
+        showAdminRequiredMessage();
+      }
+    }
+    
+    function showAdminRequiredMessage() {
+      const message = document.createElement('div');
+      message.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 20px 40px rgba(0,0,0,.4);
+        z-index: 10000;
+        max-width: 320px;
+        color: var(--ink);
+        animation: slideIn 0.3s ease;
+      `;
+      message.innerHTML = `
+        <div style="font-weight: 600; margin-bottom: 8px; display: flex; align-items: center;">
+          <span style="margin-right: 8px;">🔒</span>
+          Admin Access Required
+        </div>
+        <div style="color: var(--muted); font-size: 14px; margin-bottom: 16px; line-height: 1.4;">
+          Payment processing is only available to authenticated administrators.
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <a href="login.html?admin=true" style="
+            display: inline-block;
+            padding: 8px 16px;
+            background: linear-gradient(90deg, var(--accent1), var(--accent2));
+            color: #0b0f1a;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+          ">Login as Admin</a>
+          <button onclick="this.closest('div').remove()" style="
+            padding: 8px 16px;
+            background: transparent;
+            color: var(--muted);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+          ">Close</button>
+        </div>
+      `;
+      
+      document.body.appendChild(message);
+      
+      // Auto-remove after 8 seconds
+      setTimeout(() => {
+        if (message.parentNode) {
+          message.style.animation = 'slideOut 0.3s ease';
+          setTimeout(() => {
+            if (message.parentNode) {
+              message.parentNode.removeChild(message);
+            }
+          }, 300);
+        }
+      }, 8000);
+    }
+    
+    // Initialize on DOM load
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize live messaging system
+      setTimeout(() => {
+        if (!window.liveMessaging) {
+          window.liveMessaging = new LiveMessaging();
+        }
+      }, 500);
+    });
+    
+    // Add slide animations
+    const slideAnimations = document.createElement('style');
+    slideAnimations.textContent = `
+      @keyframes slideIn {
+        from { opacity: 0; transform: translateX(100%); }
+        to { opacity: 1; transform: translateX(0); }
+      }
+      @keyframes slideOut {
+        from { opacity: 1; transform: translateX(0); }
+        to { opacity: 0; transform: translateX(100%); }
+      }
+    `;
+    document.head.appendChild(slideAnimations);
+  </script>
     // Integration test for navigation system
     document.addEventListener('DOMContentLoaded', function() {
       // Test navigation integration after auth system loads
