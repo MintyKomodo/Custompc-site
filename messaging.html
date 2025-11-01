@@ -729,8 +729,8 @@
         </div>
         
         <div class="messaging-chat" id="messaging-chat">
-          <!-- Tawk.to Chat Widget will be embedded here -->
-          <div id="tawk-chat-container" style="width: 100%; height: 100%; min-height: 400px;">
+          <!-- Live Chat Integration -->
+          <div id="chat-container" style="width: 100%; height: 100%; min-height: 400px;">
             <div class="message system">
               <div class="message-content">
                 Welcome to CustomPC.tech live support!<br><br>
@@ -814,20 +814,18 @@
   <!-- Firebase Chat Manager -->
   <script src="config/firebase-config.js"></script>
   
-  <!-- Tawk.to Integration -->
-  <!--Start of Tawk.to Script-->
+  <!-- Crisp Chat Integration -->
   <script type="text/javascript">
-  var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-  (function(){
-  var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-  s1.async=true;
-  s1.src='https://embed.tawk.to/6895040bea5b0a1926912936/1j231fjbt';
-  s1.charset='UTF-8';
-  s1.setAttribute('crossorigin','*');
-  s0.parentNode.insertBefore(s1,s0);
-  })();
+    window.$crisp=[];
+    window.CRISP_WEBSITE_ID="04b92cf5-f7ff-4191-9f98-44433c84752b";
+    (function(){
+      d=document;
+      s=d.createElement("script");
+      s.src="https://client.crisp.chat/l.js";
+      s.async=1;
+      d.getElementsByTagName("head")[0].appendChild(s);
+    })();
   </script>
-  <!--End of Tawk.to Script-->
   
   <script>
     // Handle Tawk.to events
