@@ -804,6 +804,13 @@
 
   <script src="shared-auth.js"></script>
   
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+  
+  <!-- Firebase Chat Manager -->
+  <script src="firebase-config.js"></script>
+  
   <script>
     class LiveMessagingPage {
       constructor() {
@@ -966,36 +973,26 @@ This is an automated notification from the CustomPC.tech live messaging system.`
         }, 10);
       }
       
-      saveMessageToSession(content, type) {
+      async saveMessageToSession(content, type) {
         if (!this.currentChatId) return;
         
-        const chats = this.getStoredChats();
-        const chat = chats.find(c => c.id === this.currentChatId);
+        const sharedAuth = window.sharedAuth;
+        const currentUser = sharedAuth ? sharedAuth.getCurrentUser() : null;
+        const userId = currentUser ? currentUser.username : 'Anonymous User';
         
-        if (chat) {
-          if (!chat.messages) {
-            chat.messages = [];
-          }
-          
-          chat.messages.push({
-            content: content,
-            type: type,
-            timestamp: new Date().toISOString()
-          });
-          
-          chat.lastActivity = new Date().toISOString();
-          
-          // If it's a user message and admin is not currently viewing this chat, increment unread
-          if (type === 'user' && this.isAdmin && this.currentChatId !== chat.id) {
-            chat.unreadCount = (chat.unreadCount || 0) + 1;
-          }
-          
-          this.saveChatSession(chat);
-          
-          // Refresh admin chat list if admin
-          if (this.isAdmin) {
-            setTimeout(() => this.loadActiveChats(), 100);
-          }
+        const messageData = {
+          content: content,
+          type: type,
+          userId: userId,
+          timestamp: new Date().toISOString()
+        };
+        
+        // Send message through Firebase
+        await window.firebaseChatManager.sendMessage(this.currentChatId, messageData);
+        
+        // Refresh admin chat list if admin
+        if (this.isAdmin) {
+          setTimeout(() => this.loadActiveChats(), 100);
         }
       }
       
@@ -1062,7 +1059,7 @@ This is an automated notification from the CustomPC.tech live messaging system.`
         }
       }
       
-      initializeChatSession() {
+      async initializeChatSession() {
         if (!this.isAdmin) {
           // Create a new chat session for regular users
           const sharedAuth = window.sharedAuth;
@@ -1070,20 +1067,34 @@ This is an automated notification from the CustomPC.tech live messaging system.`
           const userName = currentUser && currentUser.username !== 'Anonymous' ? currentUser.username : 'Anonymous User';
           const userEmail = currentUser && currentUser.email ? currentUser.email : 'No email provided';
           
-          this.currentChatId = 'chat_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-          
-          const chatSession = {
-            id: this.currentChatId,
+          const chatData = {
             userName: userName,
             userEmail: userEmail,
             startTime: new Date().toISOString(),
-            lastActivity: new Date().toISOString(),
             messages: [],
-            unreadCount: 0,
-            status: 'active'
+            unreadCount: 0
           };
           
-          this.saveChatSession(chatSession);
+          // Use Firebase to create chat session
+          this.currentChatId = await window.firebaseChatManager.createChatSession(chatData);
+          
+          // Start listening for messages in this chat
+          this.startMessageListener();
+        }
+      }
+      
+      startMessageListener() {
+        if (this.currentChatId) {
+          window.firebaseChatManager.listenForMessages(this.currentChatId, (message) => {
+            // Only display messages that aren't from the current user
+            const sharedAuth = window.sharedAuth;
+            const currentUser = sharedAuth ? sharedAuth.getCurrentUser() : null;
+            const isCurrentUser = message.userId === (currentUser ? currentUser.username : 'Anonymous User');
+            
+            if (!isCurrentUser) {
+              this.displayMessage(message.content, message.type, message.timestamp);
+            }
+          });
         }
       }
       
@@ -1119,16 +1130,22 @@ This is an automated notification from the CustomPC.tech live messaging system.`
         }
       }
       
-      loadActiveChats() {
-        const chats = this.getStoredChats();
-        const activeChats = chats.filter(chat => {
-          const lastActivity = new Date(chat.lastActivity);
-          const now = new Date();
-          const hoursSinceActivity = (now - lastActivity) / (1000 * 60 * 60);
-          return hoursSinceActivity < 24; // Show chats from last 24 hours
-        });
-        
-        this.displayChats(activeChats);
+      async loadActiveChats() {
+        try {
+          const activeChats = await window.firebaseChatManager.getActiveChats();
+          this.displayChats(activeChats);
+        } catch (error) {
+          console.error('Failed to load active chats:', error);
+          // Fallback to local storage
+          const chats = this.getStoredChats();
+          const activeChats = chats.filter(chat => {
+            const lastActivity = new Date(chat.lastActivity);
+            const now = new Date();
+            const hoursSinceActivity = (now - lastActivity) / (1000 * 60 * 60);
+            return hoursSinceActivity < 24;
+          });
+          this.displayChats(activeChats);
+        }
       }
       
       displayChats(chats) {
@@ -1229,35 +1246,77 @@ This is an automated notification from the CustomPC.tech live messaging system.`
         this.markChatAsRead(chatId);
       }
       
-      loadChatMessages(chatId) {
-        const chats = this.getStoredChats();
-        const chat = chats.find(c => c.id === chatId);
-        
-        if (!chat) return;
-        
-        // Update contact info
-        const contactName = document.getElementById('contact-name');
-        const contactAvatar = document.getElementById('contact-avatar');
-        
-        if (contactName) {
-          contactName.textContent = `Chat with ${chat.userName}`;
-        }
-        
-        if (contactAvatar) {
-          contactAvatar.textContent = chat.userName.substring(0, 2).toUpperCase();
-        }
-        
-        // Clear and load messages
-        const chatContainer = document.getElementById('messaging-chat');
-        if (chatContainer) {
-          chatContainer.innerHTML = '';
+      async loadChatMessages(chatId) {
+        try {
+          const messages = await window.firebaseChatManager.getChatMessages(chatId);
           
-          if (chat.messages && chat.messages.length > 0) {
-            chat.messages.forEach(message => {
-              this.displayMessage(message.content, message.type, message.timestamp);
-            });
-          } else {
-            this.displayMessage('Chat session started. Waiting for user message...', 'system', false);
+          // Get chat info for contact display
+          const activeChats = await window.firebaseChatManager.getActiveChats();
+          const chat = activeChats.find(c => c.id === chatId);
+          
+          if (chat) {
+            // Update contact info
+            const contactName = document.getElementById('contact-name');
+            const contactAvatar = document.getElementById('contact-avatar');
+            
+            if (contactName) {
+              contactName.textContent = `Chat with ${chat.userName}`;
+            }
+            
+            if (contactAvatar) {
+              contactAvatar.textContent = chat.userName.substring(0, 2).toUpperCase();
+            }
+          }
+          
+          // Clear and load messages
+          const chatContainer = document.getElementById('messaging-chat');
+          if (chatContainer) {
+            chatContainer.innerHTML = '';
+            
+            if (messages && messages.length > 0) {
+              messages.forEach(message => {
+                this.displayMessage(message.content, message.type, message.timestamp);
+              });
+            } else {
+              this.displayMessage('Chat session started. Waiting for user message...', 'system', false);
+            }
+          }
+          
+          // Start listening for new messages in this chat
+          window.firebaseChatManager.listenForMessages(chatId, (message) => {
+            this.displayMessage(message.content, message.type, message.timestamp);
+          });
+          
+        } catch (error) {
+          console.error('Failed to load chat messages:', error);
+          // Fallback to localStorage method
+          const chats = this.getStoredChats();
+          const chat = chats.find(c => c.id === chatId);
+          
+          if (chat) {
+            const contactName = document.getElementById('contact-name');
+            const contactAvatar = document.getElementById('contact-avatar');
+            
+            if (contactName) {
+              contactName.textContent = `Chat with ${chat.userName}`;
+            }
+            
+            if (contactAvatar) {
+              contactAvatar.textContent = chat.userName.substring(0, 2).toUpperCase();
+            }
+            
+            const chatContainer = document.getElementById('messaging-chat');
+            if (chatContainer) {
+              chatContainer.innerHTML = '';
+              
+              if (chat.messages && chat.messages.length > 0) {
+                chat.messages.forEach(message => {
+                  this.displayMessage(message.content, message.type, message.timestamp);
+                });
+              } else {
+                this.displayMessage('Chat session started. Waiting for user message...', 'system', false);
+              }
+            }
           }
         }
       }
@@ -1290,12 +1349,17 @@ This is an automated notification from the CustomPC.tech live messaging system.`
       }
       
       startChatPolling() {
-        // Poll for new messages every 5 seconds
-        setInterval(() => {
-          if (this.isAdmin) {
+        if (this.isAdmin) {
+          // Listen for new chats in real-time
+          window.firebaseChatManager.listenForNewChats((chat) => {
+            this.loadActiveChats(); // Refresh the chat list when new chats arrive
+          });
+          
+          // Also poll every 10 seconds as backup
+          setInterval(() => {
             this.loadActiveChats();
-          }
-        }, 5000);
+          }, 10000);
+        }
       }
       
       showTypingIndicator() {
