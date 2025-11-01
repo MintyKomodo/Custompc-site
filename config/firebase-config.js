@@ -367,6 +367,37 @@ class FirebaseChatManager {
     }
   }
 
+  // Refresh all listeners (useful for refresh functionality)
+  refreshListeners() {
+    console.log('🔄 Refreshing Firebase listeners...');
+    
+    if (!this.isInitialized) {
+      console.log('Firebase not initialized, skipping listener refresh');
+      return;
+    }
+
+    try {
+      // Get all current chat IDs that have listeners
+      const activeChatIds = Array.from(this.messageListeners.keys());
+      
+      // Remove all existing listeners
+      this.messageListeners.forEach((listener, chatId) => {
+        if (this.database) {
+          this.database.ref(`chats/${chatId}/messages`).off('child_added', listener);
+        }
+      });
+      this.messageListeners.clear();
+      
+      console.log(`✅ Refreshed ${activeChatIds.length} Firebase listeners`);
+      
+      // Note: The listeners will be re-established when the UI calls listenForMessages again
+      // This is intentional to avoid duplicate listeners
+      
+    } catch (error) {
+      console.error('❌ Error refreshing Firebase listeners:', error);
+    }
+  }
+
   // Cleanup method
   cleanup() {
     // Remove all Firebase listeners

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Payment Processing Test | CustomPC.tech</title>
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="frontend/payment-styles.css">
+  
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .header h1 {
+      color: #333;
+      margin: 0 0 10px 0;
+    }
+    
+    .header p {
+      color: #666;
+      margin: 0;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 600;
+      color: #333;
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      font-size: 16px;
+      transition: border-color 0.2s;
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      transition: transform 0.2s;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+    }
+    
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    #card-container {
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      padding: 15px;
+      margin: 15px 0;
+      min-height: 60px;
+      background: #f9f9f9;
+    }
+    
+    .payment-messages {
+      margin: 20px 0;
+    }
+    
+    .payment-message {
+      padding: 15px;
+      border-radius: 6px;
+      margin: 10px 0;
+    }
+    
+    .payment-message-success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    
+    .payment-message-error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    
+    .payment-message-info {
+      background: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+    }
+    
+    .status-indicator {
+      text-align: center;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 6px;
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>💳 Square Payment Test</h1>
+      <p>Test your Square payment integration</p>
+    </div>
+
+    <div class="status-indicator">
+      <div id="system-status">🔄 Initializing payment system...</div>
+    </div>
+
+    <form id="payment-form">
+      <div class="form-group">
+        <label for="customer-name" class="form-label">Customer Name</label>
+        <input id="customer-name" type="text" class="form-input" placeholder="John Doe" required>
+      </div>
+
+      <div class="form-group">
+        <label for="customer-email" class="form-label">Customer Email</label>
+        <input id="customer-email" type="email" class="form-input" placeholder="john@example.com" required>
+      </div>
+
+      <div class="form-group">
+        <label for="payment-amount" class="form-label">Payment Amount ($)</label>
+        <input id="payment-amount" type="number" class="form-input" placeholder="10.00" min="1" step="0.01" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Credit Card Information</label>
+        <div id="card-container">
+          <div style="text-align: center; color: #666;">Loading secure card form...</div>
+        </div>
+      </div>
+
+      <button id="payment-submit-btn" type="submit" class="btn-primary" disabled>
+        Process Payment
+      </button>
+    </form>
+
+    <div id="payment-messages" class="payment-messages"></div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="config/square-config.js"></script>
+  <script src="frontend/square-payments.js"></script>
+
+  <script>
+    // Initialize payment system
+    document.addEventListener('DOMContentLoaded', async function() {
+      const statusDiv = document.getElementById('system-status');
+      const submitBtn = document.getElementById('payment-submit-btn');
+      
+      try {
+        statusDiv.innerHTML = '🔄 Loading Square SDK...';
+        
+        // Wait for Square SDK to load
+        if (typeof Square === 'undefined') {
+          // Load Square SDK dynamically
+          const squareConfig = new SquareConfig();
+          const script = document.createElement('script');
+          script.src = squareConfig.getSdkUrl();
+          script.onload = initializeSquare;
+          script.onerror = () => {
+            statusDiv.innerHTML = '❌ Failed to load Square SDK';
+          };
+          document.head.appendChild(script);
+        } else {
+          initializeSquare();
+        }
+        
+        async function initializeSquare() {
+          try {
+            statusDiv.innerHTML = '🔧 Initializing Square payments...';
+            
+            // Initialize Square payments
+            window.squarePayments = new SquarePayments();
+            const success = await window.squarePayments.initializeSquareSDK();
+            
+            if (success) {
+              statusDiv.innerHTML = '✅ Payment system ready! You can now process payments.';
+              submitBtn.disabled = false;
+            } else {
+              statusDiv.innerHTML = '❌ Failed to initialize payment system';
+            }
+          } catch (error) {
+            console.error('Square initialization error:', error);
+            statusDiv.innerHTML = '❌ Error: ' + error.message;
+          }
+        }
+        
+      } catch (error) {
+        console.error('Payment system error:', error);
+        statusDiv.innerHTML = '❌ System error: ' + error.message;
+      }
+    });
+
+    // Handle form submission
+    document.getElementById('payment-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      if (!window.squarePayments || !window.squarePayments.isInitialized) {
+        showMessage('Payment system not ready', 'error');
+        return;
+      }
+      
+      const submitBtn = document.getElementById('payment-submit-btn');
+      const originalText = submitBtn.textContent;
+      
+      try {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Processing...';
+        
+        // Get form data
+        const amount = parseFloat(document.getElementById('payment-amount').value) * 100; // Convert to cents
+        const customerInfo = {
+          name: document.getElementById('customer-name').value,
+          email: document.getElementById('customer-email').value
+        };
+        
+        // Process payment
+        const result = await window.squarePayments.processPayment(amount, customerInfo);
+        
+        if (result.success) {
+          showMessage(`✅ Payment successful! Transaction ID: ${result.transactionId}`, 'success');
+          document.getElementById('payment-form').reset();
+        } else {
+          showMessage(`❌ Payment failed: ${result.error}`, 'error');
+        }
+        
+      } catch (error) {
+        console.error('Payment error:', error);
+        showMessage(`❌ Error: ${error.message}`, 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      }
+    });
+
+    function showMessage(message, type) {
+      const messagesDiv = document.getElementById('payment-messages');
+      messagesDiv.innerHTML = `<div class="payment-message payment-message-${type}">${message}</div>`;
+      
+      // Auto-clear success messages
+      if (type === 'success') {
+        setTimeout(() => {
+          messagesDiv.innerHTML = '';
+        }, 5000);
+      }
+    }
+  </script>
+</body>
+</html>

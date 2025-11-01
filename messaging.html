@@ -305,6 +305,29 @@
       border-top: 1px solid var(--border);
     }
     
+    /* Status message animations */
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    
+    @keyframes slideOut {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+    }
+    
     .admin-btn {
       display: block;
       width: 100%;
@@ -323,6 +346,12 @@
     .admin-btn:hover {
       background: rgba(125, 178, 255, 0.1);
       border-color: rgba(125, 178, 255, 0.3);
+    }
+    
+    .admin-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      pointer-events: none;
     }
     
     .admin-btn.primary {
@@ -1603,9 +1632,103 @@ This is an automated notification from the CustomPC.tech live messaging system.`
     
     // Admin functions
     function refreshChats() {
-      if (window.liveMessaging && window.liveMessaging.isAdmin) {
-        window.liveMessaging.loadActiveChats();
+      console.log('🔄 Refreshing chats...');
+      
+      // Show loading state
+      const refreshBtn = document.querySelector('button[onclick="refreshChats()"]');
+      if (refreshBtn) {
+        const originalText = refreshBtn.textContent;
+        refreshBtn.textContent = '🔄 Refreshing...';
+        refreshBtn.disabled = true;
+        
+        // Reset button after refresh
+        setTimeout(() => {
+          refreshBtn.textContent = originalText;
+          refreshBtn.disabled = false;
+        }, 1000);
       }
+      
+      try {
+        if (window.liveMessaging && window.liveMessaging.isAdmin) {
+          // Refresh active chats
+          window.liveMessaging.loadActiveChats();
+          
+          // Also refresh Firebase listeners
+          if (window.firebaseChatManager) {
+            window.firebaseChatManager.refreshListeners();
+          }
+          
+          // Show success message
+          showStatusMessage('✅ Chats refreshed successfully', 'success');
+          console.log('✅ Chats refreshed successfully');
+          
+        } else if (window.liveMessaging && !window.liveMessaging.isAdmin) {
+          // For regular users, refresh their current chat
+          if (window.liveMessaging.currentChatId) {
+            window.liveMessaging.loadChatMessages(window.liveMessaging.currentChatId);
+            showStatusMessage('✅ Chat refreshed', 'success');
+          } else {
+            showStatusMessage('ℹ️ No active chat to refresh', 'info');
+          }
+          
+        } else {
+          showStatusMessage('❌ Messaging system not initialized', 'error');
+          console.error('❌ Messaging system not available');
+        }
+        
+      } catch (error) {
+        console.error('❌ Error refreshing chats:', error);
+        showStatusMessage('❌ Failed to refresh chats', 'error');
+      }
+    }
+    
+    // Helper function to show status messages
+    function showStatusMessage(message, type = 'info') {
+      // Remove existing status messages
+      const existingMessages = document.querySelectorAll('.status-message');
+      existingMessages.forEach(msg => msg.remove());
+      
+      // Create new status message
+      const statusDiv = document.createElement('div');
+      statusDiv.className = `status-message status-${type}`;
+      statusDiv.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 12px 16px;
+        border-radius: 6px;
+        color: white;
+        font-weight: 500;
+        z-index: 10000;
+        animation: slideIn 0.3s ease-out;
+        max-width: 300px;
+      `;
+      
+      // Set background color based on type
+      switch (type) {
+        case 'success':
+          statusDiv.style.background = '#4caf50';
+          break;
+        case 'error':
+          statusDiv.style.background = '#f44336';
+          break;
+        case 'warning':
+          statusDiv.style.background = '#ff9800';
+          break;
+        default:
+          statusDiv.style.background = '#2196f3';
+      }
+      
+      statusDiv.textContent = message;
+      document.body.appendChild(statusDiv);
+      
+      // Auto-remove after 3 seconds
+      setTimeout(() => {
+        if (statusDiv.parentNode) {
+          statusDiv.style.animation = 'slideOut 0.3s ease-in';
+          setTimeout(() => statusDiv.remove(), 300);
+        }
+      }, 3000);
     }
     
     function markAllAsRead() {
@@ -1644,6 +1767,23 @@ This is an automated notification from the CustomPC.tech live messaging system.`
       }
     }
     
+    // Add keyboard shortcuts
+    document.addEventListener('keydown', function(event) {
+      // Ctrl+R or F5 for refresh (prevent default browser refresh and use our refresh)
+      if ((event.ctrlKey && event.key === 'r') || event.key === 'F5') {
+        event.preventDefault();
+        refreshChats();
+        return false;
+      }
+      
+      // Ctrl+Shift+R for force refresh
+      if (event.ctrlKey && event.shiftKey && event.key === 'R') {
+        event.preventDefault();
+        location.reload();
+        return false;
+      }
+    });
+
     // Initialize when DOM is loaded
     document.addEventListener('DOMContentLoaded', function() {
       window.liveMessaging = new LiveMessagingPage();
