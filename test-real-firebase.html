@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Firebase Connection Test</title>
+  <style>
+    :root{
+      --space:10px; --space-sm:6px; --space-lg:16px;
+      --bg:#0a0f1a; --ink:#e9eefc; --muted:#aeb9d4;
+      --panel:#111729; --panel2:#0d1426; --border:rgba(255,255,255,.08);
+      --accent1:#7db2ff; --accent2:#7cf2e6;
+      --radius:18px; --shadow:0 20px 40px rgba(0,0,0,.35);
+      --max:1200px;
+    }
+    body {
+      font-family: system-ui;
+      margin: 0;
+      padding: 20px;
+      background: radial-gradient(1200px 600px at 50% -10%, #0f162b 8%, transparent 55%), linear-gradient(#081021, #0a0f1a 40%, #0a0f1a);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+    .test-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 30px;
+      box-shadow: var(--shadow);
+    }
+    .status {
+      padding: 12px;
+      border-radius: 8px;
+      margin: 10px 0;
+    }
+    .success { background: rgba(124,242,230,.12); border: 1px solid rgba(124,242,230,.35); }
+    .error { background: rgba(255,99,132,.12); border: 1px solid rgba(255,99,132,.35); }
+    .info { background: rgba(125,178,255,.12); border: 1px solid rgba(125,178,255,.35); }
+    .warning { background: rgba(255,193,7,.12); border: 1px solid rgba(255,193,7,.35); }
+    .btn {
+      display: inline-block;
+      padding: 12px 20px;
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      color: #0b0f1a;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      margin: 8px;
+      transition: transform 0.2s;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+    .config-display {
+      background: var(--panel2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      margin: 16px 0;
+      font-family: monospace;
+      font-size: 12px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <h1>🔥 Firebase Connection Test</h1>
+    <p style="color: var(--muted);">Testing your Firebase configuration for real-time chat.</p>
+    
+    <div id="connection-status">
+      <div class="status info">
+        <strong>🔄 Testing Firebase connection...</strong>
+      </div>
+    </div>
+    
+    <h2>📋 Your Firebase Config</h2>
+    <div class="config-display">
+      Project: custompc-website<br>
+      API Key: AIzaSyANB6z6rM3lb2GZc3wTO5767fO1jB-PUjM<br>
+      Auth Domain: custompc-website.firebaseapp.com<br>
+      Database URL: https://custompc-website-default-rtdb.firebaseio.com<br>
+      Project ID: custompc-website<br>
+      Storage Bucket: custompc-website.firebasestorage.app<br>
+      Messaging Sender ID: 1043646914253<br>
+      App ID: 1:1043646914253:web:eadb153333f3465ce65384
+    </div>
+    
+    <h2>🔧 Next Steps</h2>
+    <div id="next-steps">
+      <div class="status warning">
+        <strong>⚠️ Enable Realtime Database</strong><br>
+        Go to <a href="https://console.firebase.google.com/project/custompc-website/database" target="_blank" style="color: var(--accent1);">Firebase Console</a> and enable Realtime Database in test mode.
+      </div>
+    </div>
+    
+    <button class="btn" onclick="testConnection()">Test Connection</button>
+    <button class="btn" onclick="testChatCreation()">Test Chat Creation</button>
+    <a href="messaging.html" class="btn">Open Chat System</a>
+    
+    <div id="test-results"></div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+  
+  <!-- Firebase Chat Manager -->
+  <script src="firebase-config.js"></script>
+  
+  <script>
+    function addResult(message, type = 'info') {
+      const results = document.getElementById('test-results');
+      const div = document.createElement('div');
+      div.className = `status ${type}`;
+      div.innerHTML = message;
+      results.appendChild(div);
+    }
+    
+    function testConnection() {
+      addResult('🔄 Testing Firebase connection...', 'info');
+      
+      setTimeout(() => {
+        if (window.firebaseChatManager) {
+          if (window.firebaseChatManager.isInitialized) {
+            addResult('✅ <strong>Firebase Connected!</strong> Real-time messaging is working.', 'success');
+            
+            // Update next steps
+            document.getElementById('next-steps').innerHTML = `
+              <div class="status success">
+                <strong>✅ Ready to Go!</strong><br>
+                Your Firebase Realtime Database is working. Chat messages will now sync across all devices in real-time.
+              </div>
+            `;
+            
+          } else {
+            addResult('⚠️ <strong>Firebase Not Connected</strong><br>Make sure you\'ve enabled Realtime Database in your Firebase console.', 'warning');
+          }
+        } else {
+          addResult('❌ <strong>Firebase Manager Not Loaded</strong><br>Check that firebase-config.js is properly loaded.', 'error');
+        }
+      }, 2000);
+    }
+    
+    async function testChatCreation() {
+      if (!window.firebaseChatManager || !window.firebaseChatManager.isInitialized) {
+        addResult('❌ Firebase not connected. Enable Realtime Database first.', 'error');
+        return;
+      }
+      
+      addResult('🔄 Testing chat creation...', 'info');
+      
+      try {
+        const testChatData = {
+          userName: 'Test User',
+          userEmail: 'test@example.com',
+          startTime: new Date().toISOString(),
+          messages: [],
+          unreadCount: 0
+        };
+        
+        const chatId = await window.firebaseChatManager.createChatSession(testChatData);
+        
+        if (chatId) {
+          addResult(`✅ <strong>Chat Created Successfully!</strong><br>Chat ID: ${chatId}`, 'success');
+          
+          // Test sending a message
+          const messageData = {
+            content: 'Test message from Firebase test',
+            type: 'user',
+            userId: 'test-user',
+            timestamp: new Date().toISOString()
+          };
+          
+          await window.firebaseChatManager.sendMessage(chatId, messageData);
+          addResult('✅ <strong>Message Sent!</strong> Real-time messaging is working perfectly.', 'success');
+          
+        } else {
+          addResult('❌ Failed to create chat session.', 'error');
+        }
+        
+      } catch (error) {
+        addResult(`❌ <strong>Error:</strong> ${error.message}`, 'error');
+      }
+    }
+    
+    // Auto-test on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(() => {
+        testConnection();
+      }, 1000);
+    });
+  </script>
+</body>
+</html>

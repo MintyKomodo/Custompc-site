@@ -20,13 +20,13 @@ class FirebaseChatManager {
 
       // Firebase configuration
       const firebaseConfig = {
-        apiKey: "AIzaSyBqJNWqKqKqKqKqKqKqKqKqKqKqKqKqKqK", // Demo key - replace with real one
-        authDomain: "custompc-chat.firebaseapp.com",
-        databaseURL: "https://custompc-chat-default-rtdb.firebaseio.com",
-        projectId: "custompc-chat",
-        storageBucket: "custompc-chat.appspot.com",
-        messagingSenderId: "123456789012",
-        appId: "1:123456789012:web:abcdefghijklmnop"
+        apiKey: "AIzaSyANB6z6rM3lb2GZc3wTO5767fO1jB-PUjM",
+        authDomain: "custompc-website.firebaseapp.com",
+        databaseURL: "https://custompc-website-default-rtdb.firebaseio.com",
+        projectId: "custompc-website",
+        storageBucket: "custompc-website.firebasestorage.app",
+        messagingSenderId: "1043646914253",
+        appId: "1:1043646914253:web:eadb153333f3465ce65384"
       };
 
       // Initialize Firebase
