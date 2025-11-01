@@ -582,9 +582,22 @@
   <!-- Scripts -->
   <script src="shared-auth.js"></script>
   <script src="admin-auth.js"></script>
+  <script src="square-config.js"></script>
   
-  <!-- Square Web Payments SDK -->
-  <script src="https://sandbox.web.squarecdn.com/v1/square.js"></script>
+  <!-- Square Web Payments SDK - Dynamic loading based on environment -->
+  <script>
+    // Load Square SDK dynamically based on environment
+    const squareConfig = new SquareConfig();
+    const script = document.createElement('script');
+    script.src = squareConfig.getSdkUrl();
+    script.onload = function() {
+      console.log('Square SDK loaded for', squareConfig.getEnvironment());
+    };
+    script.onerror = function() {
+      console.error('Failed to load Square SDK');
+    };
+    document.head.appendChild(script);
+  </script>
   <script src="square-payments.js"></script>
   
   <script>

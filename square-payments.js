@@ -7,10 +7,35 @@ class SquarePayments {
     constructor() {
         this.payments = null;
         this.card = null;
-        this.applicationId = 'sandbox-sq0idb-G9gb7bgmLJetrPtT_Whjo';
-        this.locationId = 'LJR87MYZ8ZZC9';
-        this.environment = 'sandbox';
+        
+        // Initialize configuration
+        this.config = new SquareConfig();
+        this.applicationId = this.config.getApplicationId();
+        this.locationId = this.config.getLocationId();
+        this.environment = this.config.getEnvironment();
+        this.apiBaseUrl = this.config.getApiBaseUrl();
+        
         this.isInitialized = false;
+        
+        // Validate configuration
+        if (!this.config.isValid()) {
+            console.error('Square configuration is invalid. Please check your credentials.');
+            this.showError('Payment system configuration error. Please contact support.');
+        }
+        
+        // Check if user is under 18 - demo mode
+        this.isDemoMode = this.checkDemoMode();
+    }
+
+    /**
+     * Check if running in demo mode (for under 18 users)
+     */
+    checkDemoMode() {
+        // Check for demo mode flag
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('demo') === 'true' || 
+               localStorage.getItem('payment_demo_mode') === 'true' ||
+               this.environment === 'sandbox';
     }
 
     /**
@@ -308,37 +333,56 @@ class SquarePayments {
     }
 
     /**
-     * Submit payment to backend (simulated for now)
-     * In a real implementation, this would call your backend API
+     * Submit payment to backend
      */
     async submitPayment(token, amount, customerInfo) {
-        // Simulate API call delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        try {
+            // Use the backend API URL
+            const apiUrl = this.apiBaseUrl + '/payments/process';
+            
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    sourceId: token,
+                    amount: amount,
+                    customerInfo: customerInfo,
+                    idempotencyKey: this.generateIdempotencyKey()
+                })
+            });
 
-        // For demo purposes, simulate successful payment
-        // In production, this would make an actual API call to your backend
-        // which would then call Square's Payments API
-        
-        console.log('Processing payment:', {
-            token: token,
-            amount: amount,
-            customer: customerInfo
-        });
-
-        // Simulate random success/failure for demo
-        const isSuccess = Math.random() > 0.1; // 90% success rate for demo
-        
-        if (isSuccess) {
-            return {
-                success: true,
-                transactionId: 'txn_' + Date.now() + '_' + Math.random().toString(36).substring(2, 11)
-            };
-        } else {
+            const result = await response.json();
+            
+            if (response.ok && result.success) {
+                return {
+                    success: true,
+                    transactionId: result.transactionId,
+                    amount: result.amount,
+                    receiptUrl: result.receiptUrl,
+                    last4: result.last4
+                };
+            } else {
+                return {
+                    success: false,
+                    error: result.error || 'Payment processing failed'
+                };
+            }
+        } catch (error) {
+            console.error('Payment submission error:', error);
             return {
                 success: false,
-                error: 'Payment was declined. Please try a different payment method.'
+                error: 'Network error occurred. Please try again.'
             };
         }
+    }
+
+    /**
+     * Generate a unique idempotency key for payment requests
+     */
+    generateIdempotencyKey() {
+        return 'payment_' + Date.now() + '_' + Math.random().toString(36).substring(2, 15);
     }
 
     /**
