@@ -843,6 +843,73 @@
   <!-- Firebase Chat Manager -->
   <script src="config/firebase-config.js"></script>
   
+  <!-- Kiro Update Notification System -->
+  <div id="kiro-notification" style="
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 12px 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    z-index: 10000;
+    font-family: system-ui, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    display: none;
+    max-width: 300px;
+    animation: slideInRight 0.3s ease-out;
+  ">
+    <div id="kiro-message">🤖 Kiro update applied</div>
+    <button onclick="this.parentElement.style.display='none'" style="
+      position: absolute;
+      top: 4px;
+      right: 8px;
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+      opacity: 0.7;
+    ">×</button>
+  </div>
+
+  <style>
+    @keyframes slideInRight {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOutRight {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(100%); opacity: 0; }
+    }
+  </style>
+
+  <script>
+    function showKiroNotification(message, duration = 5000) {
+      const notification = document.getElementById('kiro-notification');
+      const messageDiv = document.getElementById('kiro-message');
+      
+      messageDiv.textContent = message;
+      notification.style.display = 'block';
+      
+      setTimeout(() => {
+        notification.style.animation = 'slideOutRight 0.3s ease-in';
+        setTimeout(() => {
+          notification.style.display = 'none';
+          notification.style.animation = 'slideInRight 0.3s ease-out';
+        }, 300);
+      }, duration);
+    }
+
+    window.addEventListener('load', function() {
+      setTimeout(() => {
+        showKiroNotification('💬 Messaging page - Enhanced refresh system active');
+      }, 1000);
+    });
+  </script>
+
   <!-- Crisp Chat Integration -->
   <script type="text/javascript">
     window.$crisp=[];
@@ -852,6 +919,11 @@
       s=d.createElement("script");
       s.src="https://client.crisp.chat/l.js";
       s.async=1;
+      s.onload = function() {
+        if (window.showKiroNotification) {
+          showKiroNotification('💬 Crisp chat loaded on messaging page');
+        }
+      };
       d.getElementsByTagName("head")[0].appendChild(s);
     })();
   </script>
