@@ -846,6 +846,11 @@
         connectionStatus.textContent = 'Connected';
         connectionStatus.style.color = '#00ff88';
       }
+      
+      // Create or get chat session for Firebase
+      if (window.liveMessaging && !window.liveMessaging.isAdmin) {
+        window.liveMessaging.initializeChatSession();
+      }
     };
     
     Tawk_API.onChatStarted = function(){
@@ -855,6 +860,11 @@
       const statusText = document.getElementById('status-text');
       if (statusText) {
         statusText.textContent = 'Chat active - Our team is here to help';
+      }
+      
+      // Initialize chat session when Tawk.to chat starts
+      if (window.liveMessaging && !window.liveMessaging.isAdmin) {
+        window.liveMessaging.initializeChatSession();
       }
     };
     
@@ -877,6 +887,72 @@
       const statusText = document.getElementById('status-text');
       if (statusText) {
         statusText.textContent = `${data.name || 'Support agent'} has joined the chat`;
+      }
+    };
+    
+    // Capture visitor messages and save to Firebase
+    Tawk_API.onChatMessageVisitor = function(message){
+      console.log('Visitor message:', message);
+      
+      // Save message to Firebase for admin visibility
+      if (window.liveMessaging) {
+        // Ensure we have a chat session first
+        if (!window.liveMessaging.currentChatId) {
+          window.liveMessaging.initializeChatSession();
+        }
+        
+        // Save message after a short delay to ensure chat session is created
+        setTimeout(() => {
+          if (window.liveMessaging && window.liveMessaging.currentChatId) {
+            const messageData = {
+              content: message.message,
+              type: 'user',
+              userId: 'Tawk.to Visitor',
+              timestamp: new Date().toISOString()
+            };
+            
+            // Save to Firebase
+            if (window.firebaseChatManager) {
+              window.firebaseChatManager.sendMessage(window.liveMessaging.currentChatId, messageData).catch(err => {
+                console.error('Failed to save visitor message to Firebase:', err);
+              });
+            }
+          }
+        }, 500);
+      }
+      
+      // Update message count
+      if (window.liveMessaging) {
+        window.liveMessaging.messageCount++;
+        window.liveMessaging.updateMessageCount();
+      }
+    };
+    
+    // Capture agent messages
+    Tawk_API.onChatMessageAgent = function(message){
+      console.log('Agent message:', message);
+      
+      // Save agent message to Firebase
+      if (window.liveMessaging && window.liveMessaging.currentChatId) {
+        const messageData = {
+          content: message.message,
+          type: 'admin',
+          userId: message.sender ? message.sender.name : 'Admin',
+          timestamp: new Date().toISOString()
+        };
+        
+        // Save to Firebase
+        if (window.firebaseChatManager) {
+          window.firebaseChatManager.sendMessage(window.liveMessaging.currentChatId, messageData).catch(err => {
+            console.error('Failed to save agent message to Firebase:', err);
+          });
+        }
+      }
+      
+      // Update message count
+      if (window.liveMessaging) {
+        window.liveMessaging.messageCount++;
+        window.liveMessaging.updateMessageCount();
       }
     };
   </script>
@@ -1131,25 +1207,44 @@ This is an automated notification from the CustomPC.tech live messaging system.`
       
       async initializeChatSession() {
         if (!this.isAdmin) {
-          // Create a new chat session for regular users
-          const sharedAuth = window.sharedAuth;
-          const currentUser = sharedAuth ? sharedAuth.getCurrentUser() : null;
-          const userName = currentUser && currentUser.username !== 'Anonymous' ? currentUser.username : 'Anonymous User';
-          const userEmail = currentUser && currentUser.email ? currentUser.email : 'No email provided';
-          
-          const chatData = {
-            userName: userName,
-            userEmail: userEmail,
-            startTime: new Date().toISOString(),
-            messages: [],
-            unreadCount: 0
-          };
-          
-          // Use Firebase to create chat session
-          this.currentChatId = await window.firebaseChatManager.createChatSession(chatData);
-          
-          // Start listening for messages in this chat
-          this.startMessageListener();
+          try {
+            // Wait for firebaseChatManager to be available
+            if (!window.firebaseChatManager) {
+              console.log('Waiting for firebaseChatManager to initialize...');
+              let attempts = 0;
+              while (!window.firebaseChatManager && attempts < 10) {
+                await new Promise(resolve => setTimeout(resolve, 100));
+                attempts++;
+              }
+            }
+            
+            // Create a new chat session for regular users
+            const sharedAuth = window.sharedAuth;
+            const currentUser = sharedAuth ? sharedAuth.getCurrentUser() : null;
+            const userName = currentUser && currentUser.username !== 'Anonymous' ? currentUser.username : 'Anonymous User';
+            const userEmail = currentUser && currentUser.email ? currentUser.email : 'No email provided';
+            
+            const chatData = {
+              userName: userName,
+              userEmail: userEmail,
+              startTime: new Date().toISOString(),
+              messages: [],
+              unreadCount: 0
+            };
+            
+            // Use Firebase to create chat session
+            if (window.firebaseChatManager) {
+              this.currentChatId = await window.firebaseChatManager.createChatSession(chatData);
+              console.log('Chat session created:', this.currentChatId);
+              
+              // Start listening for messages in this chat
+              this.startMessageListener();
+            } else {
+              console.warn('firebaseChatManager not available, using local storage only');
+            }
+          } catch (error) {
+            console.error('Failed to initialize chat session:', error);
+          }
         }
       }
       
@@ -1554,6 +1649,15 @@ This is an automated notification from the CustomPC.tech live messaging system.`
     // Initialize when DOM is loaded
     document.addEventListener('DOMContentLoaded', function() {
       window.liveMessaging = new LiveMessagingPage();
+      
+      // Ensure chat session is created for non-admin users
+      // This helps ensure messages from Tawk.to can be saved
+      setTimeout(() => {
+        if (window.liveMessaging && !window.liveMessaging.isAdmin && !window.liveMessaging.currentChatId) {
+          console.log('Delayed chat session initialization');
+          window.liveMessaging.initializeChatSession();
+        }
+      }, 1000);
     });
   </script>
 </body>
