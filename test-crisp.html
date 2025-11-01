@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crisp Chat Test</title>
+</head>
+<body>
+    <h1>Crisp Chat Test Page</h1>
+    <p>If Crisp is working, you should see a blue chat bubble in the bottom-right corner.</p>
+    
+    <div style="margin: 20px; padding: 20px; background: #f0f0f0; border-radius: 10px;">
+        <h3>Troubleshooting Checklist:</h3>
+        <ul>
+            <li>✅ Website ID: 04b92cf5-f7ff-4191-9f98-44433c84752b</li>
+            <li>🔍 Check browser console for errors (F12)</li>
+            <li>🚫 Disable ad blockers temporarily</li>
+            <li>🔄 Try refreshing the page</li>
+            <li>🌐 Try a different browser</li>
+        </ul>
+    </div>
+
+    <!-- Crisp Chat - Simple Version -->
+    <script type="text/javascript">
+        window.$crisp=[];
+        window.CRISP_WEBSITE_ID="04b92cf5-f7ff-4191-9f98-44433c84752b";
+        (function(){
+            d=document;
+            s=d.createElement("script");
+            s.src="https://client.crisp.chat/l.js";
+            s.async=1;
+            d.getElementsByTagName("head")[0].appendChild(s);
+        })();
+        
+        // Debug logging
+        console.log('Crisp script loaded');
+        console.log('Website ID:', window.CRISP_WEBSITE_ID);
+        
+        // Check if Crisp loads
+        setTimeout(() => {
+            if (window.$crisp) {
+                console.log('✅ Crisp is available');
+            } else {
+                console.log('❌ Crisp failed to load');
+            }
+        }, 3000);
+    </script>
+</body>
+</html>
