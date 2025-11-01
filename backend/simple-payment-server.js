@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(cors());
 
 // Serve static files (your HTML/CSS/JS)
-app.use(express.static('.'));
+app.use(express.static('../')); // Serve from parent directory to access all files
 
 // Your Square credentials
 const SQUARE_ACCESS_TOKEN = process.env.SQUARE_ACCESS_TOKEN || 'EAAAl9-n6xL-VukQrSJWp3hJCvxWres3IgFnf2nFLEENmUC-aHrC3OQh9OlvcM76';

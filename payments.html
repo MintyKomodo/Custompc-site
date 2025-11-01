@@ -19,7 +19,8 @@
   <link rel="apple-touch-icon" href="images/logo.png" />
   
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="payment-styles.css">
+  <link rel="stylesheet" href="frontend/payment-styles.css">
+  <link rel="stylesheet" href="frontend/auth-styles.css">
   
   <style>
     /* Enhanced validation styles */
@@ -309,6 +310,7 @@
           <a href="index.html" class="nav-pill">Home</a>
           <a href="builds.html" class="nav-pill">Builds</a>
           <a href="payments.html" class="nav-pill active" aria-current="page">Payments</a>
+          <a href="messaging.html" class="nav-pill">Messages</a>
           <div class="admin-info">
             <span id="admin-username" class="admin-username"></span>
             <button id="help-btn" class="help-btn" type="button" aria-label="Show help and shortcuts" title="Help & Shortcuts">?</button>
@@ -580,9 +582,9 @@
   </div>
 
   <!-- Scripts -->
-  <script src="shared-auth.js"></script>
-  <script src="admin-auth.js"></script>
-  <script src="square-config.js"></script>
+  <script src="frontend/shared-auth.js"></script>
+  <script src="frontend/admin-auth.js"></script>
+  <script src="config/square-config.js"></script>
   
   <!-- Square Web Payments SDK - Dynamic loading based on environment -->
   <script>
@@ -598,7 +600,7 @@
     };
     document.head.appendChild(script);
   </script>
-  <script src="square-payments.js"></script>
+  <script src="frontend/square-payments.js"></script>
   
   <script>
     // Admin access control and page initialization
@@ -2797,5 +2799,19 @@
       }
     }
   </script>
+  
+  <!--Start of Tawk.to Script-->
+  <script type="text/javascript">
+  var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+  (function(){
+  var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+  s1.async=true;
+  s1.src='https://embed.tawk.to/6895040bea5b0a1926912936/1j231fjbt';
+  s1.charset='UTF-8';
+  s1.setAttribute('crossorigin','*');
+  s0.parentNode.insertBefore(s1,s0);
+  })();
+  </script>
+  <!--End of Tawk.to Script-->
 </body>
 </html>

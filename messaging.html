@@ -729,15 +729,18 @@
         </div>
         
         <div class="messaging-chat" id="messaging-chat">
-          <div class="message system">
-            <div class="message-content">
-              Welcome to CustomPC.tech live support!<br><br>
-              We're notifying our team to join the chat. Please describe what you need help with and we'll be with you shortly.
+          <!-- Tawk.to Chat Widget will be embedded here -->
+          <div id="tawk-chat-container" style="width: 100%; height: 100%; min-height: 400px;">
+            <div class="message system">
+              <div class="message-content">
+                Welcome to CustomPC.tech live support!<br><br>
+                Loading secure chat system... Please wait a moment.
+              </div>
             </div>
           </div>
         </div>
         
-        <div class="messaging-input-container">
+        <div class="messaging-input-container" style="display: none;" id="fallback-input">
           <textarea 
             id="messaging-input" 
             class="messaging-input" 
@@ -802,14 +805,81 @@
     </div>
   </div>
 
-  <script src="shared-auth.js"></script>
+  <script src="frontend/shared-auth.js"></script>
   
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
   
   <!-- Firebase Chat Manager -->
-  <script src="firebase-config.js"></script>
+  <script src="config/firebase-config.js"></script>
+  
+  <!-- Tawk.to Integration -->
+  <!--Start of Tawk.to Script-->
+  <script type="text/javascript">
+  var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+  (function(){
+  var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+  s1.async=true;
+  s1.src='https://embed.tawk.to/6895040bea5b0a1926912936/1j231fjbt';
+  s1.charset='UTF-8';
+  s1.setAttribute('crossorigin','*');
+  s0.parentNode.insertBefore(s1,s0);
+  })();
+  </script>
+  <!--End of Tawk.to Script-->
+  
+  <script>
+    // Handle Tawk.to events
+    Tawk_API.onLoad = function(){
+      console.log('Tawk.to chat loaded successfully');
+      
+      // Update status
+      const statusText = document.getElementById('status-text');
+      if (statusText) {
+        statusText.textContent = 'Live chat ready - Our team is here to help';
+      }
+      
+      // Update connection status
+      const connectionStatus = document.getElementById('connection-status');
+      if (connectionStatus) {
+        connectionStatus.textContent = 'Connected';
+        connectionStatus.style.color = '#00ff88';
+      }
+    };
+    
+    Tawk_API.onChatStarted = function(){
+      console.log('Chat session started');
+      
+      // Update status
+      const statusText = document.getElementById('status-text');
+      if (statusText) {
+        statusText.textContent = 'Chat active - Our team is here to help';
+      }
+    };
+    
+    Tawk_API.onAgentJoinChat = function(data){
+      console.log('Agent joined chat:', data);
+      
+      // Update contact info with agent details
+      const contactName = document.getElementById('contact-name');
+      const contactAvatar = document.getElementById('contact-avatar');
+      
+      if (contactName && data.name) {
+        contactName.textContent = data.name;
+      }
+      
+      if (contactAvatar && data.name) {
+        contactAvatar.textContent = data.name.substring(0, 2).toUpperCase();
+      }
+      
+      // Update status
+      const statusText = document.getElementById('status-text');
+      if (statusText) {
+        statusText.textContent = `${data.name || 'Support agent'} has joined the chat`;
+      }
+    };
+  </script>
   
   <script>
     class LiveMessagingPage {
