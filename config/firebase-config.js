@@ -46,31 +46,65 @@ class FirebaseChatManager {
     }
   }
 
-  // Create a new chat session
+  // Create a new chat session with user authentication
   async createChatSession(chatData) {
     if (!this.isInitialized) {
       return this.createLocalChatSession(chatData);
     }
 
     try {
+      // Get current user info
+      const currentUser = this.getCurrentUser();
+      if (!currentUser) {
+        console.warn('No user logged in, creating anonymous chat');
+      }
+
       const chatRef = this.database.ref('chats').push();
       const chatId = chatRef.key;
       
       const chatSession = {
         ...chatData,
         id: chatId,
+        userId: currentUser?.username || 'anonymous',
+        userEmail: currentUser?.email || null,
         createdAt: firebase.database.ServerValue.TIMESTAMP,
         lastActivity: firebase.database.ServerValue.TIMESTAMP,
         status: 'active'
       };
 
       await chatRef.set(chatSession);
+      
+      // Also save to user's chat history if logged in
+      if (currentUser) {
+        await this.addChatToUserHistory(currentUser.username, chatId, chatSession);
+      }
+      
       console.log('Chat session created in Firebase:', chatId);
       return chatId;
 
     } catch (error) {
       console.error('Failed to create Firebase chat session:', error);
       return this.createLocalChatSession(chatData);
+    }
+  }
+
+  // Add chat to user's personal history
+  async addChatToUserHistory(username, chatId, chatData) {
+    if (!this.isInitialized) return;
+
+    try {
+      const userChatRef = this.database.ref(`userChats/${username}/${chatId}`);
+      await userChatRef.set({
+        chatId: chatId,
+        title: chatData.customerName || 'Chat Session',
+        createdAt: chatData.createdAt,
+        lastActivity: chatData.lastActivity,
+        status: chatData.status
+      });
+      
+      console.log('Chat added to user history:', username, chatId);
+    } catch (error) {
+      console.error('Failed to add chat to user history:', error);
     }
   }
 
@@ -364,6 +398,132 @@ class FirebaseChatManager {
     } catch (error) {
       console.error('Failed to retrieve stored chats:', error);
       return [];
+    }
+  }
+
+  // Get current logged-in user
+  getCurrentUser() {
+    try {
+      // Check if shared auth is available
+      if (window.sharedAuth && window.sharedAuth.currentUser) {
+        return window.sharedAuth.currentUser;
+      }
+      
+      // Fallback to localStorage
+      const storedUser = localStorage.getItem('currentUser');
+      if (storedUser) {
+        return JSON.parse(storedUser);
+      }
+      
+      return null;
+    } catch (error) {
+      console.error('Error getting current user:', error);
+      return null;
+    }
+  }
+
+  // Get user's chat history
+  async getUserChatHistory(username) {
+    if (!this.isInitialized) {
+      return this.getLocalUserChatHistory(username);
+    }
+
+    try {
+      const userChatsRef = this.database.ref(`userChats/${username}`);
+      const snapshot = await userChatsRef.orderByChild('lastActivity').once('value');
+      const userChats = snapshot.val();
+
+      if (!userChats) return [];
+
+      // Convert to array and sort by last activity (newest first)
+      const chatList = Object.values(userChats).sort((a, b) => 
+        (b.lastActivity || 0) - (a.lastActivity || 0)
+      );
+
+      console.log('Retrieved user chat history:', username, chatList.length, 'chats');
+      return chatList;
+
+    } catch (error) {
+      console.error('Failed to get user chat history:', error);
+      return this.getLocalUserChatHistory(username);
+    }
+  }
+
+  // Get user's chat messages for a specific chat
+  async getUserChatMessages(username, chatId) {
+    if (!this.isInitialized) {
+      return this.getLocalChatMessages(chatId);
+    }
+
+    try {
+      // First verify the chat belongs to the user
+      const userChatRef = this.database.ref(`userChats/${username}/${chatId}`);
+      const userChatSnapshot = await userChatRef.once('value');
+      
+      if (!userChatSnapshot.exists()) {
+        console.warn('Chat does not belong to user:', username, chatId);
+        return [];
+      }
+
+      // Get the actual chat messages
+      const messagesRef = this.database.ref(`chats/${chatId}/messages`);
+      const snapshot = await messagesRef.orderByChild('timestamp').once('value');
+      const messages = snapshot.val();
+
+      if (!messages) return [];
+
+      // Convert to array and sort by timestamp
+      const messageList = Object.values(messages).sort((a, b) => 
+        (a.timestamp || 0) - (b.timestamp || 0)
+      );
+
+      console.log('Retrieved user chat messages:', username, chatId, messageList.length, 'messages');
+      return messageList;
+
+    } catch (error) {
+      console.error('Failed to get user chat messages:', error);
+      return [];
+    }
+  }
+
+  // Update chat last activity when user sends message
+  async updateChatActivity(chatId, username) {
+    if (!this.isInitialized) return;
+
+    try {
+      const timestamp = firebase.database.ServerValue.TIMESTAMP;
+      
+      // Update main chat
+      await this.database.ref(`chats/${chatId}/lastActivity`).set(timestamp);
+      
+      // Update user's chat history
+      if (username) {
+        await this.database.ref(`userChats/${username}/${chatId}/lastActivity`).set(timestamp);
+      }
+      
+    } catch (error) {
+      console.error('Failed to update chat activity:', error);
+    }
+  }
+
+  // Local storage fallbacks for when Firebase is not available
+  getLocalUserChatHistory(username) {
+    try {
+      const key = `userChats_${username}`;
+      const stored = localStorage.getItem(key);
+      return stored ? JSON.parse(stored) : [];
+    } catch (error) {
+      console.error('Error getting local user chat history:', error);
+      return [];
+    }
+  }
+
+  saveLocalUserChatHistory(username, chatHistory) {
+    try {
+      const key = `userChats_${username}`;
+      localStorage.setItem(key, JSON.stringify(chatHistory));
+    } catch (error) {
+      console.error('Error saving local user chat history:', error);
     }
   }
 

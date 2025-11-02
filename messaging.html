@@ -353,6 +353,129 @@
       cursor: not-allowed;
       pointer-events: none;
     }
+
+    /* Chat History Styles */
+    .chat-history-container {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    .chat-history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--panel2);
+    }
+
+    .chat-history-header h3 {
+      margin: 0;
+      color: var(--ink);
+      font-size: 16px;
+    }
+
+    .btn-new-chat {
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      color: var(--bg);
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .btn-new-chat:hover {
+      transform: translateY(-1px);
+    }
+
+    .chat-history-list {
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .chat-history-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      transition: background-color 0.2s;
+      cursor: pointer;
+    }
+
+    .chat-history-item:hover {
+      background: rgba(125, 178, 255, 0.05);
+    }
+
+    .chat-history-item.active {
+      background: rgba(125, 178, 255, 0.1);
+      border-left: 3px solid var(--accent1);
+    }
+
+    .chat-history-item:last-child {
+      border-bottom: none;
+    }
+
+    .chat-item-info {
+      flex: 1;
+    }
+
+    .chat-item-title {
+      color: var(--ink);
+      font-weight: 500;
+      font-size: 14px;
+      margin-bottom: 2px;
+    }
+
+    .chat-item-time {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .chat-item-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-load-chat {
+      background: var(--accent1);
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 11px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .btn-load-chat:hover {
+      background: #5a9cff;
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+      .chat-history-header {
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
+      }
+
+      .chat-history-item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+      }
+
+      .chat-item-actions {
+        justify-content: flex-end;
+      }
+    }
     
     .admin-btn.primary {
       background: linear-gradient(135deg, #7db2ff, #7cf2e6);
@@ -905,7 +1028,7 @@
 
     window.addEventListener('load', function() {
       setTimeout(() => {
-        showKiroNotification('💬 Messaging page - Enhanced refresh system active');
+        showKiroNotification('💾 Chat history system active - Login to save your conversations across devices!');
       }, 1000);
     });
   </script>
@@ -1069,9 +1192,13 @@
         this.init();
       }
       
-      init() {
+      async init() {
         this.checkAdminStatus();
         this.setupInputHandlers();
+        
+        // Load user chat history first
+        await this.loadUserChatHistory();
+        
         this.initializeChatSession();
         this.updateConnectionStatus();
         this.autoResizeTextarea();
@@ -1083,6 +1210,204 @@
         } else {
           this.notifyAdmin();
         }
+      }
+
+      // Load user's previous chat history
+      async loadUserChatHistory() {
+        try {
+          const currentUser = this.getCurrentUser();
+          if (!currentUser || !currentUser.username || currentUser.username === 'Anonymous') {
+            console.log('No logged-in user, starting fresh chat');
+            return;
+          }
+
+          console.log('Loading chat history for user:', currentUser.username);
+          
+          // Get user's chat history from Firebase
+          const chatHistory = await window.firebaseChatManager.getUserChatHistory(currentUser.username);
+          
+          if (chatHistory && chatHistory.length > 0) {
+            // Show chat history in UI
+            this.displayChatHistory(chatHistory);
+            
+            // Load the most recent chat if it exists
+            const mostRecentChat = chatHistory[0];
+            if (mostRecentChat && mostRecentChat.chatId) {
+              await this.loadExistingChat(mostRecentChat.chatId);
+              showKiroNotification(`💬 Loaded ${chatHistory.length} previous chat${chatHistory.length > 1 ? 's' : ''} for ${currentUser.username}`);
+            }
+          } else {
+            console.log('No previous chat history found for user');
+            showKiroNotification(`👋 Welcome back ${currentUser.username}! Starting fresh chat.`);
+          }
+          
+        } catch (error) {
+          console.error('Error loading user chat history:', error);
+          showKiroNotification('⚠️ Could not load chat history, starting fresh');
+        }
+      }
+
+      // Display chat history in sidebar
+      displayChatHistory(chatHistory) {
+        const chatHistoryContainer = this.createChatHistoryContainer();
+        
+        chatHistory.forEach(chat => {
+          const chatItem = this.createChatHistoryItem(chat);
+          chatHistoryContainer.appendChild(chatItem);
+        });
+      }
+
+      // Create chat history container
+      createChatHistoryContainer() {
+        let container = document.getElementById('chat-history-container');
+        
+        if (!container) {
+          container = document.createElement('div');
+          container.id = 'chat-history-container';
+          container.className = 'chat-history-container';
+          container.innerHTML = `
+            <div class="chat-history-header">
+              <h3>💬 Your Chat History</h3>
+              <button onclick="window.liveMessaging.startNewChat()" class="btn-new-chat">+ New Chat</button>
+            </div>
+            <div class="chat-history-list" id="chat-history-list"></div>
+          `;
+          
+          // Insert before the main chat area
+          const messagingContainer = document.getElementById('messaging-container');
+          messagingContainer.insertBefore(container, messagingContainer.firstChild);
+        }
+        
+        return document.getElementById('chat-history-list');
+      }
+
+      // Create individual chat history item
+      createChatHistoryItem(chat) {
+        const chatItem = document.createElement('div');
+        chatItem.className = 'chat-history-item';
+        chatItem.dataset.chatId = chat.chatId;
+        
+        const lastActivity = new Date(chat.lastActivity || chat.createdAt);
+        const timeAgo = this.getTimeAgo(lastActivity);
+        
+        chatItem.innerHTML = `
+          <div class="chat-item-info">
+            <div class="chat-item-title">${chat.title || 'Chat Session'}</div>
+            <div class="chat-item-time">${timeAgo}</div>
+          </div>
+          <div class="chat-item-actions">
+            <button onclick="window.liveMessaging.loadExistingChat('${chat.chatId}')" class="btn-load-chat">Load</button>
+          </div>
+        `;
+        
+        return chatItem;
+      }
+
+      // Load an existing chat
+      async loadExistingChat(chatId) {
+        try {
+          const currentUser = this.getCurrentUser();
+          if (!currentUser) {
+            console.error('No user logged in');
+            return;
+          }
+
+          console.log('Loading existing chat:', chatId);
+          
+          // Get chat messages
+          const messages = await window.firebaseChatManager.getUserChatMessages(currentUser.username, chatId);
+          
+          // Clear current chat
+          const chatContainer = document.getElementById('messaging-chat');
+          chatContainer.innerHTML = '';
+          
+          // Set current chat ID
+          this.currentChatId = chatId;
+          
+          // Display all messages
+          messages.forEach(message => {
+            this.displayMessage(message.content, message.type, message.timestamp);
+          });
+          
+          // Start listening for new messages
+          this.startMessageListener();
+          
+          // Update UI
+          this.highlightActiveChat(chatId);
+          showKiroNotification(`📖 Loaded chat with ${messages.length} messages`);
+          
+        } catch (error) {
+          console.error('Error loading existing chat:', error);
+          showKiroNotification('❌ Failed to load chat');
+        }
+      }
+
+      // Start a new chat
+      startNewChat() {
+        // Clear current chat
+        const chatContainer = document.getElementById('messaging-chat');
+        chatContainer.innerHTML = '';
+        
+        // Reset chat ID
+        this.currentChatId = null;
+        
+        // Initialize new chat session
+        this.initializeChatSession();
+        
+        // Clear active chat highlight
+        this.clearActiveChatHighlight();
+        
+        showKiroNotification('✨ Started new chat session');
+      }
+
+      // Highlight active chat in history
+      highlightActiveChat(chatId) {
+        // Remove previous highlights
+        document.querySelectorAll('.chat-history-item').forEach(item => {
+          item.classList.remove('active');
+        });
+        
+        // Highlight current chat
+        const activeItem = document.querySelector(`[data-chat-id="${chatId}"]`);
+        if (activeItem) {
+          activeItem.classList.add('active');
+        }
+      }
+
+      // Clear active chat highlight
+      clearActiveChatHighlight() {
+        document.querySelectorAll('.chat-history-item').forEach(item => {
+          item.classList.remove('active');
+        });
+      }
+
+      // Get current user helper
+      getCurrentUser() {
+        if (window.sharedAuth && window.sharedAuth.currentUser) {
+          return window.sharedAuth.currentUser;
+        }
+        
+        try {
+          const storedUser = localStorage.getItem('currentUser');
+          return storedUser ? JSON.parse(storedUser) : null;
+        } catch (error) {
+          return null;
+        }
+      }
+
+      // Get time ago helper
+      getTimeAgo(date) {
+        const now = new Date();
+        const diffMs = now - date;
+        const diffMins = Math.floor(diffMs / 60000);
+        const diffHours = Math.floor(diffMs / 3600000);
+        const diffDays = Math.floor(diffMs / 86400000);
+        
+        if (diffMins < 1) return 'Just now';
+        if (diffMins < 60) return `${diffMins}m ago`;
+        if (diffHours < 24) return `${diffHours}h ago`;
+        if (diffDays < 7) return `${diffDays}d ago`;
+        return date.toLocaleDateString();
       }
       
       checkAdminStatus() {
@@ -1221,8 +1546,7 @@ This is an automated notification from the CustomPC.tech live messaging system.`
       async saveMessageToSession(content, type) {
         if (!this.currentChatId) return;
         
-        const sharedAuth = window.sharedAuth;
-        const currentUser = sharedAuth ? sharedAuth.getCurrentUser() : null;
+        const currentUser = this.getCurrentUser();
         const userId = currentUser ? currentUser.username : 'Anonymous User';
         
         const messageData = {
@@ -1234,6 +1558,11 @@ This is an automated notification from the CustomPC.tech live messaging system.`
         
         // Send message through Firebase
         await window.firebaseChatManager.sendMessage(this.currentChatId, messageData);
+        
+        // Update chat activity for user
+        if (currentUser && currentUser.username) {
+          await window.firebaseChatManager.updateChatActivity(this.currentChatId, currentUser.username);
+        }
         
         // Refresh admin chat list if admin
         if (this.isAdmin) {
