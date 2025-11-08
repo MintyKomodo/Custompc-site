@@ -1,0 +1,29 @@
+# Node.js Backend (not for GitHub Pages)
+backend/
+node_modules/
+*.log
+.env
+
+# Development files
+.DS_Store
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.temp
+~*
+
+# Build artifacts
+dist/
+build/
+
+# Package manager files
+package-lock.json
+yarn.lock
+
+# Environment variables
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local

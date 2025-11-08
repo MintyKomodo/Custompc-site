@@ -1,0 +1,49 @@
+# Jekyll configuration for GitHub Pages
+title: CustomPC.tech
+description: Professional custom PC builds designed by engineers
+url: "https://custompc.tech"
+baseurl: ""
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+theme: jekyll-theme-primer
+
+# Exclude backend and development files from Jekyll processing
+exclude:
+  - backend/
+  - node_modules/
+  - package.json
+  - package-lock.json
+  - .env
+  - .gitignore
+  - README.md
+  - docs/
+  - tests/
+  - "*.log"
+  - .DS_Store
+  - .vscode/
+  - .idea/
+
+# Include important files
+include:
+  - .htaccess
+  - _pages
+
+# Plugin settings
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# SEO settings
+author: CustomPC.tech
+twitter:
+  username: custompctech
+  card: summary_large_image
+
+# Collections (if needed)
+collections:
+  builds:
+    output: true
+    permalink: /:collection/:name/
