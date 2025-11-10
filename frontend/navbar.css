@@ -178,6 +178,72 @@ nav {
   color: var(--muted);
 }
 
+/* Auth Section */
+.auth-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 10px;
+  padding-left: 10px;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.username-display {
+  color: #e9eefc;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 12px;
+  background: rgba(125, 178, 255, 0.1);
+  border-radius: 999px;
+}
+
+.btn-login,
+.btn-signup,
+.btn-logout {
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+}
+
+.btn-login {
+  background: transparent;
+  color: #e9eefc;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-login:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.btn-signup {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+}
+
+.btn-signup:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn-logout {
+  background: rgba(255, 68, 68, 0.1);
+  color: #ff6b6b;
+  border: 1px solid rgba(255, 68, 68, 0.2);
+}
+
+.btn-logout:hover {
+  background: rgba(255, 68, 68, 0.2);
+  border-color: rgba(255, 68, 68, 0.3);
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
   header {
@@ -209,5 +275,27 @@ nav {
 
   .custom-pc-nav:hover .custom-pc-dropdown {
     transform: translateX(0) translateY(0);
+  }
+
+  .auth-section {
+    width: 100%;
+    justify-content: center;
+    border-left: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 12px;
+    margin-left: 0;
+    padding-left: 0;
+  }
+
+  .username-display {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+
+  .btn-login,
+  .btn-signup,
+  .btn-logout {
+    padding: 6px 12px;
+    font-size: 12px;
   }
 }

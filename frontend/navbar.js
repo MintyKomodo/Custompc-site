@@ -56,11 +56,15 @@ class NavigationBar {
     const header = document.createElement('header');
     header.id = 'main-header';
     
-    // Check if user is admin
-    const isAdmin = this.checkIfAdmin();
+    // Check if user is logged in
+    const currentUser = this.getCurrentUser();
+    const isLoggedIn = currentUser && currentUser.username;
     
     // Build Custom PC dropdown menu
-    const customPCDropdown = this.buildCustomPCDropdown(isAdmin);
+    const customPCDropdown = this.buildCustomPCDropdown();
+    
+    // Build auth buttons
+    const authButtons = this.buildAuthButtons(isLoggedIn, currentUser);
     
     header.innerHTML = `
       <div class="brand">
@@ -75,6 +79,7 @@ class NavigationBar {
         ${customPCDropdown}
         <a class="pill ${this.isActive('about')}" href="about.html">About</a>
         <a class="pill ${this.isActive('contact')}" href="contact.html">Contact</a>
+        ${authButtons}
       </nav>
     `;
 
@@ -87,6 +92,65 @@ class NavigationBar {
     }
   }
 
+  buildAuthButtons(isLoggedIn, currentUser) {
+    if (isLoggedIn) {
+      // Show username and logout button
+      return `
+        <div class="auth-section">
+          <span class="username-display">👤 ${currentUser.username}</span>
+          <button onclick="window.navigationBar.logout()" class="btn-logout">Logout</button>
+        </div>
+      `;
+    } else {
+      // Show login/signup buttons
+      return `
+        <div class="auth-section">
+          <a href="login.html" class="btn-login">Login</a>
+          <a href="signup.html" class="btn-signup">Sign Up</a>
+        </div>
+      `;
+    }
+  }
+
+  getCurrentUser() {
+    // Check if shared auth is available
+    if (window.sharedAuth && window.sharedAuth.currentUser) {
+      return window.sharedAuth.currentUser;
+    }
+    
+    // Fallback to localStorage
+    try {
+      const storedUser = localStorage.getItem('currentUser');
+      if (storedUser) {
+        return JSON.parse(storedUser);
+      }
+    } catch (error) {
+      console.error('Error getting current user:', error);
+    }
+    
+    return null;
+  }
+
+  logout() {
+    // Clear user data
+    localStorage.removeItem('currentUser');
+    
+    // Clear shared auth if available
+    if (window.sharedAuth && typeof window.sharedAuth.logout === 'function') {
+      window.sharedAuth.logout();
+    }
+    
+    // Show notification
+    if (window.showKiroNotification) {
+      showKiroNotification('👋 Logged out successfully!');
+    }
+    
+    // Reload page to update navbar
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
+  }
+
   buildCustomPCDropdown(isAdmin) {
     const isCustomPCActive = this.isActive(['index', '']);
     const isMessagingActive = this.isActive('messaging');
@@ -94,7 +158,7 @@ class NavigationBar {
     
     const activeClass = isCustomPCActive || isMessagingActive || isPaymentsActive ? 'active' : '';
     
-    // Build dropdown items
+    // Build dropdown items - Messages and Payments for everyone
     let dropdownItems = `
       <a href="messaging.html" class="dropdown-item">
         <div class="dropdown-item-icon">💬</div>
@@ -103,20 +167,14 @@ class NavigationBar {
           <div class="dropdown-item-desc">Live chat support</div>
         </div>
       </a>
+      <a href="payments.html" class="dropdown-item">
+        <div class="dropdown-item-icon">💳</div>
+        <div class="dropdown-item-content">
+          <div class="dropdown-item-title">Payments</div>
+          <div class="dropdown-item-desc">Send payments securely</div>
+        </div>
+      </a>
     `;
-    
-    // Add Payments for admin users
-    if (isAdmin) {
-      dropdownItems += `
-        <a href="payments.html" class="dropdown-item">
-          <div class="dropdown-item-icon">💳</div>
-          <div class="dropdown-item-content">
-            <div class="dropdown-item-title">Payments</div>
-            <div class="dropdown-item-desc">Admin payment processing</div>
-          </div>
-        </a>
-      `;
-    }
     
     return `
       <div class="custom-pc-nav">
