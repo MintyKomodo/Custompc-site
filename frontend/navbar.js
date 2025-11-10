@@ -59,27 +59,8 @@ class NavigationBar {
     // Check if user is admin
     const isAdmin = this.checkIfAdmin();
     
-    // Build navigation items based on current page and user role
-    let navItems = '';
-    
-    // Always show these
-    navItems += `<a class="pill ${this.isActive('builds')}" href="builds.html">Builds</a>`;
-    
-    // Show Custom PC or Messages depending on current page
-    if (this.currentPage === 'messaging') {
-      navItems += `<a class="pill ${this.isActive('messaging')}" href="messaging.html">Messages</a>`;
-    } else {
-      navItems += `<a class="pill ${this.isActive(['index', ''])}" href="index.html">Custom PC</a>`;
-    }
-    
-    // Always show About and Contact
-    navItems += `<a class="pill ${this.isActive('about')}" href="about.html">About</a>`;
-    navItems += `<a class="pill ${this.isActive('contact')}" href="contact.html">Contact</a>`;
-    
-    // Only show Payments for admin users
-    if (isAdmin) {
-      navItems += `<a class="pill ${this.isActive('payments')}" href="payments.html">Payments</a>`;
-    }
+    // Build Custom PC dropdown menu
+    const customPCDropdown = this.buildCustomPCDropdown(isAdmin);
     
     header.innerHTML = `
       <div class="brand">
@@ -90,7 +71,10 @@ class NavigationBar {
         </a>
       </div>
       <nav style="display: flex; align-items: center; gap: var(--space);">
-        ${navItems}
+        <a class="pill ${this.isActive('builds')}" href="builds.html">Builds</a>
+        ${customPCDropdown}
+        <a class="pill ${this.isActive('about')}" href="about.html">About</a>
+        <a class="pill ${this.isActive('contact')}" href="contact.html">Contact</a>
       </nav>
     `;
 
@@ -101,6 +85,47 @@ class NavigationBar {
     } else {
       document.body.insertBefore(header, document.body.firstChild);
     }
+  }
+
+  buildCustomPCDropdown(isAdmin) {
+    const isCustomPCActive = this.isActive(['index', '']);
+    const isMessagingActive = this.isActive('messaging');
+    const isPaymentsActive = this.isActive('payments');
+    
+    const activeClass = isCustomPCActive || isMessagingActive || isPaymentsActive ? 'active' : '';
+    
+    // Build dropdown items
+    let dropdownItems = `
+      <a href="messaging.html" class="dropdown-item">
+        <div class="dropdown-item-icon">💬</div>
+        <div class="dropdown-item-content">
+          <div class="dropdown-item-title">Messages</div>
+          <div class="dropdown-item-desc">Live chat support</div>
+        </div>
+      </a>
+    `;
+    
+    // Add Payments for admin users
+    if (isAdmin) {
+      dropdownItems += `
+        <a href="payments.html" class="dropdown-item">
+          <div class="dropdown-item-icon">💳</div>
+          <div class="dropdown-item-content">
+            <div class="dropdown-item-title">Payments</div>
+            <div class="dropdown-item-desc">Admin payment processing</div>
+          </div>
+        </a>
+      `;
+    }
+    
+    return `
+      <div class="custom-pc-nav">
+        <a class="pill ${activeClass}" href="index.html">Custom PC</a>
+        <div class="custom-pc-dropdown">
+          ${dropdownItems}
+        </div>
+      </div>
+    `;
   }
 
   checkIfAdmin() {
