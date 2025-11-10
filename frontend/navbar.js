@@ -55,6 +55,32 @@ class NavigationBar {
   createNavbar() {
     const header = document.createElement('header');
     header.id = 'main-header';
+    
+    // Check if user is admin
+    const isAdmin = this.checkIfAdmin();
+    
+    // Build navigation items based on current page and user role
+    let navItems = '';
+    
+    // Always show these
+    navItems += `<a class="pill ${this.isActive('builds')}" href="builds.html">Builds</a>`;
+    
+    // Show Custom PC or Messages depending on current page
+    if (this.currentPage === 'messaging') {
+      navItems += `<a class="pill ${this.isActive('messaging')}" href="messaging.html">Messages</a>`;
+    } else {
+      navItems += `<a class="pill ${this.isActive(['index', ''])}" href="index.html">Custom PC</a>`;
+    }
+    
+    // Always show About and Contact
+    navItems += `<a class="pill ${this.isActive('about')}" href="about.html">About</a>`;
+    navItems += `<a class="pill ${this.isActive('contact')}" href="contact.html">Contact</a>`;
+    
+    // Only show Payments for admin users
+    if (isAdmin) {
+      navItems += `<a class="pill ${this.isActive('payments')}" href="payments.html">Payments</a>`;
+    }
+    
     header.innerHTML = `
       <div class="brand">
         <a href="index.html">
@@ -64,12 +90,7 @@ class NavigationBar {
         </a>
       </div>
       <nav style="display: flex; align-items: center; gap: var(--space);">
-        <a class="pill ${this.isActive('builds')}" href="builds.html">Builds</a>
-        <a class="pill ${this.isActive(['index', ''])}" href="index.html">Custom PC</a>
-        <a class="pill ${this.isActive('messaging')}" href="messaging.html">Messages</a>
-        <a class="pill ${this.isActive('payments')}" href="payments.html">Payments</a>
-        <a class="pill ${this.isActive('about')}" href="about.html">About</a>
-        <a class="pill ${this.isActive('contact')}" href="contact.html">Contact</a>
+        ${navItems}
       </nav>
     `;
 
@@ -80,6 +101,26 @@ class NavigationBar {
     } else {
       document.body.insertBefore(header, document.body.firstChild);
     }
+  }
+
+  checkIfAdmin() {
+    // Check if shared auth is available
+    if (window.sharedAuth && typeof window.sharedAuth.isCurrentUserAdmin === 'function') {
+      return window.sharedAuth.isCurrentUserAdmin();
+    }
+    
+    // Fallback: check localStorage
+    try {
+      const currentUser = localStorage.getItem('currentUser');
+      if (currentUser) {
+        const user = JSON.parse(currentUser);
+        return user.role === 'admin' || user.isAdmin === true;
+      }
+    } catch (error) {
+      console.error('Error checking admin status:', error);
+    }
+    
+    return false;
   }
 
   isActive(pages) {
