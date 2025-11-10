@@ -42,11 +42,59 @@
     }
     .wrap{max-width:var(--max);margin:0 auto;padding:var(--space-lg);width:100%;box-sizing:border-box;overflow:visible}
 
-    /* Header (shared) */
+    /* Announcement Text Bar */
+    .announcement-bar {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      text-align: center;
+      padding: 12px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      position: sticky;
+      top: 0;
+      z-index: 1001;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    
+    .announcement-bar a {
+      color: white;
+      text-decoration: underline;
+      font-weight: 600;
+    }
+    
+    .announcement-bar a:hover {
+      opacity: 0.8;
+    }
+    
+    @keyframes slideUp {
+      from {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+    }
+
+    /* Header (shared) - Now Sticky */
     header{
       display:flex;align-items:center;justify-content:space-between;
-      margin-bottom:var(--space-lg);padding:0 var(--space);
-      max-width:var(--max);margin-left:auto;margin-right:auto;width:100%
+      padding:16px var(--space);
+      max-width:var(--max);margin-left:auto;margin-right:auto;width:100%;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(10, 15, 26, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      transition: all 0.3s ease;
+    }
+    
+    header.scrolled {
+      padding: 12px var(--space);
+      box-shadow: 0 6px 30px rgba(0,0,0,0.4);
     }
     .brand a{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;font-weight:700;letter-spacing:.3px;white-space:nowrap}
     nav{display:flex;gap:var(--space);flex-wrap:wrap}
@@ -279,9 +327,28 @@
   </style>
 </head>
 <body>
+  <!-- Announcement Bar -->
+  <div class="announcement-bar" id="announcement-bar">
+    <span>🎉 <strong>New!</strong> User chat history now saves across devices! <a href="messaging.html">Try it now →</a></span>
+    <button onclick="closeAnnouncementBar()" style="
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+      opacity: 0.8;
+      padding: 0;
+      line-height: 1;
+    ">×</button>
+  </div>
+
   <div class="wrap">
     <!-- Header -->
-    <header>
+    <header id="main-header">
       <div class="brand">
         <a href="index.html">
           <img src="images/logo.png" alt="CustomPC.tech logo"
@@ -644,6 +711,39 @@
       }, 8000);
     }
     
+    // Close announcement bar
+    function closeAnnouncementBar() {
+      const bar = document.getElementById('announcement-bar');
+      bar.style.animation = 'slideUp 0.3s ease-out';
+      setTimeout(() => {
+        bar.style.display = 'none';
+        localStorage.setItem('announcementBarClosed', 'true');
+      }, 300);
+    }
+
+    // Check if announcement bar was previously closed
+    document.addEventListener('DOMContentLoaded', function() {
+      const wasClosed = localStorage.getItem('announcementBarClosed');
+      if (wasClosed === 'true') {
+        document.getElementById('announcement-bar').style.display = 'none';
+      }
+    });
+
+    // Sticky header scroll effect
+    let lastScroll = 0;
+    window.addEventListener('scroll', function() {
+      const header = document.getElementById('main-header');
+      const currentScroll = window.pageYOffset;
+      
+      if (currentScroll > 50) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+      
+      lastScroll = currentScroll;
+    });
+
     // Initialize on DOM load
     document.addEventListener('DOMContentLoaded', function() {
       // Initialize payment access control
@@ -749,7 +849,7 @@
     // Show notification when page loads (indicating Kiro updates are active)
     window.addEventListener('load', function() {
       setTimeout(() => {
-        showKiroNotification('🔧 GitHub Pages deployment fixed - Backend excluded from Jekyll build');
+        showKiroNotification('✨ Sticky navbar + announcement bar added - Stays visible while scrolling!');
       }, 1000);
     });
   </script>
