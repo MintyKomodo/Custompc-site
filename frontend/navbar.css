@@ -1,0 +1,124 @@
+/* Shared Navigation Bar Styles */
+
+/* Announcement Text Bar */
+.announcement-bar {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  text-align: center;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  position: sticky;
+  top: 0;
+  z-index: 1001;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.announcement-bar a {
+  color: white;
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.announcement-bar a:hover {
+  opacity: 0.8;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}
+
+/* Header - Sticky Navigation */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px var(--space);
+  max-width: var(--max);
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(10, 15, 26, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  transition: all 0.3s ease;
+}
+
+header.scrolled {
+  padding: 12px var(--space);
+  box-shadow: 0 6px 30px rgba(0,0,0,0.4);
+}
+
+/* Brand */
+.brand a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+/* Navigation Pills */
+nav {
+  display: flex;
+  gap: var(--space);
+  flex-wrap: wrap;
+}
+
+.pill {
+  display: inline-block;
+  padding: 10px 14px;
+  border-radius: 999px;
+  color: var(--ink);
+  text-decoration: none;
+  border: 1px solid transparent;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.pill:hover {
+  background: #0f1830;
+}
+
+.pill.active {
+  background: linear-gradient(120deg, rgba(125, 178, 255, 0.15), rgba(124, 242, 230, 0.15));
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    gap: 16px;
+    padding: 12px var(--space);
+  }
+
+  nav {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .pill {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+
+  .announcement-bar {
+    font-size: 12px;
+    padding: 10px 40px 10px 20px;
+  }
+}

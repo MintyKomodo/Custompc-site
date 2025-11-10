@@ -1,14 +1,57 @@
+Error: Logging at level: debug GitHub Pages: github-pages v232 GitHub Pages: jekyll v3.10.0 Theme: jekyll-theme-primer
+Theme source: /usr/local/bundle/gems/jekyll-theme-primer-0.6.0 Requiring: jekyll-github-metadata Requiring:
+jekyll-seo-tag Requiring: jekyll-coffeescript Requiring: jekyll-commonmark-ghpages Requiring: jekyll-gist Requiring:
+jekyll-github-metadata Requiring: jekyll-paginate Requiring: jekyll-relative-links Requiring:
+jekyll-optional-front-matter Requiring: jekyll-readme-index Requiring: jekyll-default-layout Requiring:
+jekyll-titles-from-headings GitHub Metadata: Initializing... Source: /github/workspace/. Destination:
+/github/workspace/./_site Incremental build: disabled. Enable with --incremental Generating... EntryFilter: excluded
+/CNAME Generating: JekyllOptionalFrontMatter::Generator finished in 0.009564715 seconds. Generating:
+JekyllReadmeIndex::Generator finished in 0.042011997 seconds. Generating: Jekyll::Paginate::Pagination finished in
+5.19e-06 seconds. GitHub Metadata: Generating for MintyKomodo/Custompc-site GitHub Metadata: Calling
+@client.pages("MintyKomodo/Custompc-site", {}) Generating: JekyllRelativeLinks::Generator finished in 0.364940706
+seconds. Generating: JekyllDefaultLayout::Generator finished in 0.002105506 seconds. Requiring: kramdown-parser-gfm
+Generating: JekyllTitlesFromHeadings::Generator finished in 0.059236354 seconds. Rendering: assets/css/style.scss
+Pre-Render Hooks: assets/css/style.scss Rendering Markup: assets/css/style.scss Rendering:
+backend/node_modules/accepts/HISTORY.md Pre-Render Hooks: backend/node_modules/accepts/HISTORY.md Rendering Markup:
+backend/node_modules/accepts/HISTORY.md Rendering Layout: backend/node_modules/accepts/HISTORY.md Layout source: theme
+GitHub Metadata: Calling @client.repository("MintyKomodo/Custompc-site",
+{:accept=>"application/vnd.github.drax-preview+json"}) Rendering: backend/node_modules/body-parser/HISTORY.md Pre-Render
+Hooks: backend/node_modules/body-parser/HISTORY.md Rendering Markup: backend/node_modules/body-parser/HISTORY.md
+Rendering Layout: backend/node_modules/body-parser/HISTORY.md Layout source: theme Rendering:
+backend/node_modules/body-parser/SECURITY.md Pre-Render Hooks: backend/node_modules/body-parser/SECURITY.md Rendering
+Markup: backend/node_modules/body-parser/SECURITY.md Rendering Layout: backend/node_modules/body-parser/SECURITY.md
+Layout source: theme Rendering: backend/node_modules/bytes/History.md Pre-Render Hooks:
+backend/node_modules/bytes/History.md Rendering Markup: backend/node_modules/bytes/History.md Rendering Layout:
+backend/node_modules/bytes/History.md Layout source: theme Rendering:
+backend/node_modules/call-bind-apply-helpers/CHANGELOG.md Pre-Render Hooks:
+backend/node_modules/call-bind-apply-helpers/CHANGELOG.md Rendering Markup:
+backend/node_modules/call-bind-apply-helpers/CHANGELOG.md Rendering Layout:
+backend/node_modules/call-bind-apply-helpers/CHANGELOG.md Layout source: theme Rendering:
+backend/node_modules/call-bound/CHANGELOG.md Pre-Render Hooks: backend/node_modules/call-bound/CHANGELOG.md Rendering
+Markup: backend/node_modules/call-bound/CHANGELOG.md Rendering Layout: backend/node_modules/call-bound/CHANGELOG.md
+Layout source: theme Rendering: backend/node_modules/content-disposition/HISTORY.md Pre-Render Hooks:
+backend/node_modules/content-disposition/HISTORY.md Rendering Markup:
+backend/node_modules/content-disposition/HISTORY.md Rendering Layout:
+backend/node_modules/content-disposition/HISTORY.md Layout source: theme Rendering:
+backend/node_modules/content-type/HISTORY.md Pre-Render Hooks: backend/node_modules/content-type/HISTORY.md Rendering
+Markup: backend/node_modules/content-type/HISTORY.md Rendering Layout: backend/node_modules/content-type/HISTORY.md
+Layout source: theme Rendering: backend/node_modules/cookie-signature/History.md Pre-Render Hooks:
+backend/node_modules/cookie-signature/History.md Rendering Markup: backend/node_modules/cookie-signature/History.md
+Rendering Layout: backend/node_modules/cookie-signature/History.md Layout source: theme Rendering:
+backend/node_modules/co
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crisp Chat Test</title>
 </head>
+
 <body>
     <h1>Crisp Chat Test Page</h1>
     <p>If Crisp is working, you should see a blue chat bubble in the bottom-right corner.</p>
-    
+
     <div style="margin: 20px; padding: 20px; background: #f0f0f0; border-radius: 10px;">
         <h3>Troubleshooting Checklist:</h3>
         <ul>
@@ -22,20 +65,20 @@
 
     <!-- Crisp Chat - Simple Version -->
     <script type="text/javascript">
-        window.$crisp=[];
-        window.CRISP_WEBSITE_ID="04b92cf5-f7ff-4191-9f98-44433c84752b";
-        (function(){
-            d=document;
-            s=d.createElement("script");
-            s.src="https://client.crisp.chat/l.js";
-            s.async=1;
+        window.$crisp = [];
+        window.CRISP_WEBSITE_ID = "04b92cf5-f7ff-4191-9f98-44433c84752b";
+        (function () {
+            d = document;
+            s = d.createElement("script");
+            s.src = "https://client.crisp.chat/l.js";
+            s.async = 1;
             d.getElementsByTagName("head")[0].appendChild(s);
         })();
-        
+
         // Debug logging
         console.log('Crisp script loaded');
         console.log('Website ID:', window.CRISP_WEBSITE_ID);
-        
+
         // Check if Crisp loads
         setTimeout(() => {
             if (window.$crisp) {
@@ -46,4 +89,5 @@
         }, 3000);
     </script>
 </body>
+
 </html>
