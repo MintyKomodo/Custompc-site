@@ -241,9 +241,15 @@ class NavigationBar {
   }
 }
 
-// Initialize navbar when DOM is ready
+// Initialize navbar when DOM is ready (but not on auth pages)
 document.addEventListener('DOMContentLoaded', function() {
-  window.navigationBar = new NavigationBar();
+  // Don't add navbar to login/signup pages - they have their own design
+  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+  const authPages = ['login.html', 'signup.html', 'login', 'signup'];
+  
+  if (!authPages.includes(currentPage.replace('.html', ''))) {
+    window.navigationBar = new NavigationBar();
+  }
 });
 
 // Export for use in other modules
