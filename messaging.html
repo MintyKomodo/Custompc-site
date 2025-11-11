@@ -904,15 +904,7 @@
         </div>
         
         <div class="messaging-chat" id="messaging-chat">
-          <!-- Live Chat Integration -->
-          <div id="chat-container" style="width: 100%; height: 100%; min-height: 400px;">
-            <div class="message system">
-              <div class="message-content">
-                Welcome to CustomPC.tech live support!<br><br>
-                Loading secure chat system... Please wait a moment.
-              </div>
-            </div>
-          </div>
+          <!-- Messages will be added here dynamically -->
         </div>
         
         <div class="messaging-input-container" id="fallback-input">
@@ -1063,22 +1055,9 @@
     });
   </script>
 
-  <!-- Crisp Chat Integration -->
+  <!-- Crisp Chat Integration - Disabled on messaging page to use custom chat -->
   <script type="text/javascript">
-    window.$crisp=[];
-    window.CRISP_WEBSITE_ID="04b92cf5-f7ff-4191-9f98-44433c84752b";
-    (function(){
-      d=document;
-      s=d.createElement("script");
-      s.src="https://client.crisp.chat/l.js";
-      s.async=1;
-      s.onload = function() {
-        if (window.showKiroNotification) {
-          showKiroNotification('💬 Crisp chat loaded on messaging page');
-        }
-      };
-      d.getElementsByTagName("head")[0].appendChild(s);
-    })();
+    console.log('Crisp chat disabled on messaging page - using custom chat interface');
   </script>
   
   <script>
@@ -2145,16 +2124,39 @@ This is an automated notification from the CustomPC.tech live messaging system.`
       console.log('🧪 Test message function called');
       console.log('window.liveMessaging:', window.liveMessaging);
       
+      // First, test if we can directly add to the chat container
+      const chat = document.getElementById('messaging-chat');
+      console.log('Chat container:', chat);
+      
+      if (!chat) {
+        alert('❌ Chat container not found!');
+        return;
+      }
+      
+      // Test direct DOM manipulation
+      const testDiv = document.createElement('div');
+      testDiv.className = 'message user';
+      testDiv.innerHTML = `
+        <div class="message-content">
+          🧪 Direct DOM test message - ${new Date().toLocaleTimeString()}
+          <div class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+        </div>
+      `;
+      chat.appendChild(testDiv);
+      chat.scrollTop = chat.scrollHeight;
+      
+      // Test through liveMessaging if available
       if (window.liveMessaging) {
-        console.log('✅ Adding test message');
-        window.liveMessaging.addMessage('This is a test message!', 'user');
+        console.log('✅ Adding test message through liveMessaging');
+        setTimeout(() => {
+          window.liveMessaging.addMessage('📱 Test message through liveMessaging system!', 'user');
+        }, 500);
         
         setTimeout(() => {
-          window.liveMessaging.addMessage('Test response from system', 'system');
-        }, 1000);
+          window.liveMessaging.addMessage('🤖 Automated test response', 'system');
+        }, 1500);
       } else {
         console.error('❌ liveMessaging not available');
-        alert('LiveMessaging not initialized yet. Please wait a moment and try again.');
       }
     }
     
@@ -2315,8 +2317,26 @@ This is an automated notification from the CustomPC.tech live messaging system.`
     // Initialize when DOM is loaded
     document.addEventListener('DOMContentLoaded', function() {
       console.log('🚀 DOM loaded, initializing LiveMessagingPage');
+      
+      // Check if chat container exists
+      const chatContainer = document.getElementById('messaging-chat');
+      console.log('Chat container found:', chatContainer);
+      
+      if (!chatContainer) {
+        console.error('❌ Chat container not found in DOM!');
+        return;
+      }
+      
       window.liveMessaging = new LiveMessagingPage();
       console.log('✅ LiveMessagingPage created:', window.liveMessaging);
+      
+      // Add a simple test message after initialization
+      setTimeout(() => {
+        if (window.liveMessaging) {
+          console.log('🔧 Adding initial welcome message');
+          window.liveMessaging.addMessage('💬 Chat system initialized successfully! Try sending a message.', 'system', false);
+        }
+      }, 1000);
       
       // Ensure chat session is created for non-admin users
       // This helps ensure messages from Tawk.to can be saved
