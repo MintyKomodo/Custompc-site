@@ -19,6 +19,7 @@ class NavigationBar {
     this.createAnnouncementBar();
     this.createNavbar();
     this.setupScrollEffects();
+    this.setupSearchFunctionality();
   }
 
   createAnnouncementBar() {
@@ -70,9 +71,12 @@ class NavigationBar {
       <div class="brand">
         <a href="index.html">
           <img src="images/logo.png" alt="CustomPC.tech logo"
-            style="height:100px;width:100px;display:inline-block;vertical-align:middle;object-fit:contain;border-radius:50%;" />
-          <span style="margin-left:8px;vertical-align:middle;">CustomPC.tech</span>
+            style="height:60px;width:60px;display:inline-block;vertical-align:middle;object-fit:contain;border-radius:50%;" />
         </a>
+      </div>
+      <div class="search-bar">
+        <input type="text" placeholder="Search builds, parts..." class="search-input" />
+        <button class="search-btn">🔍</button>
       </div>
       <nav style="display: flex; align-items: center; gap: var(--space);">
         <a class="pill ${this.isActive('builds')}" href="builds.html">Builds</a>
@@ -262,6 +266,28 @@ class NavigationBar {
     });
   }
 
+  setupSearchFunctionality() {
+    const searchInput = document.querySelector('.search-input');
+    const searchBtn = document.querySelector('.search-btn');
+    
+    if (!searchInput || !searchBtn) return;
+    
+    const performSearch = () => {
+      const query = searchInput.value.trim();
+      if (query) {
+        // For now, redirect to builds page with search query
+        window.location.href = `builds.html?search=${encodeURIComponent(query)}`;
+      }
+    };
+    
+    searchBtn.addEventListener('click', performSearch);
+    searchInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        performSearch();
+      }
+    });
+  }
+
   // Method to refresh navbar when auth state changes
   refreshNavbar() {
     const oldHeader = document.getElementById('main-header');
@@ -269,6 +295,7 @@ class NavigationBar {
       oldHeader.remove();
     }
     this.createNavbar();
+    this.setupSearchFunctionality();
   }
 }
 
