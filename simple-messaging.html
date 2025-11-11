@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Messaging Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #0a0f1a;
+            color: #e9eefc;
+        }
+        
+        .chat-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #111729;
+            border-radius: 12px;
+            overflow: hidden;
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-header {
+            background: #0d1426;
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .message {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        
+        .message.user {
+            justify-content: flex-end;
+        }
+        
+        .message.system {
+            justify-content: center;
+        }
+        
+        .message-content {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            word-wrap: break-word;
+        }
+        
+        .message.user .message-content {
+            background: linear-gradient(135deg, #7db2ff, #7cf2e6);
+            color: #0b0f1a;
+        }
+        
+        .message.admin .message-content {
+            background: #0d1426;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #e9eefc;
+        }
+        
+        .message.system .message-content {
+            background: rgba(125, 178, 255, 0.1);
+            border: 1px solid rgba(125, 178, 255, 0.2);
+            color: #7db2ff;
+            text-align: center;
+        }
+        
+        .chat-input {
+            display: flex;
+            padding: 20px;
+            gap: 12px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            background: #0d1426;
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 25px;
+            background: #111729;
+            color: #e9eefc;
+            outline: none;
+            font-size: 14px;
+        }
+        
+        .chat-input input:focus {
+            border-color: #7db2ff;
+            box-shadow: 0 0 0 2px rgba(125, 178, 255, 0.2);
+        }
+        
+        .chat-input button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #7db2ff, #7cf2e6);
+            color: #0b0f1a;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        
+        .chat-input button:hover {
+            transform: translateY(-1px);
+        }
+        
+        .test-btn {
+            background: #ff6b6b !important;
+            color: white !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>Simple Messaging Test</h2>
+            <p>This is a basic test to verify messaging works</p>
+        </div>
+        
+        <div class="chat-messages" id="chat-messages">
+            <!-- Messages will appear here -->
+        </div>
+        
+        <div class="chat-input">
+            <input type="text" id="message-input" placeholder="Type your message here..." />
+            <button onclick="sendMessage()">Send</button>
+            <button onclick="testMessage()" class="test-btn">Test</button>
+        </div>
+    </div>
+
+    <script>
+        let messageCount = 0;
+        
+        function addMessage(content, type = 'user') {
+            console.log('Adding message:', content, type);
+            
+            const messagesContainer = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            contentDiv.innerHTML = content;
+            
+            messageDiv.appendChild(contentDiv);
+            messagesContainer.appendChild(messageDiv);
+            
+            // Scroll to bottom
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            messageCount++;
+            console.log('Message added successfully. Total messages:', messageCount);
+        }
+        
+        function sendMessage() {
+            const input = document.getElementById('message-input');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            console.log('Sending message:', message);
+            
+            // Add user message
+            addMessage(message, 'user');
+            
+            // Clear input
+            input.value = '';
+            
+            // Simulate response
+            setTimeout(() => {
+                addMessage('Thanks for your message! This is an automated response.', 'admin');
+            }, 1000);
+        }
+        
+        function testMessage() {
+            console.log('Test button clicked');
+            addMessage('🧪 This is a test message!', 'user');
+            
+            setTimeout(() => {
+                addMessage('✅ Test response received!', 'system');
+            }, 500);
+        }
+        
+        // Enter key support
+        document.getElementById('message-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        // Add welcome message on load
+        window.addEventListener('load', function() {
+            addMessage('Welcome to the simple messaging test! Try typing a message or click Test.', 'system');
+        });
+    </script>
+</body>
+</html>

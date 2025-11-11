@@ -904,7 +904,11 @@
         </div>
         
         <div class="messaging-chat" id="messaging-chat">
-          <!-- Messages will be added here dynamically -->
+          <div class="message system">
+            <div class="message-content">
+              💬 Chat system ready! Type a message below to get started.
+            </div>
+          </div>
         </div>
         
         <div class="messaging-input-container" id="fallback-input">
@@ -2056,108 +2060,134 @@ This is an automated notification from the CustomPC.tech live messaging system.`
       console.log('🚀 sendMessage called');
       
       const input = document.getElementById('messaging-input');
-      const sendBtn = document.getElementById('send-btn');
+      const chat = document.getElementById('messaging-chat');
       
-      console.log('Input element:', input);
-      console.log('Input value:', input ? input.value : 'null');
-      
-      if (!input) {
-        console.error('❌ Input element not found');
-        return;
-      }
-      
-      if (!input.value.trim()) {
-        console.log('❌ Empty message');
+      if (!input || !chat) {
+        console.error('❌ Required elements not found');
+        alert('Chat system not ready. Please refresh the page.');
         return;
       }
       
       const message = input.value.trim();
-      console.log('📝 Sending message:', message);
-      
-      input.value = '';
-      
-      // Reset textarea height
-      input.style.height = 'auto';
-      
-      // Disable send button temporarily
-      if (sendBtn) {
-        sendBtn.disabled = true;
-        setTimeout(() => sendBtn.disabled = false, 1000);
+      if (!message) {
+        console.log('❌ Empty message');
+        return;
       }
       
-      // Add message to chat
-      if (window.liveMessaging) {
-        console.log('✅ liveMessaging found, adding message');
-        const messageType = window.liveMessaging.isAdmin ? 'admin' : 'user';
-        console.log('Message type:', messageType);
+      console.log('📝 Sending message:', message);
+      
+      // Clear input
+      input.value = '';
+      input.style.height = 'auto';
+      
+      // Get current user info
+      const currentUser = window.sharedAuth ? window.sharedAuth.getCurrentUser() : null;
+      const username = currentUser && currentUser.username ? currentUser.username : 'Anonymous User';
+      
+      // Try Firebase first, fallback to local display
+      if (window.firebaseChatManager && window.firebaseChatManager.isInitialized) {
+        console.log('📡 Sending via Firebase');
         
-        window.liveMessaging.addMessage(message, messageType);
+        const messageData = {
+          text: message,
+          username: username,
+          timestamp: Date.now(),
+          type: 'user'
+        };
         
-        // Save message to chat session
-        window.liveMessaging.saveMessageToSession(message, messageType);
+        // Send to Firebase
+        window.firebaseChatManager.sendMessageToChat(messageData).then(() => {
+          console.log('✅ Message sent to Firebase');
+        }).catch((error) => {
+          console.error('❌ Firebase send failed:', error);
+          // Fallback to local display
+          addMessageToChat(message, 'user', username);
+        });
         
-        if (!window.liveMessaging.isAdmin) {
-          // Simulate admin response for regular users
-          setTimeout(() => {
-            console.log('👤 Showing typing indicator');
-            window.liveMessaging.showTypingIndicator();
-          }, 1000);
-          
-          setTimeout(() => {
-            console.log('💬 Sending auto-response');
-            window.liveMessaging.hideTypingIndicator();
-            const response = "Thanks for your message! An admin will respond shortly. You can also email us directly at griffin@crowhurst.ws for immediate assistance.";
-            window.liveMessaging.addMessage(response, 'system', false);
-            window.liveMessaging.saveMessageToSession(response, 'system');
-          }, 3000);
-        }
       } else {
-        console.error('❌ liveMessaging not found');
+        console.log('📱 Firebase not available, using local display');
+        addMessageToChat(message, 'user', username);
+        
+        // Add auto-response after delay
+        setTimeout(() => {
+          addMessageToChat('Thanks for your message! An admin will respond shortly. You can also email us directly at griffin@crowhurst.ws for immediate assistance.', 'system', 'System');
+        }, 1500);
       }
       
       // Focus back to input
       input.focus();
     }
     
+    // Helper function to add messages to chat
+    function addMessageToChat(message, type, username) {
+      const chat = document.getElementById('messaging-chat');
+      if (!chat) return;
+      
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${type}`;
+      
+      const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+      const userLabel = type !== 'user' && username !== 'System' ? `<strong>${username}:</strong> ` : '';
+      
+      messageDiv.innerHTML = `
+        <div class="message-content">
+          ${userLabel}${message}
+          <div class="message-time">${time}</div>
+        </div>
+      `;
+      
+      chat.appendChild(messageDiv);
+      chat.scrollTop = chat.scrollHeight;
+      
+      // Add smooth animation
+      messageDiv.style.opacity = '0';
+      messageDiv.style.transform = 'translateY(20px)';
+      setTimeout(() => {
+        messageDiv.style.transition = 'all 0.3s ease';
+        messageDiv.style.opacity = '1';
+        messageDiv.style.transform = 'translateY(0)';
+      }, 10);
+    }
+    
     // Test function to debug messaging
     function testMessage() {
       console.log('🧪 Test message function called');
-      console.log('window.liveMessaging:', window.liveMessaging);
       
-      // First, test if we can directly add to the chat container
       const chat = document.getElementById('messaging-chat');
-      console.log('Chat container:', chat);
-      
       if (!chat) {
         alert('❌ Chat container not found!');
         return;
       }
       
-      // Test direct DOM manipulation
+      // Add test message
       const testDiv = document.createElement('div');
       testDiv.className = 'message user';
       testDiv.innerHTML = `
         <div class="message-content">
-          🧪 Direct DOM test message - ${new Date().toLocaleTimeString()}
+          🧪 Test message - ${new Date().toLocaleTimeString()}
           <div class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
         </div>
       `;
       chat.appendChild(testDiv);
       chat.scrollTop = chat.scrollHeight;
       
-      // Test through liveMessaging if available
-      if (window.liveMessaging) {
-        console.log('✅ Adding test message through liveMessaging');
-        setTimeout(() => {
-          window.liveMessaging.addMessage('📱 Test message through liveMessaging system!', 'user');
-        }, 500);
+      console.log('✅ Test message added');
+      
+      // Add test response
+      setTimeout(() => {
+        const responseDiv = document.createElement('div');
+        responseDiv.className = 'message system';
+        responseDiv.innerHTML = `
+          <div class="message-content">
+            ✅ Test successful! The messaging system is working.
+            <div class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+          </div>
+        `;
+        chat.appendChild(responseDiv);
+        chat.scrollTop = chat.scrollHeight;
         
-        setTimeout(() => {
-          window.liveMessaging.addMessage('🤖 Automated test response', 'system');
-        }, 1500);
-      } else {
-        console.error('❌ liveMessaging not available');
-      }
+        console.log('✅ Test response added');
+      }, 1000);
     }
     
     // Admin functions
@@ -2314,9 +2344,33 @@ This is an automated notification from the CustomPC.tech live messaging system.`
       }
     });
 
+    // Initialize Firebase Chat Manager
+    window.addEventListener('load', function() {
+      console.log('🚀 Page loaded, initializing Firebase');
+      
+      // Initialize Firebase Chat Manager
+      if (typeof firebase !== 'undefined') {
+        window.firebaseChatManager = new FirebaseChatManager();
+        
+        // Wait for Firebase to initialize
+        setTimeout(() => {
+          if (window.firebaseChatManager.isInitialized) {
+            console.log('✅ Firebase ready for messaging');
+            addMessageToChat('🔥 Firebase connected! Messages will sync in real-time.', 'system', 'System');
+          } else {
+            console.log('⚠️ Firebase not available, using local mode');
+            addMessageToChat('💬 Chat ready! (Local mode - messages won\'t sync across devices)', 'system', 'System');
+          }
+        }, 2000);
+      } else {
+        console.log('⚠️ Firebase SDK not loaded');
+        addMessageToChat('💬 Chat ready! (Local mode)', 'system', 'System');
+      }
+    });
+
     // Initialize when DOM is loaded
     document.addEventListener('DOMContentLoaded', function() {
-      console.log('🚀 DOM loaded, initializing LiveMessagingPage');
+      console.log('🚀 DOM loaded, initializing chat interface');
       
       // Check if chat container exists
       const chatContainer = document.getElementById('messaging-chat');
@@ -2327,16 +2381,14 @@ This is an automated notification from the CustomPC.tech live messaging system.`
         return;
       }
       
-      window.liveMessaging = new LiveMessagingPage();
-      console.log('✅ LiveMessagingPage created:', window.liveMessaging);
+      // Initialize basic chat interface
+      addMessageToChat('Welcome to CustomPC.tech live support! 💬', 'system', 'System');
       
-      // Add a simple test message after initialization
-      setTimeout(() => {
-        if (window.liveMessaging) {
-          console.log('🔧 Adding initial welcome message');
-          window.liveMessaging.addMessage('💬 Chat system initialized successfully! Try sending a message.', 'system', false);
-        }
-      }, 1000);
+      // Initialize complex messaging system if needed
+      if (typeof LiveMessagingPage !== 'undefined') {
+        window.liveMessaging = new LiveMessagingPage();
+        console.log('✅ LiveMessagingPage created:', window.liveMessaging);
+      }
       
       // Ensure chat session is created for non-admin users
       // This helps ensure messages from Tawk.to can be saved

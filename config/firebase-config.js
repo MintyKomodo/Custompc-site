@@ -35,15 +35,74 @@ class FirebaseChatManager {
       }
 
       this.database = firebase.database();
+      
+      // Test connection
+      await this.testConnection();
+      
       this.isInitialized = true;
-      console.log('Firebase initialized successfully');
+      console.log('✅ Firebase initialized and connected successfully');
+      
+      // Initialize global chat room
+      this.initializeGlobalChat();
+      
       return true;
 
     } catch (error) {
-      console.error('Firebase initialization failed:', error);
+      console.error('❌ Firebase initialization failed:', error);
       console.log('Falling back to localStorage');
       return false;
     }
+  }
+  
+  async testConnection() {
+    return new Promise((resolve, reject) => {
+      const connectedRef = this.database.ref('.info/connected');
+      connectedRef.on('value', (snapshot) => {
+        if (snapshot.val() === true) {
+          console.log('✅ Firebase connection confirmed');
+          resolve();
+        } else {
+          console.log('⚠️ Firebase connection lost');
+        }
+      });
+      
+      // Timeout after 5 seconds
+      setTimeout(() => {
+        reject(new Error('Firebase connection timeout'));
+      }, 5000);
+    });
+  }
+  
+  initializeGlobalChat() {
+    // Create a global chat room for the messaging page
+    this.globalChatRef = this.database.ref('globalChat');
+    
+    // Listen for new messages
+    this.globalChatRef.limitToLast(50).on('child_added', (snapshot) => {
+      const message = snapshot.val();
+      if (message && typeof window.addMessageToChat === 'function') {
+        // Only display messages from other users to avoid duplicates
+        const currentUser = window.sharedAuth ? window.sharedAuth.getCurrentUser() : null;
+        const currentUsername = currentUser && currentUser.username ? currentUser.username : 'Anonymous User';
+        
+        if (message.username !== currentUsername || message.timestamp < Date.now() - 1000) {
+          window.addMessageToChat(message.text, message.type, message.username);
+        }
+      }
+    });
+  }
+  
+  async sendMessageToChat(messageData) {
+    if (!this.isInitialized || !this.globalChatRef) {
+      throw new Error('Firebase not initialized');
+    }
+    
+    const messageWithTimestamp = {
+      ...messageData,
+      timestamp: firebase.database.ServerValue.TIMESTAMP
+    };
+    
+    return await this.globalChatRef.push(messageWithTimestamp);
   }
 
   // Create a new chat session with user authentication
