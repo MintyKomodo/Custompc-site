@@ -118,11 +118,33 @@ class NavigationBar {
       return window.sharedAuth.currentUser;
     }
     
-    // Fallback to localStorage
+    // Fallback to localStorage - use same keys as shared auth system
     try {
-      const storedUser = localStorage.getItem('currentUser');
-      if (storedUser) {
-        return JSON.parse(storedUser);
+      // Check new format first (same as shared auth)
+      const userData = localStorage.getItem('custompc_user');
+      if (userData) {
+        const user = JSON.parse(userData);
+        return {
+          username: user.username,
+          email: user.email || null,
+          loginTime: user.loginTime || user.signupTime || null
+        };
+      }
+      
+      // Check legacy format
+      const legacyUser = localStorage.getItem('custompc_username');
+      if (legacyUser) {
+        return {
+          username: legacyUser,
+          email: null,
+          loginTime: null
+        };
+      }
+      
+      // Check old currentUser format for backward compatibility
+      const oldUser = localStorage.getItem('currentUser');
+      if (oldUser) {
+        return JSON.parse(oldUser);
       }
     } catch (error) {
       console.error('Error getting current user:', error);
@@ -132,23 +154,23 @@ class NavigationBar {
   }
 
   logout() {
-    // Clear user data
-    localStorage.removeItem('currentUser');
+    // Clear user data - use same keys as shared auth system
+    localStorage.removeItem('custompc_user');
+    localStorage.removeItem('custompc_username');
+    localStorage.removeItem('currentUser'); // backward compatibility
     
     // Clear shared auth if available
     if (window.sharedAuth && typeof window.sharedAuth.logout === 'function') {
       window.sharedAuth.logout();
+    } else {
+      // If shared auth not available, manually trigger auth state change
+      window.dispatchEvent(new CustomEvent('authStateChanged'));
     }
     
     // Show notification
     if (window.showKiroNotification) {
       showKiroNotification('👋 Logged out successfully!');
     }
-    
-    // Reload page to update navbar
-    setTimeout(() => {
-      window.location.reload();
-    }, 1000);
   }
 
   buildCustomPCDropdown(isAdmin) {
@@ -239,6 +261,15 @@ class NavigationBar {
       lastScroll = currentScroll;
     });
   }
+
+  // Method to refresh navbar when auth state changes
+  refreshNavbar() {
+    const oldHeader = document.getElementById('main-header');
+    if (oldHeader) {
+      oldHeader.remove();
+    }
+    this.createNavbar();
+  }
 }
 
 // Initialize navbar when DOM is ready (but not on auth pages)
@@ -249,6 +280,13 @@ document.addEventListener('DOMContentLoaded', function() {
   
   if (!authPages.includes(currentPage.replace('.html', ''))) {
     window.navigationBar = new NavigationBar();
+    
+    // Listen for auth state changes to refresh navbar
+    window.addEventListener('authStateChanged', function() {
+      if (window.navigationBar) {
+        window.navigationBar.refreshNavbar();
+      }
+    });
   }
 });
 
