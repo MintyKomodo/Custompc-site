@@ -19,7 +19,6 @@ class NavigationBar {
     this.createAnnouncementBar();
     this.createNavbar();
     this.setupScrollEffects();
-    this.setupSearchFunctionality();
   }
 
   createAnnouncementBar() {
@@ -74,10 +73,7 @@ class NavigationBar {
             style="height:60px;width:60px;display:inline-block;vertical-align:middle;object-fit:contain;border-radius:50%;" />
         </a>
       </div>
-      <div class="search-bar">
-        <input type="text" placeholder="Search builds, parts..." class="search-input" />
-        <button class="search-btn">🔍</button>
-      </div>
+
       <nav style="display: flex; align-items: center; gap: var(--space);">
         <a class="pill ${this.isActive('builds')}" href="builds.html">Builds</a>
         ${customPCDropdown}
@@ -266,27 +262,7 @@ class NavigationBar {
     });
   }
 
-  setupSearchFunctionality() {
-    const searchInput = document.querySelector('.search-input');
-    const searchBtn = document.querySelector('.search-btn');
-    
-    if (!searchInput || !searchBtn) return;
-    
-    const performSearch = () => {
-      const query = searchInput.value.trim();
-      if (query) {
-        // For now, redirect to builds page with search query
-        window.location.href = `builds.html?search=${encodeURIComponent(query)}`;
-      }
-    };
-    
-    searchBtn.addEventListener('click', performSearch);
-    searchInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        performSearch();
-      }
-    });
-  }
+
 
   // Method to refresh navbar when auth state changes
   refreshNavbar() {
@@ -295,7 +271,6 @@ class NavigationBar {
       oldHeader.remove();
     }
     this.createNavbar();
-    this.setupSearchFunctionality();
   }
 }
 
