@@ -112,6 +112,7 @@
             border-radius: 12px;
             cursor: pointer;
             transition: all 0.2s ease;
+            position: relative;
         }
 
         .chat-item:hover {
@@ -123,6 +124,32 @@
             background: rgba(125, 178, 255, 0.15);
             border-color: var(--accent1);
             border-width: 2px;
+        }
+
+        .delete-chat-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(220, 53, 69, 0.1);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            color: #dc3545;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            opacity: 0;
+            transition: all 0.2s ease;
+            z-index: 10;
+        }
+
+        .chat-item:hover .delete-chat-btn {
+            opacity: 1;
+        }
+
+        .delete-chat-btn:hover {
+            background: rgba(220, 53, 69, 0.3);
+            border-color: rgba(220, 53, 69, 0.6);
         }
 
         .chat-item-header {
@@ -661,6 +688,7 @@
                             <span class="chat-time">${this.formatTime(chat.lastMessageTime)}</span>
                         </div>
                         <div class="chat-preview">${chat.lastMessage}</div>
+                        <button class="delete-chat-btn" onclick="event.stopPropagation(); adminChatManager.deleteChat('${chat.username}', '${chat.chatId}')">🗑️ Delete</button>
                     </div>
                 `).join('');
 
@@ -805,6 +833,45 @@
                 if (diff < 3600000) return Math.floor(diff / 60000) + 'm ago';
                 if (diff < 86400000) return Math.floor(diff / 3600000) + 'h ago';
                 return date.toLocaleDateString();
+            }
+
+            async deleteChat(username, chatId) {
+                if (!confirm(`Are you sure you want to delete the chat with ${username}?\n\nThis will permanently delete all messages in this conversation.`)) {
+                    return;
+                }
+
+                try {
+                    console.log('🗑️ Deleting chat:', username, chatId);
+                    
+                    // Delete from Firebase
+                    await this.database.ref(`chats/${chatId}`).remove();
+                    
+                    // Remove from local map
+                    this.activeChats.delete(username);
+                    
+                    // If this was the current chat, clear the view
+                    if (this.currentChatId === username) {
+                        this.currentChatId = null;
+                        const chatViewContent = document.getElementById('chat-view-content');
+                        chatViewContent.innerHTML = `
+                            <div class="empty-state">
+                                <div class="empty-state-icon">👈</div>
+                                <h3>Click a chat to continue</h3>
+                                <p>Select a conversation from the sidebar to view messages and respond</p>
+                            </div>
+                        `;
+                    }
+                    
+                    // Re-render the chat list
+                    this.renderChatList();
+                    
+                    console.log('✅ Chat deleted successfully');
+                    alert(`Chat with ${username} has been deleted.`);
+                    
+                } catch (error) {
+                    console.error('❌ Failed to delete chat:', error);
+                    alert('Failed to delete chat: ' + error.message);
+                }
             }
         }
 

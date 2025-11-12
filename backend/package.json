@@ -1,19 +1,29 @@
 {
-  "name": "custompc-payment-backend",
+  "name": "custompc-payment-server",
   "version": "1.0.0",
-  "description": "Square payment backend for CustomPC.tech",
+  "description": "Square payment processing backend for CustomPC.tech",
   "main": "simple-payment-server.js",
   "scripts": {
     "start": "node simple-payment-server.js",
-    "dev": "nodemon simple-payment-server.js"
+    "dev": "nodemon simple-payment-server.js",
+    "test": "node simple-payment-server.js"
   },
+  "keywords": [
+    "square",
+    "payments",
+    "custompc"
+  ],
+  "author": "CustomPC.tech",
+  "license": "MIT",
   "dependencies": {
     "express": "^4.18.2",
-
-    "dotenv": "^16.3.1",
-    "cors": "^2.8.5"
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
   }
 }
