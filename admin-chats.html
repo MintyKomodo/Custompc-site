@@ -403,6 +403,9 @@
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
 
+    <!-- Firebase Config -->
+    <script src="config/firebase-config.js"></script>
+
     <!-- Scripts -->
     <script src="frontend/shared-auth.js"></script>
     <script src="frontend/navbar.js"></script>
@@ -463,32 +466,53 @@
 
             async initFirebase() {
                 try {
-                    const firebaseConfig = {
-                        apiKey: "AIzaSyANB6z6rM3lb2GZc3wTO5767fO1jB-PUjM",
-                        authDomain: "custompc-website.firebaseapp.com",
-                        databaseURL: "https://custompc-website-default-rtdb.firebaseio.com",
-                        projectId: "custompc-website",
-                        storageBucket: "custompc-website.firebasestorage.app",
-                        messagingSenderId: "1043646914253",
-                        appId: "1:1043646914253:web:eadb153333f3465ce65384",
-                        measurementId: "G-BF6PT2M7RX"
-                    };
-
-                    if (!firebase.apps.length) {
-                        firebase.initializeApp(firebaseConfig);
+                    console.log('🔥 Initializing Firebase for admin dashboard...');
+                    
+                    // Wait for shared Firebase manager to initialize
+                    let attempts = 0;
+                    while (!window.firebaseChatManager && attempts < 20) {
+                        console.log('⏳ Waiting for FirebaseChatManager... attempt', attempts + 1);
+                        await new Promise(resolve => setTimeout(resolve, 500));
+                        attempts++;
                     }
+                    
+                    if (window.firebaseChatManager && window.firebaseChatManager.isInitialized) {
+                        // Use the shared Firebase instance
+                        this.database = window.firebaseChatManager.database;
+                        console.log('✅ Using shared Firebase instance');
+                        this.updateStatus(true);
+                    } else {
+                        // Fallback: initialize our own instance
+                        console.log('⚠️ Shared Firebase not available, initializing own instance...');
+                        
+                        const firebaseConfig = {
+                            apiKey: "AIzaSyANB6z6rM3lb2GZc3wTO5767fO1jB-PUjM",
+                            authDomain: "custompc-website.firebaseapp.com",
+                            databaseURL: "https://custompc-website-default-rtdb.firebaseio.com",
+                            projectId: "custompc-website",
+                            storageBucket: "custompc-website.firebasestorage.app",
+                            messagingSenderId: "1043646914253",
+                            appId: "1:1043646914253:web:eadb153333f3465ce65384",
+                            measurementId: "G-BF6PT2M7RX"
+                        };
 
-                    this.database = firebase.database();
-                    
-                    // Test connection
-                    await this.testConnection();
-                    
-                    this.updateStatus(true);
-                    console.log('✅ Firebase connected');
+                        if (!firebase.apps.length) {
+                            firebase.initializeApp(firebaseConfig);
+                        }
+
+                        this.database = firebase.database();
+                        
+                        // Test connection
+                        await this.testConnection();
+                        
+                        console.log('✅ Firebase initialized independently');
+                        this.updateStatus(true);
+                    }
 
                 } catch (error) {
                     console.error('❌ Firebase initialization failed:', error);
                     this.updateStatus(false);
+                    throw error;
                 }
             }
 
@@ -742,7 +766,15 @@
         let adminChatManager;
 
         // Initialize when page loads
-        window.addEventListener('load', function() {
+        window.addEventListener('load', async function() {
+            console.log('🚀 Admin page loaded');
+            console.log('Firebase SDK loaded:', typeof firebase !== 'undefined');
+            console.log('FirebaseChatManager available:', typeof window.firebaseChatManager !== 'undefined');
+            
+            // Wait a moment for Firebase to initialize
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            console.log('Creating AdminChatManager...');
             adminChatManager = new AdminChatManager();
         });
 
