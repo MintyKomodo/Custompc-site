@@ -580,9 +580,12 @@
       flex: 1;
       padding: 20px;
       overflow-y: auto;
+      overflow-x: hidden;
       display: flex;
       flex-direction: column;
       gap: 16px;
+      min-height: 0; /* Important for flex scrolling */
+      max-height: 100%;
     }
     
     .message {
@@ -1720,6 +1723,21 @@ This is an automated notification from the CustomPC.tech live messaging system.`
         if (contactStatus) {
           contactStatus.innerHTML = '<div class="status-indicator"></div><span>Admin Mode - Managing Chats</span>';
         }
+        
+        // Disable input until a chat is selected
+        const input = document.getElementById('messaging-input');
+        const sendBtn = document.getElementById('send-btn');
+        if (input && sendBtn) {
+          input.disabled = true;
+          input.placeholder = 'Select a chat to respond...';
+          sendBtn.disabled = true;
+        }
+        
+        // Show message in chat area
+        const chatContainer = document.getElementById('messaging-chat');
+        if (chatContainer) {
+          chatContainer.innerHTML = '<div class="message system"><div class="message-content">👈 Select a chat from the sidebar to view and respond to messages</div></div>';
+        }
       }
       
       async initializeChatSession() {
@@ -2011,24 +2029,31 @@ This is an automated notification from the CustomPC.tech live messaging system.`
       }
       
       async loadChatMessages(chatId) {
+        console.log('📖 Loading messages for chat:', chatId);
+        
         try {
-          const messages = await window.firebaseChatManager.getChatMessages(chatId);
+          // Load messages from Firebase
+          const snapshot = await window.firebaseChatManager.database.ref(`chats/${chatId}/messages`).once('value');
+          const messages = snapshot.val();
           
-          // Get chat info for contact display
-          const activeChats = await window.firebaseChatManager.getActiveChats();
-          const chat = activeChats.find(c => c.id === chatId);
+          // Get chat info
+          const infoSnapshot = await window.firebaseChatManager.database.ref(`chats/${chatId}/info`).once('value');
+          const chatInfo = infoSnapshot.val();
           
-          if (chat) {
-            // Update contact info
+          console.log('📊 Chat info:', chatInfo);
+          console.log('📨 Messages:', messages);
+          
+          // Update contact info
+          if (chatInfo) {
             const contactName = document.getElementById('contact-name');
             const contactAvatar = document.getElementById('contact-avatar');
             
             if (contactName) {
-              contactName.textContent = `Chat with ${chat.userName}`;
+              contactName.textContent = `Chat with ${chatInfo.username}`;
             }
             
             if (contactAvatar) {
-              contactAvatar.textContent = chat.userName.substring(0, 2).toUpperCase();
+              contactAvatar.textContent = chatInfo.username.substring(0, 2).toUpperCase();
             }
           }
           
@@ -2037,17 +2062,36 @@ This is an automated notification from the CustomPC.tech live messaging system.`
           if (chatContainer) {
             chatContainer.innerHTML = '';
             
-            if (messages && messages.length > 0) {
-              messages.forEach(message => {
-                this.displayMessage(message.content, message.type, message.timestamp);
+            if (messages) {
+              const messageArray = Object.values(messages);
+              messageArray.sort((a, b) => a.timestamp - b.timestamp);
+              
+              messageArray.forEach(message => {
+                addMessageToChat(message.text, message.type, message.username);
               });
             } else {
-              this.displayMessage('Chat session started. Waiting for user message...', 'system', false);
+              addMessageToChat('No messages yet. Waiting for user...', 'system', 'System');
             }
+            
+            // Scroll to bottom
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+          }
+          
+          // Enable input for admin
+          const input = document.getElementById('messaging-input');
+          const sendBtn = document.getElementById('send-btn');
+          if (input && sendBtn) {
+            input.disabled = false;
+            input.placeholder = 'Type your response...';
+            sendBtn.disabled = false;
           }
           
           // Start listening for new messages in this chat
-          window.firebaseChatManager.listenForMessages(chatId, (message) => {
+          if (this.currentChatListener) {
+            window.firebaseChatManager.database.ref(`chats/${this.currentChatId}/messages`).off('child_added', this.currentChatListener);
+          }
+          
+          this.currentChatListener = window.firebaseChatManager.database.ref(`chats/${chatId}/messages`).on('child_added', (snapshot) => {
             this.displayMessage(message.content, message.type, message.timestamp);
           });
           
