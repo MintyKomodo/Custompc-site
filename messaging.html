@@ -224,6 +224,7 @@
       margin-bottom: 8px;
       transition: all 0.2s ease;
       border: 1px solid transparent;
+      position: relative;
     }
     
     .chat-item:hover {
@@ -239,6 +240,33 @@
     .chat-item.unread {
       background: rgba(255, 99, 132, 0.1);
       border-color: rgba(255, 99, 132, 0.2);
+    }
+    
+    .delete-chat-btn {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(220, 53, 69, 0.1);
+      border: 1px solid rgba(220, 53, 69, 0.3);
+      color: #dc3545;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      opacity: 0;
+      transition: all 0.2s ease;
+      z-index: 10;
+    }
+    
+    .chat-item:hover .delete-chat-btn {
+      opacity: 1;
+    }
+    
+    .delete-chat-btn:hover {
+      background: rgba(220, 53, 69, 0.2);
+      border-color: rgba(220, 53, 69, 0.5);
+      transform: translateY(-50%) scale(1.1);
     }
     
     .chat-avatar {
@@ -1800,54 +1828,51 @@ This is an automated notification from the CustomPC.tech live messaging system.`
         }
         
         try {
-          // Load all messages from globalChat
-          const snapshot = await window.firebaseChatManager.database.ref('globalChat').once('value');
-          const messages = snapshot.val();
+          // Load all chat rooms
+          const snapshot = await window.firebaseChatManager.database.ref('chats').once('value');
+          const chatRooms = snapshot.val();
           
-          console.log('📊 Firebase messages:', messages);
+          console.log('📊 Firebase chat rooms:', chatRooms);
           
-          if (!messages) {
-            console.log('No messages found');
+          if (!chatRooms) {
+            console.log('No chat rooms found');
             this.displayChats([]);
             return;
           }
           
-          // Group messages by username to create chat sessions
-          const chatMap = new Map();
+          // Convert chat rooms to array
+          const chats = [];
           
-          Object.values(messages).forEach(message => {
-            if (!message.username) return;
-            
-            const username = message.username;
-            
-            if (!chatMap.has(username)) {
-              chatMap.set(username, {
-                id: username,
-                userName: username,
-                userEmail: message.email || 'No email',
-                messages: [],
-                lastActivity: message.timestamp || Date.now(),
-                unreadCount: message.type === 'user' ? 1 : 0
+          Object.entries(chatRooms).forEach(([chatId, chatData]) => {
+            if (chatData.info) {
+              chats.push({
+                id: chatId,
+                userName: chatData.info.username || 'Unknown User',
+                userEmail: chatData.info.email || 'No email',
+                messages: chatData.messages ? Object.values(chatData.messages) : [],
+                lastActivity: chatData.info.lastMessageTime || Date.now(),
+                unreadCount: chatData.info.unreadCount || 0,
+                lastMessage: chatData.info.lastMessage || 'No messages'
               });
-            } else {
-              const chat = chatMap.get(username);
-              chat.messages.push(message);
-              chat.lastActivity = Math.max(chat.lastActivity, message.timestamp || 0);
-              if (message.type === 'user') {
-                chat.unreadCount++;
-              }
             }
           });
           
-          const chats = Array.from(chatMap.values());
+          // Sort by last activity
+          chats.sort((a, b) => b.lastActivity - a.lastActivity);
+          
           console.log('💬 Processed', chats.length, 'chats');
           
           this.displayChats(chats);
           
-          // Listen for new messages in real-time
+          // Listen for new chat rooms in real-time
           if (!this.firebaseListener) {
-            this.firebaseListener = window.firebaseChatManager.database.ref('globalChat').on('child_added', (snapshot) => {
-              console.log('🆕 New message detected, refreshing chats');
+            this.firebaseListener = window.firebaseChatManager.database.ref('chats').on('child_changed', () => {
+              console.log('🆕 Chat updated, refreshing list');
+              this.loadActiveChats();
+            });
+            
+            window.firebaseChatManager.database.ref('chats').on('child_added', () => {
+              console.log('🆕 New chat detected, refreshing list');
               this.loadActiveChats();
             });
           }
@@ -1914,6 +1939,9 @@ This is an automated notification from the CustomPC.tech live messaging system.`
             <div class="chat-time">${timeAgo}</div>
             ${chat.unreadCount > 0 ? `<div class="unread-badge">${chat.unreadCount}</div>` : ''}
           </div>
+          <button class="delete-chat-btn" onclick="event.stopPropagation(); window.liveMessaging.deleteChat('${chat.id}', '${chat.userName}')" title="Delete chat">
+            🗑️
+          </button>
         `;
         
         chatElement.addEventListener('click', () => {
@@ -1921,6 +1949,39 @@ This is an automated notification from the CustomPC.tech live messaging system.`
         });
         
         return chatElement;
+      }
+      
+      async deleteChat(chatId, userName) {
+        if (!confirm(`Delete conversation with ${userName}?\n\nThis will permanently delete all messages.`)) {
+          return;
+        }
+        
+        try {
+          console.log('🗑️ Deleting chat:', chatId);
+          
+          // Delete from Firebase
+          await window.firebaseChatManager.database.ref(`chats/${chatId}`).remove();
+          
+          console.log('✅ Chat deleted successfully');
+          
+          // If this was the current chat, clear it
+          if (this.currentChatId === chatId) {
+            this.currentChatId = null;
+            const chatContainer = document.getElementById('messaging-chat');
+            if (chatContainer) {
+              chatContainer.innerHTML = '<div class="message system"><div class="message-content">Select a chat to continue</div></div>';
+            }
+          }
+          
+          // Reload chat list
+          this.loadActiveChats();
+          
+          alert('Chat deleted successfully!');
+          
+        } catch (error) {
+          console.error('Failed to delete chat:', error);
+          alert('Failed to delete chat: ' + error.message);
+        }
       }
       
       formatTimeAgo(date) {
@@ -2147,10 +2208,13 @@ This is an automated notification from the CustomPC.tech live messaging system.`
       // Save to history
       saveToHistory(message, 'user', username);
       
-      // Save message to Firebase for admin dashboard
+      // Save message to Firebase for admin dashboard - use private chat room per user
       let messageSavedToFirebase = false;
       if (window.firebaseChatManager && window.firebaseChatManager.isInitialized) {
         try {
+          // Create a unique chat room ID based on username
+          const chatRoomId = 'chat_' + username.replace(/[^a-zA-Z0-9]/g, '_');
+          
           const messageData = {
             text: message,
             username: username,
@@ -2159,9 +2223,20 @@ This is an automated notification from the CustomPC.tech live messaging system.`
             timestamp: Date.now()
           };
           
-          await window.firebaseChatManager.database.ref('globalChat').push(messageData);
+          // Save to user's private chat room
+          await window.firebaseChatManager.database.ref(`chats/${chatRoomId}/messages`).push(messageData);
+          
+          // Update chat metadata
+          await window.firebaseChatManager.database.ref(`chats/${chatRoomId}/info`).set({
+            username: username,
+            email: userEmail,
+            lastMessage: message,
+            lastMessageTime: Date.now(),
+            unreadCount: firebase.database.ServerValue.increment(1)
+          });
+          
           messageSavedToFirebase = true;
-          console.log('✅ Message sent to Firebase (admin will see it in admin-chats.html)');
+          console.log('✅ Message sent to private chat room:', chatRoomId);
         } catch (error) {
           console.error('Failed to save message to Firebase:', error);
         }
