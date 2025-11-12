@@ -354,6 +354,9 @@
                 <button onclick="refreshChats()" class="btn" style="margin-left: 15px;">
                     🔄 Refresh
                 </button>
+                <button onclick="testFirebaseData()" class="btn" style="margin-left: 10px; background: #28a745;">
+                    🧪 Test
+                </button>
             </div>
         </div>
 
@@ -503,38 +506,56 @@
                     return;
                 }
 
-                // Listen for all chats in globalChat
+                console.log('📡 Loading active chats from Firebase...');
+
+                // Listen for all messages in globalChat
                 const chatsRef = this.database.ref('globalChat');
                 
+                // Load all existing messages first
+                chatsRef.once('value', (snapshot) => {
+                    console.log('📊 Firebase data:', snapshot.val());
+                    
+                    snapshot.forEach((childSnapshot) => {
+                        const message = childSnapshot.val();
+                        console.log('📨 Processing message:', message);
+                        this.addOrUpdateChat(message);
+                    });
+                    
+                    console.log('✅ Loaded', this.activeChats.size, 'chats');
+                });
+                
+                // Then listen for new messages
                 chatsRef.on('child_added', (snapshot) => {
                     const message = snapshot.val();
-                    this.addOrUpdateChat(message);
-                });
-
-                chatsRef.on('child_changed', (snapshot) => {
-                    const message = snapshot.val();
+                    console.log('🆕 New message:', message);
                     this.addOrUpdateChat(message);
                 });
             }
 
             addOrUpdateChat(message) {
-                if (!message || !message.username) return;
+                if (!message || !message.username) {
+                    console.log('⚠️ Invalid message:', message);
+                    return;
+                }
 
                 const chatId = message.username;
+                console.log('💬 Adding/updating chat for:', chatId);
                 
                 if (!this.activeChats.has(chatId)) {
+                    console.log('🆕 Creating new chat for:', chatId);
                     this.activeChats.set(chatId, {
                         username: message.username,
                         email: message.email || 'No email',
                         messages: [],
-                        lastMessage: message.text,
-                        lastMessageTime: message.timestamp,
+                        lastMessage: message.text || 'No message',
+                        lastMessageTime: message.timestamp || Date.now(),
                         unread: message.type === 'user' ? 1 : 0
                     });
                 } else {
+                    console.log('📝 Updating existing chat for:', chatId);
                     const chat = this.activeChats.get(chatId);
-                    chat.lastMessage = message.text;
-                    chat.lastMessageTime = message.timestamp;
+                    chat.lastMessage = message.text || chat.lastMessage;
+                    chat.lastMessageTime = message.timestamp || chat.lastMessageTime;
                     if (message.type === 'user' && chatId !== this.currentChatId) {
                         chat.unread++;
                     }
@@ -547,13 +568,17 @@
                 const chatList = document.getElementById('chat-list');
                 const chats = Array.from(this.activeChats.values());
                 
+                console.log('🎨 Rendering chat list with', chats.length, 'chats');
+                
                 if (chats.length === 0) {
                     chatList.innerHTML = `
                         <div class="empty-state">
                             <div class="empty-state-icon">💬</div>
                             <p>No active chats yet</p>
+                            <p style="font-size: 13px;">Waiting for messages...</p>
                         </div>
                     `;
+                    document.getElementById('chat-count').textContent = '0';
                     return;
                 }
 
@@ -576,6 +601,7 @@
 
                 // Update count
                 document.getElementById('chat-count').textContent = chats.length;
+                console.log('✅ Chat list rendered');
             }
 
             selectChat(username) {
@@ -706,11 +732,58 @@
 
         function refreshChats() {
             if (adminChatManager) {
+                console.log('🔄 Manually refreshing chats...');
                 adminChatManager.activeChats.clear();
+                
+                // Clear the chat list display
+                const chatList = document.getElementById('chat-list');
+                chatList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔄</div>
+                        <p>Refreshing...</p>
+                    </div>
+                `;
+                
+                // Reload chats
                 adminChatManager.loadActiveChats();
-                console.log('🔄 Chats refreshed');
+                
+                // Show notification
+                alert('Chats refreshed! Check the console for details.');
             }
         }
+        
+        // Test Firebase data
+        function testFirebaseData() {
+            if (!adminChatManager || !adminChatManager.database) {
+                alert('❌ Firebase not initialized!');
+                return;
+            }
+            
+            console.log('🧪 Testing Firebase connection...');
+            
+            adminChatManager.database.ref('globalChat').once('value', (snapshot) => {
+                const data = snapshot.val();
+                console.log('📊 Firebase data:', data);
+                
+                if (data) {
+                    const messageCount = Object.keys(data).length;
+                    alert(`✅ Firebase connected!\n\nFound ${messageCount} messages in database.\n\nCheck console for details.`);
+                } else {
+                    alert('⚠️ Firebase connected but no messages found.\n\nSend a test message from messaging.html');
+                }
+            }).catch(error => {
+                console.error('❌ Firebase error:', error);
+                alert('❌ Firebase error: ' + error.message);
+            });
+        }
+        
+        // Add keyboard shortcut for refresh
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F5' || (e.ctrlKey && e.key === 'r')) {
+                e.preventDefault();
+                refreshChats();
+            }
+        });
     </script>
 </body>
 </html>
