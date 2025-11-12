@@ -1792,20 +1792,69 @@ This is an automated notification from the CustomPC.tech live messaging system.`
       }
       
       async loadActiveChats() {
+        console.log('📡 Loading active chats for admin...');
+        
+        if (!window.firebaseChatManager || !window.firebaseChatManager.isInitialized) {
+          console.error('Firebase not initialized');
+          return;
+        }
+        
         try {
-          const activeChats = await window.firebaseChatManager.getActiveChats();
-          this.displayChats(activeChats);
+          // Load all messages from globalChat
+          const snapshot = await window.firebaseChatManager.database.ref('globalChat').once('value');
+          const messages = snapshot.val();
+          
+          console.log('📊 Firebase messages:', messages);
+          
+          if (!messages) {
+            console.log('No messages found');
+            this.displayChats([]);
+            return;
+          }
+          
+          // Group messages by username to create chat sessions
+          const chatMap = new Map();
+          
+          Object.values(messages).forEach(message => {
+            if (!message.username) return;
+            
+            const username = message.username;
+            
+            if (!chatMap.has(username)) {
+              chatMap.set(username, {
+                id: username,
+                userName: username,
+                userEmail: message.email || 'No email',
+                messages: [],
+                lastActivity: message.timestamp || Date.now(),
+                unreadCount: message.type === 'user' ? 1 : 0
+              });
+            } else {
+              const chat = chatMap.get(username);
+              chat.messages.push(message);
+              chat.lastActivity = Math.max(chat.lastActivity, message.timestamp || 0);
+              if (message.type === 'user') {
+                chat.unreadCount++;
+              }
+            }
+          });
+          
+          const chats = Array.from(chatMap.values());
+          console.log('💬 Processed', chats.length, 'chats');
+          
+          this.displayChats(chats);
+          
+          // Listen for new messages in real-time
+          if (!this.firebaseListener) {
+            this.firebaseListener = window.firebaseChatManager.database.ref('globalChat').on('child_added', (snapshot) => {
+              console.log('🆕 New message detected, refreshing chats');
+              this.loadActiveChats();
+            });
+          }
+          
         } catch (error) {
           console.error('Failed to load active chats:', error);
-          // Fallback to local storage
-          const chats = this.getStoredChats();
-          const activeChats = chats.filter(chat => {
-            const lastActivity = new Date(chat.lastActivity);
-            const now = new Date();
-            const hoursSinceActivity = (now - lastActivity) / (1000 * 60 * 60);
-            return hoursSinceActivity < 24;
-          });
-          this.displayChats(activeChats);
+          this.displayChats([]);
         }
       }
       
