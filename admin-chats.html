@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Active Chats | CustomPC.tech</title>
+    <link rel="stylesheet" href="frontend/navbar.css">
+    <style>
+        :root {
+            --space: 10px;
+            --bg: #0a0f1a;
+            --ink: #e9eefc;
+            --muted: #aeb9d4;
+            --panel: #111729;
+            --panel2: #0d1426;
+            --border: rgba(255, 255, 255, .08);
+            --accent1: #7db2ff;
+            --accent2: #7cf2e6;
+            --radius: 18px;
+            --max: 1400px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, Segoe UI, Roboto, Inter, Arial;
+            color: var(--ink);
+            background: radial-gradient(1200px 600px at 50% -10%, #0f162b 8%, transparent 55%), linear-gradient(#081021, #0a0f1a 40%, #0a0f1a);
+            line-height: 1.55;
+            overflow-x: hidden;
+        }
+
+        .wrap {
+            max-width: var(--max);
+            margin: 0 auto;
+            padding: var(--space);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+        }
+
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .status-connected {
+            background: rgba(40, 167, 69, 0.2);
+            border: 1px solid rgba(40, 167, 69, 0.5);
+            color: #28a745;
+        }
+
+        .status-disconnected {
+            background: rgba(220, 53, 69, 0.2);
+            border: 1px solid rgba(220, 53, 69, 0.5);
+            color: #dc3545;
+        }
+
+        .admin-layout {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 20px;
+            height: calc(100vh - 250px);
+        }
+
+        .chats-sidebar {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            background: var(--panel2);
+        }
+
+        .sidebar-header h3 {
+            margin: 0 0 10px 0;
+            color: var(--accent1);
+        }
+
+        .chat-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .chat-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            background: var(--panel2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .chat-item:hover {
+            background: rgba(125, 178, 255, 0.1);
+            border-color: var(--accent1);
+        }
+
+        .chat-item.active {
+            background: rgba(125, 178, 255, 0.15);
+            border-color: var(--accent1);
+            border-width: 2px;
+        }
+
+        .chat-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .chat-user {
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .chat-time {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .chat-preview {
+            font-size: 13px;
+            color: var(--muted);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .unread-badge {
+            background: #ff6b6b;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .chat-view {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-view-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            background: var(--panel2);
+        }
+
+        .chat-view-header h3 {
+            margin: 0 0 5px 0;
+            color: var(--accent1);
+        }
+
+        .chat-view-info {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .message.user {
+            justify-content: flex-start;
+        }
+
+        .message.admin {
+            justify-content: flex-end;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            word-wrap: break-word;
+        }
+
+        .message.user .message-content {
+            background: var(--panel2);
+            border: 1px solid var(--border);
+            color: var(--ink);
+        }
+
+        .message.admin .message-content {
+            background: linear-gradient(135deg, var(--accent1), var(--accent2));
+            color: #0b0f1a;
+        }
+
+        .message-time {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+
+        .message-sender {
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: 12px;
+        }
+
+        .chat-input-area {
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            background: var(--panel2);
+        }
+
+        .chat-input-form {
+            display: flex;
+            gap: 12px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 25px;
+            background: var(--panel);
+            color: var(--ink);
+            font-size: 14px;
+            resize: none;
+            outline: none;
+            font-family: inherit;
+            min-height: 50px;
+        }
+
+        .chat-input:focus {
+            border-color: var(--accent1);
+            box-shadow: 0 0 0 2px rgba(125, 178, 255, 0.2);
+        }
+
+        .send-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--accent1), var(--accent2));
+            color: #0b0f1a;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .send-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(125, 178, 255, 0.4);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--muted);
+            text-align: center;
+            padding: 40px;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background: var(--accent1);
+            color: #0b0f1a;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(125, 178, 255, 0.4);
+        }
+
+        @media (max-width: 1024px) {
+            .admin-layout {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+
+            .chats-sidebar {
+                height: 400px;
+            }
+
+            .chat-view {
+                height: 600px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <!-- Header is dynamically generated by navbar.js -->
+        
+        <div class="admin-header">
+            <div>
+                <h1 style="margin: 0 0 5px 0;">🔧 Admin - Active Chats</h1>
+                <p style="margin: 0; color: var(--muted);">Manage customer conversations in real-time</p>
+            </div>
+            <div>
+                <span id="firebase-status" class="status-badge status-disconnected">
+                    🔄 Connecting...
+                </span>
+                <button onclick="refreshChats()" class="btn" style="margin-left: 15px;">
+                    🔄 Refresh
+                </button>
+            </div>
+        </div>
+
+        <div class="admin-layout">
+            <!-- Chats Sidebar -->
+            <div class="chats-sidebar">
+                <div class="sidebar-header">
+                    <h3>Active Conversations</h3>
+                    <p style="margin: 0; font-size: 13px; color: var(--muted);">
+                        <span id="chat-count">0</span> active chats
+                    </p>
+                </div>
+                <div class="chat-list" id="chat-list">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">💬</div>
+                        <p>No active chats yet</p>
+                        <p style="font-size: 13px;">New conversations will appear here</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat View -->
+            <div class="chat-view">
+                <div id="chat-view-content">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">👈</div>
+                        <h3>Select a chat to view</h3>
+                        <p>Choose a conversation from the sidebar to start responding</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+
+    <!-- Scripts -->
+    <script src="frontend/shared-auth.js"></script>
+    <script src="frontend/navbar.js"></script>
+
+    <script>
+        class AdminChatManager {
+            constructor() {
+                this.database = null;
+                this.activeChats = new Map();
+                this.currentChatId = null;
+                this.isAdmin = false;
+                this.init();
+            }
+
+            async init() {
+                // Check if user is admin
+                this.checkAdminStatus();
+
+                if (!this.isAdmin) {
+                    alert('⛔ Access Denied: Admin privileges required');
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                // Initialize Firebase
+                await this.initFirebase();
+                
+                // Load active chats
+                this.loadActiveChats();
+            }
+
+            checkAdminStatus() {
+                if (window.sharedAuth && typeof window.sharedAuth.isCurrentUserAdmin === 'function') {
+                    this.isAdmin = window.sharedAuth.isCurrentUserAdmin();
+                } else {
+                    // Fallback check
+                    const currentUser = localStorage.getItem('custompc_user');
+                    if (currentUser) {
+                        try {
+                            const user = JSON.parse(currentUser);
+                            this.isAdmin = user.role === 'admin' || user.isAdmin === true;
+                        } catch (e) {
+                            this.isAdmin = false;
+                        }
+                    }
+                }
+                
+                console.log('Admin status:', this.isAdmin);
+            }
+
+            async initFirebase() {
+                try {
+                    const firebaseConfig = {
+                        apiKey: "AIzaSyANB6z6rM3lb2GZc3wTO5767fO1jB-PUjM",
+                        authDomain: "custompc-website.firebaseapp.com",
+                        databaseURL: "https://custompc-website-default-rtdb.firebaseio.com",
+                        projectId: "custompc-website",
+                        storageBucket: "custompc-website.firebasestorage.app",
+                        messagingSenderId: "1043646914253",
+                        appId: "1:1043646914253:web:eadb153333f3465ce65384",
+                        measurementId: "G-BF6PT2M7RX"
+                    };
+
+                    if (!firebase.apps.length) {
+                        firebase.initializeApp(firebaseConfig);
+                    }
+
+                    this.database = firebase.database();
+                    
+                    // Test connection
+                    await this.testConnection();
+                    
+                    this.updateStatus(true);
+                    console.log('✅ Firebase connected');
+
+                } catch (error) {
+                    console.error('❌ Firebase initialization failed:', error);
+                    this.updateStatus(false);
+                }
+            }
+
+            async testConnection() {
+                return new Promise((resolve, reject) => {
+                    const connectedRef = this.database.ref('.info/connected');
+                    connectedRef.on('value', (snapshot) => {
+                        if (snapshot.val() === true) {
+                            resolve();
+                        }
+                    });
+                    
+                    setTimeout(() => reject(new Error('Connection timeout')), 5000);
+                });
+            }
+
+            updateStatus(connected) {
+                const statusEl = document.getElementById('firebase-status');
+                if (connected) {
+                    statusEl.className = 'status-badge status-connected';
+                    statusEl.textContent = '✅ Connected';
+                } else {
+                    statusEl.className = 'status-badge status-disconnected';
+                    statusEl.textContent = '❌ Disconnected';
+                }
+            }
+
+            loadActiveChats() {
+                if (!this.database) {
+                    console.error('Firebase not initialized');
+                    return;
+                }
+
+                // Listen for all chats in globalChat
+                const chatsRef = this.database.ref('globalChat');
+                
+                chatsRef.on('child_added', (snapshot) => {
+                    const message = snapshot.val();
+                    this.addOrUpdateChat(message);
+                });
+
+                chatsRef.on('child_changed', (snapshot) => {
+                    const message = snapshot.val();
+                    this.addOrUpdateChat(message);
+                });
+            }
+
+            addOrUpdateChat(message) {
+                if (!message || !message.username) return;
+
+                const chatId = message.username;
+                
+                if (!this.activeChats.has(chatId)) {
+                    this.activeChats.set(chatId, {
+                        username: message.username,
+                        email: message.email || 'No email',
+                        messages: [],
+                        lastMessage: message.text,
+                        lastMessageTime: message.timestamp,
+                        unread: message.type === 'user' ? 1 : 0
+                    });
+                } else {
+                    const chat = this.activeChats.get(chatId);
+                    chat.lastMessage = message.text;
+                    chat.lastMessageTime = message.timestamp;
+                    if (message.type === 'user' && chatId !== this.currentChatId) {
+                        chat.unread++;
+                    }
+                }
+
+                this.renderChatList();
+            }
+
+            renderChatList() {
+                const chatList = document.getElementById('chat-list');
+                const chats = Array.from(this.activeChats.values());
+                
+                if (chats.length === 0) {
+                    chatList.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">💬</div>
+                            <p>No active chats yet</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Sort by last message time
+                chats.sort((a, b) => b.lastMessageTime - a.lastMessageTime);
+
+                chatList.innerHTML = chats.map(chat => `
+                    <div class="chat-item ${this.currentChatId === chat.username ? 'active' : ''}" 
+                         onclick="adminChatManager.selectChat('${chat.username}')">
+                        <div class="chat-item-header">
+                            <span class="chat-user">
+                                ${chat.username}
+                                ${chat.unread > 0 ? `<span class="unread-badge">${chat.unread}</span>` : ''}
+                            </span>
+                            <span class="chat-time">${this.formatTime(chat.lastMessageTime)}</span>
+                        </div>
+                        <div class="chat-preview">${chat.lastMessage}</div>
+                    </div>
+                `).join('');
+
+                // Update count
+                document.getElementById('chat-count').textContent = chats.length;
+            }
+
+            selectChat(username) {
+                this.currentChatId = username;
+                const chat = this.activeChats.get(username);
+                
+                if (chat) {
+                    chat.unread = 0;
+                    this.renderChatList();
+                    this.renderChatView(chat);
+                }
+            }
+
+            renderChatView(chat) {
+                const chatViewContent = document.getElementById('chat-view-content');
+                
+                chatViewContent.innerHTML = `
+                    <div class="chat-view-header">
+                        <h3>${chat.username}</h3>
+                        <div class="chat-view-info">
+                            📧 ${chat.email}
+                        </div>
+                    </div>
+                    <div class="chat-messages" id="current-chat-messages">
+                        <div class="empty-state">
+                            <p>Loading messages...</p>
+                        </div>
+                    </div>
+                    <div class="chat-input-area">
+                        <form class="chat-input-form" onsubmit="adminChatManager.sendAdminMessage(event)">
+                            <textarea 
+                                id="admin-message-input" 
+                                class="chat-input" 
+                                placeholder="Type your response..."
+                                rows="1"
+                                required
+                            ></textarea>
+                            <button type="submit" class="send-btn">Send 📤</button>
+                        </form>
+                    </div>
+                `;
+
+                // Load messages for this chat
+                this.loadChatMessages(chat.username);
+            }
+
+            loadChatMessages(username) {
+                const messagesRef = this.database.ref('globalChat');
+                const messagesContainer = document.getElementById('current-chat-messages');
+                
+                messagesContainer.innerHTML = '';
+
+                messagesRef.orderByChild('username').equalTo(username).on('child_added', (snapshot) => {
+                    const message = snapshot.val();
+                    this.displayMessage(message);
+                });
+            }
+
+            displayMessage(message) {
+                const messagesContainer = document.getElementById('current-chat-messages');
+                if (!messagesContainer) return;
+
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${message.type}`;
+                
+                const time = new Date(message.timestamp).toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                messageDiv.innerHTML = `
+                    <div class="message-content">
+                        <div class="message-sender">${message.username}</div>
+                        ${message.text}
+                        <div class="message-time">${time}</div>
+                    </div>
+                `;
+
+                messagesContainer.appendChild(messageDiv);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+
+            async sendAdminMessage(event) {
+                event.preventDefault();
+                
+                const input = document.getElementById('admin-message-input');
+                const message = input.value.trim();
+                
+                if (!message || !this.currentChatId) return;
+
+                const messageData = {
+                    text: message,
+                    username: this.currentChatId,
+                    type: 'admin',
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                };
+
+                try {
+                    await this.database.ref('globalChat').push(messageData);
+                    input.value = '';
+                    console.log('✅ Admin message sent');
+                } catch (error) {
+                    console.error('❌ Failed to send message:', error);
+                    alert('Failed to send message');
+                }
+            }
+
+            formatTime(timestamp) {
+                if (!timestamp) return '';
+                const date = new Date(timestamp);
+                const now = new Date();
+                const diff = now - date;
+                
+                if (diff < 60000) return 'Just now';
+                if (diff < 3600000) return Math.floor(diff / 60000) + 'm ago';
+                if (diff < 86400000) return Math.floor(diff / 3600000) + 'h ago';
+                return date.toLocaleDateString();
+            }
+        }
+
+        // Global instance
+        let adminChatManager;
+
+        // Initialize when page loads
+        window.addEventListener('load', function() {
+            adminChatManager = new AdminChatManager();
+        });
+
+        function refreshChats() {
+            if (adminChatManager) {
+                adminChatManager.activeChats.clear();
+                adminChatManager.loadActiveChats();
+                console.log('🔄 Chats refreshed');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -302,6 +302,7 @@
                 <input type="email" id="user-email" placeholder="Enter your email" value="">
             </div>
             <button onclick="saveUserInfo()" class="btn-secondary">Save Info</button>
+            <button onclick="clearChatHistory()" class="btn-secondary" style="margin-left: 10px; background: rgba(220, 53, 69, 0.1); border-color: rgba(220, 53, 69, 0.3); color: #dc3545;">Clear History</button>
         </div>
 
         <div class="messaging-container">
@@ -349,6 +350,65 @@
 
     <script>
         let messageCount = 0;
+        let chatHistory = [];
+
+        // Load chat history from localStorage
+        function loadChatHistory() {
+            try {
+                const saved = localStorage.getItem('chat-history');
+                if (saved) {
+                    chatHistory = JSON.parse(saved);
+                    console.log('📜 Loaded chat history:', chatHistory.length, 'messages');
+                    
+                    // Display saved messages
+                    chatHistory.forEach(msg => {
+                        addMessage(msg.content, msg.type, false);
+                    });
+                }
+            } catch (error) {
+                console.error('Failed to load chat history:', error);
+            }
+        }
+
+        // Save message to chat history
+        function saveToChatHistory(content, type) {
+            const message = {
+                content: content,
+                type: type,
+                timestamp: new Date().toISOString()
+            };
+            
+            chatHistory.push(message);
+            
+            // Keep only last 100 messages
+            if (chatHistory.length > 100) {
+                chatHistory = chatHistory.slice(-100);
+            }
+            
+            try {
+                localStorage.setItem('chat-history', JSON.stringify(chatHistory));
+                console.log('💾 Chat history saved');
+            } catch (error) {
+                console.error('Failed to save chat history:', error);
+            }
+        }
+
+        // Clear chat history
+        function clearChatHistory() {
+            if (confirm('Are you sure you want to clear your chat history?')) {
+                chatHistory = [];
+                localStorage.removeItem('chat-history');
+                
+                // Clear chat display
+                const messagesContainer = document.getElementById('chat-messages');
+                messagesContainer.innerHTML = '';
+                
+                // Add welcome message back
+                addMessage('Welcome to CustomPC.tech support! 👋<br><br>Fill in your name and email above, then send us a message. We\'ll receive it instantly via email and respond quickly.', 'system', false);
+                
+                showStatus('✅ Chat history cleared!', 'success');
+            }
+        }
 
         // Load user info from localStorage or auth
         function loadUserInfo() {
@@ -382,7 +442,7 @@
             showStatus('✅ User information saved!', 'success');
         }
 
-        function addMessage(content, type = 'user', showTime = true) {
+        function addMessage(content, type = 'user', showTime = true, saveToHistory = true) {
             const messagesContainer = document.getElementById('chat-messages');
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${type}`;
@@ -397,6 +457,11 @@
             
             messagesContainer.appendChild(messageDiv);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            // Save to history if requested
+            if (saveToHistory && type !== 'system') {
+                saveToChatHistory(content, type);
+            }
             
             // Add smooth animation
             messageDiv.style.opacity = '0';
@@ -511,9 +576,10 @@
             }
         });
 
-        // Load user info when page loads
+        // Load user info and chat history when page loads
         window.addEventListener('load', function() {
             loadUserInfo();
+            loadChatHistory();
             
             // Focus on message input after a short delay
             setTimeout(() => {
