@@ -357,7 +357,15 @@
                 <button onclick="testFirebaseData()" class="btn" style="margin-left: 10px; background: #28a745;">
                     🧪 Test
                 </button>
+                <button onclick="showDebugInfo()" class="btn" style="margin-left: 10px; background: #ffc107; color: #000;">
+                    🐛 Debug
+                </button>
             </div>
+        </div>
+        
+        <div id="debug-panel" style="display: none; background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 20px;">
+            <h3 style="margin: 0 0 15px 0; color: var(--accent1);">🐛 Debug Information</h3>
+            <div id="debug-content" style="font-family: monospace; font-size: 12px; color: var(--muted);"></div>
         </div>
 
         <div class="admin-layout">
@@ -383,8 +391,8 @@
                 <div id="chat-view-content">
                     <div class="empty-state">
                         <div class="empty-state-icon">👈</div>
-                        <h3>Select a chat to view</h3>
-                        <p>Choose a conversation from the sidebar to start responding</p>
+                        <h3>Click a chat to continue</h3>
+                        <p>Select a conversation from the sidebar to view messages and respond</p>
                     </div>
                 </div>
             </div>
@@ -419,11 +427,19 @@
                     return;
                 }
 
+                console.log('🚀 Initializing Admin Chat Manager...');
+
                 // Initialize Firebase
-                await this.initFirebase();
-                
-                // Load active chats
-                this.loadActiveChats();
+                try {
+                    await this.initFirebase();
+                    console.log('✅ Firebase initialized');
+                    
+                    // Load active chats
+                    this.loadActiveChats();
+                } catch (error) {
+                    console.error('❌ Initialization failed:', error);
+                    alert('Failed to initialize: ' + error.message);
+                }
             }
 
             checkAdminStatus() {
@@ -752,6 +768,33 @@
             }
         }
         
+        // Show debug information
+        function showDebugInfo() {
+            const panel = document.getElementById('debug-panel');
+            const content = document.getElementById('debug-content');
+            
+            if (panel.style.display === 'none') {
+                panel.style.display = 'block';
+                
+                let debugInfo = '';
+                debugInfo += `<strong>Firebase Status:</strong> ${adminChatManager && adminChatManager.isInitialized ? '✅ Connected' : '❌ Not Connected'}<br>`;
+                debugInfo += `<strong>Active Chats:</strong> ${adminChatManager ? adminChatManager.activeChats.size : 0}<br>`;
+                debugInfo += `<strong>Current Chat:</strong> ${adminChatManager && adminChatManager.currentChatId ? adminChatManager.currentChatId : 'None'}<br>`;
+                debugInfo += `<strong>Admin Status:</strong> ${adminChatManager && adminChatManager.isAdmin ? '✅ Admin' : '❌ Not Admin'}<br><br>`;
+                
+                if (adminChatManager && adminChatManager.activeChats.size > 0) {
+                    debugInfo += `<strong>Chat List:</strong><br>`;
+                    adminChatManager.activeChats.forEach((chat, username) => {
+                        debugInfo += `- ${username}: "${chat.lastMessage}" (${chat.unread} unread)<br>`;
+                    });
+                }
+                
+                content.innerHTML = debugInfo;
+            } else {
+                panel.style.display = 'none';
+            }
+        }
+        
         // Test Firebase data
         function testFirebaseData() {
             if (!adminChatManager || !adminChatManager.database) {
@@ -764,10 +807,24 @@
             adminChatManager.database.ref('globalChat').once('value', (snapshot) => {
                 const data = snapshot.val();
                 console.log('📊 Firebase data:', data);
+                console.table(data);
                 
                 if (data) {
-                    const messageCount = Object.keys(data).length;
-                    alert(`✅ Firebase connected!\n\nFound ${messageCount} messages in database.\n\nCheck console for details.`);
+                    const messages = Object.values(data);
+                    const messageCount = messages.length;
+                    const usernames = [...new Set(messages.map(m => m.username))];
+                    
+                    let details = `✅ Firebase connected!\n\n`;
+                    details += `📊 Total messages: ${messageCount}\n`;
+                    details += `👥 Unique users: ${usernames.length}\n`;
+                    details += `\nUsers: ${usernames.join(', ')}\n\n`;
+                    details += `Check console for full data.`;
+                    
+                    alert(details);
+                    
+                    // Force reload chats
+                    adminChatManager.activeChats.clear();
+                    adminChatManager.loadActiveChats();
                 } else {
                     alert('⚠️ Firebase connected but no messages found.\n\nSend a test message from messaging.html');
                 }
