@@ -548,57 +548,82 @@
 
                 console.log('📡 Loading active chats from Firebase...');
 
-                // Listen for all messages in globalChat
-                const chatsRef = this.database.ref('globalChat');
+                // Listen for all chat rooms in the 'chats' path
+                const chatsRef = this.database.ref('chats');
                 
-                // Load all existing messages first
+                // Load all existing chat rooms first
                 chatsRef.once('value', (snapshot) => {
-                    console.log('📊 Firebase data:', snapshot.val());
+                    console.log('📊 Firebase chat rooms:', snapshot.val());
                     
-                    snapshot.forEach((childSnapshot) => {
-                        const message = childSnapshot.val();
-                        console.log('📨 Processing message:', message);
-                        this.addOrUpdateChat(message);
+                    snapshot.forEach((chatSnapshot) => {
+                        const chatId = chatSnapshot.key;
+                        const chatData = chatSnapshot.val();
+                        console.log('📨 Processing chat room:', chatId, chatData);
+                        
+                        if (chatData.info) {
+                            this.addOrUpdateChatFromRoom(chatId, chatData);
+                        }
                     });
                     
                     console.log('✅ Loaded', this.activeChats.size, 'chats');
                 });
                 
-                // Then listen for new messages
+                // Listen for new chat rooms
                 chatsRef.on('child_added', (snapshot) => {
-                    const message = snapshot.val();
-                    console.log('🆕 New message:', message);
-                    this.addOrUpdateChat(message);
+                    const chatId = snapshot.key;
+                    const chatData = snapshot.val();
+                    console.log('🆕 New chat room detected:', chatId, chatData);
+                    
+                    if (chatData.info) {
+                        this.addOrUpdateChatFromRoom(chatId, chatData);
+                    }
+                });
+                
+                // Listen for chat room updates
+                chatsRef.on('child_changed', (snapshot) => {
+                    const chatId = snapshot.key;
+                    const chatData = snapshot.val();
+                    console.log('📝 Chat room updated:', chatId, chatData);
+                    
+                    if (chatData.info) {
+                        this.addOrUpdateChatFromRoom(chatId, chatData);
+                    }
                 });
             }
 
-            addOrUpdateChat(message) {
-                if (!message || !message.username) {
-                    console.log('⚠️ Invalid message:', message);
+            addOrUpdateChatFromRoom(chatId, chatData) {
+                if (!chatData || !chatData.info) {
+                    console.log('⚠️ Invalid chat data:', chatData);
                     return;
                 }
 
-                const chatId = message.username;
-                console.log('💬 Adding/updating chat for:', chatId);
+                const info = chatData.info;
+                const username = info.username || 'Unknown User';
                 
-                if (!this.activeChats.has(chatId)) {
-                    console.log('🆕 Creating new chat for:', chatId);
-                    this.activeChats.set(chatId, {
-                        username: message.username,
-                        email: message.email || 'No email',
+                console.log('💬 Adding/updating chat for:', username);
+                
+                // Get the last message from messages
+                let lastMessage = info.lastMessage || 'No messages';
+                let lastMessageTime = info.lastMessageTime || Date.now();
+                
+                if (!this.activeChats.has(username)) {
+                    console.log('🆕 Creating new chat for:', username);
+                    this.activeChats.set(username, {
+                        chatId: chatId,
+                        username: username,
+                        email: info.email || 'No email',
                         messages: [],
-                        lastMessage: message.text || 'No message',
-                        lastMessageTime: message.timestamp || Date.now(),
-                        unread: message.type === 'user' ? 1 : 0
+                        lastMessage: lastMessage,
+                        lastMessageTime: lastMessageTime,
+                        unread: info.unreadCount || 0
                     });
                 } else {
-                    console.log('📝 Updating existing chat for:', chatId);
-                    const chat = this.activeChats.get(chatId);
-                    chat.lastMessage = message.text || chat.lastMessage;
-                    chat.lastMessageTime = message.timestamp || chat.lastMessageTime;
-                    if (message.type === 'user' && chatId !== this.currentChatId) {
-                        chat.unread++;
-                    }
+                    console.log('📝 Updating existing chat for:', username);
+                    const chat = this.activeChats.get(username);
+                    chat.chatId = chatId;
+                    chat.lastMessage = lastMessage;
+                    chat.lastMessageTime = lastMessageTime;
+                    chat.unread = info.unreadCount || 0;
                 }
 
                 this.renderChatList();
@@ -689,12 +714,18 @@
             }
 
             loadChatMessages(username) {
-                const messagesRef = this.database.ref('globalChat');
+                const chat = this.activeChats.get(username);
+                if (!chat || !chat.chatId) {
+                    console.error('Chat not found for username:', username);
+                    return;
+                }
+                
+                const messagesRef = this.database.ref(`chats/${chat.chatId}/messages`);
                 const messagesContainer = document.getElementById('current-chat-messages');
                 
                 messagesContainer.innerHTML = '';
 
-                messagesRef.orderByChild('username').equalTo(username).on('child_added', (snapshot) => {
+                messagesRef.on('child_added', (snapshot) => {
                     const message = snapshot.val();
                     this.displayMessage(message);
                 });
@@ -732,17 +763,32 @@
                 
                 if (!message || !this.currentChatId) return;
 
+                const chat = this.activeChats.get(this.currentChatId);
+                if (!chat || !chat.chatId) {
+                    alert('Chat room not found!');
+                    return;
+                }
+
                 const messageData = {
                     text: message,
-                    username: this.currentChatId,
+                    username: 'Admin',
                     type: 'admin',
-                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                    timestamp: Date.now()
                 };
 
                 try {
-                    await this.database.ref('globalChat').push(messageData);
+                    // Send message to the user's chat room
+                    await this.database.ref(`chats/${chat.chatId}/messages`).push(messageData);
+                    
+                    // Update chat metadata
+                    await this.database.ref(`chats/${chat.chatId}/info`).update({
+                        lastMessage: message,
+                        lastMessageTime: Date.now(),
+                        unreadCount: 0
+                    });
+                    
                     input.value = '';
-                    console.log('✅ Admin message sent');
+                    console.log('✅ Admin message sent to chat room:', chat.chatId);
                 } catch (error) {
                     console.error('❌ Failed to send message:', error);
                     alert('Failed to send message');
@@ -836,20 +882,18 @@
             
             console.log('🧪 Testing Firebase connection...');
             
-            adminChatManager.database.ref('globalChat').once('value', (snapshot) => {
+            adminChatManager.database.ref('chats').once('value', (snapshot) => {
                 const data = snapshot.val();
-                console.log('📊 Firebase data:', data);
+                console.log('📊 Firebase chat rooms:', data);
                 console.table(data);
                 
                 if (data) {
-                    const messages = Object.values(data);
-                    const messageCount = messages.length;
-                    const usernames = [...new Set(messages.map(m => m.username))];
+                    const chatRooms = Object.keys(data);
+                    const chatCount = chatRooms.length;
                     
                     let details = `✅ Firebase connected!\n\n`;
-                    details += `📊 Total messages: ${messageCount}\n`;
-                    details += `👥 Unique users: ${usernames.length}\n`;
-                    details += `\nUsers: ${usernames.join(', ')}\n\n`;
+                    details += `📊 Total chat rooms: ${chatCount}\n`;
+                    details += `\nChat rooms: ${chatRooms.join(', ')}\n\n`;
                     details += `Check console for full data.`;
                     
                     alert(details);
@@ -858,7 +902,7 @@
                     adminChatManager.activeChats.clear();
                     adminChatManager.loadActiveChats();
                 } else {
-                    alert('⚠️ Firebase connected but no messages found.\n\nSend a test message from messaging.html');
+                    alert('⚠️ Firebase connected but no chat rooms found.\n\nSend a test message from messaging.html');
                 }
             }).catch(error => {
                 console.error('❌ Firebase error:', error);
