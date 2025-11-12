@@ -1621,48 +1621,41 @@ This is an automated notification from the CustomPC.tech live messaging system.`
       }
       
       async saveMessageToSession(content, type) {
-        console.log('💾 Saving message to session:', { content, type });
+        console.log('💾 Saving admin message to chat room:', this.currentChatId);
         
-        const currentUser = this.getCurrentUser();
-        const userId = currentUser ? currentUser.username : 'Anonymous User';
-        
-        const messageData = {
-          content: content,
-          type: type,
-          userId: userId,
-          timestamp: new Date().toISOString()
-        };
-        
-        // Save to localStorage as fallback
-        try {
-          const chatHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]');
-          chatHistory.push(messageData);
-          localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
-          console.log('✅ Message saved to localStorage');
-        } catch (error) {
-          console.error('Failed to save to localStorage:', error);
+        if (!this.currentChatId) {
+          console.error('No chat room selected');
+          return;
         }
         
-        // Send message through Firebase if available
-        if (window.firebaseChatManager && this.currentChatId) {
+        const currentUser = this.getCurrentUser();
+        const adminUsername = currentUser ? currentUser.username : 'Admin';
+        
+        const messageData = {
+          text: content,
+          username: adminUsername,
+          type: 'admin',
+          timestamp: Date.now()
+        };
+        
+        // Send message to the user's private chat room
+        if (window.firebaseChatManager && window.firebaseChatManager.isInitialized) {
           try {
-            await window.firebaseChatManager.sendMessage(this.currentChatId, messageData);
-            console.log('✅ Message saved to Firebase');
+            // Add message to chat room
+            await window.firebaseChatManager.database.ref(`chats/${this.currentChatId}/messages`).push(messageData);
             
-            // Update chat activity for user
-            if (currentUser && currentUser.username) {
-              await window.firebaseChatManager.updateChatActivity(this.currentChatId, currentUser.username);
-            }
+            // Update chat metadata
+            await window.firebaseChatManager.database.ref(`chats/${this.currentChatId}/info`).update({
+              lastMessage: content,
+              lastMessageTime: Date.now(),
+              unreadCount: 0 // Reset unread count when admin responds
+            });
             
-            // Refresh admin chat list if admin
-            if (this.isAdmin) {
-              setTimeout(() => this.loadActiveChats(), 100);
-            }
+            console.log('✅ Admin message sent to chat room');
+            
           } catch (error) {
-            console.error('Failed to save to Firebase:', error);
+            console.error('Failed to save admin message:', error);
           }
-        } else {
-          console.log('Firebase not available, using localStorage only');
         }
       }
       
@@ -2577,22 +2570,23 @@ This is an automated notification from the CustomPC.tech live messaging system.`
       }
       
       const username = getCurrentUsername();
+      const chatRoomId = 'chat_' + username.replace(/[^a-zA-Z0-9]/g, '_');
       
-      // Listen for messages addressed to this user
-      const messagesRef = window.firebaseChatManager.database.ref('globalChat');
+      console.log('👂 Listening for admin responses in chat room:', chatRoomId);
       
-      messagesRef.orderByChild('username').equalTo(username).on('child_added', (snapshot) => {
+      // Listen for new messages in user's private chat room
+      const messagesRef = window.firebaseChatManager.database.ref(`chats/${chatRoomId}/messages`);
+      
+      messagesRef.on('child_added', (snapshot) => {
         const message = snapshot.val();
         
-        // Only show admin messages (not our own messages)
+        // Only show admin messages (not our own messages that we just sent)
         if (message && message.type === 'admin') {
           console.log('📨 Received admin response:', message.text);
           addMessageToChat(message.text, 'admin', 'Admin');
           saveToHistory(message.text, 'admin', 'Admin');
         }
       });
-      
-      console.log('👂 Listening for admin responses for user:', username);
     }
 
     // Initialize Firebase Chat Manager
