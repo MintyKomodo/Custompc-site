@@ -19,15 +19,18 @@ class FirebaseChatManager {
       }
 
       // Firebase configuration
+      // Note: databaseURL is required for Realtime Database and follows the pattern:
+      // https://{projectId}-default-rtdb.firebaseio.com
       const firebaseConfig = {
         apiKey: "AIzaSyANB6z6rM3lb2GZc3wTO5767fO1jB-PUjM",
         authDomain: "custompc-website.firebaseapp.com",
-        databaseURL: "https://custompc-website-default-rtdb.firebaseio.com",
         projectId: "custompc-website",
         storageBucket: "custompc-website.firebasestorage.app",
         messagingSenderId: "1043646914253",
         appId: "1:1043646914253:web:eadb153333f3465ce65384",
-        measurementId: "G-BF6PT2M7RX"
+        measurementId: "G-BF6PT2M7RX",
+        // Realtime Database URL (required for messaging)
+        databaseURL: "https://custompc-website-default-rtdb.firebaseio.com"
       };
 
       // Initialize Firebase
@@ -38,39 +41,63 @@ class FirebaseChatManager {
       this.database = firebase.database();
       
       // Test connection
-      await this.testConnection();
-      
-      this.isInitialized = true;
-      console.log('✅ Firebase initialized and connected successfully');
-      
-      // Initialize global chat room
-      this.initializeGlobalChat();
-      
-      return true;
+      try {
+        await this.testConnection();
+        this.isInitialized = true;
+        console.log('✅ Firebase initialized and connected successfully');
+        
+        // Initialize global chat room
+        this.initializeGlobalChat();
+        
+        return true;
+      } catch (connectionError) {
+        console.error('❌ Firebase connection test failed:', connectionError.message);
+        console.log('⚠️ Firebase Realtime Database may not be enabled or rules may be blocking access');
+        console.log('💡 Please check:');
+        console.log('   1. Firebase Realtime Database is enabled in Firebase Console');
+        console.log('   2. Database URL: https://custompc-website-default-rtdb.firebaseio.com');
+        console.log('   3. Database rules allow read/write access');
+        console.log('📦 Falling back to localStorage for messaging');
+        return false;
+      }
 
     } catch (error) {
       console.error('❌ Firebase initialization failed:', error);
-      console.log('Falling back to localStorage');
+      console.log('📦 Falling back to localStorage for messaging');
       return false;
     }
   }
   
   async testConnection() {
     return new Promise((resolve, reject) => {
+      let resolved = false;
+      let listener = null;
       const connectedRef = this.database.ref('.info/connected');
-      connectedRef.on('value', (snapshot) => {
-        if (snapshot.val() === true) {
+      
+      const timeout = setTimeout(() => {
+        if (!resolved) {
+          resolved = true;
+          if (listener) {
+            connectedRef.off('value', listener);
+          }
+          reject(new Error('Firebase connection timeout - Check your Firebase Realtime Database rules and ensure the database is enabled. The database URL should be: https://custompc-website-default-rtdb.firebaseio.com'));
+        }
+      }, 10000); // Increased timeout to 10 seconds
+      
+      listener = connectedRef.on('value', (snapshot) => {
+        if (resolved) return;
+        
+        const isConnected = snapshot.val() === true;
+        if (isConnected) {
+          resolved = true;
+          clearTimeout(timeout);
+          connectedRef.off('value', listener);
           console.log('✅ Firebase connection confirmed');
           resolve();
         } else {
-          console.log('⚠️ Firebase connection lost');
+          console.log('⚠️ Waiting for Firebase connection...');
         }
       });
-      
-      // Timeout after 5 seconds
-      setTimeout(() => {
-        reject(new Error('Firebase connection timeout'));
-      }, 5000);
     });
   }
   

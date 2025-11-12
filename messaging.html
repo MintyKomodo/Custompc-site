@@ -2095,8 +2095,17 @@ This is an automated notification from the CustomPC.tech live messaging system.`
       // Add user message to chat immediately
       addMessageToChat(message, 'user', username);
       
+      // Save message to Firebase if available
+      if (window.liveMessaging) {
+        try {
+          await window.liveMessaging.saveMessageToSession(message, 'user');
+        } catch (error) {
+          console.error('Failed to save message to Firebase:', error);
+        }
+      }
+      
       try {
-        // Send message via Formspree
+        // Send message via Formspree (email notification)
         const formData = new FormData();
         formData.append('name', username);
         formData.append('email', userEmail);
@@ -2371,15 +2380,13 @@ This is an automated notification from the CustomPC.tech live messaging system.`
     });
 
     // Initialize Firebase Chat Manager
+    // Note: FirebaseChatManager is already initialized in config/firebase-config.js
     window.addEventListener('load', function() {
-      console.log('🚀 Page loaded, initializing Firebase');
+      console.log('🚀 Page loaded, checking Firebase connection');
       
-      // Initialize Firebase Chat Manager
-      if (typeof firebase !== 'undefined') {
-        window.firebaseChatManager = new FirebaseChatManager();
-        
-        // Wait for Firebase to initialize
-        setTimeout(() => {
+      // Wait for Firebase to initialize (config/firebase-config.js creates the global instance)
+      const checkFirebase = () => {
+        if (window.firebaseChatManager) {
           if (window.firebaseChatManager.isInitialized) {
             console.log('✅ Firebase ready for messaging');
             addMessageToChat('🔥 Firebase connected! Messages will sync in real-time.', 'system', 'System');
@@ -2387,11 +2394,17 @@ This is an automated notification from the CustomPC.tech live messaging system.`
             console.log('⚠️ Firebase not available, using local mode');
             addMessageToChat('💬 Chat ready! (Local mode - messages won\'t sync across devices)', 'system', 'System');
           }
-        }, 2000);
-      } else {
-        console.log('⚠️ Firebase SDK not loaded');
-        addMessageToChat('💬 Chat ready! (Local mode)', 'system', 'System');
-      }
+        } else if (typeof firebase !== 'undefined') {
+          // Firebase SDK is loaded but manager not initialized yet, wait a bit longer
+          setTimeout(checkFirebase, 500);
+        } else {
+          console.log('⚠️ Firebase SDK not loaded');
+          addMessageToChat('💬 Chat ready! (Local mode)', 'system', 'System');
+        }
+      };
+      
+      // Check after a short delay to allow Firebase to initialize
+      setTimeout(checkFirebase, 1000);
     });
 
     // Initialize when DOM is loaded
