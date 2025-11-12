@@ -2086,13 +2086,26 @@ This is an automated notification from the CustomPC.tech live messaging system.`
             sendBtn.disabled = false;
           }
           
-          // Start listening for new messages in this chat
+          // Start listening for new messages in this chat ONLY
           if (this.currentChatListener) {
-            window.firebaseChatManager.database.ref(`chats/${this.currentChatId}/messages`).off('child_added', this.currentChatListener);
+            // Remove old listener
+            const oldPath = `chats/${this.currentChatId}/messages`;
+            window.firebaseChatManager.database.ref(oldPath).off('child_added', this.currentChatListener);
+            console.log('🔇 Stopped listening to:', oldPath);
           }
           
-          this.currentChatListener = window.firebaseChatManager.database.ref(`chats/${chatId}/messages`).on('child_added', (snapshot) => {
-            this.displayMessage(message.content, message.type, message.timestamp);
+          // Listen ONLY to this specific chat room
+          const chatPath = `chats/${chatId}/messages`;
+          console.log('👂 Now listening to:', chatPath);
+          
+          this.currentChatListener = window.firebaseChatManager.database.ref(chatPath).on('child_added', (snapshot) => {
+            const message = snapshot.val();
+            
+            // Only add if it's a new message (not from initial load)
+            if (message && message.timestamp > Date.now() - 1000) {
+              console.log('🆕 New message in current chat:', message.text);
+              addMessageToChat(message.text, message.type, message.username);
+            }
           });
           
         } catch (error) {
@@ -2659,13 +2672,14 @@ This is an automated notification from the CustomPC.tech live messaging system.`
       
       // Listen for new messages in user's private chat room
       const messagesRef = window.firebaseChatManager.database.ref(`chats/${chatRoomId}/messages`);
+      const startTime = Date.now();
       
       messagesRef.on('child_added', (snapshot) => {
         const message = snapshot.val();
         
-        // Only show admin messages (not our own messages that we just sent)
-        if (message && message.type === 'admin') {
-          console.log('📨 Received admin response:', message.text);
+        // Only show NEW admin messages (not old ones from history, not our own messages)
+        if (message && message.type === 'admin' && message.timestamp > startTime) {
+          console.log('📨 Received NEW admin response:', message.text);
           addMessageToChat(message.text, 'admin', 'Admin');
           saveToHistory(message.text, 'admin', 'Admin');
         }
