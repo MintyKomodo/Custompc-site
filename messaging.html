@@ -2095,25 +2095,26 @@ This is an automated notification from the CustomPC.tech live messaging system.`
       // Add user message to chat immediately
       addMessageToChat(message, 'user', username);
       
-      // Save message to Firebase if available
+      // Save message to Firebase for admin dashboard
       let messageSavedToFirebase = false;
-      if (window.liveMessaging) {
+      if (window.firebaseChatManager && window.firebaseChatManager.isInitialized) {
         try {
-          // Create chat session if it doesn't exist
-          if (!window.liveMessaging.currentChatId) {
-            console.log('Creating new chat session...');
-            await window.liveMessaging.initializeChatSession();
-          }
+          const messageData = {
+            text: message,
+            username: username,
+            email: userEmail,
+            type: 'user',
+            timestamp: Date.now()
+          };
           
-          // Save message to Firebase
-          if (window.liveMessaging.currentChatId) {
-            await window.liveMessaging.saveMessageToSession(message, 'user');
-            messageSavedToFirebase = true;
-            console.log('✅ Message saved to Firebase');
-          }
+          await window.firebaseChatManager.database.ref('globalChat').push(messageData);
+          messageSavedToFirebase = true;
+          console.log('✅ Message sent to Firebase (admin will see it in admin-chats.html)');
         } catch (error) {
           console.error('Failed to save message to Firebase:', error);
         }
+      } else {
+        console.log('⚠️ Firebase not available, message will only be sent via email');
       }
       
       // Send message via Formspree (email notification) - non-blocking
