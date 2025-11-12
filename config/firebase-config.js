@@ -154,9 +154,11 @@ class FirebaseChatManager {
         id: chatId,
         userId: currentUser?.username || 'anonymous',
         userEmail: currentUser?.email || null,
+        userName: chatData.userName || currentUser?.username || 'Anonymous User',
         createdAt: firebase.database.ServerValue.TIMESTAMP,
         lastActivity: firebase.database.ServerValue.TIMESTAMP,
-        status: 'active'
+        status: 'active',
+        messages: {}
       };
 
       await chatRef.set(chatSession);
@@ -277,8 +279,27 @@ class FirebaseChatManager {
 
       const oneDayAgo = Date.now() - (24 * 60 * 60 * 1000);
       const activeChats = chatArray.filter(chat => {
-        const lastActivity = chat.lastActivity || chat.createdAt || 0;
-        return lastActivity > oneDayAgo && chat.status === 'active';
+        // Handle Firebase server timestamps (they can be objects or numbers)
+        let lastActivity = chat.lastActivity || chat.createdAt || 0;
+        
+        // If it's a Firebase server timestamp object, convert to number
+        if (typeof lastActivity === 'object' && lastActivity !== null) {
+          lastActivity = lastActivity.val ? lastActivity.val() : Date.now();
+        }
+        
+        // Convert to number if it's a string
+        if (typeof lastActivity === 'string') {
+          lastActivity = parseInt(lastActivity) || Date.now();
+        }
+        
+        // Check if chat is active (either status is 'active' or no status specified)
+        const isActive = !chat.status || chat.status === 'active';
+        
+        // Include chats from last 24 hours OR if they have messages
+        const hasRecentActivity = lastActivity > oneDayAgo;
+        const hasMessages = chat.messages && Object.keys(chat.messages).length > 0;
+        
+        return isActive && (hasRecentActivity || hasMessages);
       });
 
       // Sort by last activity (most recent first)
