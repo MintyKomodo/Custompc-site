@@ -1710,6 +1710,8 @@ This is an automated notification from the CustomPC.tech live messaging system.`
       
       // Admin-specific methods
       setupAdminInterface() {
+        console.log('🔧 Setting up admin interface');
+        
         this.loadActiveChats();
         this.startChatPolling();
         
@@ -1739,6 +1741,14 @@ This is an automated notification from the CustomPC.tech live messaging system.`
         if (chatContainer) {
           chatContainer.innerHTML = '<div class="message system"><div class="message-content">👈 Select a chat from the sidebar to view and respond to messages</div></div>';
         }
+        
+        // Set up auto-refresh every 5 seconds as backup
+        setInterval(() => {
+          console.log('🔄 Auto-refreshing chats (backup polling)');
+          this.loadActiveChats();
+        }, 5000);
+        
+        console.log('✅ Admin interface setup complete');
       }
       
       async initializeChatSession() {
@@ -1877,16 +1887,23 @@ This is an automated notification from the CustomPC.tech live messaging system.`
           this.displayChats(chats);
           
           // Listen for new chat rooms in real-time
-          if (!this.firebaseListener) {
-            this.firebaseListener = window.firebaseChatManager.database.ref('chats').on('child_changed', () => {
-              console.log('🆕 Chat updated, refreshing list');
-              this.loadActiveChats();
+          if (!this.firebaseListenerSetup) {
+            console.log('🎧 Setting up real-time listeners for new chats');
+            
+            // Listen for new chats
+            window.firebaseChatManager.database.ref('chats').on('child_added', (snapshot) => {
+              console.log('🆕 New chat detected:', snapshot.key);
+              setTimeout(() => this.loadActiveChats(), 500);
             });
             
-            window.firebaseChatManager.database.ref('chats').on('child_added', () => {
-              console.log('🆕 New chat detected, refreshing list');
-              this.loadActiveChats();
+            // Listen for chat updates
+            window.firebaseChatManager.database.ref('chats').on('child_changed', (snapshot) => {
+              console.log('📝 Chat updated:', snapshot.key);
+              setTimeout(() => this.loadActiveChats(), 500);
             });
+            
+            this.firebaseListenerSetup = true;
+            console.log('✅ Real-time listeners active');
           }
           
         } catch (error) {
