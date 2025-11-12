@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Active Chats | CustomPC.tech</title>
     <link rel="stylesheet" href="frontend/navbar.css">
+    
+    <!-- Notification Sound -->
+    <audio id="notification-sound" preload="auto">
+        <!-- Using a loud beep sound from a reliable CDN -->
+        <source src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" type="audio/mpeg">
+        <!-- Fallback to browser beep -->
+    </audio>
+    
     <style>
         :root {
             --space: 10px;
@@ -349,6 +357,89 @@
             box-shadow: 0 4px 12px rgba(125, 178, 255, 0.4);
         }
 
+        /* Notification Settings Panel */
+        .notification-settings {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+        }
+
+        .notification-toggle {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+            background: #555;
+            border-radius: 13px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: #4caf50;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(24px);
+        }
+
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .volume-slider {
+            flex: 1;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--border);
+            outline: none;
+            cursor: pointer;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--accent1);
+            cursor: pointer;
+        }
+
+        .notification-icon {
+            font-size: 24px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
         @media (max-width: 1024px) {
             .admin-layout {
                 grid-template-columns: 1fr;
@@ -361,6 +452,12 @@
 
             .chat-view {
                 height: 600px;
+            }
+
+            .notification-settings {
+                bottom: 10px;
+                right: 10px;
+                left: 10px;
             }
         }
     </style>
@@ -378,11 +475,17 @@
                 <span id="firebase-status" class="status-badge status-disconnected">
                     🔄 Connecting...
                 </span>
+                <span id="notification-status" class="status-badge" style="margin-left: 10px; background: rgba(255, 152, 0, 0.2); border-color: rgba(255, 152, 0, 0.5); color: #ff9800;">
+                    🔔 Checking...
+                </span>
                 <button onclick="refreshChats()" class="btn" style="margin-left: 15px;">
                     🔄 Refresh
                 </button>
                 <button onclick="testFirebaseData()" class="btn" style="margin-left: 10px; background: #28a745;">
                     🧪 Test
+                </button>
+                <button onclick="testNotificationSound()" class="btn" style="margin-left: 10px; background: #ff6b6b;">
+                    🔔 Test Sound
                 </button>
                 <button onclick="showDebugInfo()" class="btn" style="margin-left: 10px; background: #ffc107; color: #000;">
                     🐛 Debug
@@ -444,6 +547,8 @@
                 this.activeChats = new Map();
                 this.currentChatId = null;
                 this.isAdmin = false;
+                this.lastNotificationTime = new Map(); // Track last notification time per chat
+                this.notificationCooldown = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
                 this.init();
             }
 
@@ -633,7 +738,9 @@
                 let lastMessage = info.lastMessage || 'No messages';
                 let lastMessageTime = info.lastMessageTime || Date.now();
                 
-                if (!this.activeChats.has(username)) {
+                const isNewChat = !this.activeChats.has(username);
+                
+                if (isNewChat) {
                     console.log('🆕 Creating new chat for:', username);
                     this.activeChats.set(username, {
                         chatId: chatId,
@@ -644,16 +751,91 @@
                         lastMessageTime: lastMessageTime,
                         unread: info.unreadCount || 0
                     });
+                    
+                    // Play notification sound for NEW chat
+                    this.playNotificationSound(username, true);
+                    
                 } else {
                     console.log('📝 Updating existing chat for:', username);
                     const chat = this.activeChats.get(username);
+                    const hadNewMessage = chat.lastMessageTime !== lastMessageTime;
+                    
                     chat.chatId = chatId;
                     chat.lastMessage = lastMessage;
                     chat.lastMessageTime = lastMessageTime;
                     chat.unread = info.unreadCount || 0;
+                    
+                    // Play notification if new message and cooldown period passed
+                    if (hadNewMessage) {
+                        this.playNotificationSound(username, false);
+                    }
                 }
 
                 this.renderChatList();
+            }
+
+            playNotificationSound(username, isNewChat) {
+                const now = Date.now();
+                const lastNotification = this.lastNotificationTime.get(username) || 0;
+                const timeSinceLastNotification = now - lastNotification;
+                
+                // Play sound if:
+                // 1. It's a new chat (always play)
+                // 2. OR it's been more than 2 hours since last notification
+                if (isNewChat || timeSinceLastNotification >= this.notificationCooldown) {
+                    console.log('🔔 Playing notification sound for:', username);
+                    
+                    const audio = document.getElementById('notification-sound');
+                    if (audio) {
+                        // Set volume to maximum
+                        audio.volume = 1.0;
+                        
+                        // Play the sound
+                        audio.play().then(() => {
+                            console.log('✅ Notification sound played');
+                            
+                            // Update last notification time
+                            this.lastNotificationTime.set(username, now);
+                            
+                            // Show browser notification if permission granted
+                            this.showBrowserNotification(username, isNewChat);
+                            
+                        }).catch(error => {
+                            console.error('❌ Failed to play notification sound:', error);
+                            // Fallback: try to play again after user interaction
+                            document.addEventListener('click', () => {
+                                audio.play().catch(e => console.error('Still failed:', e));
+                            }, { once: true });
+                        });
+                    }
+                } else {
+                    const remainingTime = this.notificationCooldown - timeSinceLastNotification;
+                    const remainingMinutes = Math.floor(remainingTime / 60000);
+                    console.log(`⏰ Notification cooldown active for ${username}. ${remainingMinutes} minutes remaining.`);
+                }
+            }
+
+            showBrowserNotification(username, isNewChat) {
+                // Request notification permission if not already granted
+                if ('Notification' in window) {
+                    if (Notification.permission === 'granted') {
+                        new Notification('🔔 CustomPC.tech - New Message!', {
+                            body: isNewChat 
+                                ? `New chat started by ${username}` 
+                                : `New message from ${username}`,
+                            icon: 'images/logo.png',
+                            badge: 'images/logo.png',
+                            tag: username,
+                            requireInteraction: true
+                        });
+                    } else if (Notification.permission !== 'denied') {
+                        Notification.requestPermission().then(permission => {
+                            if (permission === 'granted') {
+                                this.showBrowserNotification(username, isNewChat);
+                            }
+                        });
+                    }
+                }
             }
 
             renderChatList() {
@@ -884,6 +1066,56 @@
             console.log('Firebase SDK loaded:', typeof firebase !== 'undefined');
             console.log('FirebaseChatManager available:', typeof window.firebaseChatManager !== 'undefined');
             
+            // Request notification permissions
+            if ('Notification' in window) {
+                const notificationStatus = document.getElementById('notification-status');
+                
+                if (Notification.permission === 'granted') {
+                    console.log('✅ Notifications already enabled');
+                    if (notificationStatus) {
+                        notificationStatus.style.background = 'rgba(40, 167, 69, 0.2)';
+                        notificationStatus.style.borderColor = 'rgba(40, 167, 69, 0.5)';
+                        notificationStatus.style.color = '#28a745';
+                        notificationStatus.textContent = '🔔 Enabled';
+                    }
+                } else if (Notification.permission === 'default') {
+                    console.log('🔔 Requesting notification permissions...');
+                    Notification.requestPermission().then(permission => {
+                        if (permission === 'granted') {
+                            console.log('✅ Notification permissions granted');
+                            if (notificationStatus) {
+                                notificationStatus.style.background = 'rgba(40, 167, 69, 0.2)';
+                                notificationStatus.style.borderColor = 'rgba(40, 167, 69, 0.5)';
+                                notificationStatus.style.color = '#28a745';
+                                notificationStatus.textContent = '🔔 Enabled';
+                            }
+                            // Show a welcome notification
+                            new Notification('🔔 CustomPC.tech Admin', {
+                                body: 'Notifications enabled! You will be alerted when customers message you.',
+                                icon: 'images/logo.png',
+                                badge: 'images/logo.png'
+                            });
+                        } else {
+                            console.log('⚠️ Notification permissions denied');
+                            if (notificationStatus) {
+                                notificationStatus.style.background = 'rgba(220, 53, 69, 0.2)';
+                                notificationStatus.style.borderColor = 'rgba(220, 53, 69, 0.5)';
+                                notificationStatus.style.color = '#dc3545';
+                                notificationStatus.textContent = '🔕 Blocked';
+                            }
+                        }
+                    });
+                } else {
+                    console.log('⚠️ Notifications blocked');
+                    if (notificationStatus) {
+                        notificationStatus.style.background = 'rgba(220, 53, 69, 0.2)';
+                        notificationStatus.style.borderColor = 'rgba(220, 53, 69, 0.5)';
+                        notificationStatus.style.color = '#dc3545';
+                        notificationStatus.textContent = '🔕 Blocked';
+                    }
+                }
+            }
+            
             // Wait a moment for Firebase to initialize
             await new Promise(resolve => setTimeout(resolve, 1000));
             
@@ -937,6 +1169,47 @@
                 content.innerHTML = debugInfo;
             } else {
                 panel.style.display = 'none';
+            }
+        }
+        
+        // Test notification sound
+        function testNotificationSound() {
+            console.log('🔔 Testing notification sound...');
+            
+            const audio = document.getElementById('notification-sound');
+            if (audio) {
+                audio.volume = 1.0; // Max volume
+                audio.play().then(() => {
+                    console.log('✅ Test sound played successfully!');
+                    alert('🔔 Notification sound test!\n\nIf you heard a loud beep, notifications are working!\n\nYou will hear this sound when:\n1. A NEW chat is created\n2. OR 2+ hours have passed since last notification');
+                    
+                    // Also test browser notification
+                    if ('Notification' in window) {
+                        if (Notification.permission === 'granted') {
+                            new Notification('🔔 CustomPC.tech - Test Notification', {
+                                body: 'Browser notifications are working!',
+                                icon: 'images/logo.png',
+                                requireInteraction: false
+                            });
+                        } else if (Notification.permission !== 'denied') {
+                            Notification.requestPermission().then(permission => {
+                                if (permission === 'granted') {
+                                    new Notification('🔔 CustomPC.tech - Test Notification', {
+                                        body: 'Browser notifications enabled!',
+                                        icon: 'images/logo.png'
+                                    });
+                                }
+                            });
+                        } else {
+                            alert('⚠️ Browser notifications are blocked. Enable them in your browser settings for desktop alerts.');
+                        }
+                    }
+                }).catch(error => {
+                    console.error('❌ Failed to play sound:', error);
+                    alert('❌ Failed to play notification sound.\n\nThis might be due to browser autoplay restrictions.\n\nTry clicking anywhere on the page first, then test again.');
+                });
+            } else {
+                alert('❌ Notification sound element not found!');
             }
         }
         
