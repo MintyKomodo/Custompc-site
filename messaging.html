@@ -913,6 +913,7 @@
         <div class="admin-actions">
           <button class="admin-btn primary" onclick="refreshChats()">Refresh Chats</button>
           <button class="admin-btn" onclick="markAllAsRead()">Mark All Read</button>
+          <button class="admin-btn" onclick="deleteAllMessages()" style="background: #dc3545; border-color: #dc3545;">🗑️ Delete All</button>
           <a href="payments.html" class="admin-btn">Payment System</a>
         </div>
       </div>
@@ -2456,6 +2457,67 @@ This is an automated notification from the CustomPC.tech live messaging system.`
         
         console.log('✅ Test response added');
       }, 1000);
+    }
+    
+    // Delete all messages function
+    async function deleteAllMessages() {
+      if (!window.liveMessaging || !window.liveMessaging.isAdmin) {
+        alert('Admin access required!');
+        return;
+      }
+      
+      const confirmed = confirm(
+        '⚠️ DELETE ALL MESSAGES?\n\n' +
+        'This will permanently delete ALL chat conversations and messages.\n\n' +
+        'This action CANNOT be undone!\n\n' +
+        'Click OK to continue.'
+      );
+      
+      if (!confirmed) return;
+      
+      const doubleCheck = confirm(
+        '⚠️ FINAL WARNING!\n\n' +
+        'Are you ABSOLUTELY SURE you want to delete everything?\n\n' +
+        'Click OK to DELETE ALL MESSAGES.'
+      );
+      
+      if (!doubleCheck) return;
+      
+      try {
+        console.log('🗑️ Deleting all messages...');
+        
+        // Delete all chats
+        await window.firebaseChatManager.database.ref('chats').remove();
+        console.log('✅ Deleted chats/');
+        
+        // Delete old globalChat if it exists
+        await window.firebaseChatManager.database.ref('globalChat').remove();
+        console.log('✅ Deleted globalChat/');
+        
+        // Clear the chat list
+        const chatList = document.getElementById('chat-list');
+        if (chatList) {
+          chatList.innerHTML = `
+            <div class="empty-chats" id="empty-chats">
+              <div class="empty-chats-icon">💬</div>
+              <div>No active chats</div>
+              <div style="font-size: 12px; margin-top: 8px;">All messages deleted successfully!</div>
+            </div>
+          `;
+        }
+        
+        // Clear the chat area
+        const chatContainer = document.getElementById('messaging-chat');
+        if (chatContainer) {
+          chatContainer.innerHTML = '<div class="message system"><div class="message-content">✅ All messages deleted! Chat is now empty.</div></div>';
+        }
+        
+        alert('✅ All messages deleted successfully!');
+        
+      } catch (error) {
+        console.error('❌ Failed to delete messages:', error);
+        alert('❌ Error deleting messages: ' + error.message);
+      }
     }
     
     // Admin functions
