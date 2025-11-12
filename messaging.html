@@ -2222,7 +2222,46 @@ This is an automated notification from the CustomPC.tech live messaging system.`
         return;
       }
       
-      console.log('📝 Sending message:', message);
+      // Check if user is admin
+      const isAdmin = window.liveMessaging && window.liveMessaging.isAdmin;
+      
+      // If admin, use the admin send method
+      if (isAdmin) {
+        console.log('👨‍💼 Admin sending message');
+        
+        if (!window.liveMessaging.currentChatId) {
+          alert('Please select a chat first!');
+          return;
+        }
+        
+        // Disable send button
+        if (sendBtn) {
+          sendBtn.disabled = true;
+          sendBtn.innerHTML = '<span>Sending...</span><span class="send-icon">⏳</span>';
+        }
+        
+        // Clear input
+        input.value = '';
+        input.style.height = 'auto';
+        
+        // Add message to chat
+        addMessageToChat(message, 'admin', 'Admin');
+        
+        // Save via admin method
+        await window.liveMessaging.saveMessageToSession(message, 'admin');
+        
+        // Re-enable send button
+        if (sendBtn) {
+          sendBtn.disabled = false;
+          sendBtn.innerHTML = '<span>Send</span><span class="send-icon">📤</span>';
+        }
+        
+        input.focus();
+        return;
+      }
+      
+      // Regular user flow
+      console.log('👤 Regular user sending message');
       
       // Get current user info
       const currentUser = window.sharedAuth ? window.sharedAuth.getCurrentUser() : null;
