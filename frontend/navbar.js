@@ -189,8 +189,15 @@ class NavigationBar {
           <div class="dropdown-item-desc">Live chat support</div>
         </div>
       </a>
-      <a href="payments.html" class="dropdown-item">
+      <a href="add-payment-method.html" class="dropdown-item">
         <div class="dropdown-item-icon">💳</div>
+        <div class="dropdown-item-content">
+          <div class="dropdown-item-title">Payment Method</div>
+          <div class="dropdown-item-desc">Add or update card info</div>
+        </div>
+      </a>
+      <a href="payments.html" class="dropdown-item">
+        <div class="dropdown-item-icon">💰</div>
         <div class="dropdown-item-content">
           <div class="dropdown-item-title">Payments</div>
           <div class="dropdown-item-desc">Send payments securely</div>

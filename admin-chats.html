@@ -824,6 +824,7 @@
                 // Get the last message from messages
                 let lastMessage = info.lastMessage || 'No messages';
                 let lastMessageTime = info.lastMessageTime || Date.now();
+                let unreadCount = info.unreadCount || 0;
                 
                 const isNewChat = !this.activeChats.has(username);
                 
@@ -836,24 +837,29 @@
                         messages: [],
                         lastMessage: lastMessage,
                         lastMessageTime: lastMessageTime,
-                        unread: info.unreadCount || 0
+                        unread: unreadCount
                     });
                     
-                    // Play notification sound for NEW chat
-                    this.playNotificationSound(username, true);
+                    // Only play notification if there are unread messages (user sent message)
+                    if (unreadCount > 0) {
+                        this.playNotificationSound(username, true);
+                    }
                     
                 } else {
                     console.log('📝 Updating existing chat for:', username);
                     const chat = this.activeChats.get(username);
                     const hadNewMessage = chat.lastMessageTime !== lastMessageTime;
+                    const hadNewUnread = unreadCount > chat.unread;
                     
                     chat.chatId = chatId;
                     chat.lastMessage = lastMessage;
                     chat.lastMessageTime = lastMessageTime;
-                    chat.unread = info.unreadCount || 0;
+                    chat.unread = unreadCount;
                     
-                    // Play notification if new message and cooldown period passed
-                    if (hadNewMessage) {
+                    // Only play notification if:
+                    // 1. There's a new message AND
+                    // 2. Unread count increased (meaning it's from user, not admin)
+                    if (hadNewMessage && hadNewUnread) {
                         this.playNotificationSound(username, false);
                     }
                 }
