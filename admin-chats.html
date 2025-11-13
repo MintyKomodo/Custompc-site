@@ -13,6 +13,17 @@
         <!-- Fallback to browser beep -->
     </audio>
     
+    <!-- YouTube Player for Noisestorm -->
+    <div id="youtube-player-container" style="display: none; position: fixed; top: 20px; right: 20px; z-index: 10000; background: var(--panel); border: 2px solid var(--accent1); border-radius: 12px; padding: 15px; box-shadow: 0 8px 32px rgba(0,0,0,0.5);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <div style="color: var(--accent1); font-weight: 600; font-size: 14px;">🎵 Notification Alert</div>
+            <button onclick="stopYouTubeNotification()" style="background: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px;">
+                🔇 Stop Music
+            </button>
+        </div>
+        <div id="youtube-player"></div>
+    </div>
+    
     <style>
         :root {
             --space: 10px;
@@ -540,6 +551,82 @@
     <script src="frontend/shared-auth.js"></script>
     <script src="frontend/navbar.js"></script>
 
+    <!-- YouTube IFrame API -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+
+    <script>
+        // YouTube Player Variables
+        let youtubePlayer = null;
+        let isYouTubePlaying = false;
+
+        // YouTube API Ready Callback
+        function onYouTubeIframeAPIReady() {
+            console.log('✅ YouTube API Ready');
+            // Player will be created when notification triggers
+        }
+
+        // Play YouTube notification
+        function playYouTubeNotification() {
+            console.log('🎵 Playing Noisestorm notification...');
+            
+            const container = document.getElementById('youtube-player-container');
+            container.style.display = 'block';
+
+            if (!youtubePlayer) {
+                // Create YouTube player
+                // Noisestorm - Crab Rave: https://www.youtube.com/watch?v=LDU_Txk06tM
+                youtubePlayer = new YT.Player('youtube-player', {
+                    height: '200',
+                    width: '320',
+                    videoId: 'LDU_Txk06tM', // Noisestorm - Crab Rave
+                    playerVars: {
+                        'autoplay': 1,
+                        'start': 60, // Start at 1 minute (60 seconds)
+                        'loop': 1,
+                        'playlist': 'LDU_Txk06tM', // Required for looping
+                        'controls': 1,
+                        'modestbranding': 1
+                    },
+                    events: {
+                        'onReady': function(event) {
+                            event.target.setVolume(100); // Max volume
+                            event.target.playVideo();
+                            isYouTubePlaying = true;
+                            console.log('✅ YouTube player started');
+                        },
+                        'onStateChange': function(event) {
+                            // Keep looping
+                            if (event.data === YT.PlayerState.ENDED) {
+                                event.target.seekTo(60); // Back to 1 minute
+                                event.target.playVideo();
+                            }
+                        }
+                    }
+                });
+            } else {
+                // Player already exists, just play it
+                youtubePlayer.seekTo(60); // Start at 1 minute
+                youtubePlayer.setVolume(100);
+                youtubePlayer.playVideo();
+                isYouTubePlaying = true;
+                container.style.display = 'block';
+            }
+        }
+
+        // Stop YouTube notification
+        function stopYouTubeNotification() {
+            console.log('🔇 Stopping YouTube notification...');
+            
+            if (youtubePlayer) {
+                youtubePlayer.pauseVideo();
+                isYouTubePlaying = false;
+            }
+            
+            const container = document.getElementById('youtube-player-container');
+            container.style.display = 'none';
+        }
+    </script>
+
     <script>
         class AdminChatManager {
             constructor() {
@@ -800,8 +887,16 @@
                             // Show browser notification if permission granted
                             this.showBrowserNotification(username, isNewChat);
                             
+                            // Play YouTube notification (Noisestorm)
+                            setTimeout(() => {
+                                playYouTubeNotification();
+                            }, 1000); // Start YouTube after 1 second
+                            
                         }).catch(error => {
                             console.error('❌ Failed to play notification sound:', error);
+                            // Still try to play YouTube
+                            playYouTubeNotification();
+                            
                             // Fallback: try to play again after user interaction
                             document.addEventListener('click', () => {
                                 audio.play().catch(e => console.error('Still failed:', e));

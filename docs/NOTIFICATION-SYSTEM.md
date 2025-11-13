@@ -30,6 +30,14 @@ Notifications trigger in these scenarios:
 - **Duration**: ~2 seconds
 - **Source**: Reliable CDN-hosted sound file
 
+### YouTube Music Alert (NEW! 🎵)
+- **Song**: Noisestorm - Crab Rave
+- **Start Time**: 1 minute (60 seconds)
+- **Looping**: Yes - plays continuously
+- **Volume**: Maximum (100%)
+- **Control**: Stop button in floating player
+- **Auto-play**: Starts 1 second after beep sound
+
 ### Browser Notification
 - **Desktop popup** with message preview
 - **Shows**: Username and "New chat" or "New message"

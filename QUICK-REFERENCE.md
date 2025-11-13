@@ -18,7 +18,37 @@
 
 ---
 
-## 💳 Payment System
+## 💳 Simple Payment System (NEW!)
+
+### User Side
+1. Go to: **add-payment-method.html**
+2. Enter card info (number, name, expiry, CVV, ZIP)
+3. Click "Save Payment Method"
+4. Card info stored in Firebase
+
+### Admin Side
+1. Go to: **admin-payments.html**
+2. Select user from list
+3. Enter charge amount and description
+4. Click "Charge User"
+5. Transaction recorded!
+
+### Features
+- ✅ Users add payment methods
+- ✅ Admins charge any amount
+- ✅ Transaction history
+- ✅ User search
+- ✅ Real-time updates
+
+### Security
+- Only stores last 4 digits
+- CVV never saved
+- Encrypted in Firebase
+- Admin-only access
+
+---
+
+## 💳 Square Payment System (Advanced)
 
 ### Quick Start (Local Testing)
 ```bash
@@ -100,9 +130,13 @@ chats/
    - `messaging.html` - Admin chat interface
 
 ### Admin Pages
-- ✅ `payments.html` - Process payments
+- ✅ `payments.html` - Square payment processing
+- ✅ `admin-payments.html` - Simple payment system (NEW!)
 - ✅ `admin-chats.html` - Manage all chats
 - ✅ `messaging.html` - Admin view with sidebar
+
+### User Pages
+- ✅ `add-payment-method.html` - Add/update payment info (NEW!)
 
 ---
 
