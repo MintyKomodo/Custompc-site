@@ -840,28 +840,24 @@
                         unread: unreadCount
                     });
                     
-                    // Only play notification if there are unread messages (user sent message)
+                    // ONLY play notification for NEW chats (user started conversation)
                     if (unreadCount > 0) {
+                        console.log('🔔 NEW CHAT DETECTED - Playing notification!');
                         this.playNotificationSound(username, true);
                     }
                     
                 } else {
                     console.log('📝 Updating existing chat for:', username);
                     const chat = this.activeChats.get(username);
-                    const hadNewMessage = chat.lastMessageTime !== lastMessageTime;
-                    const hadNewUnread = unreadCount > chat.unread;
                     
                     chat.chatId = chatId;
                     chat.lastMessage = lastMessage;
                     chat.lastMessageTime = lastMessageTime;
                     chat.unread = unreadCount;
                     
-                    // Only play notification if:
-                    // 1. There's a new message AND
-                    // 2. Unread count increased (meaning it's from user, not admin)
-                    if (hadNewMessage && hadNewUnread) {
-                        this.playNotificationSound(username, false);
-                    }
+                    // DO NOT play notification for existing chats
+                    // (Silent updates only)
+                    console.log('🔇 Existing chat updated - no notification');
                 }
 
                 this.renderChatList();
