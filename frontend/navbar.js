@@ -180,27 +180,13 @@ class NavigationBar {
     
     const activeClass = isCustomPCActive || isMessagingActive || isPaymentsActive ? 'active' : '';
     
-    // Build dropdown items - Messages and Payments for everyone
+    // Build dropdown items - Messages for everyone
     let dropdownItems = `
       <a href="messaging.html" class="dropdown-item">
         <div class="dropdown-item-icon">💬</div>
         <div class="dropdown-item-content">
           <div class="dropdown-item-title">Messages</div>
           <div class="dropdown-item-desc">Live chat support</div>
-        </div>
-      </a>
-      <a href="add-payment-method.html" class="dropdown-item">
-        <div class="dropdown-item-icon">💳</div>
-        <div class="dropdown-item-content">
-          <div class="dropdown-item-title">Payment Method</div>
-          <div class="dropdown-item-desc">Add or update card info</div>
-        </div>
-      </a>
-      <a href="payments.html" class="dropdown-item">
-        <div class="dropdown-item-icon">💰</div>
-        <div class="dropdown-item-content">
-          <div class="dropdown-item-title">Payments</div>
-          <div class="dropdown-item-desc">Send payments securely</div>
         </div>
       </a>
     `;
