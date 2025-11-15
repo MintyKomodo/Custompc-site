@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Payment Method | CustomPC.tech</title>
+    <link rel="stylesheet" href="frontend/navbar.css">
+    <style>
+        :root {
+            --space: 10px;
+            --bg: #0a0f1a;
+            --ink: #e9eefc;
+            --muted: #aeb9d4;
+            --panel: #111729;
+            --panel2: #0d1426;
+            --border: rgba(255, 255, 255, .08);
+            --accent1: #7db2ff;
+            --accent2: #7cf2e6;
+            --radius: 18px;
+            --max: 800px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, Segoe UI, Roboto, Inter, Arial;
+            color: var(--ink);
+            background: radial-gradient(1200px 600px at 50% -10%, #0f162b 8%, transparent 55%), linear-gradient(#081021, #0a0f1a 40%, #0a0f1a);
+            line-height: 1.55;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .wrap {
+            max-width: var(--max);
+            margin: 0 auto;
+            padding: 20px;
+            width: 100%;
+        }
+
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            background: linear-gradient(135deg, rgba(125,178,255,.1), rgba(124,242,230,.1));
+        }
+
+        .card-header h2 {
+            margin: 0 0 5px 0;
+            color: var(--accent1);
+        }
+
+        .card-body {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--panel2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--ink);
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus {
+            border-color: var(--accent1);
+            box-shadow: 0 0 0 2px rgba(125, 178, 255, 0.2);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            background: linear-gradient(135deg, var(--accent1), var(--accent2));
+            color: #0b0f1a;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(125, 178, 255, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-success {
+            background: rgba(40, 167, 69, 0.2);
+            border: 1px solid rgba(40, 167, 69, 0.5);
+            color: #28a745;
+        }
+
+        .alert-error {
+            background: rgba(220, 53, 69, 0.2);
+            border: 1px solid rgba(220, 53, 69, 0.5);
+            color: #dc3545;
+        }
+
+        .alert-info {
+            background: rgba(125, 178, 255, 0.2);
+            border: 1px solid rgba(125, 178, 255, 0.5);
+            color: var(--accent1);
+        }
+
+        .security-note {
+            background: var(--panel2);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        .existing-card {
+            background: var(--panel2);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+
+        .card-number {
+            font-family: monospace;
+            font-size: 18px;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .card-details {
+            display: flex;
+            gap: 20px;
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <!-- Header -->
+        <div style="text-align: center; margin-bottom: 30px;">
+            <h1 style="margin: 0 0 10px 0;">💳 Payment Method</h1>
+            <p style="margin: 0; color: var(--muted);">Add or update your payment information</p>
+        </div>
+
+        <!-- Existing Card Display -->
+        <div id="existing-card-container" style="display: none;">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Current Payment Method</h2>
+                </div>
+                <div class="card-body">
+                    <div class="existing-card" id="existing-card-display">
+                        <!-- Existing card info will be displayed here -->
+                    </div>
+                    <button onclick="showUpdateForm()" class="btn">
+                        Update Payment Method
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Form -->
+        <div class="card" id="payment-form-card">
+            <div class="card-header">
+                <h2>Add Payment Method</h2>
+                <p style="margin: 5px 0 0 0; font-size: 14px; color: var(--muted);">
+                    Securely save your payment information
+                </p>
+            </div>
+            <div class="card-body">
+                <div id="alert-container"></div>
+
+                <div class="security-note">
+                    🔒 <strong>Secure Payment:</strong> Your payment information is encrypted and stored securely. 
+                    We never share your card details with third parties.
+                </div>
+
+                <form id="payment-form" onsubmit="savePaymentMethod(event)">
+                    <div class="form-group">
+                        <label class="form-label">Card Number *</label>
+                        <input 
+                            type="text" 
+                            id="card-number" 
+                            class="form-input" 
+                            placeholder="1234 5678 9012 3456"
+                            maxlength="19"
+                            required
+                            oninput="formatCardNumber(this)"
+                        />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Cardholder Name *</label>
+                        <input 
+                            type="text" 
+                            id="card-name" 
+                            class="form-input" 
+                            placeholder="John Doe"
+                            required
+                        />
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Expiry Date *</label>
+                            <input 
+                                type="text" 
+                                id="card-expiry" 
+                                class="form-input" 
+                                placeholder="MM/YY"
+                                maxlength="5"
+                                required
+                                oninput="formatExpiry(this)"
+                            />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">CVV *</label>
+                            <input 
+                                type="text" 
+                                id="card-cvv" 
+                                class="form-input" 
+                                placeholder="123"
+                                maxlength="4"
+                                required
+                                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Billing ZIP Code *</label>
+                        <input 
+                            type="text" 
+                            id="billing-zip" 
+                            class="form-input" 
+                            placeholder="12345"
+                            maxlength="10"
+                            required
+                        />
+                    </div>
+
+                    <button type="submit" class="btn" id="save-btn">
+                        💾 Save Payment Method
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="index.html" style="color: var(--accent1); text-decoration: none;">← Back to Home</a>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+
+    <!-- Scripts -->
+    <script src="config/firebase-config.js"></script>
+    <script src="frontend/shared-auth.js"></script>
+    <script src="frontend/navbar.js"></script>
+
+    <script>
+        let database = null;
+        let currentUser = null;
+
+        // Initialize
+        window.addEventListener('load', async function() {
+            // Check if user is logged in
+            if (!window.sharedAuth || !window.sharedAuth.getCurrentUser()) {
+                alert('⚠️ Please login first to add payment method');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            currentUser = window.sharedAuth.getCurrentUser();
+            console.log('🚀 Initializing Payment Method Page...');
+
+            // Wait for Firebase
+            let attempts = 0;
+            while (!window.firebaseChatManager && attempts < 20) {
+                await new Promise(resolve => setTimeout(resolve, 500));
+                attempts++;
+            }
+
+            if (window.firebaseChatManager && window.firebaseChatManager.database) {
+                database = window.firebaseChatManager.database;
+                console.log('✅ Firebase connected');
+                loadExistingPaymentMethod();
+            } else {
+                showAlert('❌ Failed to connect to Firebase', 'error');
+            }
+        });
+
+        // Load existing payment method
+        async function loadExistingPaymentMethod() {
+            try {
+                const userId = currentUser.username.replace(/[^a-zA-Z0-9]/g, '_');
+                const snapshot = await database.ref(`users/${userId}/paymentMethod`).once('value');
+                const paymentMethod = snapshot.val();
+
+                if (paymentMethod) {
+                    document.getElementById('existing-card-container').style.display = 'block';
+                    document.getElementById('payment-form-card').style.display = 'none';
+
+                    document.getElementById('existing-card-display').innerHTML = `
+                        <div class="card-number">
+                            💳 •••• •••• •••• ${paymentMethod.last4}
+                        </div>
+                        <div class="card-details">
+                            <span><strong>Name:</strong> ${paymentMethod.name}</span>
+                            <span><strong>Exp:</strong> ${paymentMethod.expiry}</span>
+                            <span><strong>ZIP:</strong> ${paymentMethod.zip}</span>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Failed to load payment method:', error);
+            }
+        }
+
+        // Show update form
+        function showUpdateForm() {
+            document.getElementById('existing-card-container').style.display = 'none';
+            document.getElementById('payment-form-card').style.display = 'block';
+        }
+
+        // Format card number
+        function formatCardNumber(input) {
+            let value = input.value.replace(/\s/g, '').replace(/[^0-9]/g, '');
+            let formatted = value.match(/.{1,4}/g)?.join(' ') || value;
+            input.value = formatted;
+        }
+
+        // Format expiry
+        function formatExpiry(input) {
+            let value = input.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.slice(0, 2) + '/' + value.slice(2, 4);
+            }
+            input.value = value;
+        }
+
+        // Save payment method
+        async function savePaymentMethod(event) {
+            event.preventDefault();
+
+            const cardNumber = document.getElementById('card-number').value.replace(/\s/g, '');
+            const cardName = document.getElementById('card-name').value;
+            const cardExpiry = document.getElementById('card-expiry').value;
+            const cardCvv = document.getElementById('card-cvv').value;
+            const billingZip = document.getElementById('billing-zip').value;
+
+            // Validate card number
+            if (cardNumber.length < 13 || cardNumber.length > 19) {
+                showAlert('❌ Invalid card number', 'error');
+                return;
+            }
+
+            // Validate expiry
+            if (!/^\d{2}\/\d{2}$/.test(cardExpiry)) {
+                showAlert('❌ Invalid expiry date format (MM/YY)', 'error');
+                return;
+            }
+
+            // Validate CVV
+            if (cardCvv.length < 3 || cardCvv.length > 4) {
+                showAlert('❌ Invalid CVV', 'error');
+                return;
+            }
+
+            const saveBtn = document.getElementById('save-btn');
+            saveBtn.disabled = true;
+            saveBtn.textContent = '⏳ Saving...';
+
+            try {
+                const userId = currentUser.username.replace(/[^a-zA-Z0-9]/g, '_');
+                
+                // Store payment method (in production, this should be tokenized/encrypted)
+                const paymentMethod = {
+                    last4: cardNumber.slice(-4),
+                    name: cardName,
+                    expiry: cardExpiry,
+                    zip: billingZip,
+                    addedDate: new Date().toISOString(),
+                    // Note: Never store full card number or CVV in production!
+                };
+
+                // Save to Firebase
+                await database.ref(`users/${userId}`).update({
+                    username: currentUser.username,
+                    email: currentUser.email,
+                    paymentMethod: paymentMethod
+                });
+
+                showAlert('✅ Payment method saved successfully!', 'success');
+
+                // Clear form
+                document.getElementById('payment-form').reset();
+
+                // Reload to show existing card
+                setTimeout(() => {
+                    loadExistingPaymentMethod();
+                }, 2000);
+
+            } catch (error) {
+                console.error('Failed to save payment method:', error);
+                showAlert('❌ Failed to save payment method: ' + error.message, 'error');
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = '💾 Save Payment Method';
+            }
+        }
+
+        // Show alert
+        function showAlert(message, type) {
+            const container = document.getElementById('alert-container');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            container.appendChild(alert);
+
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Payments | CustomPC.tech</title>
+    <link rel="stylesheet" href="frontend/navbar.css">
+    <style>
+        :root {
+            --space: 10px;
+            --bg: #0a0f1a;
+            --ink: #e9eefc;
+            --muted: #aeb9d4;
+            --panel: #111729;
+            --panel2: #0d1426;
+            --border: rgba(255, 255, 255, .08);
+            --accent1: #7db2ff;
+            --accent2: #7cf2e6;
+            --radius: 18px;
+            --max: 1400px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, Segoe UI, Roboto, Inter, Arial;
+            color: var(--ink);
+            background: radial-gradient(1200px 600px at 50% -10%, #0f162b 8%, transparent 55%), linear-gradient(#081021, #0a0f1a 40%, #0a0f1a);
+            line-height: 1.55;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .wrap {
+            max-width: var(--max);
+            margin: 0 auto;
+            padding: var(--space);
+            width: 100%;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+        }
+
+        .payment-layout {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            background: var(--panel2);
+        }
+
+        .card-header h3 {
+            margin: 0 0 5px 0;
+            color: var(--accent1);
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .user-list {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .user-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            background: var(--panel2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .user-item:hover {
+            background: rgba(125, 178, 255, 0.1);
+            border-color: var(--accent1);
+        }
+
+        .user-item.selected {
+            background: rgba(125, 178, 255, 0.15);
+            border-color: var(--accent1);
+            border-width: 2px;
+        }
+
+        .user-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .user-email {
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        .user-card-info {
+            font-size: 12px;
+            color: var(--accent2);
+            margin-top: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--panel2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--ink);
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus {
+            border-color: var(--accent1);
+            box-shadow: 0 0 0 2px rgba(125, 178, 255, 0.2);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--accent1), var(--accent2));
+            color: #0b0f1a;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(125, 178, 255, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: var(--panel2);
+            color: var(--ink);
+            border: 1px solid var(--border);
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-success {
+            background: rgba(40, 167, 69, 0.2);
+            border: 1px solid rgba(40, 167, 69, 0.5);
+            color: #28a745;
+        }
+
+        .alert-error {
+            background: rgba(220, 53, 69, 0.2);
+            border: 1px solid rgba(220, 53, 69, 0.5);
+            color: #dc3545;
+        }
+
+        .alert-info {
+            background: rgba(125, 178, 255, 0.2);
+            border: 1px solid rgba(125, 178, 255, 0.5);
+            color: var(--accent1);
+        }
+
+        .transaction-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .transaction-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            background: var(--panel2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        .transaction-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .transaction-amount {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--accent2);
+        }
+
+        .transaction-date {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .transaction-user {
+            font-size: 14px;
+            color: var(--ink);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--muted);
+        }
+
+        .card-display {
+            background: var(--panel2);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+
+        .card-number {
+            font-family: monospace;
+            font-size: 16px;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .card-details {
+            display: flex;
+            gap: 20px;
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        @media (max-width: 1024px) {
+            .payment-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <!-- Header -->
+        <div class="admin-header">
+            <div>
+                <h1 style="margin: 0 0 5px 0;">💳 Admin Payment System</h1>
+                <p style="margin: 0; color: var(--muted);">Charge users and manage payment methods</p>
+            </div>
+            <div>
+                <a href="admin-chats.html" class="btn btn-secondary" style="margin-right: 10px;">← Back to Chats</a>
+                <button onclick="refreshUsers()" class="btn">🔄 Refresh</button>
+            </div>
+        </div>
+
+        <div class="payment-layout">
+            <!-- User List Sidebar -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Select User</h3>
+                    <p style="margin: 5px 0 0 0; font-size: 13px; color: var(--muted);">
+                        <span id="user-count">0</span> users with payment info
+                    </p>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <input 
+                            type="search" 
+                            id="user-search" 
+                            class="form-input" 
+                            placeholder="Search users..."
+                            oninput="filterUsers()"
+                        />
+                    </div>
+                    <div id="user-list" class="user-list">
+                        <div class="empty-state">
+                            <p>No users with payment info yet</p>
+                            <p style="font-size: 13px;">Users will appear here after adding payment methods</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Form -->
+            <div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Charge User</h3>
+                        <p style="margin: 5px 0 0 0; font-size: 13px; color: var(--muted);">
+                            Select a user and enter charge amount
+                        </p>
+                    </div>
+                    <div class="card-body">
+                        <div id="alert-container"></div>
+
+                        <div id="no-user-selected" class="alert alert-info">
+                            ℹ️ Select a user from the sidebar to charge them
+                        </div>
+
+                        <div id="payment-form" style="display: none;">
+                            <div class="card-display" id="selected-user-info">
+                                <!-- User info will be displayed here -->
+                            </div>
+
+                            <form onsubmit="processCharge(event)">
+                                <div class="form-group">
+                                    <label class="form-label">Charge Amount ($)</label>
+                                    <input 
+                                        type="number" 
+                                        id="charge-amount" 
+                                        class="form-input" 
+                                        placeholder="0.00"
+                                        step="0.01"
+                                        min="0.01"
+                                        required
+                                    />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Description</label>
+                                    <input 
+                                        type="text" 
+                                        id="charge-description" 
+                                        class="form-input" 
+                                        placeholder="Custom PC Build - Gaming Setup"
+                                        required
+                                    />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Notes (Optional)</label>
+                                    <textarea 
+                                        id="charge-notes" 
+                                        class="form-input" 
+                                        rows="3"
+                                        placeholder="Additional notes about this charge..."
+                                    ></textarea>
+                                </div>
+
+                                <div style="display: flex; gap: 10px;">
+                                    <button type="submit" class="btn" id="charge-btn">
+                                        💳 Charge User
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="clearSelection()">
+                                        Clear
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Transactions -->
+                <div class="card" style="margin-top: 20px;">
+                    <div class="card-header">
+                        <h3>Recent Transactions</h3>
+                        <p style="margin: 5px 0 0 0; font-size: 13px; color: var(--muted);">
+                            Latest charges processed
+                        </p>
+                    </div>
+                    <div class="card-body">
+                        <div id="transaction-list" class="transaction-list">
+                            <div class="empty-state">
+                                <p>No transactions yet</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+
+    <!-- Scripts -->
+    <script src="config/firebase-config.js"></script>
+    <script src="frontend/shared-auth.js"></script>
+    <script src="frontend/navbar.js"></script>
+
+    <script>
+        let database = null;
+        let selectedUser = null;
+        let allUsers = [];
+
+        // Initialize
+        window.addEventListener('load', async function() {
+            // Check admin access
+            if (!window.sharedAuth || !window.sharedAuth.isCurrentUserAdmin()) {
+                alert('⛔ Access Denied: Admin privileges required');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            console.log('🚀 Initializing Admin Payment System...');
+
+            // Wait for Firebase
+            let attempts = 0;
+            while (!window.firebaseChatManager && attempts < 20) {
+                await new Promise(resolve => setTimeout(resolve, 500));
+                attempts++;
+            }
+
+            if (window.firebaseChatManager && window.firebaseChatManager.database) {
+                database = window.firebaseChatManager.database;
+                console.log('✅ Firebase connected');
+                loadUsers();
+                loadTransactions();
+            } else {
+                showAlert('❌ Failed to connect to Firebase', 'error');
+            }
+        });
+
+        // Load users with payment info
+        async function loadUsers() {
+            try {
+                const snapshot = await database.ref('users').once('value');
+                const usersData = snapshot.val();
+
+                allUsers = [];
+
+                if (usersData) {
+                    Object.entries(usersData).forEach(([userId, userData]) => {
+                        if (userData.paymentMethod) {
+                            allUsers.push({
+                                id: userId,
+                                ...userData
+                            });
+                        }
+                    });
+                }
+
+                displayUsers(allUsers);
+                document.getElementById('user-count').textContent = allUsers.length;
+
+            } catch (error) {
+                console.error('Failed to load users:', error);
+                showAlert('❌ Failed to load users', 'error');
+            }
+        }
+
+        // Display users
+        function displayUsers(users) {
+            const userList = document.getElementById('user-list');
+
+            if (users.length === 0) {
+                userList.innerHTML = `
+                    <div class="empty-state">
+                        <p>No users with payment info</p>
+                        <p style="font-size: 13px;">Users need to add payment methods first</p>
+                    </div>
+                `;
+                return;
+            }
+
+            userList.innerHTML = users.map(user => `
+                <div class="user-item ${selectedUser && selectedUser.id === user.id ? 'selected' : ''}" 
+                     onclick="selectUser('${user.id}')">
+                    <div class="user-name">${user.username || user.email}</div>
+                    <div class="user-email">${user.email}</div>
+                    ${user.paymentMethod ? `
+                        <div class="user-card-info">
+                            💳 •••• ${user.paymentMethod.last4} | Exp: ${user.paymentMethod.expiry}
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        // Filter users
+        function filterUsers() {
+            const search = document.getElementById('user-search').value.toLowerCase();
+            const filtered = allUsers.filter(user => 
+                (user.username || '').toLowerCase().includes(search) ||
+                (user.email || '').toLowerCase().includes(search)
+            );
+            displayUsers(filtered);
+        }
+
+        // Select user
+        function selectUser(userId) {
+            selectedUser = allUsers.find(u => u.id === userId);
+
+            if (selectedUser) {
+                document.getElementById('no-user-selected').style.display = 'none';
+                document.getElementById('payment-form').style.display = 'block';
+
+                // Display user info
+                const userInfo = document.getElementById('selected-user-info');
+                userInfo.innerHTML = `
+                    <div style="margin-bottom: 10px;">
+                        <strong>Selected User:</strong> ${selectedUser.username || selectedUser.email}
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <strong>Email:</strong> ${selectedUser.email}
+                    </div>
+                    ${selectedUser.paymentMethod ? `
+                        <div class="card-number">
+                            💳 •••• •••• •••• ${selectedUser.paymentMethod.last4}
+                        </div>
+                        <div class="card-details">
+                            <span>Exp: ${selectedUser.paymentMethod.expiry}</span>
+                            <span>CVV: •••</span>
+                        </div>
+                    ` : ''}
+                `;
+
+                // Update display
+                displayUsers(allUsers);
+            }
+        }
+
+        // Clear selection
+        function clearSelection() {
+            selectedUser = null;
+            document.getElementById('no-user-selected').style.display = 'block';
+            document.getElementById('payment-form').style.display = 'none';
+            document.getElementById('charge-amount').value = '';
+            document.getElementById('charge-description').value = '';
+            document.getElementById('charge-notes').value = '';
+            displayUsers(allUsers);
+        }
+
+        // Process charge
+        async function processCharge(event) {
+            event.preventDefault();
+
+            if (!selectedUser) {
+                showAlert('❌ Please select a user first', 'error');
+                return;
+            }
+
+            const amount = parseFloat(document.getElementById('charge-amount').value);
+            const description = document.getElementById('charge-description').value;
+            const notes = document.getElementById('charge-notes').value;
+
+            if (amount <= 0) {
+                showAlert('❌ Amount must be greater than $0', 'error');
+                return;
+            }
+
+            const chargeBtn = document.getElementById('charge-btn');
+            chargeBtn.disabled = true;
+            chargeBtn.textContent = '⏳ Processing...';
+
+            try {
+                // Create transaction record
+                const transaction = {
+                    userId: selectedUser.id,
+                    username: selectedUser.username || selectedUser.email,
+                    email: selectedUser.email,
+                    amount: amount,
+                    description: description,
+                    notes: notes,
+                    timestamp: Date.now(),
+                    date: new Date().toISOString(),
+                    status: 'completed',
+                    paymentMethod: {
+                        last4: selectedUser.paymentMethod.last4,
+                        type: 'card'
+                    }
+                };
+
+                // Save to Firebase
+                await database.ref('transactions').push(transaction);
+
+                showAlert(`✅ Successfully charged $${amount.toFixed(2)} to ${selectedUser.username || selectedUser.email}`, 'success');
+
+                // Clear form
+                document.getElementById('charge-amount').value = '';
+                document.getElementById('charge-description').value = '';
+                document.getElementById('charge-notes').value = '';
+
+                // Reload transactions
+                loadTransactions();
+
+            } catch (error) {
+                console.error('Charge failed:', error);
+                showAlert('❌ Failed to process charge: ' + error.message, 'error');
+            } finally {
+                chargeBtn.disabled = false;
+                chargeBtn.textContent = '💳 Charge User';
+            }
+        }
+
+        // Load transactions
+        async function loadTransactions() {
+            try {
+                const snapshot = await database.ref('transactions').orderByChild('timestamp').limitToLast(20).once('value');
+                const transactions = [];
+
+                snapshot.forEach(child => {
+                    transactions.unshift({
+                        id: child.key,
+                        ...child.val()
+                    });
+                });
+
+                displayTransactions(transactions);
+
+            } catch (error) {
+                console.error('Failed to load transactions:', error);
+            }
+        }
+
+        // Display transactions
+        function displayTransactions(transactions) {
+            const transactionList = document.getElementById('transaction-list');
+
+            if (transactions.length === 0) {
+                transactionList.innerHTML = `
+                    <div class="empty-state">
+                        <p>No transactions yet</p>
+                    </div>
+                `;
+                return;
+            }
+
+            transactionList.innerHTML = transactions.map(tx => `
+                <div class="transaction-item">
+                    <div class="transaction-header">
+                        <div class="transaction-amount">$${tx.amount.toFixed(2)}</div>
+                        <div class="transaction-date">${new Date(tx.timestamp).toLocaleString()}</div>
+                    </div>
+                    <div class="transaction-user">
+                        <strong>${tx.username}</strong> - ${tx.email}
+                    </div>
+                    <div style="margin-top: 8px; font-size: 14px; color: var(--muted);">
+                        ${tx.description}
+                    </div>
+                    ${tx.notes ? `
+                        <div style="margin-top: 5px; font-size: 13px; color: var(--muted); font-style: italic;">
+                            Note: ${tx.notes}
+                        </div>
+                    ` : ''}
+                    <div style="margin-top: 8px; font-size: 12px; color: var(--accent2);">
+                        💳 •••• ${tx.paymentMethod.last4}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Show alert
+        function showAlert(message, type) {
+            const container = document.getElementById('alert-container');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            container.appendChild(alert);
+
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+
+        // Refresh users
+        function refreshUsers() {
+            loadUsers();
+            loadTransactions();
+            showAlert('🔄 Refreshed user list and transactions', 'info');
+        }
+    </script>
+</body>
+</html>
