@@ -189,11 +189,13 @@
             <p>Professional builds with secure checkout. Choose from our pre-configured builds or request a custom quote.</p>
         </div>
 
-        <!-- Setup Notice (Remove after Shopify integration) -->
+        <!-- Setup Notice -->
         <div class="setup-notice">
-            <h3>⚙️ Shopify Integration Setup</h3>
-            <p>To enable real payments, follow the guide in <code>docs/SHOPIFY-INTEGRATION.md</code></p>
-            <p>Once set up, replace the placeholder buttons below with Shopify Buy Buttons.</p>
+            <h3>⚙️ Stripe Integration - Almost Ready!</h3>
+            <p><strong>Step 1:</strong> Create Stripe account at <a href="https://stripe.com" target="_blank" style="color: #ffc107;">stripe.com</a></p>
+            <p><strong>Step 2:</strong> Create Payment Links for each product (see instructions below)</p>
+            <p><strong>Step 3:</strong> Replace the placeholder links in the code with your Stripe Payment Links</p>
+            <p style="margin-top: 10px; font-size: 14px;">📖 Full guide: <code>docs/STRIPE-INTEGRATION.md</code></p>
         </div>
 
         <!-- Products Grid -->
@@ -215,11 +217,17 @@
                         <li>✅ RGB Lighting</li>
                     </ul>
                     
-                    <!-- Shopify Buy Button will go here -->
+                    <!-- Stripe Payment Button -->
                     <div class="shopify-buy-button" id="gaming-pc-button">
-                        <button class="placeholder-button" onclick="alert('Set up Shopify to enable checkout! See docs/SHOPIFY-INTEGRATION.md')">
+                        <a href="https://buy.stripe.com/test_REPLACE_WITH_YOUR_LINK" 
+                           class="placeholder-button" 
+                           style="display: block; text-decoration: none; text-align: center;"
+                           target="_blank">
                             Order Now - $1,499
-                        </button>
+                        </a>
+                        <p style="font-size: 12px; color: var(--muted); margin-top: 10px; text-align: center;">
+                            🔒 Secure checkout powered by Stripe
+                        </p>
                     </div>
                 </div>
             </div>
@@ -241,11 +249,17 @@
                         <li>✅ Quiet Cooling</li>
                     </ul>
                     
-                    <!-- Shopify Buy Button will go here -->
+                    <!-- Stripe Payment Button -->
                     <div class="shopify-buy-button" id="workstation-button">
-                        <button class="placeholder-button" onclick="alert('Set up Shopify to enable checkout! See docs/SHOPIFY-INTEGRATION.md')">
+                        <a href="https://buy.stripe.com/test_REPLACE_WITH_YOUR_LINK" 
+                           class="placeholder-button" 
+                           style="display: block; text-decoration: none; text-align: center;"
+                           target="_blank">
                             Order Now - $2,199
-                        </button>
+                        </a>
+                        <p style="font-size: 12px; color: var(--muted); margin-top: 10px; text-align: center;">
+                            🔒 Secure checkout powered by Stripe
+                        </p>
                     </div>
                 </div>
             </div>
@@ -267,11 +281,17 @@
                         <li>✅ Compact Case</li>
                     </ul>
                     
-                    <!-- Shopify Buy Button will go here -->
+                    <!-- Stripe Payment Button -->
                     <div class="shopify-buy-button" id="budget-button">
-                        <button class="placeholder-button" onclick="alert('Set up Shopify to enable checkout! See docs/SHOPIFY-INTEGRATION.md')">
+                        <a href="https://buy.stripe.com/test_REPLACE_WITH_YOUR_LINK" 
+                           class="placeholder-button" 
+                           style="display: block; text-decoration: none; text-align: center;"
+                           target="_blank">
                             Order Now - $899
-                        </button>
+                        </a>
+                        <p style="font-size: 12px; color: var(--muted); margin-top: 10px; text-align: center;">
+                            🔒 Secure checkout powered by Stripe
+                        </p>
                     </div>
                 </div>
             </div>
