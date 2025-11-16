@@ -25,8 +25,9 @@ class NavigationBar {
     const announcementBar = document.createElement('div');
     announcementBar.className = 'announcement-bar';
     announcementBar.id = 'announcement-bar';
+    announcementBar.style.background = 'linear-gradient(135deg, #d97706, #ea580c)'; // Fall colors
     announcementBar.innerHTML = `
-      <span>🎉 <strong>New!</strong> User chat history now saves across devices! <a href="messaging.html">Try it now →</a></span>
+      <span>🦃 <strong>Happy Thanksgiving!</strong> Grateful for our amazing customers! 🍂 <a href="messaging.html" style="color: #fef3c7;">Chat with us →</a></span>
       <button onclick="window.navigationBar.closeAnnouncementBar()" style="
         position: absolute;
         right: 20px;
@@ -180,13 +181,27 @@ class NavigationBar {
     
     const activeClass = isCustomPCActive || isMessagingActive || isPaymentsActive ? 'active' : '';
     
-    // Build dropdown items - Messages for everyone
+    // Build dropdown items - Messages and Payments for everyone
     let dropdownItems = `
       <a href="messaging.html" class="dropdown-item">
         <div class="dropdown-item-icon">💬</div>
         <div class="dropdown-item-content">
           <div class="dropdown-item-title">Messages</div>
           <div class="dropdown-item-desc">Live chat support</div>
+        </div>
+      </a>
+      <a href="add-payment-method.html" class="dropdown-item">
+        <div class="dropdown-item-icon">💳</div>
+        <div class="dropdown-item-content">
+          <div class="dropdown-item-title">Payment Method</div>
+          <div class="dropdown-item-desc">Add or update card info</div>
+        </div>
+      </a>
+      <a href="payments.html" class="dropdown-item">
+        <div class="dropdown-item-icon">💰</div>
+        <div class="dropdown-item-content">
+          <div class="dropdown-item-title">Payments</div>
+          <div class="dropdown-item-desc">Send payments securely</div>
         </div>
       </a>
     `;
