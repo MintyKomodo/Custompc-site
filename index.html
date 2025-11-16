@@ -228,6 +228,26 @@
     h2{margin:0 0 var(--space);font-size:26px}
     .section{margin-top:10px}
 
+    /* Thanksgiving Decorations */
+    .thanksgiving-float {
+      position: fixed;
+      font-size: 30px;
+      animation: float 15s infinite ease-in-out;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.6;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      25% { transform: translateY(-20px) rotate(5deg); }
+      50% { transform: translateY(0) rotate(0deg); }
+      75% { transform: translateY(-15px) rotate(-5deg); }
+    }
+    .thanksgiving-float:nth-child(1) { top: 10%; left: 5%; animation-delay: 0s; }
+    .thanksgiving-float:nth-child(2) { top: 20%; right: 10%; animation-delay: 2s; }
+    .thanksgiving-float:nth-child(3) { top: 60%; left: 8%; animation-delay: 4s; }
+    .thanksgiving-float:nth-child(4) { top: 70%; right: 5%; animation-delay: 6s; }
+
     /* Request a PC */
     .request{
       background:linear-gradient(135deg, rgba(125,178,255,.16), rgba(124,242,230,.12)), var(--panel);
@@ -331,6 +351,12 @@
   </style>
 </head>
 <body>
+  <!-- Thanksgiving Floating Decorations -->
+  <div class="thanksgiving-float">🦃</div>
+  <div class="thanksgiving-float">🍂</div>
+  <div class="thanksgiving-float">🥧</div>
+  <div class="thanksgiving-float">🍁</div>
+  
   <!-- Announcement Bar -->
   <div class="announcement-bar" id="announcement-bar">
     <span>🎉 <strong>New!</strong> User chat history now saves across devices! <a href="messaging.html">Try it now →</a></span>
@@ -405,9 +431,11 @@
     </section>
 
     <!-- 2) Get Your Perfect PC -->
-    <section class="card pad section">
-      <h1>Get Your Perfect PC — No Guesswork</h1>
+    <section class="card pad section" style="border: 2px solid #d97706; background: linear-gradient(135deg, rgba(217, 119, 6, 0.05), rgba(234, 88, 12, 0.05));">
+      <div style="text-align: center; font-size: 32px; margin-bottom: 10px;">🦃 🍂 🥧</div>
+      <h1>Get Your Perfect PC — No Guesswork 🦃</h1>
       <p class="muted">Tell us what you actually do. We’ll return a clean parts list, expected performance, and an upgrade path.</p>
+      <p style="text-align: center; color: #d97706; font-weight: 600; margin: 15px 0 10px 0;">🍁 Happy Thanksgiving! Grateful for our amazing customers! 🍁</p>
       <div class="badges">
         <div class="badge"><b>24–48h</b><span class="muted">Turnaround</span></div>
         <div class="badge"><b>+20%</b><span class="muted">Avg perf vs. prebuilts*</span></div>

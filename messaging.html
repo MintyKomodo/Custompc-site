@@ -954,9 +954,6 @@
             <span>Send</span>
             <span class="send-icon">📤</span>
           </button>
-          <button onclick="testMessage()" style="margin-left: 10px; padding: 16px; background: #ff6b6b; color: white; border: none; border-radius: 8px; cursor: pointer;">
-            🧪 Test
-          </button>
         </div>
       </div>
       
@@ -2435,47 +2432,7 @@ This is an automated notification from the CustomPC.tech live messaging system.`
       }, 10);
     }
     
-    // Test function to debug messaging
-    function testMessage() {
-      console.log('🧪 Test message function called');
-      
-      const chat = document.getElementById('messaging-chat');
-      if (!chat) {
-        alert('❌ Chat container not found!');
-        return;
-      }
-      
-      // Add test message
-      const testDiv = document.createElement('div');
-      testDiv.className = 'message user';
-      testDiv.innerHTML = `
-        <div class="message-content">
-          🧪 Test message - ${new Date().toLocaleTimeString()}
-          <div class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
-        </div>
-      `;
-      chat.appendChild(testDiv);
-      chat.scrollTop = chat.scrollHeight;
-      
-      console.log('✅ Test message added');
-      
-      // Add test response
-      setTimeout(() => {
-        const responseDiv = document.createElement('div');
-        responseDiv.className = 'message system';
-        responseDiv.innerHTML = `
-          <div class="message-content">
-            ✅ Test successful! The messaging system is working.
-            <div class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
-          </div>
-        `;
-        chat.appendChild(responseDiv);
-        chat.scrollTop = chat.scrollHeight;
-        
-        console.log('✅ Test response added');
-      }, 1000);
-    }
-    
+
     // Delete all messages function
     async function deleteAllMessages() {
       if (!window.liveMessaging || !window.liveMessaging.isAdmin) {
