@@ -16,9 +16,26 @@ class NavigationBar {
   }
 
   init() {
+    this.createThanksgivingBanner();
     this.createAnnouncementBar();
     this.createNavbar();
     this.setupScrollEffects();
+  }
+
+  createThanksgivingBanner() {
+    const banner = document.createElement('div');
+    banner.className = 'thanksgiving-banner';
+    banner.innerHTML = `
+      <h2>🦃 Happy Thanksgiving! 🦃</h2>
+      <div class="turkey-walk">🦃</div>
+      <div class="leaf-fall">🍂</div>
+      <div class="leaf-fall">🍁</div>
+      <div class="leaf-fall">🍂</div>
+      <div class="leaf-fall">🍁</div>
+      <div class="leaf-fall">🍂</div>
+      <div class="leaf-fall">🍁</div>
+    `;
+    document.body.insertBefore(banner, document.body.firstChild);
   }
 
   createAnnouncementBar() {

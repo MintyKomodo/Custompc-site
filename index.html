@@ -228,25 +228,65 @@
     h2{margin:0 0 var(--space);font-size:26px}
     .section{margin-top:10px}
 
-    /* Thanksgiving Decorations */
-    .thanksgiving-float {
-      position: fixed;
-      font-size: 30px;
-      animation: float 15s infinite ease-in-out;
-      pointer-events: none;
+    /* Thanksgiving Banner */
+    .thanksgiving-banner {
+      background: linear-gradient(135deg, #d97706, #ea580c);
+      padding: 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 3px solid #b45309;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+    .thanksgiving-banner h2 {
+      color: #fef3c7;
+      margin: 0;
+      font-size: 28px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      position: relative;
+      z-index: 10;
+    }
+    
+    /* Walking Turkey */
+    .turkey-walk {
+      position: absolute;
+      font-size: 40px;
+      bottom: 10px;
+      animation: walk 15s linear infinite;
+      z-index: 5;
+    }
+    @keyframes walk {
+      0% { left: -60px; transform: scaleX(1); }
+      48% { transform: scaleX(1); }
+      50% { transform: scaleX(-1); }
+      98% { transform: scaleX(-1); }
+      100% { left: calc(100% + 60px); transform: scaleX(1); }
+    }
+    
+    /* Falling Leaves */
+    .leaf-fall {
+      position: absolute;
+      font-size: 25px;
+      animation: fall linear infinite;
+      opacity: 0.8;
       z-index: 1;
-      opacity: 0.6;
     }
-    @keyframes float {
-      0%, 100% { transform: translateY(0) rotate(0deg); }
-      25% { transform: translateY(-20px) rotate(5deg); }
-      50% { transform: translateY(0) rotate(0deg); }
-      75% { transform: translateY(-15px) rotate(-5deg); }
+    @keyframes fall {
+      0% { 
+        top: -50px; 
+        transform: rotate(0deg);
+      }
+      100% { 
+        top: 100%; 
+        transform: rotate(360deg);
+      }
     }
-    .thanksgiving-float:nth-child(1) { top: 10%; left: 5%; animation-delay: 0s; }
-    .thanksgiving-float:nth-child(2) { top: 20%; right: 10%; animation-delay: 2s; }
-    .thanksgiving-float:nth-child(3) { top: 60%; left: 8%; animation-delay: 4s; }
-    .thanksgiving-float:nth-child(4) { top: 70%; right: 5%; animation-delay: 6s; }
+    .leaf-fall:nth-child(1) { left: 10%; animation-duration: 8s; animation-delay: 0s; }
+    .leaf-fall:nth-child(2) { left: 25%; animation-duration: 10s; animation-delay: 2s; }
+    .leaf-fall:nth-child(3) { left: 40%; animation-duration: 9s; animation-delay: 4s; }
+    .leaf-fall:nth-child(4) { left: 60%; animation-duration: 11s; animation-delay: 1s; }
+    .leaf-fall:nth-child(5) { left: 75%; animation-duration: 8.5s; animation-delay: 3s; }
+    .leaf-fall:nth-child(6) { left: 90%; animation-duration: 10.5s; animation-delay: 5s; }
 
     /* Request a PC */
     .request{
@@ -351,11 +391,17 @@
   </style>
 </head>
 <body>
-  <!-- Thanksgiving Floating Decorations -->
-  <div class="thanksgiving-float">🦃</div>
-  <div class="thanksgiving-float">🍂</div>
-  <div class="thanksgiving-float">🥧</div>
-  <div class="thanksgiving-float">🍁</div>
+  <!-- Thanksgiving Banner -->
+  <div class="thanksgiving-banner">
+    <h2>🦃 Happy Thanksgiving! 🦃</h2>
+    <div class="turkey-walk">🦃</div>
+    <div class="leaf-fall">🍂</div>
+    <div class="leaf-fall">🍁</div>
+    <div class="leaf-fall">🍂</div>
+    <div class="leaf-fall">🍁</div>
+    <div class="leaf-fall">🍂</div>
+    <div class="leaf-fall">🍁</div>
+  </div>
   
   <!-- Announcement Bar -->
   <div class="announcement-bar" id="announcement-bar">
@@ -842,42 +888,6 @@
       setTimeout(() => {
         showKiroNotification('🎉 Complete navbar - Payments for everyone + Login/Signup buttons added!');
       }, 1000);
-    });
-  </script>
-
-  <!-- Crisp Chat -->
-  <script type="text/javascript">
-    // Wait for page to fully load before initializing Crisp
-    window.addEventListener('load', function() {
-      try {
-        window.$crisp=[];
-        window.CRISP_WEBSITE_ID="04b92cf5-f7ff-4191-9f98-44433c84752b";
-        
-        console.log('🚀 Loading Crisp Chat...');
-        
-        (function(){
-          d=document;
-          s=d.createElement("script");
-          s.src="https://client.crisp.chat/l.js";
-          s.async=1;
-          s.onload = function() {
-            console.log('✅ Crisp Chat loaded successfully');
-            // Notify when Crisp loads
-            if (window.showKiroNotification) {
-              showKiroNotification('💬 Crisp chat loaded successfully');
-            }
-          };
-          s.onerror = function() {
-            console.error('❌ Failed to load Crisp Chat');
-            if (window.showKiroNotification) {
-              showKiroNotification('❌ Crisp chat failed to load');
-            }
-          };
-          d.getElementsByTagName("head")[0].appendChild(s);
-        })();
-      } catch (error) {
-        console.error('Crisp initialization error:', error);
-      }
     });
   </script>
 

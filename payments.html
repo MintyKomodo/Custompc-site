@@ -2868,36 +2868,5 @@
     });
   </script>
 
-  <!-- Crisp Chat -->
-  <script type="text/javascript">
-    // Wait for page to fully load before initializing Crisp
-    window.addEventListener('load', function() {
-      try {
-        window.$crisp=[];
-        window.CRISP_WEBSITE_ID="04b92cf5-f7ff-4191-9f98-44433c84752b";
-        
-        console.log('🚀 Loading Crisp Chat...');
-        
-        (function(){
-          d=document;
-          s=d.createElement("script");
-          s.src="https://client.crisp.chat/l.js";
-          s.async=1;
-          s.onload = function() {
-            console.log('✅ Crisp Chat loaded successfully');
-            if (window.showKiroNotification) {
-              showKiroNotification('💬 Crisp chat active on admin panel');
-            }
-          };
-          s.onerror = function() {
-            console.error('❌ Failed to load Crisp Chat');
-          };
-          d.getElementsByTagName("head")[0].appendChild(s);
-        })();
-      } catch (error) {
-        console.error('Crisp initialization error:', error);
-      }
-    });
-  </script>
 </body>
 </html>
