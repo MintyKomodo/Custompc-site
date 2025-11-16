@@ -208,6 +208,22 @@
       }
 
       async onSubmit(formData) {
+        // Check if user already exists
+        const existingUser = localStorage.getItem('custompc_user');
+        const existingUsername = localStorage.getItem('custompc_username');
+        
+        if (existingUser || existingUsername) {
+          try {
+            const userData = existingUser ? JSON.parse(existingUser) : { username: existingUsername };
+            if (userData.username === formData.username) {
+              this.showError('This username is already taken. Please login instead or choose a different username.');
+              return;
+            }
+          } catch (e) {
+            // Continue if parsing fails
+          }
+        }
+        
         // Simulate signup process
         await new Promise(resolve => setTimeout(resolve, 2000));
         
