@@ -16,36 +16,17 @@ class NavigationBar {
   }
 
   init() {
-    this.createThanksgivingBanner();
     this.createAnnouncementBar();
     this.createNavbar();
     this.setupScrollEffects();
-  }
-
-  createThanksgivingBanner() {
-    const banner = document.createElement('div');
-    banner.className = 'thanksgiving-banner';
-    banner.innerHTML = `
-      <h2>Happy thanksgiving - 5% off all builds! Thank you for all of our customers! God bless america</h2>
-      <div class="turkey-walk">🦃</div>
-      <div class="leaf-fall">🍂</div>
-      <div class="leaf-fall">🍁</div>
-      <div class="leaf-fall">🍂</div>
-      <div class="leaf-fall">🍁</div>
-      <div class="leaf-fall">🍂</div>
-      <div class="leaf-fall">🍁</div>
-      <div class="leaf-fall">🍂</div>
-    `;
-    document.body.insertBefore(banner, document.body.firstChild);
   }
 
   createAnnouncementBar() {
     const announcementBar = document.createElement('div');
     announcementBar.className = 'announcement-bar';
     announcementBar.id = 'announcement-bar';
-    announcementBar.style.background = 'linear-gradient(135deg, #d97706, #ea580c)'; // Fall colors
     announcementBar.innerHTML = `
-      <span>🦃 <strong>Happy Thanksgiving!</strong> Grateful for our amazing customers! 🍂 <a href="messaging.html" style="color: #fef3c7;">Chat with us →</a></span>
+      <span>🎉 <strong>New!</strong> User chat history now saves across devices! <a href="messaging.html">Try it now →</a></span>
       <button onclick="window.navigationBar.closeAnnouncementBar()" style="
         position: absolute;
         right: 20px;
