@@ -202,17 +202,26 @@ class NavigationBar {
   }
 
   checkIfAdmin() {
-    // Check if shared auth is available
-    if (window.sharedAuth && typeof window.sharedAuth.isCurrentUserAdmin === 'function') {
+    // Admin credentials for validation
+    const adminCredentials = {
+      username: "Minty-Komodo",
+      email: "support@custompc.tech"
+    };
+    
+    // Check if shared auth is available and has currentUser loaded
+    if (window.sharedAuth && typeof window.sharedAuth.isCurrentUserAdmin === 'function' && window.sharedAuth.currentUser) {
       return window.sharedAuth.isCurrentUserAdmin();
     }
     
-    // Fallback: check localStorage
+    // Fallback: check localStorage with correct key
     try {
-      const currentUser = localStorage.getItem('currentUser');
+      const currentUser = localStorage.getItem('custompc_user');
       if (currentUser) {
         const user = JSON.parse(currentUser);
-        return user.role === 'admin' || user.isAdmin === true;
+        // Check both role and credentials match
+        return (user.role === 'admin' || user.isAdmin === true) &&
+               user.username === adminCredentials.username &&
+               user.email === adminCredentials.email;
       }
     } catch (error) {
       console.error('Error checking admin status:', error);

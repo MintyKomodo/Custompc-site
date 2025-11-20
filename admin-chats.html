@@ -665,22 +665,36 @@
             }
 
             checkAdminStatus() {
-                if (window.sharedAuth && typeof window.sharedAuth.isCurrentUserAdmin === 'function') {
+                // Admin credentials for validation
+                const adminCredentials = {
+                    username: "Minty-Komodo",
+                    email: "support@custompc.tech"
+                };
+                
+                // Try using sharedAuth if available and has currentUser loaded
+                if (window.sharedAuth && typeof window.sharedAuth.isCurrentUserAdmin === 'function' && window.sharedAuth.currentUser) {
                     this.isAdmin = window.sharedAuth.isCurrentUserAdmin();
                 } else {
-                    // Fallback check
+                    // Fallback check - verify username and email match admin credentials
                     const currentUser = localStorage.getItem('custompc_user');
                     if (currentUser) {
                         try {
                             const user = JSON.parse(currentUser);
-                            this.isAdmin = user.role === 'admin' || user.isAdmin === true;
+                            // Check both role and credentials match
+                            this.isAdmin = (user.role === 'admin' || user.isAdmin === true) &&
+                                         user.username === adminCredentials.username &&
+                                         user.email === adminCredentials.email;
                         } catch (e) {
+                            console.error('Error parsing user data:', e);
                             this.isAdmin = false;
                         }
+                    } else {
+                        this.isAdmin = false;
                     }
                 }
                 
                 console.log('Admin status:', this.isAdmin);
+                console.log('Current user:', window.sharedAuth?.currentUser || localStorage.getItem('custompc_user'));
             }
 
             async initFirebase() {
