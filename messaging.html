@@ -1272,25 +1272,239 @@
           return true;
         }
         
-        // If user is logged in, allow access even without email
+        // If user is logged in but doesn't have email, show popup
         if (currentUser && currentUser.username && currentUser.username !== 'Anonymous') {
+          if (!currentUser.email) {
+            this.showEmailPopup();
+            return false;
+          }
+          
+          // Validate email format
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(currentUser.email)) {
+            this.showEmailPopup();
+            return false;
+          }
+          
           return true;
         }
         
-        // If not logged in, require email
-        if (!currentUser || !currentUser.email) {
-          this.showEmailRequiredMessage();
-          return false;
-        }
-        
-        // Validate email format
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(currentUser.email)) {
+        // If not logged in, require login
+        if (!currentUser) {
           this.showEmailRequiredMessage();
           return false;
         }
         
         return true;
+      }
+      
+      showEmailPopup() {
+        // Create modal overlay with blur
+        const overlay = document.createElement('div');
+        overlay.id = 'email-popup-overlay';
+        overlay.style.cssText = `
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.7);
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
+          z-index: 10000;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          animation: fadeIn 0.3s ease;
+        `;
+        
+        // Create modal popup
+        const popup = document.createElement('div');
+        popup.id = 'email-popup';
+        popup.style.cssText = `
+          background: var(--panel);
+          border: 1px solid var(--border);
+          border-radius: var(--radius);
+          padding: 40px;
+          max-width: 500px;
+          width: 90%;
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+          animation: slideUp 0.3s ease;
+        `;
+        
+        popup.innerHTML = `
+          <div style="text-align: center; margin-bottom: 24px;">
+            <div style="font-size: 48px; margin-bottom: 16px;">📧</div>
+            <h2 style="color: var(--ink); margin: 0 0 8px 0; font-size: 24px;">Please Provide Us Your Email</h2>
+            <p style="color: var(--muted); margin: 0; font-size: 14px; line-height: 1.5;">
+              We need your email address to respond to your messages and keep you updated.
+            </p>
+          </div>
+          <form id="email-popup-form" style="margin-bottom: 20px;">
+            <div style="margin-bottom: 20px;">
+              <input 
+                type="email" 
+                id="email-popup-input" 
+                placeholder="your.email@example.com" 
+                required
+                autocomplete="email"
+                style="
+                  width: 100%;
+                  padding: 14px 18px;
+                  background: var(--panel2);
+                  border: 2px solid var(--border);
+                  border-radius: 12px;
+                  color: var(--ink);
+                  font-size: 15px;
+                  outline: none;
+                  transition: all 0.3s ease;
+                  box-sizing: border-box;
+                "
+                onfocus="this.style.borderColor='var(--accent1)'; this.style.boxShadow='0 0 0 3px rgba(125, 178, 255, 0.2)'"
+                onblur="this.style.borderColor='var(--border)'; this.style.boxShadow='none'"
+              />
+              <div id="email-error" style="color: #ff6b6b; font-size: 13px; margin-top: 8px; display: none;"></div>
+            </div>
+            <div style="display: flex; gap: 12px;">
+              <button 
+                type="submit"
+                style="
+                  flex: 1;
+                  padding: 14px 24px;
+                  background: linear-gradient(135deg, var(--accent1), var(--accent2));
+                  color: #0b0f1a;
+                  border: none;
+                  border-radius: 12px;
+                  font-weight: 600;
+                  font-size: 15px;
+                  cursor: pointer;
+                  transition: all 0.2s ease;
+                "
+                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 25px rgba(125, 178, 255, 0.4)'"
+                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'"
+              >
+                Submit Email
+              </button>
+            </div>
+          </form>
+        `;
+        
+        overlay.appendChild(popup);
+        document.body.appendChild(overlay);
+        
+        // Focus input
+        setTimeout(() => {
+          const input = document.getElementById('email-popup-input');
+          if (input) {
+            input.focus();
+          }
+        }, 100);
+        
+        // Handle form submission
+        const form = document.getElementById('email-popup-form');
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          this.handleEmailSubmit();
+        });
+        
+        // Add CSS animations
+        if (!document.getElementById('email-popup-styles')) {
+          const style = document.createElement('style');
+          style.id = 'email-popup-styles';
+          style.textContent = `
+            @keyframes fadeIn {
+              from { opacity: 0; }
+              to { opacity: 1; }
+            }
+            @keyframes slideUp {
+              from { 
+                opacity: 0;
+                transform: translateY(20px);
+              }
+              to { 
+                opacity: 1;
+                transform: translateY(0);
+              }
+            }
+          `;
+          document.head.appendChild(style);
+        }
+      }
+      
+      async handleEmailSubmit() {
+        const input = document.getElementById('email-popup-input');
+        const errorDiv = document.getElementById('email-error');
+        const email = input.value.trim();
+        
+        // Validate email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          errorDiv.textContent = 'Please enter a valid email address';
+          errorDiv.style.display = 'block';
+          input.style.borderColor = '#ff6b6b';
+          return;
+        }
+        
+        // Get current user
+        const currentUser = this.getCurrentUser();
+        if (!currentUser) {
+          errorDiv.textContent = 'Error: User not found. Please refresh the page.';
+          errorDiv.style.display = 'block';
+          return;
+        }
+        
+        // Update user data with email
+        try {
+          const userData = {
+            username: currentUser.username,
+            email: email,
+            loginTime: currentUser.loginTime || new Date().toISOString()
+          };
+          
+          localStorage.setItem('custompc_user', JSON.stringify(userData));
+          
+          // Update shared auth if available
+          if (window.sharedAuth) {
+            window.sharedAuth.currentUser = userData;
+            window.sharedAuth.refreshAuthUI();
+          }
+          
+          // Close popup with animation
+          const overlay = document.getElementById('email-popup-overlay');
+          overlay.style.animation = 'fadeOut 0.3s ease';
+          setTimeout(() => {
+            overlay.remove();
+          }, 300);
+          
+          // Continue initialization
+          this.checkAdminStatus();
+          this.setupInputHandlers();
+          this.initializeBasicChat();
+          await this.loadUserChatHistory();
+          this.initializeChatSession();
+          this.updateConnectionStatus();
+          this.autoResizeTextarea();
+          this.updateSessionInfo();
+          this.startSessionTimer();
+          
+          if (this.isAdmin) {
+            this.setupAdminInterface();
+          } else {
+            this.notifyAdmin();
+          }
+          
+          // Show success message
+          setTimeout(() => {
+            if (window.showKiroNotification) {
+              showKiroNotification('✅ Email saved! You can now use messaging.');
+            }
+          }, 500);
+          
+        } catch (error) {
+          console.error('Failed to save email:', error);
+          errorDiv.textContent = 'Failed to save email. Please try again.';
+          errorDiv.style.display = 'block';
+        }
       }
       
       showEmailRequiredMessage() {

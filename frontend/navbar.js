@@ -69,6 +69,7 @@ class NavigationBar {
     header.innerHTML = `
       <div class="brand">
         <a href="index.html">
+          <span class="brand-text">CustomPC</span>
           <img src="images/logo.png" alt="CustomPC.tech logo"
             style="height:60px;width:60px;display:inline-block;vertical-align:middle;object-fit:contain;border-radius:50%;" />
         </a>

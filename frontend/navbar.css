@@ -77,14 +77,24 @@ header.scrolled {
   border: 6px solid rgba(255, 255, 255, 0.9);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8), 0 0 0 2px rgba(255, 255, 255, 0.3), 0 0 30px rgba(125, 178, 255, 0.4);
   background: rgba(255, 255, 255, 0.15);
-  filter: brightness(1.4) contrast(1.6);
+  filter: brightness(1.8) contrast(1.8) saturate(1.4);
   transition: all 0.3s ease;
 }
 
 .brand a:hover img {
   border-color: rgba(255, 255, 255, 1);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.9), 0 0 0 3px rgba(255, 255, 255, 0.5), 0 0 50px rgba(125, 178, 255, 0.6);
-  filter: brightness(1.6) contrast(1.8);
+  filter: brightness(2.0) contrast(2.0) saturate(1.6);
+}
+
+/* CustomPC text next to logo */
+.brand-text {
+  color: white;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-right: 8px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 /* Navigation Pills */
