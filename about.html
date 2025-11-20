@@ -238,6 +238,18 @@
       border: 1px solid var(--border);
       background: #0f1830
     }
+
+    /* Scroll Reveal Animation */
+    .scroll-reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    }
+
+    .scroll-reveal.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
   </style>
   <link rel="stylesheet" href="frontend/navbar.css">
 </head>
@@ -265,9 +277,9 @@
     <section>
       <div class="card pad">
         <h3 style="margin:0 0 8px">Our Story</h3>
-        <p class="muted">My journey began with a shared passion for building, that sparked at the age of nine, when I constructed my first PC with my brother. That initial experience revealed the profound satisfaction of crafting a machine tuned exactly to personal requirements. This is a feeling that factory made pre-builts simply cannot replicate. After, I realized that the off-the-shelf markets and sales, forces customers into compromises, often leading to overspending on features they don't need, or under-powering critical components. For example, a professional needing a high-performance CAD system might find a pre-built that allocates too much budget to excessive storage while bottlenecking the crucial drivers and graphics card. My core thoughts are built on delivering maximum value: I empower you to customize your rig, allocating power precisely where you need it most. This ensures you gain superior performance in your essential specs, be it processing, rendering, or specific I/O, without paying for extraneous features. Your investment will be perfectly aligned with your unique goals.</p>
-        <p class="muted" style="margin-top:16px">Over the years, I've refined my approach to PC building through countless builds, each one teaching me something new about component compatibility, thermal management, and performance optimization. I've seen firsthand how a well-designed custom build can outperform pre-built systems that cost significantly more, simply because every component is chosen with purpose. This philosophy extends beyond just selecting parts—it's about understanding your workflow, your priorities, and your future needs. Whether you're a competitive gamer needing every frame possible, a content creator working with massive 4K files, or a professional running complex simulations, I ensure your system is built to excel at what matters most to you.</p>
-        <p class="muted" style="margin-top:16px">Every build I create goes through rigorous testing and validation. I don't just assemble parts and ship them out—I stress test each system, verify thermals under load, optimize cable management for airflow, and ensure stability across your specific use cases. This attention to detail means you're getting more than just a computer; you're getting a tool that's been fine-tuned to deliver reliable, consistent performance exactly where you need it. The satisfaction of seeing a custom build come together perfectly, with every component working in harmony, is what drives me to continue building and refining my craft.</p>
+        <p class="muted scroll-reveal">My journey began with a shared passion for building, that sparked at the age of nine, when I constructed my first PC with my brother. That initial experience revealed the profound satisfaction of crafting a machine tuned exactly to personal requirements. This is a feeling that factory made pre-builts simply cannot replicate. After, I realized that the off-the-shelf markets and sales, forces customers into compromises, often leading to overspending on features they don't need, or under-powering critical components. For example, a professional needing a high-performance CAD system might find a pre-built that allocates too much budget to excessive storage while bottlenecking the crucial drivers and graphics card. My core thoughts are built on delivering maximum value: I empower you to customize your rig, allocating power precisely where you need it most. This ensures you gain superior performance in your essential specs, be it processing, rendering, or specific I/O, without paying for extraneous features. Your investment will be perfectly aligned with your unique goals.</p>
+        <p class="muted scroll-reveal" style="margin-top:16px">Over the years, I've refined my approach to PC building through countless builds, each one teaching me something new about component compatibility, thermal management, and performance optimization. I've seen firsthand how a well-designed custom build can outperform pre-built systems that cost significantly more, simply because every component is chosen with purpose. This philosophy extends beyond just selecting parts—it's about understanding your workflow, your priorities, and your future needs. Whether you're a competitive gamer needing every frame possible, a content creator working with massive 4K files, or a professional running complex simulations, I ensure your system is built to excel at what matters most to you.</p>
+        <p class="muted scroll-reveal" style="margin-top:16px">Every build I create goes through rigorous testing and validation. I don't just assemble parts and ship them out—I stress test each system, verify thermals under load, optimize cable management for airflow, and ensure stability across your specific use cases. This attention to detail means you're getting more than just a computer; you're getting a tool that's been fine-tuned to deliver reliable, consistent performance exactly where you need it. The satisfaction of seeing a custom build come together perfectly, with every component working in harmony, is what drives me to continue building and refining my craft.</p>
       </div>
     </section>
 
@@ -336,6 +348,30 @@
   
   <!-- Shared Navigation Bar -->
   <script src="frontend/navbar.js"></script>
+  
+  <script>
+    // Scroll Reveal Animation
+    (function() {
+      const revealElements = document.querySelectorAll('.scroll-reveal');
+      
+      const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+            // Optionally stop observing after reveal
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      });
+
+      revealElements.forEach(element => {
+        revealObserver.observe(element);
+      });
+    })();
+  </script>
   
 </body>
 
