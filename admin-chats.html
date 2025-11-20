@@ -94,7 +94,8 @@
             display: grid;
             grid-template-columns: 350px 1fr;
             gap: 20px;
-            height: calc(100vh - 250px);
+            height: calc(100vh - 250px - 100px); /* Account for fixed input at bottom */
+            max-height: calc(100vh - 250px - 100px);
         }
 
         .chats-sidebar {
@@ -215,6 +216,15 @@
             overflow: hidden;
             min-height: 0;
             height: 100%;
+            max-height: 100%;
+        }
+
+        #chat-view-content {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            min-height: 0;
+            overflow: hidden;
         }
 
         .chat-view-header {
@@ -234,17 +244,17 @@
         }
 
         .chat-messages {
-            flex: 1;
+            flex: 1 1 0;
             padding: 20px;
-            padding-bottom: 120px; /* Space for fixed input area */
-            overflow-y: auto;
+            padding-bottom: 20px;
+            overflow-y: auto !important;
             overflow-x: hidden;
             display: flex;
             flex-direction: column;
             gap: 15px;
             min-height: 0;
-            max-height: 100%;
             scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
         }
         
         .chat-messages::-webkit-scrollbar {
@@ -267,6 +277,7 @@
 
         .chat-messages {
             position: relative;
+            flex-shrink: 0;
         }
 
         .scroll-to-bottom-btn {
