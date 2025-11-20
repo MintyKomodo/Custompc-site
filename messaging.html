@@ -2120,18 +2120,67 @@ This is an automated notification from the CustomPC.tech live messaging system.`
       }
       
       startMessageListener() {
-        if (this.currentChatId) {
-          window.firebaseChatManager.listenForMessages(this.currentChatId, (message) => {
-            // Only display messages that aren't from the current user
-            const sharedAuth = window.sharedAuth;
-            const currentUser = sharedAuth ? sharedAuth.getCurrentUser() : null;
-            const isCurrentUser = message.userId === (currentUser ? currentUser.username : 'Anonymous User');
-            
-            if (!isCurrentUser) {
-              this.displayMessage(message.content, message.type, message.timestamp);
-            }
-          });
+        // Remove any existing listener first to prevent duplicates
+        if (this.currentMessageListener && this.currentChatId) {
+          try {
+            const messagesRef = window.firebaseChatManager.database.ref(`chats/${this.currentChatId}/messages`);
+            messagesRef.off('child_added', this.currentMessageListener);
+            console.log('🔇 Stopped previous message listener for chat:', this.currentChatId);
+          } catch (e) {
+            console.warn('Error removing old listener:', e);
+          }
         }
+        
+        if (!this.currentChatId) {
+          console.warn('⚠️ No currentChatId - cannot start message listener');
+          return;
+        }
+        
+        console.log('👂 Starting message listener for MY chat session:', this.currentChatId);
+        
+        const sharedAuth = window.sharedAuth;
+        const currentUser = sharedAuth ? sharedAuth.getCurrentUser() : null;
+        const currentUsername = currentUser ? currentUser.username : 'Anonymous User';
+        
+        // Create a direct listener scoped to THIS specific chat session only
+        const messagesRef = window.firebaseChatManager.database.ref(`chats/${this.currentChatId}/messages`);
+        const startTime = Date.now();
+        
+        this.currentMessageListener = messagesRef.on('child_added', (snapshot) => {
+          const message = snapshot.val();
+          
+          if (!message) return;
+          
+          // Only show messages that are:
+          // 1. Admin messages (type === 'admin')
+          // 2. NOT from the current user
+          const messageUsername = message.username || message.userId || '';
+          const isCurrentUser = messageUsername === currentUsername;
+          const isAdminMessage = message.type === 'admin';
+          
+          // Only display admin messages (not our own user messages)
+          if (isAdminMessage && !isCurrentUser) {
+            console.log('📨 Received admin message in MY chat:', this.currentChatId, message.text || 'Image');
+            
+            // Display the message
+            const messageText = message.text || (message.image ? '📷 Image' : '');
+            this.displayMessage(messageText, 'admin', message.timestamp);
+            
+            // Also display image if present
+            if (message.image) {
+              addMessageToChat('📷 Image', 'admin', 'Admin', message.image);
+            }
+          } else {
+            console.log('🔇 Ignoring message (not admin or from me):', {
+              type: message.type,
+              username: messageUsername,
+              isCurrentUser: isCurrentUser,
+              isAdmin: isAdminMessage
+            });
+          }
+        });
+        
+        console.log('✅ Message listener active for chat:', this.currentChatId);
       }
       
       saveChatSession(chatSession) {
@@ -3182,45 +3231,13 @@ This is an automated notification from the CustomPC.tech live messaging system.`
       }
     }
     
-    // Listen for admin responses from Firebase
+    // Listen for admin responses from Firebase - REMOVED
+    // This function is no longer needed because startMessageListener() handles all message listening
+    // Keeping it for backwards compatibility but it won't be called
     function listenForAdminResponses() {
-      if (!window.firebaseChatManager || !window.firebaseChatManager.isInitialized) {
-        console.log('Firebase not available for listening');
-        return;
-      }
-      
-      // Use the unique chat session ID if available
-      let chatRoomId = null;
-      
-      if (window.liveMessaging && window.liveMessaging.currentChatId) {
-        chatRoomId = window.liveMessaging.currentChatId;
-        console.log('👂 Listening for admin responses in chat session:', chatRoomId);
-      } else {
-        // Fallback: use username-based ID (for backwards compatibility)
-        const username = getCurrentUsername();
-        chatRoomId = 'chat_' + username.replace(/[^a-zA-Z0-9]/g, '_');
-        console.log('⚠️ No chat session found, using fallback chat room:', chatRoomId);
-      }
-      
-      if (!chatRoomId) {
-        console.error('❌ No chat room ID available for listening');
-        return;
-      }
-      
-      // Listen for new messages in user's private chat room
-      const messagesRef = window.firebaseChatManager.database.ref(`chats/${chatRoomId}/messages`);
-      const startTime = Date.now();
-      
-      messagesRef.on('child_added', (snapshot) => {
-        const message = snapshot.val();
-        
-        // Only show NEW admin messages (not old ones from history, not our own messages)
-        if (message && message.type === 'admin' && message.timestamp > startTime) {
-          console.log('📨 Received NEW admin response:', message.text);
-          addMessageToChat(message.text, 'admin', 'Admin');
-          saveToHistory(message.text, 'admin', 'Admin');
-        }
-      });
+      console.log('⚠️ listenForAdminResponses() is deprecated - use startMessageListener() instead');
+      // Don't create duplicate listeners - startMessageListener() already handles this
+      return;
     }
 
     // Initialize Firebase Chat Manager
@@ -3238,8 +3255,8 @@ This is an automated notification from the CustomPC.tech live messaging system.`
             console.log('✅ Firebase ready for messaging');
             addMessageToChat('🔥 Connected! Send a message and our team will respond.', 'system', 'System');
             
-            // Start listening for admin responses
-            listenForAdminResponses();
+            // Message listening is handled by startMessageListener() in initializeChatSession()
+            // No need to call listenForAdminResponses() separately
           } else {
             console.log('⚠️ Firebase not available, using local mode');
             addMessageToChat('💬 Chat ready! Messages will be sent via email.', 'system', 'System');
