@@ -1311,33 +1311,35 @@
       }
       
       checkEmailRequirement() {
-        const currentUser = this.getCurrentUser();
-        
         // Admin users don't need email check
         if (window.sharedAuth && window.sharedAuth.isCurrentUserAdmin()) {
           return true;
         }
         
-        // If user is logged in but doesn't have email, show popup
-        if (currentUser && currentUser.username && currentUser.username !== 'Anonymous') {
-          if (!currentUser.email) {
-            this.showEmailPopup();
-            return false;
+        // Check if user has email stored (either in user profile or session)
+        let userEmail = null;
+        const currentUser = this.getCurrentUser();
+        
+        if (currentUser && currentUser.email) {
+          userEmail = currentUser.email;
+        } else {
+          // Check session storage for email
+          const sessionEmail = sessionStorage.getItem('messaging_email');
+          if (sessionEmail) {
+            userEmail = sessionEmail;
           }
-          
-          // Validate email format
-          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          if (!emailRegex.test(currentUser.email)) {
-            this.showEmailPopup();
-            return false;
-          }
-          
-          return true;
         }
         
-        // If not logged in, require login
-        if (!currentUser) {
-          this.showEmailRequiredMessage();
+        // If no email found, show popup
+        if (!userEmail) {
+          this.showEmailPopup();
+          return false;
+        }
+        
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(userEmail)) {
+          this.showEmailPopup();
           return false;
         }
         
@@ -1491,124 +1493,66 @@
           return;
         }
         
-        // Get current user
+        // Save email to session storage (works for both logged in and anonymous users)
+        sessionStorage.setItem('messaging_email', email);
+        
+        // If user is logged in, also update their profile
         const currentUser = this.getCurrentUser();
-        if (!currentUser) {
-          errorDiv.textContent = 'Error: User not found. Please refresh the page.';
-          errorDiv.style.display = 'block';
-          return;
+        if (currentUser && currentUser.username) {
+          try {
+            const userData = {
+              username: currentUser.username,
+              email: email,
+              loginTime: currentUser.loginTime || new Date().toISOString()
+            };
+            
+            localStorage.setItem('custompc_user', JSON.stringify(userData));
+            
+            // Update shared auth if available
+            if (window.sharedAuth) {
+              window.sharedAuth.currentUser = userData;
+              window.sharedAuth.refreshAuthUI();
+            }
+          } catch (error) {
+            console.error('Failed to update user profile:', error);
+          }
         }
         
-        // Update user data with email
-        try {
-          const userData = {
-            username: currentUser.username,
-            email: email,
-            loginTime: currentUser.loginTime || new Date().toISOString()
-          };
-          
-          localStorage.setItem('custompc_user', JSON.stringify(userData));
-          
-          // Update shared auth if available
-          if (window.sharedAuth) {
-            window.sharedAuth.currentUser = userData;
-            window.sharedAuth.refreshAuthUI();
-          }
-          
-          // Close popup with animation
-          const overlay = document.getElementById('email-popup-overlay');
-          overlay.style.animation = 'fadeOut 0.3s ease';
-          setTimeout(() => {
-            overlay.remove();
-          }, 300);
-          
-          // Enable messaging interface
-          this.enableMessagingInterface();
-          
-          // Continue initialization
-          this.checkAdminStatus();
-          this.setupInputHandlers();
-          this.initializeBasicChat();
-          await this.loadUserChatHistory();
-          this.initializeChatSession();
-          this.updateConnectionStatus();
-          this.autoResizeTextarea();
-          this.updateSessionInfo();
-          this.startSessionTimer();
-          
-          if (this.isAdmin) {
-            this.setupAdminInterface();
-          } else {
-            this.notifyAdmin();
-          }
-          
-          // Show success message
-          setTimeout(() => {
-            if (window.showKiroNotification) {
-              showKiroNotification('✅ Email saved! You can now use messaging.');
-            }
-          }, 500);
-          
-        } catch (error) {
-          console.error('Failed to save email:', error);
-          errorDiv.textContent = 'Failed to save email. Please try again.';
-          errorDiv.style.display = 'block';
+        // Close popup with animation
+        const overlay = document.getElementById('email-popup-overlay');
+        overlay.style.animation = 'fadeOut 0.3s ease';
+        setTimeout(() => {
+          overlay.remove();
+        }, 300);
+        
+        // Enable messaging interface
+        this.enableMessagingInterface();
+        
+        // Continue initialization
+        this.checkAdminStatus();
+        this.setupInputHandlers();
+        this.initializeBasicChat();
+        await this.loadUserChatHistory();
+        this.initializeChatSession();
+        this.updateConnectionStatus();
+        this.autoResizeTextarea();
+        this.updateSessionInfo();
+        this.startSessionTimer();
+        
+        if (this.isAdmin) {
+          this.setupAdminInterface();
+        } else {
+          this.notifyAdmin();
         }
+        
+        // Show success message
+        setTimeout(() => {
+          if (window.showKiroNotification) {
+            showKiroNotification('✅ Email saved! You can now use messaging.');
+          }
+        }, 500);
       }
       
-      showEmailRequiredMessage() {
-        const messagingContainer = document.getElementById('messaging-container');
-        const welcomeSection = document.querySelector('.welcome-section');
-        
-        if (messagingContainer) {
-          messagingContainer.style.display = 'none';
-        }
-        
-        if (welcomeSection) {
-          welcomeSection.style.display = 'none';
-        }
-        
-        // Create email required message
-        const emailRequiredDiv = document.createElement('div');
-        emailRequiredDiv.className = 'email-required-message';
-        emailRequiredDiv.style.cssText = `
-          background: var(--panel);
-          border: 1px solid var(--border);
-          border-radius: var(--radius);
-          padding: 40px;
-          text-align: center;
-          max-width: 600px;
-          margin: 40px auto;
-        `;
-        
-        emailRequiredDiv.innerHTML = `
-          <div style="font-size: 48px; margin-bottom: 20px;">📧</div>
-          <h2 style="color: var(--ink); margin-bottom: 16px;">Login Required</h2>
-          <p style="color: var(--muted); margin-bottom: 24px; line-height: 1.6;">
-            To use the messaging system, you need to be logged in. Please sign up or log in to continue.
-          </p>
-          <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-            <a href="signup.html" class="pill" style="
-              background: linear-gradient(135deg, var(--accent1), var(--accent2));
-              color: var(--bg);
-              text-decoration: none;
-              padding: 12px 24px;
-              font-weight: 600;
-            ">Sign Up</a>
-            <a href="login.html" class="pill" style="
-              background: var(--panel2);
-              border: 1px solid var(--border);
-              text-decoration: none;
-              padding: 12px 24px;
-            ">Login</a>
-          </div>
-        `;
-        
-        const wrap = document.querySelector('.wrap');
-        if (wrap) {
-          wrap.insertBefore(emailRequiredDiv, wrap.firstChild);
-        }
-      }
       
       initializeBasicChat() {
         console.log('🔧 Initializing basic chat interface');
@@ -1873,7 +1817,17 @@
           const sharedAuth = window.sharedAuth;
           const currentUser = sharedAuth ? sharedAuth.getCurrentUser() : null;
           const userName = currentUser && currentUser.username !== 'Anonymous' ? currentUser.username : 'Anonymous User';
-          const userEmail = currentUser && currentUser.email ? currentUser.email : 'No email provided';
+          
+          // Get email from user profile or session storage
+          let userEmail = 'No email provided';
+          if (currentUser && currentUser.email) {
+            userEmail = currentUser.email;
+          } else {
+            const sessionEmail = sessionStorage.getItem('messaging_email');
+            if (sessionEmail) {
+              userEmail = sessionEmail;
+            }
+          }
           
           // Send notification email
           const formData = new FormData();
@@ -2111,7 +2065,17 @@ This is an automated notification from the CustomPC.tech live messaging system.`
             const sharedAuth = window.sharedAuth;
             const currentUser = sharedAuth ? sharedAuth.getCurrentUser() : null;
             const userName = currentUser && currentUser.username !== 'Anonymous' ? currentUser.username : 'Anonymous User';
-            const userEmail = currentUser && currentUser.email ? currentUser.email : 'No email provided';
+            
+            // Get email from user profile or session storage
+            let userEmail = 'No email provided';
+            if (currentUser && currentUser.email) {
+              userEmail = currentUser.email;
+            } else {
+              const sessionEmail = sessionStorage.getItem('messaging_email');
+              if (sessionEmail) {
+                userEmail = sessionEmail;
+              }
+            }
             
             const chatData = {
               userName: userName,
@@ -2594,7 +2558,18 @@ This is an automated notification from the CustomPC.tech live messaging system.`
       const userForEmailCheck = window.sharedAuth ? window.sharedAuth.getCurrentUser() : null;
       const userIsAdmin = window.sharedAuth && window.sharedAuth.isCurrentUserAdmin();
       
-      if (!userIsAdmin && userForEmailCheck && (!userForEmailCheck.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userForEmailCheck.email))) {
+      // Check email from user profile or session storage
+      let hasValidEmail = false;
+      if (userForEmailCheck && userForEmailCheck.email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userForEmailCheck.email)) {
+        hasValidEmail = true;
+      } else {
+        const sessionEmail = sessionStorage.getItem('messaging_email');
+        if (sessionEmail && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(sessionEmail)) {
+          hasValidEmail = true;
+        }
+      }
+      
+      if (!userIsAdmin && !hasValidEmail) {
         // Show email popup if not already shown
         if (window.liveMessaging && !document.getElementById('email-popup-overlay')) {
           window.liveMessaging.showEmailPopup();
@@ -2653,7 +2628,17 @@ This is an automated notification from the CustomPC.tech live messaging system.`
       // Get current user info
       const currentUser = window.sharedAuth ? window.sharedAuth.getCurrentUser() : null;
       const username = currentUser && currentUser.username ? currentUser.username : 'Anonymous User';
-      const userEmail = currentUser && currentUser.email ? currentUser.email : 'No email provided';
+      
+      // Get email from user profile or session storage
+      let userEmail = 'No email provided';
+      if (currentUser && currentUser.email) {
+        userEmail = currentUser.email;
+      } else {
+        const sessionEmail = sessionStorage.getItem('messaging_email');
+        if (sessionEmail) {
+          userEmail = sessionEmail;
+        }
+      }
       
       // Disable send button
       if (sendBtn) {
