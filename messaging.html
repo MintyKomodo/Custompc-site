@@ -2707,8 +2707,35 @@ This is an automated notification from the CustomPC.tech live messaging system.`
       let isNewConversation = false;
       if (window.firebaseChatManager && window.firebaseChatManager.isInitialized) {
         try {
-          // Create a unique chat room ID based on username
-          const chatRoomId = 'chat_' + username.replace(/[^a-zA-Z0-9]/g, '_');
+          // Use the unique chat session ID if available (from initializeChatSession)
+          // This ensures each user has their own private chat room
+          let chatRoomId = null;
+          
+          if (window.liveMessaging && window.liveMessaging.currentChatId) {
+            // Use the unique session ID
+            chatRoomId = window.liveMessaging.currentChatId;
+            console.log('✅ Using existing chat session:', chatRoomId);
+          } else {
+            // Fallback: create a new unique chat session if one doesn't exist
+            console.log('⚠️ No chat session found, creating new one...');
+            const chatData = {
+              userName: username,
+              userEmail: userEmail,
+              startTime: new Date().toISOString(),
+              messages: [],
+              unreadCount: 0
+            };
+            chatRoomId = await window.firebaseChatManager.createChatSession(chatData);
+            if (window.liveMessaging) {
+              window.liveMessaging.currentChatId = chatRoomId;
+              window.liveMessaging.startMessageListener();
+            }
+            console.log('✅ Created new chat session:', chatRoomId);
+          }
+          
+          if (!chatRoomId) {
+            throw new Error('Failed to get or create chat session');
+          }
           
           // Check if this is a new conversation (no existing messages)
           const messagesRef = window.firebaseChatManager.database.ref(`chats/${chatRoomId}/messages`);
@@ -2716,21 +2743,26 @@ This is an automated notification from the CustomPC.tech live messaging system.`
           isNewConversation = !messagesSnapshot.exists() || messagesSnapshot.numChildren() === 0;
           
           const messageData = {
-            text: message,
+            text: message || '',
             username: username,
             email: userEmail,
             type: 'user',
             timestamp: Date.now()
           };
           
+          // Add image if present
+          if (imageData) {
+            messageData.image = imageData;
+          }
+          
           // Save to user's private chat room
           await window.firebaseChatManager.database.ref(`chats/${chatRoomId}/messages`).push(messageData);
           
-          // Update chat metadata
+          // Update chat metadata (use info structure that admin expects)
           await window.firebaseChatManager.database.ref(`chats/${chatRoomId}/info`).set({
             username: username,
             email: userEmail,
-            lastMessage: message,
+            lastMessage: message || (imageData ? '📷 Image' : ''),
             lastMessageTime: Date.now(),
             unreadCount: firebase.database.ServerValue.increment(1)
           });
@@ -3157,10 +3189,23 @@ This is an automated notification from the CustomPC.tech live messaging system.`
         return;
       }
       
-      const username = getCurrentUsername();
-      const chatRoomId = 'chat_' + username.replace(/[^a-zA-Z0-9]/g, '_');
+      // Use the unique chat session ID if available
+      let chatRoomId = null;
       
-      console.log('👂 Listening for admin responses in chat room:', chatRoomId);
+      if (window.liveMessaging && window.liveMessaging.currentChatId) {
+        chatRoomId = window.liveMessaging.currentChatId;
+        console.log('👂 Listening for admin responses in chat session:', chatRoomId);
+      } else {
+        // Fallback: use username-based ID (for backwards compatibility)
+        const username = getCurrentUsername();
+        chatRoomId = 'chat_' + username.replace(/[^a-zA-Z0-9]/g, '_');
+        console.log('⚠️ No chat session found, using fallback chat room:', chatRoomId);
+      }
+      
+      if (!chatRoomId) {
+        console.error('❌ No chat room ID available for listening');
+        return;
+      }
       
       // Listen for new messages in user's private chat room
       const messagesRef = window.firebaseChatManager.database.ref(`chats/${chatRoomId}/messages`);
