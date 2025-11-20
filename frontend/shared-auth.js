@@ -111,7 +111,7 @@ class SharedAuth {
     // Admin credentials for validation
     const adminCredentials = {
       username: "Minty-Komodo",
-      email: "griffin@crowhurst.ws"
+      email: "support@custompc.tech"
     };
     
     // Check if current user matches admin credentials
