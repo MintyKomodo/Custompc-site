@@ -97,10 +97,31 @@
       line-height: 1.4;
       max-width: 100%;
       margin: 0 auto;
+      position: relative;
+      background-image: url('images/value-prop-bg.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      overflow: hidden;
+    }
+
+    .value-prop::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       background:
         radial-gradient(1200px 600px at 50% 50%, rgba(125, 178, 255, 0.12), transparent),
-        linear-gradient(135deg, rgba(125, 178, 255, 0.06), rgba(124, 242, 230, 0.06));
+        linear-gradient(135deg, rgba(125, 178, 255, 0.06), rgba(124, 242, 230, 0.06)),
+        linear-gradient(to bottom, rgba(10, 15, 26, 0.4), rgba(10, 15, 26, 0.6));
+      z-index: 1;
+    }
+
+    .value-prop > * {
       position: relative;
+      z-index: 2;
     }
 
     @media (max-width: 700px) {

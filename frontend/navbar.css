@@ -68,6 +68,10 @@ header.scrolled {
 }
 
 
+.brand img {
+  filter: brightness(2.0) contrast(2.0);
+}
+
 .brand-text {
   color: white;
   font-size: 24px;

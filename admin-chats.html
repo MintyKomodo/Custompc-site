@@ -335,6 +335,46 @@
             cursor: not-allowed;
         }
 
+        .image-upload-btn {
+            padding: 12px 16px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            min-width: 50px;
+            height: 50px;
+        }
+
+        .image-upload-btn:hover {
+            background: var(--panel2);
+            border-color: var(--accent1);
+            transform: scale(1.05);
+        }
+
+        .message-image {
+            max-width: 300px;
+            max-height: 300px;
+            border-radius: 12px;
+            margin-top: 8px;
+            cursor: pointer;
+            object-fit: cover;
+            transition: all 0.3s ease;
+        }
+
+        .message-image.expanded {
+            max-width: 600px;
+            max-height: 600px;
+        }
+
+        .message-text {
+            margin-bottom: 8px;
+        }
+
         .empty-state {
             display: flex;
             flex-direction: column;
@@ -1175,15 +1215,33 @@
                         </div>
                     </div>
                     <div class="chat-input-area">
+                        <div id="image-preview" style="display: none; margin-bottom: 10px; padding: 10px; background: var(--panel); border-radius: 8px; border: 1px solid var(--border);">
+                            <div style="display: flex; align-items: center; justify-content: space-between;">
+                                <img id="preview-img" src="" alt="Preview" style="max-width: 150px; max-height: 150px; border-radius: 8px; object-fit: cover;" />
+                                <button type="button" onclick="adminChatManager.removeImagePreview()" style="background: #dc3545; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; margin-left: 10px;">Remove</button>
+                            </div>
+                        </div>
                         <form class="chat-input-form" onsubmit="adminChatManager.sendAdminMessage(event)">
-                            <textarea 
-                                id="admin-message-input" 
-                                class="chat-input" 
-                                placeholder="Type your response..."
-                                rows="1"
-                                required
-                            ></textarea>
-                            <button type="submit" class="send-btn">Send 📤</button>
+                            <div style="display: flex; gap: 8px; align-items: flex-end; width: 100%;">
+                                <label for="admin-image-input" class="image-upload-btn" title="Upload image">
+                                    📷
+                                </label>
+                                <input 
+                                    type="file" 
+                                    id="admin-image-input" 
+                                    accept="image/*" 
+                                    style="display: none;"
+                                    onchange="adminChatManager.handleImageSelect(event)"
+                                />
+                                <textarea 
+                                    id="admin-message-input" 
+                                    class="chat-input" 
+                                    placeholder="Type your response or upload an image..."
+                                    rows="1"
+                                    oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"
+                                ></textarea>
+                                <button type="submit" class="send-btn">Send 📤</button>
+                            </div>
                         </form>
                     </div>
                 `;
@@ -1214,18 +1272,34 @@
                 const messagesContainer = document.getElementById('current-chat-messages');
                 if (!messagesContainer) return;
 
+                // Check if message already exists (avoid duplicates)
+                const existingMessages = messagesContainer.querySelectorAll('.message');
+                for (let msg of existingMessages) {
+                    const msgTime = msg.dataset.timestamp;
+                    if (msgTime && parseInt(msgTime) === message.timestamp) {
+                        return; // Message already displayed
+                    }
+                }
+
                 const messageDiv = document.createElement('div');
                 messageDiv.className = `message ${message.type}`;
+                messageDiv.dataset.timestamp = message.timestamp;
                 
                 const time = new Date(message.timestamp).toLocaleTimeString([], {
                     hour: '2-digit',
                     minute: '2-digit'
                 });
 
+                let imageHtml = '';
+                if (message.image) {
+                    imageHtml = `<img src="${message.image}" alt="Uploaded image" class="message-image" onclick="this.classList.toggle('expanded')" />`;
+                }
+
                 messageDiv.innerHTML = `
                     <div class="message-content">
                         <div class="message-sender">${message.username}</div>
-                        ${message.text}
+                        ${message.text ? `<div class="message-text">${message.text}</div>` : ''}
+                        ${imageHtml}
                         <div class="message-time">${time}</div>
                     </div>
                 `;
@@ -1237,10 +1311,38 @@
             async sendAdminMessage(event) {
                 event.preventDefault();
                 
+                if (!this.currentChatId) {
+                    alert('Please select a chat first!');
+                    return;
+                }
+
                 const input = document.getElementById('admin-message-input');
                 const message = input.value.trim();
+                const imageInput = document.getElementById('admin-image-input');
+                const imagePreview = document.getElementById('image-preview');
                 
-                if (!message || !this.currentChatId) return;
+                // Get image if uploaded
+                let imageData = null;
+                if (imageInput && imageInput.files && imageInput.files[0]) {
+                    const file = imageInput.files[0];
+                    if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                        alert('Image size must be less than 5MB');
+                        return;
+                    }
+                    
+                    // Convert to base64
+                    imageData = await new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onload = (e) => resolve(e.target.result);
+                        reader.onerror = reject;
+                        reader.readAsDataURL(file);
+                    });
+                }
+
+                // Must have either message or image
+                if (!message && !imageData) {
+                    return;
+                }
 
                 const chat = this.activeChats.get(this.currentChatId);
                 if (!chat || !chat.chatId) {
@@ -1249,28 +1351,90 @@
                 }
 
                 const messageData = {
-                    text: message,
+                    text: message || '',
                     username: 'Admin',
                     type: 'admin',
                     timestamp: Date.now()
                 };
+                
+                // Add image if present
+                if (imageData) {
+                    messageData.image = imageData;
+                }
 
                 try {
+                    // Display message immediately for better UX
+                    this.displayMessage(messageData);
+                    
                     // Send message to the user's chat room
                     await this.database.ref(`chats/${chat.chatId}/messages`).push(messageData);
                     
                     // Update chat metadata
+                    const lastMessageText = message || (imageData ? '📷 Image' : '');
                     await this.database.ref(`chats/${chat.chatId}/info`).update({
-                        lastMessage: message,
+                        lastMessage: lastMessageText,
                         lastMessageTime: Date.now(),
                         unreadCount: 0
                     });
                     
+                    // Clear inputs
                     input.value = '';
+                    if (imageInput) {
+                        imageInput.value = '';
+                    }
+                    if (imagePreview) {
+                        imagePreview.innerHTML = '';
+                        imagePreview.style.display = 'none';
+                    }
+                    
                     console.log('✅ Admin message sent to chat room:', chat.chatId);
                 } catch (error) {
                     console.error('❌ Failed to send message:', error);
-                    alert('Failed to send message');
+                    alert('Failed to send message: ' + error.message);
+                }
+            }
+
+            handleImageSelect(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                if (!file.type.startsWith('image/')) {
+                    alert('Please select an image file');
+                    event.target.value = '';
+                    return;
+                }
+
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('Image size must be less than 5MB');
+                    event.target.value = '';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const preview = document.getElementById('image-preview');
+                    const previewImg = document.getElementById('preview-img');
+                    if (preview && previewImg) {
+                        previewImg.src = e.target.result;
+                        preview.style.display = 'block';
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+
+            removeImagePreview() {
+                const imageInput = document.getElementById('admin-image-input');
+                const imagePreview = document.getElementById('image-preview');
+                const previewImg = document.getElementById('preview-img');
+                
+                if (imageInput) {
+                    imageInput.value = '';
+                }
+                if (previewImg) {
+                    previewImg.src = '';
+                }
+                if (imagePreview) {
+                    imagePreview.style.display = 'none';
                 }
             }
 
