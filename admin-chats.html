@@ -264,6 +264,64 @@
             background: var(--accent2);
         }
 
+        .chat-messages {
+            position: relative;
+        }
+
+        .scroll-to-bottom-btn {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--accent1), var(--accent2));
+            border: none;
+            border-radius: 50%;
+            color: #0b0f1a;
+            font-size: 20px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            z-index: 10;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        .scroll-to-bottom-btn.visible {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .scroll-to-bottom-btn:hover {
+            transform: translateY(-2px) scale(1.1);
+            box-shadow: 0 6px 16px rgba(125, 178, 255, 0.5);
+        }
+
+        .scroll-to-bottom-btn:active {
+            transform: translateY(0) scale(0.95);
+        }
+
+        .scroll-to-bottom-btn .unread-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff6b6b;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--panel);
+        }
+
         .message {
             display: flex;
             margin-bottom: 15px;
@@ -1237,6 +1295,9 @@
                         <div class="empty-state">
                             <p>Loading messages...</p>
                         </div>
+                        <button class="scroll-to-bottom-btn" id="scroll-to-bottom-btn" onclick="adminChatManager.scrollToBottom()" title="Scroll to bottom">
+                            ⬇️
+                        </button>
                     </div>
                     <div class="chat-input-area">
                         <div id="image-preview" style="display: none; margin-bottom: 10px; padding: 10px; background: var(--panel); border-radius: 8px; border: 1px solid var(--border);">
@@ -1326,12 +1387,80 @@
                 const messagesRef = this.database.ref(`chats/${chat.chatId}/messages`);
                 const messagesContainer = document.getElementById('current-chat-messages');
                 
-                messagesContainer.innerHTML = '';
+                if (!messagesContainer) return;
+                
+                // Clear only messages, not the scroll button
+                const messages = messagesContainer.querySelectorAll('.message, .empty-state');
+                messages.forEach(msg => msg.remove());
+                
+                // Ensure scroll button exists
+                let scrollBtn = document.getElementById('scroll-to-bottom-btn');
+                if (!scrollBtn) {
+                    scrollBtn = document.createElement('button');
+                    scrollBtn.className = 'scroll-to-bottom-btn';
+                    scrollBtn.id = 'scroll-to-bottom-btn';
+                    scrollBtn.innerHTML = '⬇️';
+                    scrollBtn.title = 'Scroll to bottom';
+                    scrollBtn.onclick = () => this.scrollToBottom();
+                    messagesContainer.appendChild(scrollBtn);
+                }
+
+                // Set up scroll listener
+                this.setupScrollListener();
 
                 messagesRef.on('child_added', (snapshot) => {
                     const message = snapshot.val();
                     this.displayMessage(message);
                 });
+            }
+
+            setupScrollListener() {
+                const messagesContainer = document.getElementById('current-chat-messages');
+                if (!messagesContainer) return;
+
+                // Remove old listener if exists
+                if (this.scrollListener) {
+                    messagesContainer.removeEventListener('scroll', this.scrollListener);
+                }
+
+                // Add scroll listener
+                this.scrollListener = () => {
+                    this.checkScrollPosition();
+                };
+                messagesContainer.addEventListener('scroll', this.scrollListener);
+                
+                // Initial check
+                setTimeout(() => this.checkScrollPosition(), 100);
+            }
+
+            checkScrollPosition() {
+                const messagesContainer = document.getElementById('current-chat-messages');
+                const scrollBtn = document.getElementById('scroll-to-bottom-btn');
+                
+                if (!messagesContainer || !scrollBtn) return;
+
+                const isAtBottom = messagesContainer.scrollHeight - messagesContainer.scrollTop <= messagesContainer.clientHeight + 50; // 50px threshold
+                
+                if (isAtBottom) {
+                    scrollBtn.classList.remove('visible');
+                } else {
+                    scrollBtn.classList.add('visible');
+                }
+            }
+
+            scrollToBottom() {
+                const messagesContainer = document.getElementById('current-chat-messages');
+                if (!messagesContainer) return;
+
+                messagesContainer.scrollTo({
+                    top: messagesContainer.scrollHeight,
+                    behavior: 'smooth'
+                });
+                
+                // Hide button after scrolling
+                setTimeout(() => {
+                    this.checkScrollPosition();
+                }, 300);
             }
 
             displayMessage(message) {
@@ -1372,9 +1501,13 @@
 
                 messagesContainer.appendChild(messageDiv);
                 
-                // Scroll to bottom smoothly
+                // Scroll to bottom smoothly if user is near bottom
                 setTimeout(() => {
-                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    const isNearBottom = messagesContainer.scrollHeight - messagesContainer.scrollTop <= messagesContainer.clientHeight + 100;
+                    if (isNearBottom) {
+                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    }
+                    this.checkScrollPosition();
                 }, 10);
             }
 
