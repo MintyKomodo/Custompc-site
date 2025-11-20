@@ -6,7 +6,7 @@ class AdminAuth extends SharedAuth {
     this.adminCredentials = {
       username: "Minty-Komodo",
       password: "hJ.?'0PcU0).1.0.1PCimA4%oU",
-      email: "griffin@crowhurst.ws"
+      email: "support@custompc.tech"
     };
   }
 

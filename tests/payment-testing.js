@@ -57,7 +57,7 @@ class PaymentTester {
       adminCredentials: {
         username: "Minty-Komodo",
         password: "hJ.?'0PcU0).1.0.1PCimA4%oU",
-        email: "griffin@crowhurst.ws"
+        email: "support@custompc.tech"
       },
       
       validateAdminCredentials: function(username, password, email) {
@@ -232,17 +232,17 @@ class PaymentTester {
   testAdminCredentialValidation() {
     const testCases = [
       { 
-        input: { username: "Minty-Komodo", password: "hJ.?'0PcU0).1.0.1PCimA4%oU", email: "griffin@crowhurst.ws" }, 
+        input: { username: "Minty-Komodo", password: "hJ.?'0PcU0).1.0.1PCimA4%oU", email: "support@custompc.tech" }, 
         expected: true, 
         description: 'Valid admin credentials' 
       },
       { 
-        input: { username: "wrong-user", password: "hJ.?'0PcU0).1.0.1PCimA4%oU", email: "griffin@crowhurst.ws" }, 
+        input: { username: "wrong-user", password: "hJ.?'0PcU0).1.0.1PCimA4%oU", email: "support@custompc.tech" }, 
         expected: false, 
         description: 'Invalid admin username' 
       },
       { 
-        input: { username: "Minty-Komodo", password: "wrong-password", email: "griffin@crowhurst.ws" }, 
+        input: { username: "Minty-Komodo", password: "wrong-password", email: "support@custompc.tech" }, 
         expected: false, 
         description: 'Invalid admin password' 
       },
@@ -257,12 +257,12 @@ class PaymentTester {
         description: 'Empty admin credentials' 
       },
       { 
-        input: { username: "minty-komodo", password: "hJ.?'0PcU0).1.0.1PCimA4%oU", email: "griffin@crowhurst.ws" }, 
+        input: { username: "minty-komodo", password: "hJ.?'0PcU0).1.0.1PCimA4%oU", email: "support@custompc.tech" }, 
         expected: false, 
         description: 'Case sensitive username validation' 
       },
       { 
-        input: { username: "Minty-Komodo", password: "hJ.?'0PcU0).1.0.1PCimA4%oU", email: "GRIFFIN@CROWHURST.WS" }, 
+        input: { username: "Minty-Komodo", password: "hJ.?'0PcU0).1.0.1PCimA4%oU", email: "support@custompc.tech" }, 
         expected: false, 
         description: 'Case sensitive email validation' 
       }
@@ -296,7 +296,7 @@ class PaymentTester {
         description: 'Valid admin session',
         sessionData: { 
           username: "Minty-Komodo", 
-          email: "griffin@crowhurst.ws", 
+          email: "support@custompc.tech", 
           role: "admin", 
           loginTime: new Date().toISOString() 
         },
@@ -306,7 +306,7 @@ class PaymentTester {
         description: 'Expired admin session (9 hours old)',
         sessionData: { 
           username: "Minty-Komodo", 
-          email: "griffin@crowhurst.ws", 
+          email: "support@custompc.tech", 
           role: "admin", 
           loginTime: new Date(Date.now() - 9 * 60 * 60 * 1000).toISOString() 
         },
@@ -316,7 +316,7 @@ class PaymentTester {
         description: 'Valid admin session (7 hours old)',
         sessionData: { 
           username: "Minty-Komodo", 
-          email: "griffin@crowhurst.ws", 
+          email: "support@custompc.tech", 
           role: "admin", 
           loginTime: new Date(Date.now() - 7 * 60 * 60 * 1000).toISOString() 
         },
@@ -336,7 +336,7 @@ class PaymentTester {
         description: 'Session without login time',
         sessionData: { 
           username: "Minty-Komodo", 
-          email: "griffin@crowhurst.ws", 
+          email: "support@custompc.tech", 
           role: "admin" 
         },
         expectedValid: false
@@ -374,7 +374,7 @@ class PaymentTester {
     const testCases = [
       {
         description: 'Admin user accessing payments page',
-        user: { username: "Minty-Komodo", email: "griffin@crowhurst.ws", role: "admin", loginTime: new Date().toISOString() },
+        user: { username: "Minty-Komodo", email: "support@custompc.tech", role: "admin", loginTime: new Date().toISOString() },
         resource: 'payments.html',
         expectedAccess: true
       },
@@ -392,7 +392,7 @@ class PaymentTester {
       },
       {
         description: 'Admin with expired session accessing payments page',
-        user: { username: "Minty-Komodo", email: "griffin@crowhurst.ws", role: "admin", loginTime: new Date(Date.now() - 10 * 60 * 60 * 1000).toISOString() },
+        user: { username: "Minty-Komodo", email: "support@custompc.tech", role: "admin", loginTime: new Date(Date.now() - 10 * 60 * 60 * 1000).toISOString() },
         resource: 'payments.html',
         expectedAccess: false
       }

@@ -69,7 +69,7 @@ A complete custom PC building website with integrated Square payment processing,
 ### Admin Credentials
 - Username: `Minty-Komodo`
 - Password: `hJ.?'0PcU0).1.0.1PCimA4%oU`
-- Email: `griffin@crowhurst.ws`
+- Email: `support@custompc.tech`
 
 ## 💬 Messaging System
 
@@ -152,7 +152,7 @@ npm start
 
 ## 📞 Support
 
-- **Email**: griffin@crowhurst.ws
+- **Email**: support@custompc.tech
 - **Live Chat**: Available on messaging.html
 - **Documentation**: See `/docs` folder
 

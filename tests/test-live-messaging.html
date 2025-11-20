@@ -128,7 +128,7 @@
         <li><strong>Hover over "Custom PC"</strong> in the navigation bar</li>
         <li>You should see a dropdown with two options slide down</li>
         <li>Click "Live Messaging" to open the chat interface</li>
-        <li>Send a message - it will automatically email griffin@crowhurst.ws</li>
+        <li>Send a message - it will automatically email support@custompc.tech</li>
         <li>Click "Payment Processing" (requires admin login)</li>
       </ol>
     </div>
@@ -146,7 +146,7 @@
     <div class="test-section">
       <h2>📧 Email Notification System</h2>
       <div class="status info">
-        <strong>How it works:</strong> When a user opens live messaging, an automated email is sent to griffin@crowhurst.ws with:
+        <strong>How it works:</strong> When a user opens live messaging, an automated email is sent to support@custompc.tech with:
         <ul style="margin: 8px 0 0 20px;">
           <li>User information (name, email if logged in)</li>
           <li>Timestamp and page URL</li>
@@ -179,7 +179,7 @@
       
       // In real implementation, this would open the modal
       setTimeout(() => {
-        addResult('Email Notification', true, 'Automated email sent to griffin@crowhurst.ws');
+        addResult('Email Notification', true, 'Automated email sent to support@custompc.tech');
       }, 1000);
       
       setTimeout(() => {
@@ -204,7 +204,7 @@
     function simulateAdminLogin() {
       const adminUser = {
         username: "Minty-Komodo",
-        email: "griffin@crowhurst.ws",
+        email: "support@custompc.tech",
         loginTime: new Date().toISOString()
       };
       
@@ -232,7 +232,7 @@
       
       document.getElementById('auth-status').textContent = user ? user.username : 'Not logged in';
       
-      const isAdmin = user && user.username === "Minty-Komodo" && user.email === "griffin@crowhurst.ws";
+      const isAdmin = user && user.username === "Minty-Komodo" && user.email === "support@custompc.tech";
       document.getElementById('admin-status').textContent = isAdmin ? 'Yes ✅' : 'No ❌';
       document.getElementById('payments-status').textContent = isAdmin ? 'Accessible ✅' : 'Restricted ❌';
     }

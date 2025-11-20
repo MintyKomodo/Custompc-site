@@ -382,7 +382,7 @@ class AuthFormTester {
         const adminCredentials = {
           username: "Minty-Komodo",
           password: "hJ.?'0PcU0).1.0.1PCimA4%oU",
-          email: "griffin@crowhurst.ws"
+          email: "support@custompc.tech"
         };
         return username === adminCredentials.username &&
                password === adminCredentials.password &&
@@ -392,17 +392,17 @@ class AuthFormTester {
 
     const testCases = [
       { 
-        input: { username: "Minty-Komodo", password: "hJ.?'0PcU0).1.0.1PCimA4%oU", email: "griffin@crowhurst.ws" }, 
+        input: { username: "Minty-Komodo", password: "hJ.?'0PcU0).1.0.1PCimA4%oU", email: "support@custompc.tech" }, 
         expected: true, 
         description: 'Valid admin credentials' 
       },
       { 
-        input: { username: "wrong-user", password: "hJ.?'0PcU0).1.0.1PCimA4%oU", email: "griffin@crowhurst.ws" }, 
+        input: { username: "wrong-user", password: "hJ.?'0PcU0).1.0.1PCimA4%oU", email: "support@custompc.tech" }, 
         expected: false, 
         description: 'Invalid admin username' 
       },
       { 
-        input: { username: "Minty-Komodo", password: "wrong-password", email: "griffin@crowhurst.ws" }, 
+        input: { username: "Minty-Komodo", password: "wrong-password", email: "support@custompc.tech" }, 
         expected: false, 
         description: 'Invalid admin password' 
       },
@@ -417,7 +417,7 @@ class AuthFormTester {
         description: 'Empty admin credentials' 
       },
       { 
-        input: { username: "Minty-Komodo", password: "hJ.?'0PcU0).1.0.1PCimA4%oU", email: "GRIFFIN@CROWHURST.WS" }, 
+        input: { username: "Minty-Komodo", password: "hJ.?'0PcU0).1.0.1PCimA4%oU", email: "support@custompc.tech" }, 
         expected: false, 
         description: 'Case sensitive email validation' 
       }
@@ -447,17 +447,17 @@ class AuthFormTester {
     const testCases = [
       {
         description: 'Admin session creation',
-        sessionData: { username: "Minty-Komodo", email: "griffin@crowhurst.ws", role: "admin" },
+        sessionData: { username: "Minty-Komodo", email: "support@custompc.tech", role: "admin" },
         expectedValid: true
       },
       {
         description: 'Admin session validation with valid data',
-        sessionData: { username: "Minty-Komodo", email: "griffin@crowhurst.ws", role: "admin", loginTime: new Date().toISOString() },
+        sessionData: { username: "Minty-Komodo", email: "support@custompc.tech", role: "admin", loginTime: new Date().toISOString() },
         expectedValid: true
       },
       {
         description: 'Admin session validation with expired time',
-        sessionData: { username: "Minty-Komodo", email: "griffin@crowhurst.ws", role: "admin", loginTime: new Date(Date.now() - 10 * 60 * 60 * 1000).toISOString() },
+        sessionData: { username: "Minty-Komodo", email: "support@custompc.tech", role: "admin", loginTime: new Date(Date.now() - 10 * 60 * 60 * 1000).toISOString() },
         expectedValid: false
       },
       {
@@ -470,7 +470,7 @@ class AuthFormTester {
     testCases.forEach(testCase => {
       // Mock session validation logic
       const isValidAdmin = testCase.sessionData.username === "Minty-Komodo" && 
-                          testCase.sessionData.email === "griffin@crowhurst.ws" &&
+                          testCase.sessionData.email === "support@custompc.tech" &&
                           testCase.sessionData.role === "admin";
       
       let isSessionValid = isValidAdmin;
@@ -499,7 +499,7 @@ class AuthFormTester {
     const testCases = [
       {
         description: 'Admin user accessing payments page',
-        user: { username: "Minty-Komodo", email: "griffin@crowhurst.ws", role: "admin" },
+        user: { username: "Minty-Komodo", email: "support@custompc.tech", role: "admin" },
         resource: 'payments.html',
         expectedAccess: true
       },
@@ -517,7 +517,7 @@ class AuthFormTester {
       },
       {
         description: 'Admin user accessing regular pages',
-        user: { username: "Minty-Komodo", email: "griffin@crowhurst.ws", role: "admin" },
+        user: { username: "Minty-Komodo", email: "support@custompc.tech", role: "admin" },
         resource: 'index.html',
         expectedAccess: true
       }
@@ -530,7 +530,7 @@ class AuthFormTester {
       if (testCase.resource === 'payments.html') {
         hasAccess = testCase.user && 
                    testCase.user.username === "Minty-Komodo" && 
-                   testCase.user.email === "griffin@crowhurst.ws" &&
+                   testCase.user.email === "support@custompc.tech" &&
                    testCase.user.role === "admin";
       }
       
