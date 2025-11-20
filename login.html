@@ -47,24 +47,6 @@
         </div>
         
         <div class="field-container">
-          <label for="email" class="sr-only">Email Address</label>
-          <input 
-            id="email" 
-            type="email" 
-            class="auth-input" 
-            placeholder="Email (required for messaging)" 
-            required 
-            aria-label="Email Address"
-            aria-describedby="email-validation email-help"
-            autocomplete="email"
-          />
-          <div id="email-help" class="sr-only">
-            Enter your email address. Required to use the messaging system.
-          </div>
-          <div class="field-validation hidden" id="email-validation" aria-live="polite"></div>
-        </div>
-        
-        <div class="field-container">
           <label for="password" class="sr-only">Password</label>
           <input 
             id="password" 
@@ -216,26 +198,26 @@
         // Simulate login process
         await new Promise(resolve => setTimeout(resolve, 1500));
         
-        // Get email from form data
+        // Get email from form data (optional for logged-in users)
         const email = formData.email ? formData.email.trim() : '';
         
-        // Validate email format
-        if (!email) {
-          throw new Error('Email is required to use messaging. Please provide your email address.');
-        }
-        
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        // Validate email format if provided
+        if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
           throw new Error('Please enter a valid email address.');
         }
         
         // For demo purposes, accept any valid credentials
-        if (formData.username && formData.password && email) {
-          // Store user session with email (compatible with main site)
+        if (formData.username && formData.password) {
+          // Store user session (email optional for logged-in users)
           const userData = {
             username: formData.username,
-            email: email,
             loginTime: new Date().toISOString()
           };
+          
+          // Add email if provided
+          if (email) {
+            userData.email = email;
+          }
           
           localStorage.setItem('custompc_user', JSON.stringify(userData));
           
@@ -255,7 +237,7 @@
             window.location.href = 'index.html';
           }, 1000);
         } else {
-          throw new Error('Invalid username, password, or email. Please try again.');
+          throw new Error('Invalid username or password. Please try again.');
         }
       }
 
@@ -315,10 +297,8 @@
             error = value ? null : 'Password is required';
             break;
           case 'email':
-            // Validate email format (required for messaging)
-            if (!value) {
-              error = 'Email is required to use messaging';
-            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+            // Validate email format if provided (optional for logged-in users)
+            if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
               error = 'Please enter a valid email address';
             }
             break;

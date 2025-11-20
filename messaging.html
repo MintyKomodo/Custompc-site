@@ -1272,7 +1272,12 @@
           return true;
         }
         
-        // Check if user has email
+        // If user is logged in, allow access even without email
+        if (currentUser && currentUser.username && currentUser.username !== 'Anonymous') {
+          return true;
+        }
+        
+        // If not logged in, require email
         if (!currentUser || !currentUser.email) {
           this.showEmailRequiredMessage();
           return false;
@@ -1315,9 +1320,9 @@
         
         emailRequiredDiv.innerHTML = `
           <div style="font-size: 48px; margin-bottom: 20px;">📧</div>
-          <h2 style="color: var(--ink); margin-bottom: 16px;">Email Address Required</h2>
+          <h2 style="color: var(--ink); margin-bottom: 16px;">Login Required</h2>
           <p style="color: var(--muted); margin-bottom: 24px; line-height: 1.6;">
-            To use the messaging system, you need to provide an email address. This helps us respond to your messages and keep you updated.
+            To use the messaging system, you need to be logged in. Please sign up or log in to continue.
           </p>
           <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
             <a href="signup.html" class="pill" style="
@@ -1326,7 +1331,7 @@
               text-decoration: none;
               padding: 12px 24px;
               font-weight: 600;
-            ">Sign Up with Email</a>
+            ">Sign Up</a>
             <a href="login.html" class="pill" style="
               background: var(--panel2);
               border: 1px solid var(--border);

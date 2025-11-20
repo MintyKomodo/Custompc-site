@@ -966,6 +966,9 @@
                             </span>
                             <span class="chat-time">${this.formatTime(chat.lastMessageTime)}</span>
                         </div>
+                        <div class="chat-email" style="font-size: 12px; color: var(--accent1); margin-bottom: 6px;">
+                            📧 ${chat.email || 'No email'}
+                        </div>
                         <div class="chat-preview">${chat.lastMessage}</div>
                         <button class="delete-chat-btn" onclick="event.stopPropagation(); adminChatManager.deleteChat('${chat.username}', '${chat.chatId}')">🗑️ Delete</button>
                     </div>
@@ -992,9 +995,9 @@
                 
                 chatViewContent.innerHTML = `
                     <div class="chat-view-header">
-                        <h3>${chat.username}</h3>
+                        <h3>👤 ${chat.username}</h3>
                         <div class="chat-view-info">
-                            📧 ${chat.email}
+                            📧 ${chat.email || 'No email provided'}
                         </div>
                     </div>
                     <div class="chat-messages" id="current-chat-messages">
