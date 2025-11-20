@@ -94,8 +94,8 @@
             display: grid;
             grid-template-columns: 350px 1fr;
             gap: 20px;
-            height: calc(100vh - 250px - 100px); /* Account for fixed input at bottom */
-            max-height: calc(100vh - 250px - 100px);
+            height: calc(100vh - 250px);
+            max-height: calc(100vh - 250px);
         }
 
         .chats-sidebar {
@@ -378,38 +378,10 @@
         }
 
         .chat-input-area {
-            position: fixed;
-            bottom: 0;
             padding: 20px;
             border-top: 1px solid var(--border);
             background: var(--panel2);
-            z-index: 100;
-            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.2);
-            /* Position: sidebar (350px) + gap (20px) + wrap padding (10px) = 380px from left */
-            left: 380px;
-            right: var(--space);
-            max-width: calc(100% - 380px - var(--space));
-        }
-        
-        /* Hide input when no chat selected */
-        .chat-input-area:not(.active) {
-            display: none;
-        }
-        
-        @media (max-width: 1200px) {
-            .chat-input-area {
-                left: 370px;
-                right: 10px;
-                max-width: calc(100% - 380px);
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .chat-input-area {
-                left: 0;
-                right: 0;
-                max-width: 100%;
-            }
+            flex-shrink: 0;
         }
 
         .chat-input-form {
@@ -1322,54 +1294,57 @@
                 }
             }
             
-            showInputArea() {
-                let inputArea = document.querySelector('.chat-input-area');
-                if (!inputArea) {
-                    // Create input area if it doesn't exist
-                    inputArea = document.createElement('div');
-                    inputArea.className = 'chat-input-area';
-                    document.body.appendChild(inputArea);
-                }
-                inputArea.classList.add('active');
-                this.setupInputArea(inputArea);
-            }
-            
-            hideInputArea() {
-                const inputArea = document.querySelector('.chat-input-area');
-                if (inputArea) {
-                    inputArea.classList.remove('active');
-                }
-            }
-            
-            setupInputArea(container) {
-                container.innerHTML = `
-                    <div id="image-preview" style="display: none; margin-bottom: 10px; padding: 10px; background: var(--panel); border-radius: 8px; border: 1px solid var(--border);">
-                        <div style="display: flex; align-items: center; justify-content: space-between;">
-                            <img id="preview-img" src="" alt="Preview" style="max-width: 150px; max-height: 150px; border-radius: 8px; object-fit: cover;" />
-                            <button type="button" onclick="adminChatManager.removeImagePreview()" style="background: #dc3545; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; margin-left: 10px;">Remove</button>
+
+            renderChatView(chat) {
+                const chatViewContent = document.getElementById('chat-view-content');
+                
+                chatViewContent.innerHTML = `
+                    <div class="chat-view-header">
+                        <h3>👤 ${chat.username}</h3>
+                        <div class="chat-view-info">
+                            📧 ${chat.email || 'No email provided'}
                         </div>
                     </div>
-                    <form class="chat-input-form" id="admin-chat-form">
-                        <div style="display: flex; gap: 8px; align-items: flex-end; width: 100%;">
-                            <label for="admin-image-input" class="image-upload-btn" title="Upload image">
-                                📷
-                            </label>
-                            <input 
-                                type="file" 
-                                id="admin-image-input" 
-                                accept="image/*" 
-                                style="display: none;"
-                            />
-                            <textarea 
-                                id="admin-message-input" 
-                                class="chat-input" 
-                                placeholder="Type your response or upload an image..."
-                                rows="1"
-                            ></textarea>
-                            <button type="submit" class="send-btn">Send 📤</button>
+                    <div class="chat-messages" id="current-chat-messages">
+                        <div class="empty-state">
+                            <p>Loading messages...</p>
                         </div>
-                    </form>
+                        <button class="scroll-to-bottom-btn" id="scroll-to-bottom-btn" onclick="adminChatManager.scrollToBottom()" title="Scroll to bottom">
+                            ⬇️
+                        </button>
+                    </div>
+                    <div class="chat-input-area">
+                        <div id="image-preview" style="display: none; margin-bottom: 10px; padding: 10px; background: var(--panel); border-radius: 8px; border: 1px solid var(--border);">
+                            <div style="display: flex; align-items: center; justify-content: space-between;">
+                                <img id="preview-img" src="" alt="Preview" style="max-width: 150px; max-height: 150px; border-radius: 8px; object-fit: cover;" />
+                                <button type="button" onclick="adminChatManager.removeImagePreview()" style="background: #dc3545; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; margin-left: 10px;">Remove</button>
+                            </div>
+                        </div>
+                        <form class="chat-input-form" id="admin-chat-form">
+                            <div style="display: flex; gap: 8px; align-items: flex-end; width: 100%;">
+                                <label for="admin-image-input" class="image-upload-btn" title="Upload image">
+                                    +
+                                </label>
+                                <input 
+                                    type="file" 
+                                    id="admin-image-input" 
+                                    accept="image/*" 
+                                    style="display: none;"
+                                />
+                                <textarea 
+                                    id="admin-message-input" 
+                                    class="chat-input" 
+                                    placeholder="Type your response or upload an image..."
+                                    rows="1"
+                                ></textarea>
+                                <button type="submit" class="send-btn">Send 📤</button>
+                            </div>
+                        </form>
+                    </div>
                 `;
+                
+                // Load messages for this chat
+                this.loadChatMessages(chat.username);
                 
                 // Set up form event listeners
                 setTimeout(() => {
@@ -1404,33 +1379,6 @@
                         }
                     }
                 }, 100);
-            }
-
-            renderChatView(chat) {
-                const chatViewContent = document.getElementById('chat-view-content');
-                
-                chatViewContent.innerHTML = `
-                    <div class="chat-view-header">
-                        <h3>👤 ${chat.username}</h3>
-                        <div class="chat-view-info">
-                            📧 ${chat.email || 'No email provided'}
-                        </div>
-                    </div>
-                    <div class="chat-messages" id="current-chat-messages">
-                        <div class="empty-state">
-                            <p>Loading messages...</p>
-                        </div>
-                        <button class="scroll-to-bottom-btn" id="scroll-to-bottom-btn" onclick="adminChatManager.scrollToBottom()" title="Scroll to bottom">
-                            ⬇️
-                        </button>
-                    </div>
-                `;
-                
-                // Load messages for this chat
-                this.loadChatMessages(chat.username);
-                
-                // Show input area when chat is selected
-                this.showInputArea();
             }
 
             loadChatMessages(username) {

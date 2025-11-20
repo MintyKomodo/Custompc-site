@@ -943,16 +943,34 @@
         </div>
         
         <div class="messaging-input-container" id="fallback-input">
-          <textarea 
-            id="messaging-input" 
-            class="messaging-input" 
-            placeholder="Type your message here... (Press Enter to send)"
-            rows="1"
-          ></textarea>
-          <button id="send-btn" class="send-btn" onclick="sendMessage()">
-            <span>Send</span>
-            <span class="send-icon">📤</span>
-          </button>
+          <div id="image-preview" style="display: none; margin-bottom: 10px; padding: 10px; background: var(--panel2); border-radius: 8px; border: 1px solid var(--border);">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <img id="preview-img" src="" alt="Preview" style="max-width: 150px; max-height: 150px; border-radius: 8px; object-fit: cover;" />
+              <button type="button" onclick="removeImagePreview()" style="background: #dc3545; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; margin-left: 10px;">Remove</button>
+            </div>
+          </div>
+          <div style="display: flex; gap: 8px; align-items: flex-end; width: 100%;">
+            <label for="messaging-image-input" class="image-upload-btn" title="Upload image" style="padding: 16px 20px; background: var(--panel2); border: 2px solid var(--border); border-radius: 25px; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; min-width: 50px; height: 50px; transition: all 0.2s ease;">
+              +
+            </label>
+            <input 
+              type="file" 
+              id="messaging-image-input" 
+              accept="image/*" 
+              style="display: none;"
+              onchange="handleImageSelect(event)"
+            />
+            <textarea 
+              id="messaging-input" 
+              class="messaging-input" 
+              placeholder="Type your message here... (Press Enter to send)"
+              rows="1"
+            ></textarea>
+            <button id="send-btn" class="send-btn" onclick="sendMessage()">
+              <span>Send</span>
+              <span class="send-icon">📤</span>
+            </button>
+          </div>
         </div>
       </div>
       
@@ -2579,8 +2597,36 @@ This is an automated notification from the CustomPC.tech live messaging system.`
       }
       
       const message = input.value.trim();
-      if (!message) {
-        console.log('❌ Empty message');
+      const imageInput = document.getElementById('messaging-image-input');
+      const imagePreview = document.getElementById('image-preview');
+      
+      // Get image if uploaded
+      let imageData = null;
+      if (imageInput && imageInput.files && imageInput.files[0]) {
+        const file = imageInput.files[0];
+        if (file.size > 5 * 1024 * 1024) { // 5MB limit
+          alert('Image size must be less than 5MB');
+          return;
+        }
+        
+        // Convert to base64
+        try {
+          imageData = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+          });
+        } catch (error) {
+          console.error('Error reading image:', error);
+          alert('Failed to read image file');
+          return;
+        }
+      }
+
+      // Must have either message or image
+      if (!message && !imageData) {
+        console.log('❌ Empty message and no image');
         return;
       }
       
@@ -2760,7 +2806,7 @@ This is an automated notification from the CustomPC.tech live messaging system.`
     }
     
     // Helper function to add messages to chat
-    function addMessageToChat(message, type, username) {
+    function addMessageToChat(message, type, username, imageData = null) {
       const chat = document.getElementById('messaging-chat');
       if (!chat) return;
       
@@ -2770,9 +2816,15 @@ This is an automated notification from the CustomPC.tech live messaging system.`
       const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
       const userLabel = type !== 'user' && username !== 'System' ? `<strong>${username}:</strong> ` : '';
       
+      let imageHtml = '';
+      if (imageData) {
+        imageHtml = `<img src="${imageData}" alt="Uploaded image" class="message-image" onclick="this.classList.toggle('expanded')" style="max-width: 300px; max-height: 300px; border-radius: 12px; margin-top: 8px; cursor: pointer; object-fit: cover; transition: all 0.3s ease;" />`;
+      }
+      
       messageDiv.innerHTML = `
         <div class="message-content">
-          ${userLabel}${message}
+          ${userLabel}${message ? `<div class="message-text">${message}</div>` : ''}
+          ${imageHtml}
           <div class="message-time">${time}</div>
         </div>
       `;
@@ -2788,6 +2840,52 @@ This is an automated notification from the CustomPC.tech live messaging system.`
         messageDiv.style.opacity = '1';
         messageDiv.style.transform = 'translateY(0)';
       }, 10);
+    }
+    
+    // Handle image selection
+    function handleImageSelect(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      if (!file.type.startsWith('image/')) {
+        alert('Please select an image file');
+        event.target.value = '';
+        return;
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Image size must be less than 5MB');
+        event.target.value = '';
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const preview = document.getElementById('image-preview');
+        const previewImg = document.getElementById('preview-img');
+        if (preview && previewImg) {
+          previewImg.src = e.target.result;
+          preview.style.display = 'block';
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+    
+    // Remove image preview
+    function removeImagePreview() {
+      const imageInput = document.getElementById('messaging-image-input');
+      const imagePreview = document.getElementById('image-preview');
+      const previewImg = document.getElementById('preview-img');
+      
+      if (imageInput) {
+        imageInput.value = '';
+      }
+      if (previewImg) {
+        previewImg.src = '';
+      }
+      if (imagePreview) {
+        imagePreview.style.display = 'none';
+      }
     }
     
 
