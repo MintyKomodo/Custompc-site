@@ -202,9 +202,6 @@
       background: linear-gradient(135deg, #7cf2e6, #7db2ff);
     }
     
-    .payments-icon {
-      background: linear-gradient(135deg, #ffd700, #ff8c00);
-    }
     
     .dropdown-item-content {
       flex: 1;
@@ -578,133 +575,10 @@
   <script src="shared-auth.js"></script>
   
   <script>
-    // Payment Access Control System
-    class PaymentAccessControl {
-      constructor() {
-        this.init();
-      }
-      
-      init() {
-        this.setupAuthIntegration();
-      }
-      
-      setupAuthIntegration() {
-        // Update payments access based on auth state
-        this.updatePaymentsAccess();
-        
-        // Listen for auth state changes
-        window.addEventListener('authStateChanged', () => {
-          this.updatePaymentsAccess();
-        });
-        
-        // Check periodically for auth system initialization
-        const checkAuth = setInterval(() => {
-          if (window.sharedAuth) {
-            this.updatePaymentsAccess();
-            clearInterval(checkAuth);
-          }
-        }, 100);
-      }
-      
-      updatePaymentsAccess() {
-        const paymentsItem = document.getElementById('payments-dropdown-item');
-        if (!paymentsItem) return;
-        
-        const sharedAuth = window.sharedAuth;
-        const isAdmin = sharedAuth && sharedAuth.isCurrentUserAdmin();
-        
-        if (isAdmin) {
-          paymentsItem.classList.remove('disabled');
-          paymentsItem.style.opacity = '1';
-          paymentsItem.style.pointerEvents = 'auto';
-        } else {
-          paymentsItem.classList.add('disabled');
-          paymentsItem.style.opacity = '0.5';
-          paymentsItem.style.pointerEvents = 'none';
-        }
-      }
-    }
-    
     // Global functions
     function openLiveMessaging() {
       // Redirect to dedicated messaging page
       window.location.href = 'messaging.html';
-    }
-    
-
-    
-    function openPayments() {
-      const sharedAuth = window.sharedAuth;
-      const isAdmin = sharedAuth && sharedAuth.isCurrentUserAdmin();
-      
-      if (isAdmin) {
-        window.location.href = 'payments.html';
-      } else {
-        // Show admin required message
-        showAdminRequiredMessage();
-      }
-    }
-    
-    function showAdminRequiredMessage() {
-      const message = document.createElement('div');
-      message.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: var(--panel);
-        border: 1px solid var(--border);
-        border-radius: 16px;
-        padding: 20px;
-        box-shadow: 0 20px 40px rgba(0,0,0,.4);
-        z-index: 10000;
-        max-width: 320px;
-        color: var(--ink);
-        animation: slideIn 0.3s ease;
-      `;
-      message.innerHTML = `
-        <div style="font-weight: 600; margin-bottom: 8px; display: flex; align-items: center;">
-          <span style="margin-right: 8px;">🔒</span>
-          Admin Access Required
-        </div>
-        <div style="color: var(--muted); font-size: 14px; margin-bottom: 16px; line-height: 1.4;">
-          Payment processing is only available to authenticated administrators.
-        </div>
-        <div style="display: flex; gap: 8px;">
-          <a href="login.html?admin=true" style="
-            display: inline-block;
-            padding: 8px 16px;
-            background: linear-gradient(90deg, var(--accent1), var(--accent2));
-            color: #0b0f1a;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 13px;
-          ">Login as Admin</a>
-          <button onclick="this.closest('div').remove()" style="
-            padding: 8px 16px;
-            background: transparent;
-            color: var(--muted);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 13px;
-          ">Close</button>
-        </div>
-      `;
-      
-      document.body.appendChild(message);
-      
-      // Auto-remove after 8 seconds
-      setTimeout(() => {
-        if (message.parentNode) {
-          message.style.animation = 'slideOut 0.3s ease';
-          setTimeout(() => {
-            if (message.parentNode) {
-              message.parentNode.removeChild(message);
-            }
-          }, 300);
-        }
-      }, 8000);
     }
     
     // Close announcement bar
@@ -742,12 +616,7 @@
 
     // Initialize on DOM load
     document.addEventListener('DOMContentLoaded', function() {
-      // Initialize payment access control
-      setTimeout(() => {
-        if (!window.paymentAccessControl) {
-          window.paymentAccessControl = new PaymentAccessControl();
-        }
-      }, 500);
+      // Page initialization complete
     });
     
     // Add slide animations

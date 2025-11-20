@@ -54,9 +54,6 @@ class SharedAuth {
 
     // Update brand text if user is logged in
     this.updateBrandText();
-    
-    // Update payments navigation display
-    this.updatePaymentsNavDisplay();
   }
 
   // Add authentication elements to a navigation container
@@ -85,9 +82,6 @@ class SharedAuth {
       cursor: pointer;
     `;
 
-    // Add Payments navigation item for admin users
-    this.addPaymentsNavItem(nav);
-
     // Update display based on current user
     this.updateAuthDisplay(null, loginBtn, logoutBtn);
     
@@ -96,33 +90,7 @@ class SharedAuth {
     nav.appendChild(logoutBtn);
   }
 
-  // Add Payments navigation item for admin users
-  addPaymentsNavItem(nav) {
-    // Check if payments nav already exists
-    if (nav.querySelector('#payments-nav')) return;
-
-    // Create payments navigation item
-    const paymentsNav = document.createElement('a');
-    paymentsNav.id = 'payments-nav';
-    paymentsNav.textContent = 'Payments';
-    paymentsNav.className = 'pill';
-    paymentsNav.href = 'payments.html';
-    paymentsNav.style.cssText = `
-      display: none;
-      cursor: pointer;
-    `;
-
-    // Insert payments nav before auth buttons (find the right position)
-    const existingNavItems = nav.querySelectorAll('.pill:not(#login-btn):not(#logout-btn)');
-    if (existingNavItems.length > 0) {
-      // Insert after the last existing nav item
-      const lastNavItem = existingNavItems[existingNavItems.length - 1];
-      lastNavItem.insertAdjacentElement('afterend', paymentsNav);
-    } else {
-      // Insert at the beginning of nav
-      nav.insertBefore(paymentsNav, nav.firstChild);
-    }
-  }
+  // Payments navigation removed - no longer needed
 
   // Update authentication display
   updateAuthDisplay(userDisplay, loginBtn, logoutBtn) {
@@ -134,8 +102,6 @@ class SharedAuth {
       logoutBtn.style.display = 'none';
     }
     
-    // Update payments navigation visibility
-    this.updatePaymentsNavDisplay();
   }
 
   // Check if current user is admin
@@ -151,30 +117,6 @@ class SharedAuth {
     // Check if current user matches admin credentials
     return this.currentUser.username === adminCredentials.username &&
            this.currentUser.email === adminCredentials.email;
-  }
-
-  // Update payments navigation display based on admin status
-  updatePaymentsNavDisplay() {
-    const paymentsNavItems = document.querySelectorAll('#payments-nav');
-    const isAdmin = this.isCurrentUserAdmin();
-    
-    paymentsNavItems.forEach(nav => {
-      nav.style.display = isAdmin ? 'inline-block' : 'none';
-      
-      // Add visual indicator for admin status
-      if (isAdmin) {
-        nav.setAttribute('title', 'Admin Payment Processing');
-        nav.style.background = 'linear-gradient(120deg,rgba(125,178,255,.15),rgba(124,242,230,.15))';
-        nav.style.borderColor = 'rgba(125,178,255,.3)';
-      }
-    });
-    
-    // Log navigation update for debugging
-    console.log('Navigation updated:', {
-      isAdmin: isAdmin,
-      paymentsNavCount: paymentsNavItems.length,
-      currentUser: this.currentUser
-    });
   }
 
   // Update brand text to show user name
@@ -263,9 +205,6 @@ class SharedAuth {
 
     // Update brand text
     this.updateBrandText();
-    
-    // Update payments navigation
-    this.updatePaymentsNavDisplay();
   }
 
   // Static method to trigger auth state change
