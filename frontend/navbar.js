@@ -26,7 +26,7 @@ class NavigationBar {
     announcementBar.className = 'announcement-bar';
     announcementBar.id = 'announcement-bar';
     announcementBar.innerHTML = `
-      <span>🎉 <strong>New!</strong> User chat history now saves across devices! <a href="messaging.html">Try it now →</a></span>
+      <span>🎉 <strong>New!</strong> User chat history now saves across devices! <a href="messaging">Try it now →</a></span>
       <button onclick="window.navigationBar.closeAnnouncementBar()" style="
         position: absolute;
         right: 20px;
@@ -68,7 +68,7 @@ class NavigationBar {
     
     header.innerHTML = `
       <div class="brand">
-        <a href="index.html">
+        <a href="index">
           <span class="brand-text">CustomPC</span>
           <img src="images/logo.png" alt="CustomPC.tech logo"
             style="height:60px;width:60px;display:inline-block;vertical-align:middle;object-fit:contain;border-radius:50%;" />
@@ -76,10 +76,10 @@ class NavigationBar {
       </div>
 
       <nav style="display: flex; align-items: center; gap: var(--space);">
-        <a class="pill ${this.isActive('builds')}" href="builds.html">Builds</a>
+        <a class="pill ${this.isActive('builds')}" href="builds">Builds</a>
         ${customPCDropdown}
-        <a class="pill ${this.isActive('about')}" href="about.html">About</a>
-        <a class="pill ${this.isActive('contact')}" href="contact.html">Contact</a>
+        <a class="pill ${this.isActive('about')}" href="about">About</a>
+        <a class="pill ${this.isActive('contact')}" href="contact">Contact</a>
         ${authButtons}
       </nav>
     `;
@@ -106,8 +106,8 @@ class NavigationBar {
       // Show login/signup buttons
       return `
         <div class="auth-section">
-          <a href="login.html" class="btn-login">Login</a>
-          <a href="signup.html" class="btn-signup">Sign Up</a>
+          <a href="login" class="btn-login">Login</a>
+          <a href="signup" class="btn-signup">Sign Up</a>
         </div>
       `;
     }
@@ -182,7 +182,7 @@ class NavigationBar {
     
     // Build dropdown items - Messages only
     let dropdownItems = `
-      <a href="messaging.html" class="dropdown-item">
+      <a href="messaging" class="dropdown-item">
         <div class="dropdown-item-icon">💬</div>
         <div class="dropdown-item-content">
           <div class="dropdown-item-title">Messages</div>
@@ -193,7 +193,7 @@ class NavigationBar {
     
     return `
       <div class="custom-pc-nav">
-        <a class="pill ${activeClass}" href="index.html">Custom PC</a>
+        <a class="pill ${activeClass}" href="index">Custom PC</a>
         <div class="custom-pc-dropdown">
           ${dropdownItems}
         </div>
