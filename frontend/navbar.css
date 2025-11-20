@@ -70,7 +70,6 @@ header.scrolled {
 
 .brand img {
   filter: brightness(4.5) contrast(3.5);
-  box-shadow: 0 0 20px rgba(125, 178, 255, 0.6);
 }
 
 .brand-text {
