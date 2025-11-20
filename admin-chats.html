@@ -1221,7 +1221,7 @@
                                 <button type="button" onclick="adminChatManager.removeImagePreview()" style="background: #dc3545; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; margin-left: 10px;">Remove</button>
                             </div>
                         </div>
-                        <form class="chat-input-form" onsubmit="adminChatManager.sendAdminMessage(event)">
+                        <form class="chat-input-form" id="admin-chat-form">
                             <div style="display: flex; gap: 8px; align-items: flex-end; width: 100%;">
                                 <label for="admin-image-input" class="image-upload-btn" title="Upload image">
                                     📷
@@ -1231,14 +1231,12 @@
                                     id="admin-image-input" 
                                     accept="image/*" 
                                     style="display: none;"
-                                    onchange="adminChatManager.handleImageSelect(event)"
                                 />
                                 <textarea 
                                     id="admin-message-input" 
                                     class="chat-input" 
                                     placeholder="Type your response or upload an image..."
                                     rows="1"
-                                    oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"
                                 ></textarea>
                                 <button type="submit" class="send-btn">Send 📤</button>
                             </div>
@@ -1248,6 +1246,50 @@
 
                 // Load messages for this chat
                 this.loadChatMessages(chat.username);
+                
+                // Set up form event listeners
+                setTimeout(() => {
+                    const form = document.getElementById('admin-chat-form');
+                    const textarea = document.getElementById('admin-message-input');
+                    const imageInput = document.getElementById('admin-image-input');
+                    
+                    if (form) {
+                        // Remove any existing listeners by cloning
+                        const newForm = form.cloneNode(true);
+                        form.parentNode.replaceChild(newForm, form);
+                        
+                        // Add submit listener
+                        newForm.addEventListener('submit', (e) => {
+                            e.preventDefault();
+                            this.sendAdminMessage(e);
+                        });
+                        
+                        // Auto-resize textarea
+                        const newTextarea = document.getElementById('admin-message-input');
+                        if (newTextarea) {
+                            newTextarea.addEventListener('input', function() {
+                                this.style.height = 'auto';
+                                this.style.height = this.scrollHeight + 'px';
+                            });
+                            
+                            // Enter key to send (Shift+Enter for new line)
+                            newTextarea.addEventListener('keydown', (e) => {
+                                if (e.key === 'Enter' && !e.shiftKey) {
+                                    e.preventDefault();
+                                    newForm.dispatchEvent(new Event('submit'));
+                                }
+                            });
+                        }
+                        
+                        // Image input handler
+                        const newImageInput = document.getElementById('admin-image-input');
+                        if (newImageInput) {
+                            newImageInput.addEventListener('change', (e) => {
+                                this.handleImageSelect(e);
+                            });
+                        }
+                    }
+                }, 100);
             }
 
             loadChatMessages(username) {
@@ -1311,12 +1353,26 @@
             async sendAdminMessage(event) {
                 event.preventDefault();
                 
+                console.log('📤 sendAdminMessage called');
+                
                 if (!this.currentChatId) {
                     alert('Please select a chat first!');
                     return;
                 }
 
+                // Check if database is initialized
+                if (!this.database) {
+                    console.error('❌ Database not initialized!');
+                    alert('Database not connected. Please wait for connection or refresh the page.');
+                    return;
+                }
+
                 const input = document.getElementById('admin-message-input');
+                if (!input) {
+                    console.error('❌ Message input not found!');
+                    return;
+                }
+                
                 const message = input.value.trim();
                 const imageInput = document.getElementById('admin-image-input');
                 const imagePreview = document.getElementById('image-preview');
@@ -1331,24 +1387,34 @@
                     }
                     
                     // Convert to base64
-                    imageData = await new Promise((resolve, reject) => {
-                        const reader = new FileReader();
-                        reader.onload = (e) => resolve(e.target.result);
-                        reader.onerror = reject;
-                        reader.readAsDataURL(file);
-                    });
+                    try {
+                        imageData = await new Promise((resolve, reject) => {
+                            const reader = new FileReader();
+                            reader.onload = (e) => resolve(e.target.result);
+                            reader.onerror = reject;
+                            reader.readAsDataURL(file);
+                        });
+                    } catch (error) {
+                        console.error('Error reading image:', error);
+                        alert('Failed to read image file');
+                        return;
+                    }
                 }
 
                 // Must have either message or image
                 if (!message && !imageData) {
+                    console.log('No message or image to send');
                     return;
                 }
 
                 const chat = this.activeChats.get(this.currentChatId);
                 if (!chat || !chat.chatId) {
-                    alert('Chat room not found!');
+                    console.error('Chat not found:', this.currentChatId, this.activeChats);
+                    alert('Chat room not found! Please refresh and try again.');
                     return;
                 }
+
+                console.log('Sending message to chat:', chat.chatId);
 
                 const messageData = {
                     text: message || '',
@@ -1367,15 +1433,19 @@
                     this.displayMessage(messageData);
                     
                     // Send message to the user's chat room
-                    await this.database.ref(`chats/${chat.chatId}/messages`).push(messageData);
+                    const messagesRef = this.database.ref(`chats/${chat.chatId}/messages`);
+                    await messagesRef.push(messageData);
+                    console.log('✅ Message pushed to Firebase');
                     
                     // Update chat metadata
                     const lastMessageText = message || (imageData ? '📷 Image' : '');
-                    await this.database.ref(`chats/${chat.chatId}/info`).update({
+                    const infoRef = this.database.ref(`chats/${chat.chatId}/info`);
+                    await infoRef.update({
                         lastMessage: lastMessageText,
                         lastMessageTime: Date.now(),
                         unreadCount: 0
                     });
+                    console.log('✅ Chat metadata updated');
                     
                     // Clear inputs
                     input.value = '';
@@ -1383,14 +1453,20 @@
                         imageInput.value = '';
                     }
                     if (imagePreview) {
-                        imagePreview.innerHTML = '';
+                        imagePreview.innerHTML = '<div style="display: flex; align-items: center; justify-content: space-between;"><img id="preview-img" src="" alt="Preview" style="max-width: 150px; max-height: 150px; border-radius: 8px; object-fit: cover;" /><button type="button" onclick="adminChatManager.removeImagePreview()" style="background: #dc3545; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; margin-left: 10px;">Remove</button></div>';
                         imagePreview.style.display = 'none';
                     }
                     
-                    console.log('✅ Admin message sent to chat room:', chat.chatId);
+                    console.log('✅ Admin message sent successfully to chat room:', chat.chatId);
                 } catch (error) {
                     console.error('❌ Failed to send message:', error);
-                    alert('Failed to send message: ' + error.message);
+                    console.error('Error details:', {
+                        message: error.message,
+                        stack: error.stack,
+                        chatId: chat.chatId,
+                        database: this.database ? 'exists' : 'null'
+                    });
+                    alert('Failed to send message: ' + (error.message || 'Unknown error. Check console for details.'));
                 }
             }
 
