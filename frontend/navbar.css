@@ -1,6 +1,3 @@
-/* Shared Navigation Bar Styles */
-
-/* Announcement Text Bar */
 .announcement-bar {
   background: linear-gradient(135deg, #667eea, #764ba2);
   color: white;
@@ -35,7 +32,6 @@
   }
 }
 
-/* Header - Sticky Navigation */
 header {
   display: flex;
   align-items: center;
@@ -60,7 +56,6 @@ header.scrolled {
   box-shadow: 0 6px 30px rgba(0,0,0,0.4);
 }
 
-/* Brand */
 .brand a {
   display: flex;
   align-items: center;
@@ -72,7 +67,6 @@ header.scrolled {
   white-space: nowrap;
 }
 
-/* Logo styling for better contrast */
 .brand img {
   border: 6px solid rgba(255, 255, 255, 0.9);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8), 0 0 0 2px rgba(255, 255, 255, 0.3), 0 0 30px rgba(125, 178, 255, 0.4);
@@ -87,7 +81,6 @@ header.scrolled {
   filter: brightness(2.0) contrast(2.0) saturate(1.6);
 }
 
-/* CustomPC text next to logo */
 .brand-text {
   color: white;
   font-size: 24px;
@@ -97,7 +90,6 @@ header.scrolled {
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
-/* Navigation Pills */
 nav {
   display: flex;
   gap: var(--space);
@@ -124,7 +116,6 @@ nav {
   border-color: rgba(255, 255, 255, 0.08);
 }
 
-/* Custom PC Dropdown */
 .custom-pc-nav {
   position: relative;
   display: inline-block;
@@ -203,7 +194,6 @@ nav {
   color: var(--muted);
 }
 
-/* Search Bar */
 .search-bar {
   display: flex;
   align-items: center;
@@ -250,7 +240,6 @@ nav {
   background: rgba(125, 178, 255, 0.2);
 }
 
-/* Auth Section */
 .auth-section {
   display: flex;
   align-items: center;
@@ -316,7 +305,6 @@ nav {
   border-color: rgba(255, 68, 68, 0.3);
 }
 
-/* Mobile Responsive */
 @media (max-width: 768px) {
   header {
     flex-direction: column;

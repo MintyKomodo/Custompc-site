@@ -1233,8 +1233,7 @@
         console.log('🚀 Initializing LiveMessagingPage');
         
         // Check email requirement first
-        const emailCheck = await this.checkEmailRequirement();
-        if (!emailCheck) {
+        if (!this.checkEmailRequirement()) {
           // Disable messaging interface until email is provided
           this.disableMessagingInterface();
           return; // Stop initialization if no email
@@ -1309,40 +1308,6 @@
           messagingContainer.style.opacity = '1';
           messagingContainer.style.pointerEvents = 'auto';
         }
-      }
-      
-      async checkEmailRequirement() {
-        const currentUser = this.getCurrentUser();
-        
-        // Admin users don't need email check
-        if (window.sharedAuth && window.sharedAuth.isCurrentUserAdmin()) {
-          return true;
-        }
-        
-        // If user is logged in but doesn't have email, show popup
-        if (currentUser && currentUser.username && currentUser.username !== 'Anonymous') {
-          if (!currentUser.email) {
-            this.showEmailPopup();
-            return false;
-          }
-          
-          // Validate email format
-          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          if (!emailRegex.test(currentUser.email)) {
-            this.showEmailPopup();
-            return false;
-          }
-          
-          return true;
-        }
-        
-        // If not logged in, require login
-        if (!currentUser) {
-          this.showEmailRequiredMessage();
-          return false;
-        }
-        
-        return true;
       }
       
       checkEmailRequirement() {
