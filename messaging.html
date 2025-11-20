@@ -2701,11 +2701,12 @@ This is an automated notification from the CustomPC.tech live messaging system.`
         input.value = '';
         input.style.height = 'auto';
         
-        // Add message to chat
-        addMessageToChat(message, 'admin', 'Admin');
+        // Add message to chat (with image if present)
+        const displayMessage = message || (imageData ? '📷 Image' : '');
+        addMessageToChat(displayMessage, 'admin', 'Admin', imageData);
         
         // Save via admin method
-        await window.liveMessaging.saveMessageToSession(message, 'admin');
+        await window.liveMessaging.saveMessageToSession(displayMessage, 'admin');
         
         // Re-enable send button
         if (sendBtn) {
@@ -2745,11 +2746,12 @@ This is an automated notification from the CustomPC.tech live messaging system.`
       input.value = '';
       input.style.height = 'auto';
       
-      // Add user message to chat immediately
-      addMessageToChat(message, 'user', username);
+      // Add user message to chat immediately (with image if present)
+      const displayMessage = message || (imageData ? '📷 Image' : '');
+      addMessageToChat(displayMessage, 'user', username, imageData);
       
       // Save to history
-      saveToHistory(message, 'user', username);
+      saveToHistory(displayMessage, 'user', username);
       
       // Save message to Firebase for admin dashboard - use private chat room per user
       let messageSavedToFirebase = false;
@@ -2891,6 +2893,15 @@ This is an automated notification from the CustomPC.tech live messaging system.`
       const chat = document.getElementById('messaging-chat');
       if (!chat) return;
       
+      // Ensure message is a valid string (not undefined or null)
+      const safeMessage = (message && typeof message === 'string' && message.trim()) ? message.trim() : '';
+      
+      // If no message and no image, don't display anything
+      if (!safeMessage && !imageData) {
+        console.warn('Attempted to add empty message');
+        return;
+      }
+      
       const messageDiv = document.createElement('div');
       messageDiv.className = `message ${type}`;
       
@@ -2904,7 +2915,7 @@ This is an automated notification from the CustomPC.tech live messaging system.`
       
       messageDiv.innerHTML = `
         <div class="message-content">
-          ${userLabel}${message ? `<div class="message-text">${message}</div>` : ''}
+          ${userLabel}${safeMessage ? `<div class="message-text">${safeMessage}</div>` : ''}
           ${imageHtml}
           <div class="message-time">${time}</div>
         </div>
