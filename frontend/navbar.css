@@ -73,7 +73,7 @@ header.scrolled {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8), 0 0 30px rgba(125, 178, 255, 0.5) !important;
   background: transparent !important;
   background-color: transparent !important;
-  filter: brightness(2.2) contrast(2.0) saturate(1.6) hue-rotate(5deg);
+  filter: brightness(2.2) contrast(2.0);
   clip-path: circle(45%);
   transition: all 0.3s ease;
 }
@@ -82,7 +82,7 @@ header.scrolled {
   border: none !important;
   outline: none !important;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.9), 0 0 50px rgba(125, 178, 255, 0.7) !important;
-  filter: brightness(2.5) contrast(2.2) saturate(1.8) hue-rotate(5deg);
+  filter: brightness(2.5) contrast(2.2);
 }
 
 .brand-text {

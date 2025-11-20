@@ -640,11 +640,22 @@
             }
 
             async init() {
+                // Wait a moment for sharedAuth to initialize if needed
+                if (!window.sharedAuth || !window.sharedAuth.currentUser) {
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    // Try to reload user if sharedAuth exists but currentUser is null
+                    if (window.sharedAuth && !window.sharedAuth.currentUser) {
+                        window.sharedAuth.currentUser = window.sharedAuth.getCurrentUser();
+                    }
+                }
+                
                 // Check if user is admin
                 this.checkAdminStatus();
 
                 if (!this.isAdmin) {
-                    alert('⛔ Access Denied: Admin privileges required');
+                    const userData = localStorage.getItem('custompc_user');
+                    console.error('Access denied. User data:', userData);
+                    alert('⛔ Access Denied: Admin privileges required\n\nPlease ensure you are logged in as:\nUsername: Minty-Komodo\nEmail: support@custompc.tech');
                     window.location.href = 'index.html';
                     return;
                 }
@@ -671,30 +682,53 @@
                     email: "support@custompc.tech"
                 };
                 
-                // Try using sharedAuth if available and has currentUser loaded
-                if (window.sharedAuth && typeof window.sharedAuth.isCurrentUserAdmin === 'function' && window.sharedAuth.currentUser) {
-                    this.isAdmin = window.sharedAuth.isCurrentUserAdmin();
-                } else {
-                    // Fallback check - verify username and email match admin credentials
-                    const currentUser = localStorage.getItem('custompc_user');
-                    if (currentUser) {
-                        try {
-                            const user = JSON.parse(currentUser);
-                            // Check both role and credentials match
-                            this.isAdmin = (user.role === 'admin' || user.isAdmin === true) &&
-                                         user.username === adminCredentials.username &&
-                                         user.email === adminCredentials.email;
-                        } catch (e) {
-                            console.error('Error parsing user data:', e);
-                            this.isAdmin = false;
+                // Always check localStorage as source of truth
+                const currentUserData = localStorage.getItem('custompc_user');
+                if (currentUserData) {
+                    try {
+                        const user = JSON.parse(currentUserData);
+                        // Primary check: username and email must match admin credentials
+                        // This matches the logic in shared-auth.js isCurrentUserAdmin()
+                        this.isAdmin = user.username === adminCredentials.username &&
+                                     user.email === adminCredentials.email;
+                        
+                        // If sharedAuth is available, verify it matches
+                        if (window.sharedAuth && typeof window.sharedAuth.isCurrentUserAdmin === 'function') {
+                            const sharedAuthIsAdmin = window.sharedAuth.isCurrentUserAdmin();
+                            if (this.isAdmin !== sharedAuthIsAdmin) {
+                                console.warn('Admin status mismatch between localStorage and sharedAuth');
+                                // Trust localStorage as source of truth
+                            }
                         }
-                    } else {
+                    } catch (e) {
+                        console.error('Error parsing user data:', e);
                         this.isAdmin = false;
                     }
+                } else {
+                    // No user data in localStorage
+                    this.isAdmin = false;
                 }
                 
                 console.log('Admin status:', this.isAdmin);
-                console.log('Current user:', window.sharedAuth?.currentUser || localStorage.getItem('custompc_user'));
+                if (currentUserData) {
+                    try {
+                        const user = JSON.parse(currentUserData);
+                        console.log('User from localStorage:', {
+                            username: user.username,
+                            email: user.email,
+                            role: user.role,
+                            expectedUsername: adminCredentials.username,
+                            expectedEmail: adminCredentials.email,
+                            usernameMatch: user.username === adminCredentials.username,
+                            emailMatch: user.email === adminCredentials.email
+                        });
+                    } catch (e) {
+                        console.error('Error parsing user data for logging:', e);
+                    }
+                } else {
+                    console.warn('No user data found in localStorage');
+                }
+                console.log('sharedAuth currentUser:', window.sharedAuth?.currentUser);
             }
 
             async initFirebase() {

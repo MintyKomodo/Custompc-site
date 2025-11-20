@@ -218,9 +218,9 @@ class NavigationBar {
       const currentUser = localStorage.getItem('custompc_user');
       if (currentUser) {
         const user = JSON.parse(currentUser);
-        // Check both role and credentials match
-        return (user.role === 'admin' || user.isAdmin === true) &&
-               user.username === adminCredentials.username &&
+        // Primary check: username and email must match admin credentials
+        // This matches the logic in shared-auth.js isCurrentUserAdmin()
+        return user.username === adminCredentials.username &&
                user.email === adminCredentials.email;
       }
     } catch (error) {
