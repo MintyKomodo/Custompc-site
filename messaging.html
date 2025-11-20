@@ -1233,7 +1233,10 @@
         console.log('🚀 Initializing LiveMessagingPage');
         
         // Check email requirement first
-        if (!this.checkEmailRequirement()) {
+        const emailCheck = await this.checkEmailRequirement();
+        if (!emailCheck) {
+          // Disable messaging interface until email is provided
+          this.disableMessagingInterface();
           return; // Stop initialization if no email
         }
         
@@ -1262,6 +1265,84 @@
         }
         
         console.log('✅ LiveMessagingPage initialization complete');
+      }
+      
+      disableMessagingInterface() {
+        // Disable input and send button
+        const input = document.getElementById('messaging-input');
+        const sendBtn = document.getElementById('send-btn');
+        
+        if (input) {
+          input.disabled = true;
+          input.placeholder = 'Please provide your email to continue...';
+        }
+        
+        if (sendBtn) {
+          sendBtn.disabled = true;
+        }
+        
+        // Hide messaging container
+        const messagingContainer = document.getElementById('messaging-container');
+        if (messagingContainer) {
+          messagingContainer.style.opacity = '0.5';
+          messagingContainer.style.pointerEvents = 'none';
+        }
+      }
+      
+      enableMessagingInterface() {
+        // Enable input and send button
+        const input = document.getElementById('messaging-input');
+        const sendBtn = document.getElementById('send-btn');
+        
+        if (input) {
+          input.disabled = false;
+          input.placeholder = 'Type your message here... (Press Enter to send)';
+        }
+        
+        if (sendBtn) {
+          sendBtn.disabled = false;
+        }
+        
+        // Show messaging container
+        const messagingContainer = document.getElementById('messaging-container');
+        if (messagingContainer) {
+          messagingContainer.style.opacity = '1';
+          messagingContainer.style.pointerEvents = 'auto';
+        }
+      }
+      
+      async checkEmailRequirement() {
+        const currentUser = this.getCurrentUser();
+        
+        // Admin users don't need email check
+        if (window.sharedAuth && window.sharedAuth.isCurrentUserAdmin()) {
+          return true;
+        }
+        
+        // If user is logged in but doesn't have email, show popup
+        if (currentUser && currentUser.username && currentUser.username !== 'Anonymous') {
+          if (!currentUser.email) {
+            this.showEmailPopup();
+            return false;
+          }
+          
+          // Validate email format
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(currentUser.email)) {
+            this.showEmailPopup();
+            return false;
+          }
+          
+          return true;
+        }
+        
+        // If not logged in, require login
+        if (!currentUser) {
+          this.showEmailRequiredMessage();
+          return false;
+        }
+        
+        return true;
       }
       
       checkEmailRequirement() {
@@ -1475,6 +1556,9 @@
           setTimeout(() => {
             overlay.remove();
           }, 300);
+          
+          // Enable messaging interface
+          this.enableMessagingInterface();
           
           // Continue initialization
           this.checkAdminStatus();
@@ -2538,6 +2622,19 @@ This is an automated notification from the CustomPC.tech live messaging system.`
       if (!input || !chat) {
         console.error('❌ Required elements not found');
         alert('Chat system not ready. Please refresh the page.');
+        return;
+      }
+      
+      // Check if user has email (unless admin)
+      const userForEmailCheck = window.sharedAuth ? window.sharedAuth.getCurrentUser() : null;
+      const userIsAdmin = window.sharedAuth && window.sharedAuth.isCurrentUserAdmin();
+      
+      if (!userIsAdmin && userForEmailCheck && (!userForEmailCheck.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userForEmailCheck.email))) {
+        // Show email popup if not already shown
+        if (window.liveMessaging && !document.getElementById('email-popup-overlay')) {
+          window.liveMessaging.showEmailPopup();
+        }
+        alert('Please provide your email address to send messages.');
         return;
       }
       
