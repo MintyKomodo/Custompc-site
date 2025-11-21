@@ -271,8 +271,8 @@ class AdminAuth extends SharedAuth {
       sessionStorage.removeItem('admin_redirect_url');
       
       // Validate redirect URL for security
-      const allowedRedirects = ['payments.html', 'index.html', 'builds.html'];
-      let targetUrl = 'payments.html'; // default
+      const allowedRedirects = ['index.html', 'builds.html', 'messaging.html'];
+      let targetUrl = 'index.html'; // default (payments disabled)
       
       if (redirectUrl) {
         const urlPath = redirectUrl.split('/').pop();
@@ -291,8 +291,8 @@ class AdminAuth extends SharedAuth {
 
     } catch (error) {
       console.error('Redirect error:', error);
-      // Fallback redirect
-      window.location.href = 'payments.html';
+      // Fallback redirect to home (payments disabled)
+      window.location.href = 'index.html';
     }
   }
 

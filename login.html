@@ -178,11 +178,11 @@
         if (adminAuth.validateAdminCredentials(formData.username, formData.password, email)) {
           // Authenticate admin
           if (adminAuth.authenticateAdmin(formData.username, formData.password, email)) {
-            this.showSuccess('Admin login successful! Redirecting to payments...');
+            this.showSuccess('Admin login successful!');
             
-            // Redirect to payments page or stored redirect URL
+            // Redirect to home (payments system disabled)
             setTimeout(() => {
-              const redirectUrl = sessionStorage.getItem('admin_redirect_url') || 'payments.html';
+              const redirectUrl = sessionStorage.getItem('admin_redirect_url') || 'index.html';
               sessionStorage.removeItem('admin_redirect_url');
               window.location.href = redirectUrl;
             }, 1000);
@@ -363,7 +363,7 @@
           `;
           notice.innerHTML = `
             <strong>Admin Access Required</strong><br>
-            Please enter your admin credentials to access payment processing.
+            Please enter your admin credentials to access admin tools. (Payments are currently disabled.)
           `;
           form.insertBefore(notice, form.firstChild);
         }
