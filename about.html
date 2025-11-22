@@ -251,25 +251,15 @@
       transform: translateY(0);
     }
 
-    /* Scroll-triggered footer */
+    /* Footer - always visible */
     .scroll-footer {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
+      position: relative;
+      width: 100%;
       background: #001f3f;
       border-top: 3px solid var(--accent1);
       padding: 40px 20px 20px;
-      z-index: 999;
-      transform: translateY(100%);
-      transition: transform 0.3s ease;
+      margin-top: 60px;
       box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
-      max-height: 80vh;
-      overflow-y: auto;
-    }
-
-    .scroll-footer.visible {
-      transform: translateY(0);
     }
 
     .scroll-footer-container {
@@ -587,29 +577,6 @@
     </div>
   </div>
 
-  <script>
-    // Scroll-triggered footer functionality
-    let scrollFooterTimeout;
-    window.addEventListener('scroll', function() {
-      const scrollFooter = document.getElementById('scroll-footer');
-      const scrollPosition = window.scrollY + window.innerHeight;
-      const documentHeight = document.documentElement.scrollHeight;
-      
-      // Show footer when scrolled to bottom (within 50px threshold)
-      if (scrollPosition >= documentHeight - 50) {
-        scrollFooter.classList.add('visible');
-        
-        // Auto-hide after 5 seconds
-        clearTimeout(scrollFooterTimeout);
-        scrollFooterTimeout = setTimeout(() => {
-          scrollFooter.classList.remove('visible');
-        }, 5000);
-      } else {
-        scrollFooter.classList.remove('visible');
-        clearTimeout(scrollFooterTimeout);
-      }
-    });
-  </script>
   
 </body>
 
