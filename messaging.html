@@ -867,73 +867,147 @@
       bottom: 0;
       left: 0;
       right: 0;
-      background: linear-gradient(135deg, var(--panel), var(--panel2));
-      border-top: 2px solid var(--accent1);
-      padding: 15px 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      background: #001f3f;
+      border-top: 3px solid var(--accent1);
+      padding: 40px 20px 20px;
       z-index: 999;
       transform: translateY(100%);
       transition: transform 0.3s ease;
-      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+      max-height: 80vh;
+      overflow-y: auto;
     }
 
     .scroll-footer.visible {
       transform: translateY(0);
     }
 
-    .scroll-footer-content {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      flex-wrap: wrap;
+    .scroll-footer-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px;
     }
 
-    .scroll-footer-text {
+    .footer-section h3 {
+      color: var(--accent1);
+      font-size: 16px;
+      margin: 0 0 15px 0;
+      font-weight: 600;
+    }
+
+    .footer-section p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+      margin: 0 0 20px 0;
+    }
+
+    .footer-newsletter {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .footer-newsletter input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--panel);
       color: var(--ink);
       font-size: 14px;
-      font-weight: 500;
     }
 
-    .scroll-footer-links {
-      display: flex;
-      gap: 15px;
-    }
-
-    .scroll-footer-link {
-      color: var(--accent1);
-      text-decoration: none;
-      font-size: 13px;
+    .footer-newsletter button {
+      padding: 10px 20px;
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      color: #0b0f1a;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
       transition: all 0.2s ease;
     }
 
-    .scroll-footer-link:hover {
-      color: var(--accent2);
-      transform: translateY(-1px);
+    .footer-newsletter button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(125, 178, 255, 0.4);
+    }
+
+    .footer-social {
+      display: flex;
+      gap: 12px;
+    }
+
+    .footer-social a {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--accent1);
+      text-decoration: none;
+      transition: all 0.2s ease;
+      font-size: 18px;
+    }
+
+    .footer-social a:hover {
+      background: var(--accent1);
+      color: #0b0f1a;
+      transform: translateY(-2px);
+    }
+
+    .footer-links {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--accent1);
+      padding-left: 5px;
+    }
+
+    .footer-bottom {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 1024px) {
+      .scroll-footer-container {
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+      }
     }
 
     @media (max-width: 768px) {
       .scroll-footer {
-        padding: 12px 15px;
+        padding: 30px 15px 15px;
       }
 
-      .scroll-footer-content {
+      .scroll-footer-container {
+        grid-template-columns: 1fr;
+        gap: 25px;
+      }
+
+      .footer-newsletter {
         flex-direction: column;
-        gap: 10px;
-        align-items: center;
-      }
-
-      .scroll-footer-text {
-        font-size: 12px;
-      }
-
-      .scroll-footer-links {
-        gap: 10px;
-      }
-
-      .scroll-footer-link {
-        font-size: 12px;
       }
     }
   </style>
@@ -3400,14 +3474,55 @@ This is an automated notification from the CustomPC.tech live messaging system.`
 
   <!-- Scroll-triggered footer -->
   <div class="scroll-footer" id="scroll-footer">
-    <div class="scroll-footer-content">
-      <span class="scroll-footer-text">💬 Live Chat | CustomPC.tech</span>
-      <div class="scroll-footer-links">
-        <a href="index.html" class="scroll-footer-link">Home</a>
-        <a href="builds.html" class="scroll-footer-link">Builds</a>
-        <a href="about.html" class="scroll-footer-link">About</a>
-        <a href="contact.html" class="scroll-footer-link">Contact</a>
+    <div class="scroll-footer-container">
+      <div class="footer-section">
+        <h3>Join our community</h3>
+        <p>Stay updated with the latest PC builds, tech tips, and exclusive deals from CustomPC.tech</p>
+        <div class="footer-newsletter">
+          <input type="email" placeholder="Your Email" />
+          <button>JOIN US</button>
+        </div>
+        <div class="footer-social">
+          <a href="#" title="Email">📧</a>
+          <a href="#" title="LinkedIn">💼</a>
+          <a href="#" title="TikTok">🎵</a>
+          <a href="#" title="Facebook">📘</a>
+          <a href="#" title="Twitter">🐦</a>
+        </div>
       </div>
+      
+      <div class="footer-section">
+        <h3>Contact Us</h3>
+        <div class="footer-links">
+          <a href="mailto:support@custompc.tech">support@custompc.tech</a>
+          <a href="messaging.html">Live Chat</a>
+          <a href="contact.html">Contact Form</a>
+          <a href="about.html">About Us</a>
+        </div>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Products</h3>
+        <div class="footer-links">
+          <a href="builds.html">PC Builds</a>
+          <a href="builds.html#gaming">Gaming PCs</a>
+          <a href="builds.html#workstation">Workstations</a>
+          <a href="builds.html#creator">Creator PCs</a>
+        </div>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Resources</h3>
+        <div class="footer-links">
+          <a href="index.html">Home</a>
+          <a href="about.html">About</a>
+          <a href="payments.html">Payments</a>
+          <a href="#">Privacy Policy</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      © 2024 CustomPC.tech - Premium Custom PC Builds
     </div>
   </div>
 
