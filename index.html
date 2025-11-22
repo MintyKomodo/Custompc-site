@@ -434,6 +434,82 @@
     .cta-primary, .cta-secondary{display:inline-block;padding:12px 18px;border-radius:14px;font-weight:700;text-decoration:none}
     .cta-primary{color:#0b0f1a;background:linear-gradient(90deg,var(--accent1),var(--accent2));box-shadow:0 10px 26px rgba(117,194,255,.28)}
     .cta-secondary{color:var(--ink);border:1px solid var(--border);background:#0f1830}
+
+    /* Scroll-triggered footer */
+    .scroll-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(135deg, var(--panel), var(--panel2));
+      border-top: 2px solid var(--accent1);
+      padding: 15px 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .scroll-footer.visible {
+      transform: translateY(0);
+    }
+
+    .scroll-footer-content {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .scroll-footer-text {
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .scroll-footer-links {
+      display: flex;
+      gap: 15px;
+    }
+
+    .scroll-footer-link {
+      color: var(--accent1);
+      text-decoration: none;
+      font-size: 13px;
+      transition: all 0.2s ease;
+    }
+
+    .scroll-footer-link:hover {
+      color: var(--accent2);
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 768px) {
+      .scroll-footer {
+        padding: 12px 15px;
+      }
+
+      .scroll-footer-content {
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .scroll-footer-text {
+        font-size: 12px;
+      }
+
+      .scroll-footer-links {
+        gap: 10px;
+      }
+
+      .scroll-footer-link {
+        font-size: 12px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -813,7 +889,46 @@
     });
   </script>
 
+  <!-- Scroll-triggered footer -->
+  <div class="scroll-footer" id="scroll-footer">
+    <div class="scroll-footer-content">
+      <span class="scroll-footer-text">🏠 Home | CustomPC.tech</span>
+      <div class="scroll-footer-links">
+        <a href="builds.html" class="scroll-footer-link">Builds</a>
+        <a href="about.html" class="scroll-footer-link">About</a>
+        <a href="messaging.html" class="scroll-footer-link">Chat</a>
+        <a href="contact.html" class="scroll-footer-link">Contact</a>
+      </div>
+    </div>
+  </div>
+
   <!-- Shared Navigation Bar -->
   <script src="frontend/navbar.js"></script>
+
+  <script>
+    // Scroll-triggered footer functionality
+    let scrollFooterTimeout;
+    window.addEventListener('scroll', function() {
+      const scrollFooter = document.getElementById('scroll-footer');
+      if (!scrollFooter) return;
+      
+      const scrollPosition = window.scrollY + window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      
+      // Show footer when scrolled to bottom (within 50px threshold)
+      if (scrollPosition >= documentHeight - 50) {
+        scrollFooter.classList.add('visible');
+        
+        // Auto-hide after 5 seconds
+        clearTimeout(scrollFooterTimeout);
+        scrollFooterTimeout = setTimeout(() => {
+          scrollFooter.classList.remove('visible');
+        }, 5000);
+      } else {
+        scrollFooter.classList.remove('visible');
+        clearTimeout(scrollFooterTimeout);
+      }
+    });
+  </script>
 </body>
 </html>
