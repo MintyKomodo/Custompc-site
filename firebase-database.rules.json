@@ -1,50 +1,24 @@
 {
   "rules": {
     "chats": {
+      ".read": true,
+      ".write": true,
       "$chatId": {
         ".read": true,
-        ".write": "!data.exists() || data.child('info/username').val() == newData.child('info/username').val()",
-        
-        "info": {
-          ".write": "!data.exists()",
-          ".validate": "newData.hasChildren(['username']) && newData.child('username').isString()"
-        },
-        
-        "messages": {
-          ".write": true,
-          "$messageId": {
-            ".validate": "newData.hasChildren(['text', 'username', 'type', 'timestamp']) && newData.child('text').isString() && newData.child('text').val().length > 0 && newData.child('text').val().length <= 5000"
-          }
-        },
-        
-        "lastActivity": {
-          ".write": true,
-          ".validate": "newData.isNumber()"
-        },
-        
-        "readBy": {
-          ".write": true
-        }
+        ".write": true
       }
     },
-    
     "userChats": {
+      ".read": true,
+      ".write": true,
       "$username": {
         ".read": true,
-        ".write": true,
-        
-        "$chatId": {
-          ".validate": "newData.hasChildren(['chatId', 'lastActivity'])"
-        }
+        ".write": true
       }
     },
-    
     "globalChat": {
       ".read": true,
-      "$messageId": {
-        ".write": "!data.exists()",
-        ".validate": "newData.hasChildren(['text', 'type', 'username', 'timestamp']) && newData.child('text').isString() && newData.child('text').val().length > 0 && newData.child('text').val().length <= 5000"
-      }
+      ".write": true
     }
   }
 }
