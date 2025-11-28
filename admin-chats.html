@@ -666,6 +666,200 @@
             transform: translateY(-2px);
         }
 
+        /* Tab Navigation */
+        .tab-navigation {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 0;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            color: var(--muted);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .tab-btn:hover {
+            color: var(--accent1);
+            background: rgba(125, 178, 255, 0.05);
+        }
+
+        .tab-btn.active {
+            color: var(--accent1);
+            border-bottom-color: var(--accent1);
+        }
+
+        .count-badge {
+            display: inline-block;
+            background: var(--accent1);
+            color: #0b0f1a;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-left: 8px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Submissions Container */
+        .submissions-container {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+        }
+
+        .submissions-header {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .submissions-header h2 {
+            margin: 0;
+            color: var(--accent1);
+        }
+
+        .submissions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .submission-card {
+            background: var(--panel2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.2s ease;
+        }
+
+        .submission-card:hover {
+            border-color: var(--accent1);
+            box-shadow: 0 4px 12px rgba(125, 178, 255, 0.1);
+        }
+
+        .submission-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .submission-info h3 {
+            margin: 0 0 5px 0;
+            color: var(--ink);
+            font-size: 18px;
+        }
+
+        .submission-info p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .submission-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .submission-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .detail-label {
+            font-size: 11px;
+            color: var(--muted);
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .detail-value {
+            color: var(--ink);
+            font-size: 14px;
+        }
+
+        .submission-message {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 12px;
+        }
+
+        .submission-message-label {
+            font-size: 11px;
+            color: var(--muted);
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .submission-message-text {
+            color: var(--ink);
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .convert-btn {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, var(--accent1), var(--accent2));
+            color: #0b0f1a;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 13px;
+        }
+
+        .convert-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(125, 178, 255, 0.4);
+        }
+
+        .delete-submission-btn {
+            padding: 8px 16px;
+            background: rgba(220, 53, 69, 0.1);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            color: #dc3545;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 13px;
+        }
+
+        .delete-submission-btn:hover {
+            background: rgba(220, 53, 69, 0.2);
+            border-color: rgba(220, 53, 69, 0.5);
+        }
+
         /* Footer - always visible */
         .scroll-footer {
             position: relative;
@@ -832,10 +1026,10 @@
     <div class="wrap" id="main-content">
         <!-- Header is dynamically generated by navbar.js -->
         
-        <div class="admin-header"></div>
+        <div class="admin-header">
             <div>
-                <h1 style="margin: 0 0 5px 0;">🔧 Admin - Active Chats</h1>
-                <p style="margin: 0; color: var(--muted);">Manage customer conversations in real-time</p>
+                <h1 style="margin: 0 0 5px 0;">🔧 Admin Dashboard</h1>
+                <p style="margin: 0; color: var(--muted);">Manage customer conversations and form submissions</p>
             </div>
             <div>
                 <span id="firebase-status" class="status-badge status-disconnected">
@@ -859,36 +1053,66 @@
             </div>
         </div>
         
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <button class="tab-btn active" onclick="switchTab('chats')" id="chats-tab">
+                💬 Active Chats <span id="chats-count-badge" class="count-badge">0</span>
+            </button>
+            <button class="tab-btn" onclick="switchTab('submissions')" id="submissions-tab">
+                📋 Form Submissions <span id="submissions-count-badge" class="count-badge">0</span>
+            </button>
+        </div>
+        
         <div id="debug-panel" style="display: none; background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 20px;">
             <h3 style="margin: 0 0 15px 0; color: var(--accent1);">🐛 Debug Information</h3>
             <div id="debug-content" style="font-family: monospace; font-size: 12px; color: var(--muted);"></div>
         </div>
 
-        <div class="admin-layout">
-            <!-- Chats Sidebar -->
-            <div class="chats-sidebar">
-                <div class="sidebar-header">
-                    <h3>Active Conversations</h3>
-                    <p style="margin: 0; font-size: 13px; color: var(--muted);">
-                        <span id="chat-count">0</span> active chats
-                    </p>
+        <!-- Chats Tab Content -->
+        <div class="tab-content active" id="chats-content">
+            <div class="admin-layout">
+                <!-- Chats Sidebar -->
+                <div class="chats-sidebar">
+                    <div class="sidebar-header">
+                        <h3>Active Conversations</h3>
+                        <p style="margin: 0; font-size: 13px; color: var(--muted);">
+                            <span id="chat-count">0</span> active chats
+                        </p>
+                    </div>
+                    <div class="chat-list" id="chat-list">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">💬</div>
+                            <p>No active chats yet</p>
+                            <p style="font-size: 13px;">New conversations will appear here</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="chat-list" id="chat-list">
-                    <div class="empty-state">
-                        <div class="empty-state-icon">💬</div>
-                        <p>No active chats yet</p>
-                        <p style="font-size: 13px;">New conversations will appear here</p>
+
+                <!-- Chat View -->
+                <div class="chat-view">
+                    <div id="chat-view-content">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">👈</div>
+                            <h3>Click a chat to continue</h3>
+                            <p>Select a conversation from the sidebar to view messages and respond</p>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Chat View -->
-            <div class="chat-view">
-                <div id="chat-view-content">
+        </div>
+        
+        <!-- Submissions Tab Content -->
+        <div class="tab-content" id="submissions-content">
+            <div class="submissions-container">
+                <div class="submissions-header">
+                    <h2>📋 Form Submissions</h2>
+                    <p style="color: var(--muted); margin: 5px 0 0 0;">PC build requests from index.html form</p>
+                </div>
+                <div class="submissions-list" id="submissions-list">
                     <div class="empty-state">
-                        <div class="empty-state-icon">👈</div>
-                        <h3>Click a chat to continue</h3>
-                        <p>Select a conversation from the sidebar to view messages and respond</p>
+                        <div class="empty-state-icon">📋</div>
+                        <p>No form submissions yet</p>
+                        <p style="font-size: 13px;">Submissions from the homepage will appear here</p>
                     </div>
                 </div>
             </div>
@@ -1892,6 +2116,9 @@
             console.log('Firebase SDK loaded:', typeof firebase !== 'undefined');
             console.log('FirebaseChatManager available:', typeof window.firebaseChatManager !== 'undefined');
             
+            // Load submissions count on page load
+            loadSubmissions();
+            
             // Request notification permissions
             if ('Notification' in window) {
                 const notificationStatus = document.getElementById('notification-status');
@@ -1949,6 +2176,183 @@
             adminChatManager = new AdminChatManager();
         });
 
+        // Tab Switching
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(tabName + '-tab').classList.add('active');
+            
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tabName + '-content').classList.add('active');
+            
+            // Load submissions if switching to submissions tab
+            if (tabName === 'submissions') {
+                loadSubmissions();
+            }
+        }
+
+        // Load Form Submissions from localStorage
+        function loadSubmissions() {
+            const submissionsList = document.getElementById('submissions-list');
+            const submissions = JSON.parse(localStorage.getItem('pc_requests') || '[]');
+            
+            // Update count badge
+            document.getElementById('submissions-count-badge').textContent = submissions.length;
+            
+            if (submissions.length === 0) {
+                submissionsList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📋</div>
+                        <p>No form submissions yet</p>
+                        <p style="font-size: 13px;">Submissions from the homepage will appear here</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Sort by timestamp (newest first)
+            submissions.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+            
+            submissionsList.innerHTML = submissions.map((sub, index) => `
+                <div class="submission-card" data-index="${index}">
+                    <div class="submission-header">
+                        <div class="submission-info">
+                            <h3>${sub.name || 'Anonymous'}</h3>
+                            <p>${sub.email || 'No email provided'} • ${sub.budget || 'No budget specified'}</p>
+                            <p style="font-size: 12px; margin-top: 4px;">${formatSubmissionTime(sub.timestamp)}</p>
+                        </div>
+                        <div class="submission-actions">
+                            <button class="convert-btn" onclick="convertToChat(${index})">
+                                💬 Start Chat
+                            </button>
+                            <button class="delete-submission-btn" onclick="deleteSubmission(${index})">
+                                🗑️
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="submission-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Build Type</span>
+                            <span class="detail-value">${sub.buildType || 'Not specified'}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Budget</span>
+                            <span class="detail-value">${sub.budget || 'Not specified'}</span>
+                        </div>
+                        ${sub.phone ? `
+                        <div class="detail-item">
+                            <span class="detail-label">Phone</span>
+                            <span class="detail-value">${sub.phone}</span>
+                        </div>
+                        ` : ''}
+                    </div>
+                    
+                    ${sub.message ? `
+                    <div class="submission-message">
+                        <div class="submission-message-label">Message</div>
+                        <div class="submission-message-text">${sub.message}</div>
+                    </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        // Convert Submission to Chat
+        async function convertToChat(index) {
+            const submissions = JSON.parse(localStorage.getItem('pc_requests') || '[]');
+            const submission = submissions[index];
+            
+            if (!submission) {
+                alert('Submission not found!');
+                return;
+            }
+            
+            if (!confirm(`Convert submission from ${submission.name} into a chat?`)) {
+                return;
+            }
+            
+            try {
+                // Create a chat in Firebase
+                const chatData = {
+                    info: {
+                        username: submission.name || 'Anonymous',
+                        email: submission.email || 'no-email@example.com',
+                        lastMessage: `Build Request: ${submission.buildType || 'Custom PC'} - Budget: ${submission.budget || 'Not specified'}`,
+                        lastMessageTime: Date.now(),
+                        unreadCount: 1
+                    },
+                    messages: {}
+                };
+                
+                // Add initial message with submission details
+                const initialMessage = {
+                    text: `📋 Form Submission:\n\nBuild Type: ${submission.buildType || 'Not specified'}\nBudget: ${submission.budget || 'Not specified'}\n${submission.phone ? `Phone: ${submission.phone}\n` : ''}${submission.message ? `\nMessage:\n${submission.message}` : ''}`,
+                    username: submission.name || 'Anonymous',
+                    type: 'user',
+                    timestamp: submission.timestamp || Date.now()
+                };
+                
+                // Push to Firebase
+                const chatRef = adminChatManager.database.ref('chats').push();
+                const chatId = chatRef.key;
+                
+                await chatRef.set(chatData);
+                
+                // Add the initial message
+                await adminChatManager.database.ref(`chats/${chatId}/messages`).push(initialMessage);
+                
+                console.log('✅ Converted submission to chat:', chatId);
+                
+                // Remove from submissions
+                submissions.splice(index, 1);
+                localStorage.setItem('pc_requests', JSON.stringify(submissions));
+                
+                // Reload submissions list
+                loadSubmissions();
+                
+                // Switch to chats tab and refresh
+                switchTab('chats');
+                refreshChats();
+                
+                alert(`✅ Converted to chat! You can now respond to ${submission.name}.`);
+                
+            } catch (error) {
+                console.error('❌ Failed to convert submission:', error);
+                alert('Failed to convert submission: ' + error.message);
+            }
+        }
+
+        // Delete Submission
+        function deleteSubmission(index) {
+            const submissions = JSON.parse(localStorage.getItem('pc_requests') || '[]');
+            const submission = submissions[index];
+            
+            if (!confirm(`Delete submission from ${submission.name}?`)) {
+                return;
+            }
+            
+            submissions.splice(index, 1);
+            localStorage.setItem('pc_requests', JSON.stringify(submissions));
+            loadSubmissions();
+        }
+
+        // Format submission timestamp
+        function formatSubmissionTime(timestamp) {
+            if (!timestamp) return 'Unknown time';
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diff = now - date;
+            
+            if (diff < 60000) return 'Just now';
+            if (diff < 3600000) return Math.floor(diff / 60000) + ' minutes ago';
+            if (diff < 86400000) return Math.floor(diff / 3600000) + ' hours ago';
+            if (diff < 604800000) return Math.floor(diff / 86400000) + ' days ago';
+            
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+        }
+
         function refreshChats() {
             if (adminChatManager) {
                 console.log('🔄 Manually refreshing chats...');
@@ -1966,8 +2370,11 @@
                 // Reload chats
                 adminChatManager.loadActiveChats();
                 
+                // Also reload submissions
+                loadSubmissions();
+                
                 // Show notification
-                alert('Chats refreshed! Check the console for details.');
+                alert('Chats and submissions refreshed!');
             }
         }
         
