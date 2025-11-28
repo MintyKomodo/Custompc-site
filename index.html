@@ -640,6 +640,27 @@
 
         const fd = new FormData(form);
 
+        // Save to localStorage for admin panel
+        try {
+          const submission = {
+            name: fd.get('name'),
+            email: fd.get('_replyto'),
+            buildType: fd.get('build'),
+            budget: fd.get('budget'),
+            message: fd.get('message'),
+            timestamp: Date.now()
+          };
+          
+          // Get existing submissions
+          const submissions = JSON.parse(localStorage.getItem('pc_requests') || '[]');
+          submissions.push(submission);
+          localStorage.setItem('pc_requests', JSON.stringify(submissions));
+          
+          console.log('✅ Submission saved to localStorage for admin panel');
+        } catch (storageError) {
+          console.error('Failed to save to localStorage:', storageError);
+        }
+
         try {
           btn.disabled = true;
           const res = await fetch(form.action, {
