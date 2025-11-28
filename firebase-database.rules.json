@@ -1,0 +1,43 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    
+    "chats": {
+      "$chatId": {
+        ".read": true,
+        ".write": "auth == null || auth.uid != null",
+        
+        "info": {
+          ".validate": "newData.hasChildren(['username', 'email'])"
+        },
+        
+        "messages": {
+          "$messageId": {
+            ".validate": "newData.hasChildren(['text', 'username', 'type', 'timestamp'])"
+          }
+        }
+      }
+    },
+    
+    "userChats": {
+      "$username": {
+        ".read": "auth != null && auth.token.username == $username",
+        ".write": "auth != null && auth.token.username == $username",
+        
+        "$chatId": {
+          ".validate": "newData.hasChildren(['chatId', 'lastActivity'])"
+        }
+      }
+    },
+    
+    "globalChat": {
+      ".read": true,
+      ".write": true,
+      
+      "$messageId": {
+        ".validate": "newData.hasChildren(['text', 'type', 'username']) && newData.child('text').isString() && newData.child('text').val().length > 0 && newData.child('text').val().length <= 5000"
+      }
+    }
+  }
+}
