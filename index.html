@@ -46,29 +46,7 @@
     }
     .wrap{max-width:var(--max);margin:0 auto;padding:var(--space-lg);width:100%;box-sizing:border-box;overflow:visible}
 
-    /* Announcement Text Bar */
-    .announcement-bar {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
-      text-align: center;
-      padding: 12px 20px;
-      font-size: 14px;
-      font-weight: 500;
-      position: sticky;
-      top: 0;
-      z-index: 1001;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-    }
-    
-    .announcement-bar a {
-      color: white;
-      text-decoration: underline;
-      font-weight: 600;
-    }
-    
-    .announcement-bar a:hover {
-      opacity: 0.8;
-    }
+
     
 
     
@@ -490,25 +468,6 @@
   </style>
 </head>
 <body>
-  <!-- Announcement Bar -->
-  <div class="announcement-bar" id="announcement-bar">
-    <span>🎉 <strong>New!</strong> User chat history now saves across devices! <a href="messaging.html">Try it now →</a></span>
-    <button onclick="closeAnnouncementBar()" style="
-      position: absolute;
-      right: 20px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      color: white;
-      font-size: 20px;
-      cursor: pointer;
-      opacity: 0.8;
-      padding: 0;
-      line-height: 1;
-    ">×</button>
-  </div>
-
   <div class="value-prop">Custom, fast, and powerful PCs tailored to your needs.</div>
 
   <div class="wrap">
@@ -715,23 +674,7 @@
       window.location.href = 'messaging.html';
     }
     
-    // Close announcement bar
-    function closeAnnouncementBar() {
-      const bar = document.getElementById('announcement-bar');
-      bar.style.animation = 'slideUp 0.3s ease-out';
-      setTimeout(() => {
-        bar.style.display = 'none';
-        localStorage.setItem('announcementBarClosed', 'true');
-      }, 300);
-    }
 
-    // Check if announcement bar was previously closed
-    document.addEventListener('DOMContentLoaded', function() {
-      const wasClosed = localStorage.getItem('announcementBarClosed');
-      if (wasClosed === 'true') {
-        document.getElementById('announcement-bar').style.display = 'none';
-      }
-    });
 
     // Sticky header scroll effect
     let lastScroll = 0;
