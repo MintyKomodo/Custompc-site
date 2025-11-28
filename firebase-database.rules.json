@@ -1,29 +1,37 @@
 {
   "rules": {
-    ".read": false,
-    ".write": false,
-    
     "chats": {
       "$chatId": {
         ".read": true,
-        ".write": "auth == null || auth.uid != null",
+        ".write": "!data.exists() || data.child('info/username').val() == newData.child('info/username').val()",
         
         "info": {
-          ".validate": "newData.hasChildren(['username', 'email'])"
+          ".write": "!data.exists()",
+          ".validate": "newData.hasChildren(['username']) && newData.child('username').isString()"
         },
         
         "messages": {
+          ".write": true,
           "$messageId": {
-            ".validate": "newData.hasChildren(['text', 'username', 'type', 'timestamp'])"
+            ".validate": "newData.hasChildren(['text', 'username', 'type', 'timestamp']) && newData.child('text').isString() && newData.child('text').val().length > 0 && newData.child('text').val().length <= 5000"
           }
+        },
+        
+        "lastActivity": {
+          ".write": true,
+          ".validate": "newData.isNumber()"
+        },
+        
+        "readBy": {
+          ".write": true
         }
       }
     },
     
     "userChats": {
       "$username": {
-        ".read": "auth != null && auth.token.username == $username",
-        ".write": "auth != null && auth.token.username == $username",
+        ".read": true,
+        ".write": true,
         
         "$chatId": {
           ".validate": "newData.hasChildren(['chatId', 'lastActivity'])"
@@ -33,10 +41,9 @@
     
     "globalChat": {
       ".read": true,
-      ".write": true,
-      
       "$messageId": {
-        ".validate": "newData.hasChildren(['text', 'type', 'username']) && newData.child('text').isString() && newData.child('text').val().length > 0 && newData.child('text').val().length <= 5000"
+        ".write": "!data.exists()",
+        ".validate": "newData.hasChildren(['text', 'type', 'username', 'timestamp']) && newData.child('text').isString() && newData.child('text').val().length > 0 && newData.child('text').val().length <= 5000"
       }
     }
   }
