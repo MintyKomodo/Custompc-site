@@ -19,6 +19,14 @@
     "globalChat": {
       ".read": true,
       ".write": true
+    },
+    "submissions": {
+      ".read": true,
+      ".write": true,
+      "$submissionId": {
+        ".read": true,
+        ".write": true
+      }
     }
   }
 }

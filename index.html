@@ -640,7 +640,7 @@
 
         const fd = new FormData(form);
 
-        // Save to localStorage for admin panel
+        // Save to Firebase for admin panel
         try {
           const submission = {
             name: fd.get('name'),
@@ -648,17 +648,20 @@
             buildType: fd.get('build'),
             budget: fd.get('budget'),
             message: fd.get('message'),
-            timestamp: Date.now()
+            timestamp: Date.now(),
+            status: 'new'
           };
           
-          // Get existing submissions
-          const submissions = JSON.parse(localStorage.getItem('pc_requests') || '[]');
-          submissions.push(submission);
-          localStorage.setItem('pc_requests', JSON.stringify(submissions));
-          
-          console.log('✅ Submission saved to localStorage for admin panel');
+          // Import Firebase if not already loaded
+          if (typeof firebase !== 'undefined' && firebase.database) {
+            const submissionsRef = firebase.database().ref('submissions');
+            await submissionsRef.push(submission);
+            console.log('✅ Submission saved to Firebase for admin panel');
+          } else {
+            console.warn('⚠️ Firebase not available, submission not saved to database');
+          }
         } catch (storageError) {
-          console.error('Failed to save to localStorage:', storageError);
+          console.error('Failed to save to Firebase:', storageError);
         }
 
         try {
@@ -863,6 +866,10 @@
   <!-- Shared Navigation Bar -->
   <script src="frontend/navbar.js"></script>
 
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <script src="config/firebase-config.js"></script>
 
 </body>
 </html>

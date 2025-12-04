@@ -2358,60 +2358,96 @@
         }
 
         // Create Test Submission
-        function createTestSubmission() {
+        async function createTestSubmission() {
             const testSubmission = {
                 name: 'Test User',
                 email: 'test@example.com',
                 buildType: 'Gaming PC',
                 budget: '$1500-$2000',
                 message: 'This is a test submission to verify the system is working.',
-                timestamp: Date.now()
+                timestamp: Date.now(),
+                status: 'new'
             };
             
-            const submissions = JSON.parse(localStorage.getItem('pc_requests') || '[]');
-            submissions.push(testSubmission);
-            localStorage.setItem('pc_requests', JSON.stringify(submissions));
-            
-            console.log('✅ Test submission created');
-            loadSubmissions();
-            alert('Test submission created! Check the Form Submissions tab.');
+            try {
+                await firebase.database().ref('submissions').push(testSubmission);
+                console.log('✅ Test submission created in Firebase');
+                loadSubmissions();
+                alert('Test submission created! Check the Form Submissions tab.');
+            } catch (error) {
+                console.error('Error creating test submission:', error);
+                alert('Failed to create test submission: ' + error.message);
+            }
         }
 
-        // Load Form Submissions from localStorage
+        // Load Form Submissions from Firebase
         function loadSubmissions() {
-            console.log('📋 Loading submissions...');
+            console.log('📋 Loading submissions from Firebase...');
             const submissionsList = document.getElementById('submissions-list');
-            const submissions = JSON.parse(localStorage.getItem('pc_requests') || '[]');
             
-            console.log('Found submissions:', submissions.length, submissions);
+            // Show loading state
+            submissionsList.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">⏳</div>
+                    <p>Loading submissions...</p>
+                </div>
+            `;
             
-            // Sort by timestamp (newest first)
-            submissions.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-            
-            // Store in global array for filtering
-            allSubmissions = submissions;
-            
-            // Update count badge
-            document.getElementById('submissions-count-badge').textContent = submissions.length;
-            
-            // Clear search box
-            const searchBox = document.getElementById('submission-search');
-            if (searchBox) searchBox.value = '';
-            
-            if (submissions.length === 0) {
+            // Load from Firebase
+            const submissionsRef = firebase.database().ref('submissions');
+            submissionsRef.once('value', (snapshot) => {
+                const data = snapshot.val();
+                const submissions = [];
+                
+                if (data) {
+                    // Convert Firebase object to array with keys
+                    Object.keys(data).forEach(key => {
+                        submissions.push({
+                            ...data[key],
+                            firebaseKey: key
+                        });
+                    });
+                }
+                
+                console.log('Found submissions:', submissions.length, submissions);
+                
+                // Sort by timestamp (newest first)
+                submissions.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+                
+                // Store in global array for filtering
+                allSubmissions = submissions;
+                
+                // Update count badge
+                document.getElementById('submissions-count-badge').textContent = submissions.length;
+                
+                // Clear search box
+                const searchBox = document.getElementById('submission-search');
+                if (searchBox) searchBox.value = '';
+                
+                if (submissions.length === 0) {
+                    submissionsList.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📋</div>
+                            <p>No form submissions yet</p>
+                            <p style="font-size: 13px;">Submissions from the homepage will appear here</p>
+                            <p style="font-size: 12px; margin-top: 10px;">Click "➕ Test Submission" to create a test entry</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Render all submissions
+                renderFilteredSubmissions(submissions);
+            }, (error) => {
+                console.error('Error loading submissions:', error);
                 submissionsList.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-state-icon">📋</div>
-                        <p>No form submissions yet</p>
-                        <p style="font-size: 13px;">Submissions from the homepage will appear here</p>
-                        <p style="font-size: 12px; margin-top: 10px;">Click "➕ Test Submission" to create a test entry</p>
+                        <div class="empty-state-icon">❌</div>
+                        <p>Error loading submissions</p>
+                        <p style="font-size: 13px;">${error.message}</p>
                     </div>
                 `;
-                return;
-            }
-            
-            // Render all submissions
-            renderFilteredSubmissions(submissions);
+            });
         }
         
         // Old rendering code (now moved to renderFilteredSubmissions)
@@ -2466,8 +2502,7 @@
 
         // Convert Submission to Chat
         async function convertToChat(index) {
-            const submissions = JSON.parse(localStorage.getItem('pc_requests') || '[]');
-            const submission = submissions[index];
+            const submission = allSubmissions[index];
             
             if (!submission) {
                 alert('Submission not found!');
@@ -2510,9 +2545,10 @@
                 
                 console.log('✅ Converted submission to chat:', chatId);
                 
-                // Remove from submissions
-                submissions.splice(index, 1);
-                localStorage.setItem('pc_requests', JSON.stringify(submissions));
+                // Remove from Firebase submissions
+                if (submission.firebaseKey) {
+                    await firebase.database().ref(`submissions/${submission.firebaseKey}`).remove();
+                }
                 
                 // Reload submissions list
                 loadSubmissions();
@@ -2530,17 +2566,30 @@
         }
 
         // Delete Submission
-        function deleteSubmission(index) {
-            const submissions = JSON.parse(localStorage.getItem('pc_requests') || '[]');
-            const submission = submissions[index];
+        async function deleteSubmission(index) {
+            const submission = allSubmissions[index];
+            
+            if (!submission) {
+                alert('Submission not found!');
+                return;
+            }
             
             if (!confirm(`Delete submission from ${submission.name}?`)) {
                 return;
             }
             
-            submissions.splice(index, 1);
-            localStorage.setItem('pc_requests', JSON.stringify(submissions));
-            loadSubmissions();
+            try {
+                // Remove from Firebase
+                if (submission.firebaseKey) {
+                    await firebase.database().ref(`submissions/${submission.firebaseKey}`).remove();
+                    console.log('✅ Submission deleted from Firebase');
+                }
+                
+                loadSubmissions();
+            } catch (error) {
+                console.error('Error deleting submission:', error);
+                alert('Failed to delete submission: ' + error.message);
+            }
         }
 
         // Format submission timestamp
