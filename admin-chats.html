@@ -1050,6 +1050,9 @@
                 <button onclick="showDebugInfo()" class="btn" style="margin-left: 10px; background: #ffc107; color: #000;">
                     🐛 Debug
                 </button>
+                <button onclick="createTestSubmission()" class="btn" style="margin-left: 10px; background: #9c27b0; color: white;">
+                    ➕ Test Submission
+                </button>
             </div>
         </div>
         
@@ -2192,10 +2195,33 @@
             }
         }
 
+        // Create Test Submission
+        function createTestSubmission() {
+            const testSubmission = {
+                name: 'Test User',
+                email: 'test@example.com',
+                buildType: 'Gaming PC',
+                budget: '$1500-$2000',
+                message: 'This is a test submission to verify the system is working.',
+                timestamp: Date.now()
+            };
+            
+            const submissions = JSON.parse(localStorage.getItem('pc_requests') || '[]');
+            submissions.push(testSubmission);
+            localStorage.setItem('pc_requests', JSON.stringify(submissions));
+            
+            console.log('✅ Test submission created');
+            loadSubmissions();
+            alert('Test submission created! Check the Form Submissions tab.');
+        }
+
         // Load Form Submissions from localStorage
         function loadSubmissions() {
+            console.log('📋 Loading submissions...');
             const submissionsList = document.getElementById('submissions-list');
             const submissions = JSON.parse(localStorage.getItem('pc_requests') || '[]');
+            
+            console.log('Found submissions:', submissions.length, submissions);
             
             // Update count badge
             document.getElementById('submissions-count-badge').textContent = submissions.length;
@@ -2206,6 +2232,7 @@
                         <div class="empty-state-icon">📋</div>
                         <p>No form submissions yet</p>
                         <p style="font-size: 13px;">Submissions from the homepage will appear here</p>
+                        <p style="font-size: 12px; margin-top: 10px;">Click "➕ Test Submission" to create a test entry</p>
                     </div>
                 `;
                 return;
