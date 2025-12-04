@@ -1,439 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8" />
   <title>Log In – CustomPC.tech</title>
-  <meta name="description" content="Log in to your CustomPC.tech account to access personalized PC builds and saved preferences." />
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover" />
-  <link rel="icon" type="image/png" sizes="32x32" href="images/logo.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="images/logo.png" />
-  <link rel="shortcut icon" href="images/logo.png" />
-  <link rel="apple-touch-icon" href="images/logo.png" />
-  <link rel="stylesheet" href="frontend/auth-styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    :root{
+      --space:15px;
+      --bg:#0a0f1a; --ink:#e9eefc; --muted:#aeb9d4;
+      --panel:#111729; --panel2:#0d1426; --border:rgba(255,255,255,.08);
+      --accent1:#7db2ff; --accent2:#7cf2e6; --radius:18px; --max:1200px;
+    }
+    .wrap{max-width:var(--max);margin:0 auto;padding:28px}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space)}
+    .brand a{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;font-weight:700;letter-spacing:.3px;white-space:nowrap}
+    .topnav{display:flex;gap:var(--space);flex-wrap:wrap}
+    .pill{display:inline-block;padding:10px 14px;border-radius:999px;color:var(--ink);text-decoration:none;border:1px solid transparent}
+    .pill:hover{background:#0f1830}
+    .pill.active{background:linear-gradient(120deg,rgba(125,178,255,.15),rgba(124,242,230,.15));border-color:rgba(255,255,255,.08)}
+    
+    /* Bottom CTA (shared) */
+    .cta-card{
+      text-align:center;
+      border:1px solid var(--border);
+      border-left:0;border-right:0;
+      border-radius:0; /* no rounded corners */
+      box-shadow:none; /* flush edges */
+      padding:34px 26px;
+      background:linear-gradient(135deg, rgba(125,178,255,.12), rgba(124,242,230,.12));
+      /* full-bleed to viewport width */
+      margin-left:calc(50% - 50vw);
+      margin-right:calc(50% - 50vw);
+      width:100vw;
+    }
+    .cta-title{font-size:26px;margin:0 0 var(--space)}
+    .cta-sub{color:var(--muted);margin:0 0 var(--space)}
+    .cta-actions{display:flex;gap:var(--space);justify-content:center;flex-wrap:wrap}
+    .cta-primary, .cta-secondary{display:inline-block;padding:12px 18px;border-radius:14px;font-weight:700;text-decoration:none}
+    .cta-primary{color:#0b0f1a;background:linear-gradient(90deg,var(--accent1,#7db2ff),var(--accent2,#7cf2e6));box-shadow:0 10px 26px rgba(117,194,255,.28)}
+    .cta-secondary{color:var(--ink);border:1px solid var(--border);background:#0f1830}
+  </style>
+  
 </head>
-
-<body class="auth-page">
-  <div class="auth-container">
-    <div class="auth-card" role="main" aria-labelledby="login-title">
-      <div style="text-align: center; margin-bottom: 1rem;">
-        <a href="index.html" style="color: #7db2ff; text-decoration: none; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.5rem;">
-          ← Back to CustomPC.tech
-        </a>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <a href="index.html"><img src="images/logo.png" alt="CustomPC.tech logo" style="height:24px;width:auto;display:inline-block" /> <span style="margin-left:8px">CustomPC.tech</span></a>
       </div>
-      <h2 id="login-title">Login</h2>
-      <form id="login-form" class="auth-form" novalidate aria-describedby="form-instructions">
-        <div id="form-instructions" class="sr-only">
-          Please enter your username and password to log in to your account.
-        </div>
-        
-        <div class="field-container">
-          <label for="username" class="sr-only">Username</label>
-          <input 
-            id="username" 
-            type="text" 
-            class="auth-input" 
-            placeholder="Username" 
-            required 
-            aria-label="Username"
-            aria-describedby="username-validation username-help"
-            autocomplete="username"
-            spellcheck="false"
-          />
-          <div id="username-help" class="sr-only">
-            Username must be 3-20 characters and contain only letters, numbers, and underscores.
-          </div>
-          <div class="field-validation hidden" id="username-validation" aria-live="polite"></div>
-        </div>
-        
-        <div class="field-container">
-          <label for="password" class="sr-only">Password</label>
-          <input 
-            id="password" 
-            type="password" 
-            class="auth-input" 
-            placeholder="Password" 
-            required 
-            aria-label="Password"
-            aria-describedby="password-validation password-help"
-            autocomplete="current-password"
-          />
-          <div id="password-help" class="sr-only">
-            Enter your account password.
-          </div>
-          <div class="field-validation hidden" id="password-validation" aria-live="polite"></div>
-        </div>
-        
-        <div class="error-message" id="error-display" role="alert" aria-live="assertive"></div>
-        <div class="success-message" id="success-display" role="alert" aria-live="polite"></div>
-        
-        <button type="submit" class="gradient-btn" aria-describedby="submit-help">
-          <span>Log In</span>
-        </button>
-        <div id="submit-help" class="sr-only">
-          Submit the login form to access your account.
-        </div>
-        
-        <div class="auth-links" role="navigation" aria-label="Authentication options">
-          <a href="#" class="auth-link" aria-describedby="forgot-help">Forgot Password?</a>
-          <div id="forgot-help" class="sr-only">
-            Click to reset your password via email.
-          </div>
-          <p class="switch-text">
-            Don't have an account? 
-            <a href="signup.html" aria-describedby="signup-help">Sign Up</a>
-          </p>
-          <div id="signup-help" class="sr-only">
-            Navigate to the sign up page to create a new account.
-          </div>
+      <nav class="topnav" role="navigation" aria-label="Primary">
+        <a class="pill" href="builds.html">Builds</a>
+        <a class="pill" href="index.html">Custom PC</a>
+        <a class="pill" href="about.html">About</a>
+        <a class="pill" href="contact.html">Contact</a>
+      </nav>
+    </header>
+    
+
+    <div class="formwrap">
+      <h1>Log In</h1>
+      <form id="login-form">
+        <label>Email</label>
+        <input id="email" type="email" required placeholder="you@example.com" />
+        <label>Password</label>
+        <input id="pass" type="password" required placeholder="••••••••" />
+        <div class="err" id="err"></div>
+        <div class="row">
+          <button class="btn" type="submit">Log In</button>
+          <a class="btn" style="background:#1f2937" href="signup.html">Need an account?</a>
         </div>
       </form>
     </div>
+    
+    <!-- Bottom CTA -->
+    <section class="cta-card" style="margin-top:var(--space)">
+      <div class="cta-title">Ready for a build that’s actually right for you?</div>
+      <p class="cta-sub">Tell us what you do—we’ll design, verify, and deliver a PC that fits your workload and budget.</p>
+      <div class="cta-actions">
+        <a class="cta-primary" href="index.html#request">Start a Custom PC →</a>
+        <a class="cta-secondary" href="contact.html">Just have a question?</a>
+      </div>
+    </section>
   </div>
 
-  <script src="frontend/shared-auth.js"></script>
-  <script src="frontend/admin-auth.js"></script>
-  <script src="auth-validation.js"></script>
-  <script>
-    // Enhanced login form with validation
-    class LoginFormHandler extends AuthFormHandler {
-      constructor() {
-        const validator = new AuthValidator();
-        super('login-form', validator);
-      }
-
-      validateField(fieldName) {
-        const input = this.inputs[fieldName];
-        const validationDiv = document.getElementById(`${fieldName}-validation`);
-        
-        if (!input || !validationDiv) return super.validateField(fieldName);
-
-        let error = null;
-        const value = input.value.trim();
-
-        switch (fieldName) {
-          case 'username':
-            error = this.validator.validateUsername(value);
-            break;
-          case 'password':
-            // For login, we only check if password is provided
-            error = value ? null : 'Password is required';
-            break;
-        }
-
-        // Update field validation display
-        if (error) {
-          input.classList.add('error');
-          input.classList.remove('valid');
-          validationDiv.textContent = error;
-          validationDiv.className = 'field-validation error';
-        } else if (value) {
-          input.classList.remove('error');
-          input.classList.add('valid');
-          validationDiv.textContent = '✓ Valid';
-          validationDiv.className = 'field-validation success';
-        } else {
-          input.classList.remove('error', 'valid');
-          validationDiv.className = 'field-validation hidden';
-        }
-
-        return !error;
-      }
-
-      async onSubmit(formData) {
-        // Check if this is an admin login attempt
-        const urlParams = new URLSearchParams(window.location.search);
-        const isAdminLogin = urlParams.get('admin') === 'true';
-        
-        if (isAdminLogin) {
-          // Handle admin authentication
-          await this.handleAdminLogin(formData);
-        } else {
-          // Handle regular user login
-          await this.handleRegularLogin(formData);
-        }
-      }
-
-      async handleAdminLogin(formData) {
-        // Simulate login process
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        
-        // Check if we have email field for admin login
-        const emailInput = document.getElementById('email');
-        const email = emailInput ? emailInput.value.trim() : '';
-        
-        // If no email field, add it dynamically for admin login
-        if (!emailInput && !document.getElementById('admin-email-added')) {
-          this.addEmailFieldForAdmin();
-          throw new Error('Admin login requires email. Please fill in all fields.');
-        }
-        
-        // Initialize AdminAuth for validation
-        const adminAuth = new (window.AdminAuth || class { 
-          validateAdminCredentials() { return false; }
-          authenticateAdmin() { return false; }
-        })();
-        
-        // Validate admin credentials
-        if (adminAuth.validateAdminCredentials(formData.username, formData.password, email)) {
-          // Authenticate admin
-          if (adminAuth.authenticateAdmin(formData.username, formData.password, email)) {
-            this.showSuccess('Admin login successful!');
-            
-            // Redirect to home (payments system disabled)
-            setTimeout(() => {
-              const redirectUrl = sessionStorage.getItem('admin_redirect_url') || 'index.html';
-              sessionStorage.removeItem('admin_redirect_url');
-              window.location.href = redirectUrl;
-            }, 1000);
-          } else {
-            throw new Error('Admin authentication failed. Please try again.');
-          }
-        } else {
-          throw new Error('Invalid admin credentials. Please check your username, password, and email.');
-        }
-      }
-
-      async handleRegularLogin(formData) {
-        // Simulate login process
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        
-        // Get email from form data (optional for logged-in users)
-        const email = formData.email ? formData.email.trim() : '';
-        
-        // Validate email format if provided
-        if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-          throw new Error('Please enter a valid email address.');
-        }
-        
-        // For demo purposes, accept any valid credentials
-        if (formData.username && formData.password) {
-          // Store user session (email optional for logged-in users)
-          const userData = {
-            username: formData.username,
-            loginTime: new Date().toISOString()
-          };
-          
-          // Add email if provided
-          if (email) {
-            userData.email = email;
-          }
-          
-          localStorage.setItem('custompc_user', JSON.stringify(userData));
-          
-          // Also set the legacy format for compatibility
-          localStorage.setItem('custompc_username', formData.username);
-          localStorage.setItem('custompc_user_hash', btoa(formData.username + ':' + formData.password));
-          
-          // Trigger auth state change for other tabs/windows
-          if (window.SharedAuth) {
-            SharedAuth.triggerAuthStateChange();
-          }
-          
-          this.showSuccess('Login successful! Redirecting...');
-          
-          // Redirect after short delay
-          setTimeout(() => {
-            window.location.href = 'index.html';
-          }, 1000);
-        } else {
-          throw new Error('Invalid username or password. Please try again.');
-        }
-      }
-
-      addEmailFieldForAdmin() {
-        const passwordContainer = document.querySelector('#password').closest('.field-container');
-        const emailContainer = document.createElement('div');
-        emailContainer.className = 'field-container';
-        emailContainer.id = 'admin-email-added';
-        
-        emailContainer.innerHTML = `
-          <label for="email" class="sr-only">Email</label>
-          <input 
-            id="email" 
-            type="email" 
-            class="auth-input" 
-            placeholder="Admin Email" 
-            required 
-            aria-label="Admin Email"
-            aria-describedby="email-validation email-help"
-            autocomplete="email"
-          />
-          <div id="email-help" class="sr-only">
-            Enter your admin email address.
-          </div>
-          <div class="field-validation hidden" id="email-validation" aria-live="polite"></div>
-        `;
-        
-        passwordContainer.insertAdjacentElement('afterend', emailContainer);
-        
-        // Add validation for email field
-        const emailInput = document.getElementById('email');
-        emailInput.addEventListener('input', () => this.validateField('email'));
-        emailInput.addEventListener('blur', () => this.validateField('email'));
-        
-        // Update form title for admin login
-        const title = document.getElementById('login-title');
-        if (title) {
-          title.textContent = 'Admin Login';
-        }
-      }
-
-      validateField(fieldName) {
-        const input = this.inputs[fieldName] || document.getElementById(fieldName);
-        const validationDiv = document.getElementById(`${fieldName}-validation`);
-        
-        if (!input || !validationDiv) return super.validateField(fieldName);
-
-        let error = null;
-        const value = input.value.trim();
-
-        switch (fieldName) {
-          case 'username':
-            error = this.validator.validateUsername(value);
-            break;
-          case 'password':
-            // For login, we only check if password is provided
-            error = value ? null : 'Password is required';
-            break;
-          case 'email':
-            // Validate email format if provided (optional for logged-in users)
-            if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-              error = 'Please enter a valid email address';
-            }
-            break;
-        }
-
-        // Update field validation display
-        if (error) {
-          input.classList.add('error');
-          input.classList.remove('valid');
-          validationDiv.textContent = error;
-          validationDiv.className = 'field-validation error';
-        } else if (value) {
-          input.classList.remove('error');
-          input.classList.add('valid');
-          validationDiv.textContent = '✓ Valid';
-          validationDiv.className = 'field-validation success';
-        } else {
-          input.classList.remove('error', 'valid');
-          validationDiv.className = 'field-validation hidden';
-        }
-
-        return !error;
-      }
-    }
-
-    // Initialize the login form when DOM is loaded
-    document.addEventListener('DOMContentLoaded', function() {
-      new LoginFormHandler();
-      
-      // Check if this is an admin login and update UI accordingly
-      const urlParams = new URLSearchParams(window.location.search);
-      const isAdminLogin = urlParams.get('admin') === 'true';
-      
-      if (isAdminLogin) {
-        // Update page title and form for admin login
-        document.title = 'Admin Login – CustomPC.tech';
-        const title = document.getElementById('login-title');
-        if (title) {
-          title.textContent = 'Admin Login';
-        }
-        
-        // Add admin-specific styling
-        const authCard = document.querySelector('.auth-card');
-        if (authCard) {
-          authCard.style.borderTop = '3px solid #7db2ff';
-        }
-        
-        // Add admin notice
-        const form = document.getElementById('login-form');
-        if (form) {
-          const notice = document.createElement('div');
-          notice.className = 'admin-notice';
-          notice.style.cssText = `
-            background: rgba(125, 178, 255, 0.1);
-            border: 1px solid rgba(125, 178, 255, 0.3);
-            border-radius: 6px;
-            padding: 12px;
-            margin-bottom: 16px;
-            text-align: center;
-            color: #7db2ff;
-            font-size: 0.9rem;
-          `;
-          notice.innerHTML = `
-            <strong>Admin Access Required</strong><br>
-            Please enter your admin credentials to access admin tools. (Payments are currently disabled.)
-          `;
-          form.insertBefore(notice, form.firstChild);
-        }
-      }
+  <script type="module" src="nav-auth.js"></script>
+  <script type="module">
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
+    const auth = getAuth();
+    const form = document.getElementById('login-form');
+    const err = document.getElementById('err');
+    form.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      err.textContent='';
+      const email = document.getElementById('email').value.trim();
+      const pass  = document.getElementById('pass').value;
+      try{
+        await signInWithEmailAndPassword(auth, email, pass);
+        window.location.href = "builds.html";
+      }catch(e){ err.textContent = e.message || "Login failed." }
     });
   </script>
-  
-  <!-- Kiro Update Notification System -->
-  <div id="kiro-notification" style="
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
-    padding: 12px 16px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    z-index: 10000;
-    font-family: system-ui, sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    display: none;
-    max-width: 300px;
-    animation: slideInRight 0.3s ease-out;
-  ">
-    <div id="kiro-message">🤖 Kiro update applied</div>
-    <button onclick="this.parentElement.style.display='none'" style="
-      position: absolute;
-      top: 4px;
-      right: 8px;
-      background: none;
-      border: none;
-      color: white;
-      cursor: pointer;
-      font-size: 16px;
-      opacity: 0.7;
-    ">×</button>
-  </div>
-
-  <style>
-    @keyframes slideInRight {
-      from { transform: translateX(100%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-  </style>
-
-  <script>
-    function showKiroNotification(message, duration = 5000) {
-      const notification = document.getElementById('kiro-notification');
-      const messageDiv = document.getElementById('kiro-message');
-      
-      messageDiv.textContent = message;
-      notification.style.display = 'block';
-      
-      setTimeout(() => {
-        notification.style.animation = 'slideOutRight 0.3s ease-in';
-        setTimeout(() => {
-          notification.style.display = 'none';
-          notification.style.animation = 'slideInRight 0.3s ease-out';
-        }, 300);
-      }, duration);
-    }
-
-    window.addEventListener('load', function() {
-      setTimeout(() => {
-        showKiroNotification('📚 GoDaddy deployment guide created - Check docs folder for setup instructions!');
-      }, 1000);
-    });
-  </script>
-
 </body>
-
 </html>
