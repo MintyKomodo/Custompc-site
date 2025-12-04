@@ -181,11 +181,14 @@ class NavigationBar {
     const activeClass = isCustomPCActive || isMessagingActive ? 'active' : '';
     
     // Build dropdown items - Messages only
+    const unreadCount = this.getUnreadMessageCount();
+    const unreadBadge = unreadCount > 0 ? `<span class="nav-badge">${unreadCount}</span>` : '';
+    
     let dropdownItems = `
       <a href="messaging" class="dropdown-item">
-        <div class="dropdown-item-icon">💬</div>
+        <div class="dropdown-item-icon">💬${unreadBadge}</div>
         <div class="dropdown-item-content">
-          <div class="dropdown-item-title">Messages</div>
+          <div class="dropdown-item-title">Messages ${unreadCount > 0 ? `<span class="unread-indicator">${unreadCount} new</span>` : ''}</div>
           <div class="dropdown-item-desc">Live chat support</div>
         </div>
       </a>
@@ -235,6 +238,49 @@ class NavigationBar {
       return pages.includes(this.currentPage) ? 'active' : '';
     }
     return this.currentPage === pages ? 'active' : '';
+  }
+
+  getUnreadMessageCount() {
+    try {
+      // Get current user
+      const currentUser = window.sharedAuth?.getCurrentUser();
+      if (!currentUser || !currentUser.username) {
+        return 0;
+      }
+
+      // Get unread count from localStorage
+      const unreadKey = `unread_messages_${currentUser.username}`;
+      const unreadCount = parseInt(localStorage.getItem(unreadKey) || '0');
+      
+      return unreadCount;
+    } catch (error) {
+      console.error('Error getting unread count:', error);
+      return 0;
+    }
+  }
+
+  updateUnreadBadge() {
+    const unreadCount = this.getUnreadMessageCount();
+    const badge = document.querySelector('.nav-badge');
+    const unreadIndicator = document.querySelector('.unread-indicator');
+    
+    if (badge) {
+      if (unreadCount > 0) {
+        badge.textContent = unreadCount;
+        badge.style.display = 'inline-block';
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+    
+    if (unreadIndicator) {
+      if (unreadCount > 0) {
+        unreadIndicator.textContent = `${unreadCount} new`;
+        unreadIndicator.style.display = 'inline';
+      } else {
+        unreadIndicator.style.display = 'none';
+      }
+    }
   }
 
   closeAnnouncementBar() {

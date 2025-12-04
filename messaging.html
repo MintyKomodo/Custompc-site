@@ -3015,6 +3015,12 @@ This is an automated notification from the CustomPC.tech live messaging system.`
         return;
       }
       
+      // Track unread messages if this is an admin message and user is not on the page
+      if (type === 'admin' && document.hidden) {
+        incrementUnreadCount();
+        playNotificationSound();
+      }
+      
       const messageDiv = document.createElement('div');
       messageDiv.className = `message ${type}`;
       
@@ -3046,6 +3052,97 @@ This is an automated notification from the CustomPC.tech live messaging system.`
         messageDiv.style.transform = 'translateY(0)';
       }, 10);
     }
+    
+    // Notification functions
+    function incrementUnreadCount() {
+      try {
+        const currentUser = window.sharedAuth?.getCurrentUser();
+        if (!currentUser || !currentUser.username) return;
+        
+        const unreadKey = `unread_messages_${currentUser.username}`;
+        const currentCount = parseInt(localStorage.getItem(unreadKey) || '0');
+        localStorage.setItem(unreadKey, (currentCount + 1).toString());
+        
+        // Update page title
+        updatePageTitle();
+        
+        console.log('📬 Unread count incremented:', currentCount + 1);
+      } catch (error) {
+        console.error('Error incrementing unread count:', error);
+      }
+    }
+    
+    function clearUnreadCount() {
+      try {
+        const currentUser = window.sharedAuth?.getCurrentUser();
+        if (!currentUser || !currentUser.username) return;
+        
+        const unreadKey = `unread_messages_${currentUser.username}`;
+        localStorage.setItem(unreadKey, '0');
+        
+        // Reset page title
+        document.title = 'Live Chat | CustomPC.tech';
+        
+        console.log('✅ Unread count cleared');
+      } catch (error) {
+        console.error('Error clearing unread count:', error);
+      }
+    }
+    
+    function updatePageTitle() {
+      try {
+        const currentUser = window.sharedAuth?.getCurrentUser();
+        if (!currentUser || !currentUser.username) return;
+        
+        const unreadKey = `unread_messages_${currentUser.username}`;
+        const unreadCount = parseInt(localStorage.getItem(unreadKey) || '0');
+        
+        if (unreadCount > 0) {
+          document.title = `(${unreadCount}) New Messages | CustomPC.tech`;
+        } else {
+          document.title = 'Live Chat | CustomPC.tech';
+        }
+      } catch (error) {
+        console.error('Error updating page title:', error);
+      }
+    }
+    
+    function playNotificationSound() {
+      try {
+        // Create a simple beep sound
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.value = 800;
+        oscillator.type = 'sine';
+        
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.5);
+        
+        console.log('🔔 Notification sound played');
+      } catch (error) {
+        console.error('Error playing notification sound:', error);
+      }
+    }
+    
+    // Clear unread count when user views the page
+    document.addEventListener('visibilitychange', function() {
+      if (!document.hidden) {
+        clearUnreadCount();
+      }
+    });
+    
+    // Clear unread count when page loads
+    window.addEventListener('load', function() {
+      clearUnreadCount();
+    });
     
     // Handle image selection
     function handleImageSelect(event) {

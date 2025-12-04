@@ -359,3 +359,52 @@ nav {
     font-size: 12px;
   }
 }
+
+/* N
+otification Badge */
+.nav-badge {
+  display: inline-block;
+  background: #ff4444;
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 10px;
+  margin-left: 4px;
+  vertical-align: super;
+  animation: pulse-badge 2s infinite;
+}
+
+@keyframes pulse-badge {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.9;
+  }
+}
+
+.unread-indicator {
+  display: inline-block;
+  background: #ff4444;
+  color: white;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-left: 8px;
+}
+
+.dropdown-item-icon {
+  position: relative;
+}
+
+.dropdown-item-icon .nav-badge {
+  position: absolute;
+  top: -5px;
+  right: -10px;
+  font-size: 9px;
+  padding: 2px 5px;
+}
