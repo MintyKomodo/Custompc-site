@@ -1801,9 +1801,44 @@
                 // Set up scroll listener
                 this.setupScrollListener();
 
-                messagesRef.on('child_added', (snapshot) => {
-                    const message = snapshot.val();
-                    this.displayMessage(message);
+                // First, load all existing messages
+                messagesRef.once('value', (snapshot) => {
+                    console.log('📥 Loading existing messages for chat:', chat.chatId);
+                    const messagesData = snapshot.val();
+                    
+                    if (messagesData) {
+                        // Convert to array and sort by timestamp
+                        const messagesArray = Object.values(messagesData).sort((a, b) => a.timestamp - b.timestamp);
+                        console.log('Found', messagesArray.length, 'existing messages');
+                        
+                        // Display all existing messages
+                        messagesArray.forEach(message => {
+                            this.displayMessage(message);
+                        });
+                        
+                        // Scroll to bottom after loading all messages
+                        setTimeout(() => {
+                            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                        }, 100);
+                    } else {
+                        console.log('No existing messages found');
+                    }
+                    
+                    // Then set up listener for new messages
+                    // Remove any existing listeners first
+                    messagesRef.off('child_added');
+                    
+                    // Track the last message timestamp to avoid duplicates
+                    let lastTimestamp = messagesData ? Math.max(...Object.values(messagesData).map(m => m.timestamp)) : 0;
+                    
+                    messagesRef.on('child_added', (snapshot) => {
+                        const message = snapshot.val();
+                        // Only display if it's a new message (after we loaded existing ones)
+                        if (message.timestamp > lastTimestamp) {
+                            console.log('📨 New message received:', message);
+                            this.displayMessage(message);
+                        }
+                    });
                 });
             }
 
