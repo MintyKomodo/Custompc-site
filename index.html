@@ -516,6 +516,20 @@
           <textarea id="rq_msg" name="message" placeholder="Tell us any specifics (games/apps, resolution, size/noise, etc.)" required></textarea>
         </div>
 
+        <div class="full" style="margin-top: 12px;">
+          <label style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer; color: var(--ink); font-size: 0.95rem; line-height: 1.5; font-weight: normal;">
+            <input 
+              type="checkbox" 
+              id="terms-checkbox" 
+              required 
+              style="margin-top: 4px; cursor: pointer; width: 18px; height: 18px; accent-color: var(--accent1); flex-shrink: 0;"
+            />
+            <span>
+              I agree to the <a href="terms-of-service.html" target="_blank" style="color: var(--accent1); text-decoration: underline;">Terms of Service</a> and acknowledge that my information will be collected and stored.
+            </span>
+          </label>
+        </div>
+
         <button class="btn full" type="submit">Get My Build Plan →</button>
         <p class="tiny full">We’ll reply by email within 24–48 hours.</p>
 
@@ -637,6 +651,15 @@
         e.preventDefault();
         ok.style.display = 'none';
         err.style.display = 'none';
+
+        // Check if Terms of Service is accepted
+        const termsCheckbox = document.getElementById('terms-checkbox');
+        if (!termsCheckbox || !termsCheckbox.checked) {
+          err.textContent = 'You must accept the Terms of Service to submit this form.';
+          err.style.display = 'block';
+          err.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return;
+        }
 
         const fd = new FormData(form);
 
