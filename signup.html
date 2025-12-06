@@ -162,6 +162,22 @@
             this.updatePasswordStrength(e.target.value);
           });
         }
+        
+        // Add terms checkbox validation
+        const termsCheckbox = document.getElementById('terms-checkbox');
+        if (termsCheckbox) {
+          termsCheckbox.addEventListener('change', () => {
+            const termsValidation = document.getElementById('terms-validation');
+            if (termsValidation) {
+              if (termsCheckbox.checked) {
+                termsValidation.className = 'field-validation hidden';
+              } else {
+                termsValidation.textContent = 'Please accept the Terms of Service';
+                termsValidation.className = 'field-validation error';
+              }
+            }
+          });
+        }
       }
 
       updatePasswordStrength(password) {
