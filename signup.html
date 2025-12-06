@@ -102,6 +102,25 @@
           <div class="field-validation hidden" id="confirm-password-validation" aria-live="polite"></div>
         </div>
         
+        <div class="field-container" style="margin-top: 1.5rem;">
+          <label style="display: flex; align-items: flex-start; gap: 0.75rem; cursor: pointer; color: #e0e0e0; font-size: 0.9rem; line-height: 1.5;">
+            <input 
+              type="checkbox" 
+              id="terms-checkbox" 
+              required 
+              style="margin-top: 0.25rem; cursor: pointer; width: 18px; height: 18px; accent-color: #7db2ff;"
+              aria-describedby="terms-help"
+            />
+            <span>
+              I agree to the <a href="terms-of-service.html" target="_blank" style="color: #7db2ff; text-decoration: underline;">Terms of Service</a> and acknowledge that my information will be collected and stored.
+            </span>
+          </label>
+          <div id="terms-help" class="sr-only">
+            You must accept the Terms of Service to create an account.
+          </div>
+          <div class="field-validation hidden" id="terms-validation" aria-live="polite"></div>
+        </div>
+        
         <div class="error-message" id="error-display" role="alert" aria-live="assertive"></div>
         <div class="success-message" id="success-display" role="alert" aria-live="polite"></div>
         
@@ -208,6 +227,18 @@
       }
 
       async onSubmit(formData) {
+        // Check if Terms of Service is accepted
+        const termsCheckbox = document.getElementById('terms-checkbox');
+        if (!termsCheckbox || !termsCheckbox.checked) {
+          this.showError('You must accept the Terms of Service to create an account.');
+          const termsValidation = document.getElementById('terms-validation');
+          if (termsValidation) {
+            termsValidation.textContent = 'Please accept the Terms of Service';
+            termsValidation.className = 'field-validation error';
+          }
+          return;
+        }
+        
         // Check if user already exists
         const existingUser = localStorage.getItem('custompc_user');
         const existingUsername = localStorage.getItem('custompc_username');
@@ -233,7 +264,9 @@
           const userData = {
             username: formData.username,
             email: formData.email,
-            signupTime: new Date().toISOString()
+            signupTime: new Date().toISOString(),
+            termsAccepted: true,
+            termsAcceptedDate: new Date().toISOString()
           };
           
           localStorage.setItem('custompc_user', JSON.stringify(userData));
