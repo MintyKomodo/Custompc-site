@@ -671,17 +671,27 @@
             buildType: fd.get('build'),
             budget: fd.get('budget'),
             message: fd.get('message'),
+            phone: fd.get('phone') || '',
             timestamp: Date.now(),
             status: 'new'
           };
           
-          // Import Firebase if not already loaded
+          // Check if Firebase is available
           if (typeof firebase !== 'undefined' && firebase.database) {
-            const submissionsRef = firebase.database().ref('submissions');
-            await submissionsRef.push(submission);
-            console.log('✅ Submission saved to Firebase for admin panel');
+            try {
+              const submissionsRef = firebase.database().ref('submissions');
+              await submissionsRef.push(submission);
+              console.log('✅ Submission saved to Firebase for admin panel:', submission);
+            } catch (firebaseError) {
+              console.error('❌ Firebase write error:', firebaseError);
+              console.error('Error code:', firebaseError.code);
+              console.error('Error message:', firebaseError.message);
+              // Don't block form submission if Firebase fails
+            }
           } else {
             console.warn('⚠️ Firebase not available, submission not saved to database');
+            console.warn('Firebase object:', typeof firebase);
+            console.warn('Firebase.database:', typeof firebase?.database);
           }
         } catch (storageError) {
           console.error('Failed to save to Firebase:', storageError);
