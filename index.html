@@ -640,6 +640,26 @@
       }
     })();
 
+    // Helper function to wait for Firebase to be ready
+    async function waitForFirebase(maxWait = 5000) {
+      const startTime = Date.now();
+      while (Date.now() - startTime < maxWait) {
+        if (typeof firebase !== 'undefined' && firebase.database && firebase.apps.length > 0) {
+          try {
+            // Test the connection
+            await firebase.database().ref('.info/connected').once('value');
+            return true;
+          } catch (e) {
+            // Connection test failed, wait a bit more
+            await new Promise(r => setTimeout(r, 100));
+          }
+        } else {
+          await new Promise(r => setTimeout(r, 100));
+        }
+      }
+      return false;
+    }
+
     // AJAX submit to Formspree with inline success/fail UI
     (function () {
       const form = document.getElementById('rq_form');
@@ -676,12 +696,15 @@
             status: 'new'
           };
           
-          // Check if Firebase is available
-          if (typeof firebase !== 'undefined' && firebase.database) {
+          // Wait for Firebase to be ready
+          const firebaseReady = await waitForFirebase();
+          
+          if (firebaseReady && typeof firebase !== 'undefined' && firebase.database) {
             try {
               const submissionsRef = firebase.database().ref('submissions');
-              await submissionsRef.push(submission);
+              const result = await submissionsRef.push(submission);
               console.log('✅ Submission saved to Firebase for admin panel:', submission);
+              console.log('📝 Submission ID:', result.key);
             } catch (firebaseError) {
               console.error('❌ Firebase write error:', firebaseError);
               console.error('Error code:', firebaseError.code);
@@ -689,9 +712,9 @@
               // Don't block form submission if Firebase fails
             }
           } else {
-            console.warn('⚠️ Firebase not available, submission not saved to database');
+            console.warn('⚠️ Firebase not ready or not available');
+            console.warn('Firebase ready:', firebaseReady);
             console.warn('Firebase object:', typeof firebase);
-            console.warn('Firebase.database:', typeof firebase?.database);
           }
         } catch (storageError) {
           console.error('Failed to save to Firebase:', storageError);
@@ -708,11 +731,14 @@
             form.reset();
             ok.style.display = 'block';
             ok.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            console.log('✅ Form submitted successfully to Formspree');
           } else {
             err.style.display = 'block';
+            console.error('❌ Formspree returned error:', res.status);
           }
-        } catch {
+        } catch (fetchError) {
           err.style.display = 'block';
+          console.error('❌ Form submission error:', fetchError);
         } finally {
           btn.disabled = false;
         }

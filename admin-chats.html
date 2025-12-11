@@ -2360,23 +2360,38 @@
         // Create Test Submission
         async function createTestSubmission() {
             const testSubmission = {
-                name: 'Test User',
+                name: 'Test User ' + Math.random().toString(36).substr(2, 5),
                 email: 'test@example.com',
                 buildType: 'Gaming PC',
                 budget: '$1500-$2000',
-                message: 'This is a test submission to verify the system is working.',
+                message: 'This is a test submission to verify the system is working. Created at ' + new Date().toLocaleString(),
+                phone: '615-555-0123',
                 timestamp: Date.now(),
                 status: 'new'
             };
             
             try {
-                await firebase.database().ref('submissions').push(testSubmission);
+                if (!firebase || !firebase.database) {
+                    alert('❌ Firebase not initialized!');
+                    return;
+                }
+                
+                const result = await firebase.database().ref('submissions').push(testSubmission);
                 console.log('✅ Test submission created in Firebase');
-                loadSubmissions();
-                alert('Test submission created! Check the Form Submissions tab.');
+                console.log('📝 Submission ID:', result.key);
+                console.log('📋 Submission data:', testSubmission);
+                
+                // Reload submissions after a short delay
+                setTimeout(() => {
+                    loadSubmissions();
+                }, 500);
+                
+                alert('✅ Test submission created!\n\nID: ' + result.key + '\n\nCheck the Form Submissions tab.');
             } catch (error) {
-                console.error('Error creating test submission:', error);
-                alert('Failed to create test submission: ' + error.message);
+                console.error('❌ Error creating test submission:', error);
+                console.error('Error code:', error.code);
+                console.error('Error message:', error.message);
+                alert('❌ Failed to create test submission:\n\n' + error.message + '\n\nCheck console for details.');
             }
         }
 
@@ -2702,35 +2717,40 @@
         
         // Test Firebase data
         function testFirebaseData() {
-            if (!adminChatManager || !adminChatManager.database) {
+            if (!firebase || !firebase.database) {
                 alert('❌ Firebase not initialized!');
                 return;
             }
             
             console.log('🧪 Testing Firebase connection...');
             
-            adminChatManager.database.ref('chats').once('value', (snapshot) => {
-                const data = snapshot.val();
-                console.log('📊 Firebase chat rooms:', data);
-                console.table(data);
+            // Test both chats and submissions
+            Promise.all([
+                firebase.database().ref('chats').once('value'),
+                firebase.database().ref('submissions').once('value')
+            ]).then(([chatsSnapshot, submissionsSnapshot]) => {
+                const chatsData = chatsSnapshot.val();
+                const submissionsData = submissionsSnapshot.val();
                 
-                if (data) {
-                    const chatRooms = Object.keys(data);
-                    const chatCount = chatRooms.length;
-                    
-                    let details = `✅ Firebase connected!\n\n`;
-                    details += `📊 Total chat rooms: ${chatCount}\n`;
-                    details += `\nChat rooms: ${chatRooms.join(', ')}\n\n`;
-                    details += `Check console for full data.`;
-                    
-                    alert(details);
-                    
-                    // Force reload chats
+                console.log('📊 Firebase chats:', chatsData);
+                console.log('📋 Firebase submissions:', submissionsData);
+                
+                const chatCount = chatsData ? Object.keys(chatsData).length : 0;
+                const submissionCount = submissionsData ? Object.keys(submissionsData).length : 0;
+                
+                let details = `✅ Firebase connected!\n\n`;
+                details += `💬 Chat rooms: ${chatCount}\n`;
+                details += `📋 Form submissions: ${submissionCount}\n\n`;
+                details += `Check console for full data.`;
+                
+                alert(details);
+                
+                // Force reload
+                if (adminChatManager) {
                     adminChatManager.activeChats.clear();
                     adminChatManager.loadActiveChats();
-                } else {
-                    alert('⚠️ Firebase connected but no chat rooms found.\n\nSend a test message from messaging.html');
                 }
+                loadSubmissions();
             }).catch(error => {
                 console.error('❌ Firebase error:', error);
                 alert('❌ Firebase error: ' + error.message);
