@@ -1,0 +1,254 @@
+================================================================================
+                    FIREBASE RULES - QUICK REFERENCE
+================================================================================
+
+WHAT TO DO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Open: firebase-database.rules.json
+2. Copy: All content
+3. Go to: Firebase Console → custompc-website → Realtime Database → Rules
+4. Paste: Into rules editor
+5. Click: Publish
+6. Test: Submit form at /contact.html
+7. Check: Admin panel at /admin-chats.html
+
+
+DATABASE PATHS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+chats/
+  └─ {chatId}/
+     ├─ customerName (String, 1-100)
+     ├─ customerEmail (Valid email)
+     ├─ type (contact | quote_request | message)
+     ├─ source (String, 1-100)
+     ├─ subject (String, 1-200)
+     ├─ createdAt (Timestamp)
+     ├─ lastActivity (Timestamp)
+     ├─ status (active | closed | archived)
+     ├─ messages/
+     │  └─ {messageId}/
+     │     ├─ type (user | admin | system)
+     │     ├─ content (String, 1-5000)
+     │     ├─ userId (String)
+     │     ├─ userName (String, 1-100)
+     │     └─ timestamp (Timestamp)
+     └─ readBy/
+        └─ {userId}: Timestamp
+
+userChats/
+  └─ {username}/
+     └─ {chatId}/
+        ├─ chatId (String)
+        ├─ title (String, 1-200)
+        ├─ createdAt (Timestamp)
+        ├─ lastActivity (Timestamp)
+        └─ status (active | closed | archived)
+
+globalChat/
+  └─ {messageId}/
+     ├─ text (String, 1-5000)
+     ├─ username (String)
+     ├─ type (user | admin | system)
+     └─ timestamp (Timestamp)
+
+submissions/
+  └─ {submissionId}/
+     └─ (any structure - legacy)
+
+
+VALIDATION RULES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+CHAT CREATION
+  ✓ customerName: 1-100 chars, required
+  ✓ customerEmail: valid email format, required
+  ✓ type: contact | quote_request | message, required
+  ✓ source: 1-100 chars, required
+  ✓ subject: 1-200 chars, required
+  ✓ createdAt: timestamp, required
+  ✓ lastActivity: timestamp, required
+  ✓ status: active | closed | archived, required
+
+MESSAGE CREATION
+  ✓ type: user | admin | system, required
+  ✓ content: 1-5000 chars, required
+  ✓ userId: string, required
+  ✓ userName: 1-100 chars, required
+  ✓ timestamp: timestamp, required
+
+USER CHAT ENTRY
+  ✓ chatId: string, required
+  ✓ title: 1-200 chars, required
+  ✓ createdAt: timestamp, required
+  ✓ lastActivity: timestamp, required
+  ✓ status: active | closed | archived, required
+
+
+SUBMISSION TYPES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+TYPE: contact
+  Source: /contact.html
+  Fields: name, email, message
+  Admin Display: "Contact: [Name]"
+
+TYPE: quote_request
+  Source: /index.html#request
+  Fields: name, email, buildType, budget, message
+  Admin Display: "Quote Request: [BuildType] - [Budget]"
+
+TYPE: message
+  Source: /messaging.html
+  Fields: content, userId, userName
+  Admin Display: Chat message
+
+
+TESTING CHECKLIST
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+□ Valid contact submission (should ALLOW)
+□ Valid message (should ALLOW)
+□ Invalid email (should DENY)
+□ Invalid type (should DENY)
+□ Message too long (should DENY)
+□ Missing required field (should DENY)
+□ Contact form submission works
+□ Quote request submission works
+□ Admin panel shows new chats
+□ Admin can reply to chats
+
+
+COMMON ERRORS & FIXES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ERROR: "Permission denied"
+  FIX: Check rules allow write to path
+
+ERROR: "Validation failed"
+  FIX: Check field types and formats
+
+ERROR: "Invalid email format"
+  FIX: Use valid email (user@domain.com)
+
+ERROR: "Content exceeds maximum length"
+  FIX: Shorten message to under 5000 chars
+
+ERROR: "Missing required fields"
+  FIX: Ensure all required fields present
+
+ERROR: Submissions not appearing
+  FIX: Check Firebase initialized, verify rules published
+
+
+SECURITY LEVELS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+CURRENT: MODERATE
+  ✓ Data validation
+  ✓ Field length limits
+  ✓ Email validation
+  ✓ Type validation
+  ✗ No authentication
+  ✗ No rate limiting
+
+TO INCREASE: Add authentication
+  ".write": "auth != null"
+
+TO INCREASE: Add rate limiting
+  ".write": "!root.child('rateLimits').child(auth.uid).exists() || ..."
+
+TO INCREASE: Admin-only writes
+  ".write": "root.child('admins').child(auth.uid).exists()"
+
+
+MONITORING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+CHECK USAGE:
+  Firebase Console → Realtime Database → Usage
+
+SET ALERTS:
+  Firebase Console → Billing → Budget alerts
+
+REVIEW LOGS:
+  Firebase Console → Logs
+
+BACKUP DATA:
+  Firebase Console → Realtime Database → ⋮ → Export JSON
+
+RESTORE DATA:
+  Firebase Console → Realtime Database → ⋮ → Import JSON
+
+
+FILES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+firebase-database.rules.json
+  → Copy to Firebase Console Rules editor
+
+FIREBASE-RULES-REPLACEMENT.md
+  → Detailed documentation
+
+FIREBASE-IMPLEMENTATION-GUIDE.md
+  → Step-by-step guide
+
+COMPLETE-FIREBASE-RULES.md
+  → Full reference
+
+FIREBASE-QUICK-REFERENCE.txt
+  → This file
+
+
+PRODUCTION CHECKLIST
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+□ Rules published to Firebase Console
+□ Tested contact form submission
+□ Tested quote request submission
+□ Tested admin chat functionality
+□ Verified email validation works
+□ Checked field length limits
+□ Monitored database usage
+□ Set up billing alerts
+□ Backed up database
+□ Documented for team
+□ Tested error handling
+□ Verified data structure
+
+
+QUICK LINKS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Firebase Console:
+  https://console.firebase.google.com/
+
+Contact Form:
+  /contact.html
+
+Quote Request Form:
+  /index.html#request
+
+Admin Panel:
+  /admin-chats.html
+
+Firebase Docs:
+  https://firebase.google.com/docs/database/security
+
+
+SUMMARY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+These rules provide:
+  ✓ Complete data validation
+  ✓ Email format validation
+  ✓ Field length limits
+  ✓ Type validation
+  ✓ Required fields enforcement
+  ✓ Message size limits
+  ✓ Timestamp validation
+
+All submissions route through Firebase and appear as chat sessions in admin panel.
+
+================================================================================

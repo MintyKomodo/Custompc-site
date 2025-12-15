@@ -3,9 +3,65 @@
     "chats": {
       ".read": true,
       ".write": true,
+      ".validate": "newData.hasChildren(['customerName', 'customerEmail', 'type', 'source', 'subject', 'createdAt', 'status'])",
       "$chatId": {
         ".read": true,
-        ".write": true
+        ".write": true,
+        "customerName": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 100"
+        },
+        "customerEmail": {
+          ".validate": "newData.isString() && newData.val().matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$/)"
+        },
+        "type": {
+          ".validate": "newData.isString() && (newData.val() === 'contact' || newData.val() === 'quote_request' || newData.val() === 'message')"
+        },
+        "source": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 100"
+        },
+        "subject": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 200"
+        },
+        "createdAt": {
+          ".validate": "newData.isNumber()"
+        },
+        "lastActivity": {
+          ".validate": "newData.isNumber()"
+        },
+        "status": {
+          ".validate": "newData.isString() && (newData.val() === 'active' || newData.val() === 'closed' || newData.val() === 'archived')"
+        },
+        "messages": {
+          ".read": true,
+          ".write": true,
+          "$messageId": {
+            ".read": true,
+            ".write": "newData.child('timestamp').exists()",
+            ".validate": "newData.hasChildren(['type', 'content', 'userId', 'userName', 'timestamp'])",
+            "type": {
+              ".validate": "newData.isString() && (newData.val() === 'user' || newData.val() === 'admin' || newData.val() === 'system')"
+            },
+            "content": {
+              ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 5000"
+            },
+            "userId": {
+              ".validate": "newData.isString() && newData.val().length > 0"
+            },
+            "userName": {
+              ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 100"
+            },
+            "timestamp": {
+              ".validate": "newData.isNumber()"
+            }
+          }
+        },
+        "readBy": {
+          ".read": true,
+          ".write": true,
+          "$userId": {
+            ".validate": "newData.isNumber()"
+          }
+        }
       }
     },
     "userChats": {
@@ -13,12 +69,48 @@
       ".write": true,
       "$username": {
         ".read": true,
-        ".write": true
+        ".write": true,
+        "$chatId": {
+          ".read": true,
+          ".write": true,
+          "chatId": {
+            ".validate": "newData.isString()"
+          },
+          "title": {
+            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 200"
+          },
+          "createdAt": {
+            ".validate": "newData.isNumber()"
+          },
+          "lastActivity": {
+            ".validate": "newData.isNumber()"
+          },
+          "status": {
+            ".validate": "newData.isString() && (newData.val() === 'active' || newData.val() === 'closed' || newData.val() === 'archived')"
+          }
+        }
       }
     },
     "globalChat": {
       ".read": true,
-      ".write": true
+      ".write": true,
+      "$messageId": {
+        ".read": true,
+        ".write": "newData.child('timestamp').exists()",
+        ".validate": "newData.hasChildren(['text', 'username', 'type', 'timestamp'])",
+        "text": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 5000"
+        },
+        "username": {
+          ".validate": "newData.isString() && newData.val().length > 0"
+        },
+        "type": {
+          ".validate": "newData.isString() && (newData.val() === 'user' || newData.val() === 'admin' || newData.val() === 'system')"
+        },
+        "timestamp": {
+          ".validate": "newData.isNumber()"
+        }
+      }
     },
     "submissions": {
       ".read": true,

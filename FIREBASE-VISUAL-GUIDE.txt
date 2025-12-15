@@ -1,0 +1,426 @@
+================================================================================
+                    FIREBASE RULES - VISUAL GUIDE
+================================================================================
+
+SUBMISSION FLOW
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+USER SUBMITS FORM
+       ↓
+   /contact.html  OR  /index.html#request
+       ↓
+SubmissionHandler.submitContact()  OR  submitQuoteRequest()
+       ↓
+Firebase: chats/{chatId}/
+       ↓
+Admin sees in /admin-chats.html
+       ↓
+Admin replies in chat
+       ↓
+Message saved to chats/{chatId}/messages/
+
+
+DATABASE STRUCTURE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Firebase Realtime Database
+│
+├─ chats/
+│  └─ {chatId}/
+│     ├─ customerName ..................... "John Doe"
+│     ├─ customerEmail ................... "john@example.com"
+│     ├─ type ............................ "contact"
+│     ├─ source .......................... "Contact Form"
+│     ├─ subject ......................... "Contact: John Doe"
+│     ├─ createdAt ....................... 1702000000000
+│     ├─ lastActivity .................... 1702000000000
+│     ├─ status .......................... "active"
+│     ├─ messages/
+│     │  └─ {messageId}/
+│     │     ├─ type ...................... "user"
+│     │     ├─ content ................... "Message text..."
+│     │     ├─ userId .................... "john@example.com"
+│     │     ├─ userName .................. "John Doe"
+│     │     └─ timestamp ................. 1702000000000
+│     └─ readBy/
+│        └─ {userId}: 1702000000000
+│
+├─ userChats/
+│  └─ {username}/
+│     └─ {chatId}/
+│        ├─ chatId ....................... "auto-generated"
+│        ├─ title ........................ "Contact: John Doe"
+│        ├─ createdAt .................... 1702000000000
+│        ├─ lastActivity ................. 1702000000000
+│        └─ status ....................... "active"
+│
+├─ globalChat/
+│  └─ {messageId}/
+│     ├─ text ............................ "Message text..."
+│     ├─ username ........................ "john"
+│     ├─ type ............................ "user"
+│     └─ timestamp ....................... 1702000000000
+│
+└─ submissions/
+   └─ {submissionId}/
+      └─ (any structure - legacy)
+
+
+VALIDATION FLOW
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+INCOMING DATA
+     ↓
+Check: Required fields present?
+     ├─ NO → ❌ DENY
+     └─ YES ↓
+Check: Field types correct?
+     ├─ NO → ❌ DENY
+     └─ YES ↓
+Check: Field lengths valid?
+     ├─ NO → ❌ DENY
+     └─ YES ↓
+Check: Email format valid?
+     ├─ NO → ❌ DENY
+     └─ YES ↓
+Check: Type value allowed?
+     ├─ NO → ❌ DENY
+     └─ YES ↓
+Check: Status value allowed?
+     ├─ NO → ❌ DENY
+     └─ YES ↓
+✅ ALLOW - Data saved to Firebase
+
+
+FIELD VALIDATION RULES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+customerName
+  Type: String
+  Min: 1 char
+  Max: 100 chars
+  Example: "John Doe"
+  ✓ VALID: "John Doe"
+  ✗ INVALID: "" (empty)
+  ✗ INVALID: "A" * 101 (too long)
+
+customerEmail
+  Type: String
+  Format: Valid email
+  Example: "john@example.com"
+  ✓ VALID: "john@example.com"
+  ✓ VALID: "user.name+tag@domain.co.uk"
+  ✗ INVALID: "not-an-email"
+  ✗ INVALID: "user@"
+  ✗ INVALID: "@domain.com"
+
+type
+  Type: String
+  Allowed: "contact" | "quote_request" | "message"
+  Example: "contact"
+  ✓ VALID: "contact"
+  ✓ VALID: "quote_request"
+  ✓ VALID: "message"
+  ✗ INVALID: "invalid_type"
+  ✗ INVALID: "Contact" (case sensitive)
+
+source
+  Type: String
+  Min: 1 char
+  Max: 100 chars
+  Example: "Contact Form"
+  ✓ VALID: "Contact Form"
+  ✓ VALID: "Quote Request Form"
+  ✗ INVALID: "" (empty)
+
+subject
+  Type: String
+  Min: 1 char
+  Max: 200 chars
+  Example: "Contact: John Doe"
+  ✓ VALID: "Contact: John Doe"
+  ✓ VALID: "Quote Request: Creator 4K - $3000"
+  ✗ INVALID: "" (empty)
+
+createdAt
+  Type: Number
+  Format: Unix timestamp (milliseconds)
+  Example: 1702000000000
+  ✓ VALID: 1702000000000
+  ✗ INVALID: "1702000000000" (string)
+  ✗ INVALID: 1702000000 (seconds, not ms)
+
+lastActivity
+  Type: Number
+  Format: Unix timestamp (milliseconds)
+  Example: 1702000000000
+  ✓ VALID: 1702000000000
+  ✗ INVALID: "1702000000000" (string)
+
+status
+  Type: String
+  Allowed: "active" | "closed" | "archived"
+  Example: "active"
+  ✓ VALID: "active"
+  ✓ VALID: "closed"
+  ✓ VALID: "archived"
+  ✗ INVALID: "pending"
+  ✗ INVALID: "Active" (case sensitive)
+
+content (message)
+  Type: String
+  Min: 1 char
+  Max: 5000 chars
+  Example: "I have a question..."
+  ✓ VALID: "I have a question..."
+  ✗ INVALID: "" (empty)
+  ✗ INVALID: "A" * 5001 (too long)
+
+userId (message)
+  Type: String
+  Min: 1 char
+  Example: "john@example.com"
+  ✓ VALID: "john@example.com"
+  ✓ VALID: "john_doe"
+  ✗ INVALID: "" (empty)
+
+userName (message)
+  Type: String
+  Min: 1 char
+  Max: 100 chars
+  Example: "John Doe"
+  ✓ VALID: "John Doe"
+  ✗ INVALID: "" (empty)
+  ✗ INVALID: "A" * 101 (too long)
+
+timestamp (message)
+  Type: Number
+  Format: Unix timestamp (milliseconds)
+  Example: 1702000000000
+  ✓ VALID: 1702000000000
+  ✗ INVALID: "1702000000000" (string)
+
+
+SUBMISSION TYPES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+TYPE: contact
+┌─────────────────────────────────────┐
+│ Contact Form Submission             │
+├─────────────────────────────────────┤
+│ Source: /contact.html               │
+│ Type: "contact"                     │
+│ Fields:                             │
+│   - name (required)                 │
+│   - email (required)                │
+│   - message (required)              │
+│ Admin Display: "Contact: [Name]"    │
+│ Example: "Contact: John Doe"        │
+└─────────────────────────────────────┘
+
+TYPE: quote_request
+┌─────────────────────────────────────┐
+│ Quote Request Submission            │
+├─────────────────────────────────────┤
+│ Source: /index.html#request         │
+│ Type: "quote_request"               │
+│ Fields:                             │
+│   - name (required)                 │
+│   - email (required)                │
+│   - buildType (optional)            │
+│   - budget (optional)               │
+│   - message (optional)              │
+│ Admin Display: "Quote: [Type]-[Bud]"│
+│ Example: "Quote: Creator 4K - $3000"│
+└─────────────────────────────────────┘
+
+TYPE: message
+┌─────────────────────────────────────┐
+│ Chat Message                        │
+├─────────────────────────────────────┤
+│ Source: /messaging.html             │
+│ Type: "message"                     │
+│ Fields:                             │
+│   - content (required)              │
+│   - userId (required)               │
+│   - userName (required)             │
+│ Admin Display: Chat message         │
+│ Example: "I have a question..."     │
+└─────────────────────────────────────┘
+
+
+IMPLEMENTATION STEPS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+STEP 1: PREPARE
+  ✓ Open firebase-database.rules.json
+  ✓ Copy all content
+  ✓ Have Firebase Console ready
+
+STEP 2: APPLY RULES
+  ✓ Go to Firebase Console
+  ✓ Select custompc-website project
+  ✓ Click Realtime Database → Rules
+  ✓ Paste rules
+  ✓ Click Publish
+
+STEP 3: VERIFY
+  ✓ Rules published successfully
+  ✓ No error messages
+  ✓ Database accessible
+
+STEP 4: TEST
+  ✓ Submit contact form
+  ✓ Check admin panel
+  ✓ Verify submission appears
+  ✓ Test admin reply
+
+
+TESTING MATRIX
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Test Case                          Expected Result
+─────────────────────────────────────────────────────
+Valid contact submission           ✅ ALLOW
+Valid message                      ✅ ALLOW
+Invalid email format               ❌ DENY
+Invalid type value                 ❌ DENY
+Message too long (>5000)           ❌ DENY
+Missing required field             ❌ DENY
+Empty customerName                 ❌ DENY
+Empty content                      ❌ DENY
+Invalid status value               ❌ DENY
+Valid quote request                ✅ ALLOW
+
+
+SECURITY LEVELS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+CURRENT: MODERATE
+┌─────────────────────────────────────┐
+│ ✓ Data validation                   │
+│ ✓ Field length limits               │
+│ ✓ Email validation                  │
+│ ✓ Type validation                   │
+│ ✗ No authentication                 │
+│ ✗ No rate limiting                  │
+└─────────────────────────────────────┘
+
+TO INCREASE: Add Authentication
+┌─────────────────────────────────────┐
+│ ".write": "auth != null"             │
+│                                     │
+│ Requires user to be logged in       │
+│ Prevents anonymous submissions      │
+└─────────────────────────────────────┘
+
+TO INCREASE: Add Rate Limiting
+┌─────────────────────────────────────┐
+│ ".write": "!root.child('rateLimits')│
+│   .child(auth.uid).exists() ||      │
+│   root.child('rateLimits')          │
+│   .child(auth.uid).val() < now - 1s"│
+│                                     │
+│ Limits submissions to 1 per second  │
+│ Prevents spam                       │
+└─────────────────────────────────────┘
+
+
+MONITORING DASHBOARD
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Firebase Console
+│
+├─ Realtime Database
+│  ├─ Data
+│  │  └─ View all submissions
+│  ├─ Rules
+│  │  └─ Manage security rules
+│  └─ Usage
+│     ├─ Read operations
+│     ├─ Write operations
+│     ├─ Storage used
+│     └─ Bandwidth
+│
+├─ Billing
+│  ├─ Budget alerts
+│  ├─ Monthly spend
+│  └─ Usage limits
+│
+└─ Logs
+   ├─ Failed writes
+   ├─ Unusual patterns
+   └─ Suspicious activity
+
+
+TROUBLESHOOTING TREE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Problem: Submissions not appearing
+├─ Check: Firebase initialized?
+│  └─ Browser console: "✅ Firebase initialized"
+├─ Check: Rules published?
+│  └─ Firebase Console: Rules tab
+├─ Check: Data structure correct?
+│  └─ Verify all required fields present
+└─ Check: Write access allowed?
+   └─ Firebase Console: Simulate write
+
+Problem: "Permission denied" error
+├─ Check: Path matches rule structure
+├─ Check: Rules are published
+├─ Check: Browser console for errors
+└─ Check: Firebase config correct
+
+Problem: "Validation failed" error
+├─ Check: Field types correct
+├─ Check: Field lengths valid
+├─ Check: Required fields present
+└─ Check: Allowed values used
+
+Problem: Email validation failing
+├─ Check: Email format valid
+├─ Check: No spaces in email
+├─ Check: @ symbol present
+└─ Check: Domain has extension
+
+
+QUICK REFERENCE CARD
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+COPY RULES:
+  firebase-database.rules.json
+
+APPLY TO FIREBASE:
+  Firebase Console → Realtime Database → Rules → Paste → Publish
+
+TEST:
+  /contact.html → Submit → /admin-chats.html → Check
+
+MONITOR:
+  Firebase Console → Realtime Database → Usage
+
+BACKUP:
+  Firebase Console → Realtime Database → ⋮ → Export JSON
+
+RESTORE:
+  Firebase Console → Realtime Database → ⋮ → Import JSON
+
+
+PRODUCTION CHECKLIST
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+□ Rules published to Firebase Console
+□ Tested contact form submission
+□ Tested quote request submission
+□ Tested admin chat functionality
+□ Verified email validation works
+□ Checked field length limits
+□ Monitored database usage
+□ Set up billing alerts
+□ Backed up database
+□ Documented for team
+□ Tested error handling
+□ Verified data structure
+
+================================================================================
