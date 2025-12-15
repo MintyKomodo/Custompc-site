@@ -112,11 +112,11 @@
               aria-describedby="terms-help"
             />
             <span>
-              I agree to the <a href="terms-of-service.html" target="_blank" style="color: #7db2ff; text-decoration: underline;">Terms of Service</a> and acknowledge that my information will be collected and stored.
+              I agree to the <a href="privacy-policy.html" target="_blank" style="color: #7db2ff; text-decoration: underline;">Privacy Policy</a> and acknowledge that my information will be collected and stored.
             </span>
           </label>
           <div id="terms-help" class="sr-only">
-            You must accept the Terms of Service to create an account.
+            You must accept the Privacy Policy to create an account.
           </div>
           <div class="field-validation hidden" id="terms-validation" aria-live="polite"></div>
         </div>
@@ -172,7 +172,7 @@
               if (termsCheckbox.checked) {
                 termsValidation.className = 'field-validation hidden';
               } else {
-                termsValidation.textContent = 'Please accept the Terms of Service';
+                termsValidation.textContent = 'Please accept the Privacy Policy';
                 termsValidation.className = 'field-validation error';
               }
             }
@@ -243,13 +243,13 @@
       }
 
       async onSubmit(formData) {
-        // Check if Terms of Service is accepted
+        // Check if Privacy Policy is accepted
         const termsCheckbox = document.getElementById('terms-checkbox');
         if (!termsCheckbox || !termsCheckbox.checked) {
-          this.showError('You must accept the Terms of Service to create an account.');
+          this.showError('You must accept the Privacy Policy to create an account.');
           const termsValidation = document.getElementById('terms-validation');
           if (termsValidation) {
-            termsValidation.textContent = 'Please accept the Terms of Service';
+            termsValidation.textContent = 'Please accept the Privacy Policy';
             termsValidation.className = 'field-validation error';
           }
           return;

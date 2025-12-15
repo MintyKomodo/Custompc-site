@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Privacy Policy – CustomPC.tech</title>
+  <meta name="description" content="Privacy Policy for CustomPC.tech - How we collect, use, and protect your personal information." />
+  <meta name="keywords" content="privacy policy, data protection, custompc privacy" />
+  <meta property="og:title" content="Privacy Policy – CustomPC.tech" />
+  <meta property="og:description" content="Learn how CustomPC.tech protects your personal information and data." />
+  <meta property="og:url" content="https://custompc.tech/privacy-policy.html" />
+  <link rel="canonical" href="https://custompc.tech/privacy-policy.html" />
+  <link rel="icon" type="image/png" sizes="32x32" href="images/logo.png" />
+  <style>
+    :root {
+      --space: 10px;
+      --space-sm: 6px;
+      --space-lg: 16px;
+      --bg: #0a0f1a;
+      --ink: #e9eefc;
+      --muted: #aeb9d4;
+      --panel: #111729;
+      --panel2: #0d1426;
+      --border: rgba(255, 255, 255, .08);
+      --accent1: #7db2ff;
+      --accent2: #7cf2e6;
+      --radius: 18px;
+      --shadow: 0 20px 40px rgba(0, 0, 0, .35);
+      --max: 1200px;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html {
+      scrollbar-gutter: stable
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, Segoe UI, Roboto, Inter, Arial;
+      color: var(--ink);
+      background: radial-gradient(1200px 600px at 50% -10%, #0f162b 8%, transparent 55%), linear-gradient(#081021, #0a0f1a 40%, #0a0f1a);
+      line-height: 1.55;
+      overflow-x: hidden
+    }
+
+    .wrap {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: var(--space-lg);
+      width: 100%;
+      box-sizing: border-box
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-lg);
+      padding: 0 var(--space);
+      max-width: var(--max);
+      margin-left: auto;
+      margin-right: auto;
+      width: 100%
+    }
+
+    .brand a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: inherit;
+      font-weight: 700;
+      letter-spacing: .3px;
+      white-space: nowrap
+    }
+
+    nav {
+      display: flex;
+      gap: var(--space);
+      flex-wrap: wrap
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 10px 14px;
+      border-radius: 999px;
+      color: var(--ink);
+      text-decoration: none;
+      border: 1px solid transparent
+    }
+
+    .pill:hover {
+      background: #0f1830
+    }
+
+    .pill.active {
+      background: linear-gradient(120deg, rgba(125, 178, 255, .15), rgba(124, 242, 230, .15));
+      border-color: rgba(255, 255, 255, .08)
+    }
+
+    h1 {
+      margin: 0 0 var(--space);
+      font-size: 32px
+    }
+
+    h2 {
+      margin: 32px 0 16px 0;
+      font-size: 24px;
+      color: var(--accent1)
+    }
+
+    h3 {
+      margin: 24px 0 12px 0;
+      font-size: 18px;
+      color: var(--accent2)
+    }
+
+    p {
+      margin: 0 0 16px 0;
+      line-height: 1.6
+    }
+
+    ul, ol {
+      margin: 0 0 16px 0;
+      padding-left: 24px
+    }
+
+    li {
+      margin-bottom: 8px;
+      line-height: 1.6
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: var(--space-lg)
+    }
+
+    .muted {
+      color: var(--muted)
+    }
+
+    a {
+      color: var(--accent1);
+      text-decoration: none
+    }
+
+    a:hover {
+      text-decoration: underline
+    }
+
+    .scroll-footer {
+      position: relative;
+      width: 100%;
+      background: #001f3f;
+      border-top: 3px solid var(--accent1);
+      padding: 40px 20px 20px;
+      margin-top: 60px;
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .scroll-footer-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px;
+    }
+
+    .footer-section h3 {
+      color: var(--accent1);
+      font-size: 16px;
+      margin: 0 0 15px 0;
+      font-weight: 600;
+    }
+
+    .footer-section p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+      margin: 0 0 20px 0;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--accent1);
+      padding-left: 5px;
+    }
+
+    @media (max-width: 1024px) {
+      .scroll-footer-container {
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .scroll-footer {
+        padding: 30px 15px 15px;
+      }
+
+      .scroll-footer-container {
+        grid-template-columns: 1fr;
+        gap: 25px;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="frontend/navbar.css">
+</head>
+<body>
+  <div class="wrap">
+    <!-- Header is now dynamically generated by navbar.js -->
+
+    <h1>Privacy Policy</h1>
+    <p class="muted">Last updated: December 2024</p>
+
+    <div class="card">
+      <h2>1. Introduction</h2>
+      <p>CustomPC.tech ("we," "us," "our," or "Company") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website and use our services.</p>
+      <p>Please read this Privacy Policy carefully. If you do not agree with our policies and practices, please do not use our services.</p>
+    </div>
+
+    <div class="card">
+      <h2>2. Information We Collect</h2>
+      
+      <h3>2.1 Information You Provide Directly</h3>
+      <p>We collect information you voluntarily provide when you:</p>
+      <ul>
+        <li>Submit a contact form</li>
+        <li>Request a custom PC quote</li>
+        <li>Create an account</li>
+        <li>Send us a message through our live chat</li>
+        <li>Subscribe to our newsletter</li>
+      </ul>
+      <p>This information may include:</p>
+      <ul>
+        <li>Name</li>
+        <li>Email address</li>
+        <li>Phone number (if provided)</li>
+        <li>Message content</li>
+        <li>Build preferences and budget information</li>
+      </ul>
+
+      <h3>2.2 Information Collected Automatically</h3>
+      <p>When you visit our website, we may automatically collect:</p>
+      <ul>
+        <li>Browser type and version</li>
+        <li>IP address</li>
+        <li>Pages visited and time spent</li>
+        <li>Referring website</li>
+        <li>Device information</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>3. How We Use Your Information</h2>
+      <p>We use the information we collect for the following purposes:</p>
+      <ul>
+        <li><strong>To Respond to Your Inquiries:</strong> We use your contact information to respond to your messages, questions, and requests</li>
+        <li><strong>To Provide Services:</strong> We use your information to create custom PC quotes and build recommendations</li>
+        <li><strong>To Improve Our Services:</strong> We analyze usage patterns to improve our website and services</li>
+        <li><strong>To Send Communications:</strong> We may send you updates about your requests or newsletter content (only if you opt-in)</li>
+        <li><strong>To Comply with Legal Obligations:</strong> We may use your information to comply with applicable laws and regulations</li>
+        <li><strong>To Prevent Fraud:</strong> We use information to detect and prevent fraudulent activities</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>4. How We Store Your Information</h2>
+      <p>Your information is stored securely in our Firebase Realtime Database. We implement the following security measures:</p>
+      <ul>
+        <li>Data validation on all incoming information</li>
+        <li>Encrypted transmission of data</li>
+        <li>Restricted access to personal information</li>
+        <li>Regular security monitoring</li>
+        <li>Automatic backups of critical data</li>
+      </ul>
+      <p>All submissions are stored in our database and appear as chat sessions in our admin panel, where our team can respond to your inquiries.</p>
+    </div>
+
+    <div class="card">
+      <h2>5. Data Retention</h2>
+      <p>We retain your personal information for as long as necessary to:</p>
+      <ul>
+        <li>Respond to your inquiries</li>
+        <li>Provide the services you requested</li>
+        <li>Comply with legal obligations</li>
+        <li>Resolve disputes</li>
+      </ul>
+      <p>You may request deletion of your information at any time by contacting us at support@custompc.tech.</p>
+    </div>
+
+    <div class="card">
+      <h2>6. Sharing Your Information</h2>
+      <p>We do not sell, trade, or rent your personal information to third parties. We may share your information only in the following circumstances:</p>
+      <ul>
+        <li><strong>With Your Consent:</strong> When you explicitly authorize us to share your information</li>
+        <li><strong>Legal Requirements:</strong> When required by law, court order, or government request</li>
+        <li><strong>Service Providers:</strong> With trusted service providers who assist us in operating our website and providing services (under strict confidentiality agreements)</li>
+        <li><strong>Business Transfers:</strong> In the event of a merger, acquisition, or sale of assets</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>7. Your Rights and Choices</h2>
+      <p>You have the following rights regarding your personal information:</p>
+      <ul>
+        <li><strong>Access:</strong> You can request access to the personal information we hold about you</li>
+        <li><strong>Correction:</strong> You can request that we correct inaccurate information</li>
+        <li><strong>Deletion:</strong> You can request that we delete your personal information</li>
+        <li><strong>Opt-Out:</strong> You can opt-out of receiving marketing communications from us</li>
+        <li><strong>Data Portability:</strong> You can request a copy of your information in a portable format</li>
+      </ul>
+      <p>To exercise any of these rights, please contact us at support@custompc.tech.</p>
+    </div>
+
+    <div class="card">
+      <h2>8. Cookies and Tracking Technologies</h2>
+      <p>Our website may use cookies and similar tracking technologies to enhance your experience. These technologies help us:</p>
+      <ul>
+        <li>Remember your preferences</li>
+        <li>Understand how you use our website</li>
+        <li>Improve our services</li>
+      </ul>
+      <p>You can control cookie settings through your browser preferences. However, disabling cookies may affect the functionality of our website.</p>
+    </div>
+
+    <div class="card">
+      <h2>9. Third-Party Links</h2>
+      <p>Our website may contain links to third-party websites. We are not responsible for the privacy practices of these external sites. We encourage you to review their privacy policies before providing any personal information.</p>
+    </div>
+
+    <div class="card">
+      <h2>10. Children's Privacy</h2>
+      <p>Our services are not intended for children under the age of 13. We do not knowingly collect personal information from children under 13. If we become aware that we have collected information from a child under 13, we will take steps to delete such information and terminate the child's account.</p>
+    </div>
+
+    <div class="card">
+      <h2>11. International Data Transfers</h2>
+      <p>Your information may be transferred to, stored in, and processed in countries other than your country of residence. These countries may have data protection laws that differ from your home country. By using our services, you consent to the transfer of your information to countries outside your country of residence.</p>
+    </div>
+
+    <div class="card">
+      <h2>12. Changes to This Privacy Policy</h2>
+      <p>We may update this Privacy Policy from time to time to reflect changes in our practices, technology, legal requirements, or other factors. We will notify you of any material changes by updating the "Last updated" date at the top of this policy. Your continued use of our services following the posting of revised Privacy Policy means that you accept and agree to the changes.</p>
+    </div>
+
+    <div class="card">
+      <h2>13. Contact Us</h2>
+      <p>If you have questions about this Privacy Policy or our privacy practices, please contact us:</p>
+      <ul>
+        <li><strong>Email:</strong> support@custompc.tech</li>
+        <li><strong>Phone:</strong> 615-544-5715</li>
+        <li><strong>Website:</strong> https://custompc.tech</li>
+      </ul>
+      <p>We will respond to your inquiry within 24-48 hours.</p>
+    </div>
+
+    <div class="card">
+      <h2>14. Your Consent</h2>
+      <p>By using our website and services, you consent to our Privacy Policy. If you do not agree with our privacy practices, please do not use our services.</p>
+    </div>
+  </div>
+
+  <script src="shared-auth.js"></script>
+  <script src="frontend/navbar.js"></script>
+
+  <!-- Footer -->
+  <div class="scroll-footer" id="scroll-footer">
+    <div class="scroll-footer-container">
+      <div class="footer-section">
+        <h3>Join our community</h3>
+        <p>Stay updated with the latest PC builds, tech tips, and exclusive deals from CustomPC.tech</p>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Contact Us</h3>
+        <div class="footer-links">
+          <a href="mailto:support@custompc.tech">📧 support@custompc.tech</a>
+          <a href="tel:615-544-5715">📞 615-544-5715</a>
+          <a href="messaging.html">💬 Live Chat</a>
+          <a href="about.html">ℹ️ About Us</a>
+        </div>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Products</h3>
+        <div class="footer-links">
+          <a href="builds.html">PC Builds</a>
+          <a href="builds.html#gaming">Gaming PCs</a>
+          <a href="builds.html#workstation">Workstations</a>
+          <a href="builds.html#creator">Creator PCs</a>
+        </div>
+      </div>
+      
+      <div class="footer-section">
+        <h3>Resources</h3>
+        <div class="footer-links">
+          <a href="index.html">Home</a>
+          <a href="about.html">About</a>
+          <a href="contact.html">Contact</a>
+          <a href="privacy-policy.html">Privacy Policy</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

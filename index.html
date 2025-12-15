@@ -525,7 +525,7 @@
               style="margin-top: 4px; cursor: pointer; width: 18px; height: 18px; accent-color: var(--accent1); flex-shrink: 0;"
             />
             <span>
-              I agree to the <a href="terms-of-service.html" target="_blank" style="color: var(--accent1); text-decoration: underline;">Terms of Service</a> and acknowledge that my information will be collected and stored.
+              I agree to the <a href="privacy-policy.html" target="_blank" style="color: var(--accent1); text-decoration: underline;">Privacy Policy</a> and acknowledge that my information will be collected and stored.
             </span>
           </label>
         </div>
@@ -672,10 +672,10 @@
         ok.style.display = 'none';
         err.style.display = 'none';
 
-        // Check if Terms of Service is accepted
+        // Check if Privacy Policy is accepted
         const termsCheckbox = document.getElementById('terms-checkbox');
         if (!termsCheckbox || !termsCheckbox.checked) {
-          err.textContent = 'You must accept the Terms of Service to submit this form.';
+          err.textContent = 'You must accept the Privacy Policy to submit this form.';
           err.style.display = 'block';
           err.scrollIntoView({ behavior: 'smooth', block: 'center' });
           return;
