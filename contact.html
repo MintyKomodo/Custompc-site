@@ -98,7 +98,7 @@
 
     <section class="card">
       <h3 style="margin:0 0 8px">Send a message</h3>
-      <form id="contactForm" action="https://formspree.io/f/xrblokly" method="POST">
+      <form id="contactForm">
         <!-- honeypot -->
         <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
 
@@ -109,7 +109,7 @@
 
         <div>
           <label for="email">Email</label>
-          <input id="email" name="_replyto" type="email" required autocomplete="email">
+          <input id="email" name="email" type="email" required autocomplete="email">
         </div>
 
         <div>
@@ -143,7 +143,7 @@
       const p = new URLSearchParams(location.search);
       
       // Regular prefill functionality
-      const map = { name:'name', email:'_replyto', message:'message' };
+      const map = { name:'name', email:'email', message:'message' };
       for (const [q,id] of Object.entries(map)) {
         const v = p.get(q);
         const el = document.getElementById(id);
@@ -151,7 +151,7 @@
       }
     })();
 
-    // AJAX submit to Formspree with inline success/fail UI
+    // Submit to Firebase via SubmissionHandler
     const form = document.getElementById('contactForm');
     const ok = document.getElementById('ok');
     const err = document.getElementById('err');
@@ -160,25 +160,50 @@
       e.preventDefault();
       ok.style.display = 'none';
       err.style.display = 'none';
+      
       try {
-        const fd = new FormData(form);
-        const res = await fetch(form.action, {
-          method: 'POST',
-          headers: { 'Accept': 'application/json' },
-          body: fd
-        });
-        if (res.ok) {
+        // Wait for submission handler to be ready
+        let attempts = 0;
+        while (!window.submissionHandler && attempts < 10) {
+          await new Promise(resolve => setTimeout(resolve, 500));
+          attempts++;
+        }
+
+        if (!window.submissionHandler) {
+          throw new Error('Submission handler not available');
+        }
+
+        const formData = {
+          name: document.getElementById('name').value,
+          email: document.getElementById('email').value,
+          message: document.getElementById('message').value
+        };
+
+        const result = await window.submissionHandler.submitContact(formData);
+        
+        if (result.success) {
           form.reset();
           ok.style.display = 'block';
           ok.scrollIntoView({ behavior: 'smooth', block: 'center' });
         } else {
           err.style.display = 'block';
         }
-      } catch {
+      } catch (error) {
+        console.error('Submission error:', error);
         err.style.display = 'block';
       }
     });
   </script>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+  
+  <!-- Firebase Chat Manager -->
+  <script src="config/firebase-config.js"></script>
+  
+  <!-- Submission Handler -->
+  <script src="frontend/submission-handler.js"></script>
+  
   <script src="shared-auth.js"></script>
   
   <!-- Shared Navigation Bar -->

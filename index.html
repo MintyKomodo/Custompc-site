@@ -477,7 +477,7 @@
     <!-- 1) Request a PC (posts directly to Formspree) -->
     <section class="card request section" id="request">
       <h2>Request a PC</h2>
-      <form id="rq_form" action="https://formspree.io/f/xrblokly" method="POST">
+      <form id="rq_form">
         <!-- honeypot -->
         <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
 
@@ -488,7 +488,7 @@
 
         <div>
           <label for="rq_email">Email</label>
-          <input id="rq_email" name="_replyto" type="email" required autocomplete="email">
+          <input id="rq_email" name="email" type="email" required autocomplete="email">
         </div>
 
         <div>
@@ -660,7 +660,7 @@
       return false;
     }
 
-    // AJAX submit to Formspree with inline success/fail UI
+    // Submit to Firebase via SubmissionHandler
     (function () {
       const form = document.getElementById('rq_form');
       const ok = document.getElementById('rq_ok');
@@ -681,64 +681,42 @@
           return;
         }
 
-        const fd = new FormData(form);
-
-        // Save to Firebase for admin panel
-        try {
-          const submission = {
-            name: fd.get('name'),
-            email: fd.get('_replyto'),
-            buildType: fd.get('build'),
-            budget: fd.get('budget'),
-            message: fd.get('message'),
-            phone: fd.get('phone') || '',
-            timestamp: Date.now(),
-            status: 'new'
-          };
-          
-          // Wait for Firebase to be ready
-          const firebaseReady = await waitForFirebase();
-          
-          if (firebaseReady && typeof firebase !== 'undefined' && firebase.database) {
-            try {
-              const submissionsRef = firebase.database().ref('submissions');
-              const result = await submissionsRef.push(submission);
-              console.log('✅ Submission saved to Firebase for admin panel:', submission);
-              console.log('📝 Submission ID:', result.key);
-            } catch (firebaseError) {
-              console.error('❌ Firebase write error:', firebaseError);
-              console.error('Error code:', firebaseError.code);
-              console.error('Error message:', firebaseError.message);
-              // Don't block form submission if Firebase fails
-            }
-          } else {
-            console.warn('⚠️ Firebase not ready or not available');
-            console.warn('Firebase ready:', firebaseReady);
-            console.warn('Firebase object:', typeof firebase);
-          }
-        } catch (storageError) {
-          console.error('Failed to save to Firebase:', storageError);
-        }
-
         try {
           btn.disabled = true;
-          const res = await fetch(form.action, {
-            method: 'POST',
-            headers: { 'Accept': 'application/json' },
-            body: fd
-          });
-          if (res.ok) {
+
+          // Wait for submission handler to be ready
+          let attempts = 0;
+          while (!window.submissionHandler && attempts < 10) {
+            await new Promise(resolve => setTimeout(resolve, 500));
+            attempts++;
+          }
+
+          if (!window.submissionHandler) {
+            throw new Error('Submission handler not available');
+          }
+
+          const formData = {
+            name: document.getElementById('rq_name').value,
+            email: document.getElementById('rq_email').value,
+            buildType: document.getElementById('rq_build').value,
+            budget: document.getElementById('rq_budget').value,
+            message: document.getElementById('rq_msg').value
+          };
+
+          const result = await window.submissionHandler.submitQuoteRequest(formData);
+          
+          if (result.success) {
             form.reset();
             ok.style.display = 'block';
             ok.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            console.log('✅ Form submitted successfully to Formspree');
+            console.log('✅ Quote request submitted successfully to Firebase');
           } else {
             err.style.display = 'block';
-            console.error('❌ Formspree returned error:', res.status);
+            console.error('❌ Quote request submission failed');
           }
-        } catch (fetchError) {
+        } catch (error) {
           err.style.display = 'block';
-          console.error('❌ Form submission error:', fetchError);
+          console.error('❌ Form submission error:', error);
         } finally {
           btn.disabled = false;
         }
@@ -929,6 +907,9 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
   <script src="config/firebase-config.js"></script>
+  
+  <!-- Submission Handler -->
+  <script src="frontend/submission-handler.js"></script>
 
 </body>
 </html>
