@@ -6,37 +6,74 @@
     <title>Privacy Policy - custompc.tech</title>
     <link rel="stylesheet" href="styles.css">
     <style>
+        :root {
+            --accent1: #7db2ff;
+            --accent2: #7cf2e6;
+        }
+        
+        body {
+            background: radial-gradient(1200px 600px at 50% -10%, #0f162b 8%, transparent 55%), linear-gradient(#081021, #0a0f1a 40%, #0a0f1a);
+            color: #e9eefc;
+        }
+        
         .privacy-container {
             max-width: 900px;
             margin: 40px auto;
-            padding: 20px;
-            line-height: 1.6;
-            color: #333;
+            padding: 40px;
+            line-height: 1.8;
+            color: #e9eefc;
+            background: rgba(17, 23, 41, 0.4);
+            border: 1px solid rgba(125, 178, 255, 0.15);
+            border-radius: 18px;
+            backdrop-filter: blur(10px);
         }
         .privacy-container h1 {
             text-align: center;
             margin-bottom: 30px;
+            font-size: 36px;
+            background: linear-gradient(135deg, var(--accent1), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         .privacy-container h2 {
             margin-top: 30px;
             margin-bottom: 15px;
-            color: #222;
+            color: var(--accent1);
+            font-size: 22px;
+            border-bottom: 2px solid rgba(125, 178, 255, 0.3);
+            padding-bottom: 10px;
+        }
+        .privacy-container h3 {
+            color: var(--accent2);
+            font-size: 18px;
+            margin-top: 20px;
+            margin-bottom: 12px;
         }
         .privacy-container p {
             margin-bottom: 15px;
+            color: #d4dce8;
+            font-size: 15px;
         }
         .privacy-container ul {
             margin-left: 20px;
             margin-bottom: 15px;
         }
         .privacy-container li {
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+            color: #d4dce8;
+            font-size: 15px;
+        }
+        .privacy-container strong {
+            color: var(--accent1);
+            font-weight: 600;
         }
         .effective-date {
             text-align: center;
             font-style: italic;
             margin-bottom: 30px;
-            color: #666;
+            color: var(--accent2);
+            font-size: 14px;
         }
     </style>
 </head>
