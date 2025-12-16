@@ -676,6 +676,268 @@ class FirebaseChatManager {
     });
     this.messageListeners.clear();
   }
+
+  // ===== ACTIVE USERS MANAGEMENT =====
+  
+  // Register user as active
+  async registerActiveUser(sessionId, userData) {
+    if (!this.isInitialized) {
+      return this.registerLocalActiveUser(sessionId, userData);
+    }
+
+    try {
+      const userRef = this.database.ref(`activeUsers/${sessionId}`);
+      await userRef.set({
+        ...userData,
+        lastSeen: firebase.database.ServerValue.TIMESTAMP
+      });
+      console.log('✅ User registered as active:', sessionId);
+    } catch (error) {
+      console.error('Failed to register active user:', error);
+      this.registerLocalActiveUser(sessionId, userData);
+    }
+  }
+
+  // Update user presence
+  async updateUserPresence(sessionId, userData) {
+    if (!this.isInitialized) return;
+
+    try {
+      const userRef = this.database.ref(`activeUsers/${sessionId}`);
+      await userRef.update({
+        ...userData,
+        lastSeen: firebase.database.ServerValue.TIMESTAMP
+      });
+    } catch (error) {
+      console.error('Failed to update user presence:', error);
+    }
+  }
+
+  // Remove user from active list
+  async removeActiveUser(sessionId) {
+    if (!this.isInitialized) {
+      return this.removeLocalActiveUser(sessionId);
+    }
+
+    try {
+      await this.database.ref(`activeUsers/${sessionId}`).remove();
+      console.log('✅ User removed from active list:', sessionId);
+    } catch (error) {
+      console.error('Failed to remove active user:', error);
+    }
+  }
+
+  // Listen for active users
+  listenForActiveUsers(callback) {
+    if (!this.isInitialized) {
+      return this.listenForLocalActiveUsers(callback);
+    }
+
+    try {
+      const activeUsersRef = this.database.ref('activeUsers');
+      
+      // Remove stale users (older than 5 minutes)
+      const fiveMinutesAgo = Date.now() - (5 * 60 * 1000);
+      
+      activeUsersRef.on('value', (snapshot) => {
+        const users = snapshot.val();
+        
+        if (!users) {
+          callback([]);
+          return;
+        }
+
+        // Convert to array and filter out stale users
+        const activeUsersList = Object.entries(users)
+          .map(([key, value]) => ({
+            sessionId: key,
+            ...value
+          }))
+          .filter(user => {
+            const lastSeen = user.lastSeen || 0;
+            return lastSeen > fiveMinutesAgo;
+          });
+
+        callback(activeUsersList);
+      });
+
+      console.log('✅ Listening for active users');
+    } catch (error) {
+      console.error('Failed to listen for active users:', error);
+      this.listenForLocalActiveUsers(callback);
+    }
+  }
+
+  // Create admin-initiated chat
+  async createAdminChat(chatData) {
+    if (!this.isInitialized) {
+      return this.createLocalAdminChat(chatData);
+    }
+
+    try {
+      const chatRef = this.database.ref('adminChats').push();
+      const chatId = chatRef.key;
+
+      const adminChat = {
+        ...chatData,
+        id: chatId,
+        createdAt: firebase.database.ServerValue.TIMESTAMP,
+        lastActivity: firebase.database.ServerValue.TIMESTAMP,
+        messages: {}
+      };
+
+      await chatRef.set(adminChat);
+      console.log('✅ Admin chat created:', chatId);
+      return chatId;
+    } catch (error) {
+      console.error('Failed to create admin chat:', error);
+      return this.createLocalAdminChat(chatData);
+    }
+  }
+
+  // Listen for user messages (for notification system)
+  listenForUserMessages(username, callback) {
+    if (!this.isInitialized) {
+      return this.listenForLocalUserMessages(username, callback);
+    }
+
+    try {
+      const userChatsRef = this.database.ref(`userChats/${username}`);
+      
+      userChatsRef.on('value', (snapshot) => {
+        const userChats = snapshot.val();
+        
+        if (!userChats) {
+          callback([]);
+          return;
+        }
+
+        // Get all messages from all user chats
+        const allMessages = [];
+        
+        Object.keys(userChats).forEach(chatId => {
+          const messagesRef = this.database.ref(`chats/${chatId}/messages`);
+          messagesRef.once('value', (msgSnapshot) => {
+            const messages = msgSnapshot.val();
+            if (messages) {
+              Object.values(messages).forEach(msg => {
+                allMessages.push({
+                  ...msg,
+                  chatId: chatId,
+                  read: false
+                });
+              });
+            }
+            callback(allMessages);
+          });
+        });
+      });
+
+      console.log('✅ Listening for user messages:', username);
+    } catch (error) {
+      console.error('Failed to listen for user messages:', error);
+      this.listenForLocalUserMessages(username, callback);
+    }
+  }
+
+  // ===== LOCAL STORAGE FALLBACKS =====
+
+  registerLocalActiveUser(sessionId, userData) {
+    try {
+      const activeUsers = this.getLocalActiveUsers();
+      const index = activeUsers.findIndex(u => u.sessionId === sessionId);
+      
+      if (index >= 0) {
+        activeUsers[index] = { sessionId, ...userData, lastSeen: Date.now() };
+      } else {
+        activeUsers.push({ sessionId, ...userData, lastSeen: Date.now() });
+      }
+      
+      localStorage.setItem('custompc_active_users', JSON.stringify(activeUsers));
+    } catch (error) {
+      console.error('Failed to register local active user:', error);
+    }
+  }
+
+  removeLocalActiveUser(sessionId) {
+    try {
+      const activeUsers = this.getLocalActiveUsers();
+      const filtered = activeUsers.filter(u => u.sessionId !== sessionId);
+      localStorage.setItem('custompc_active_users', JSON.stringify(filtered));
+    } catch (error) {
+      console.error('Failed to remove local active user:', error);
+    }
+  }
+
+  getLocalActiveUsers() {
+    try {
+      const stored = localStorage.getItem('custompc_active_users');
+      return stored ? JSON.parse(stored) : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  listenForLocalActiveUsers(callback) {
+    const pollInterval = setInterval(() => {
+      const activeUsers = this.getLocalActiveUsers();
+      const fiveMinutesAgo = Date.now() - (5 * 60 * 1000);
+      
+      const filtered = activeUsers.filter(u => (u.lastSeen || 0) > fiveMinutesAgo);
+      callback(filtered);
+    }, 3000);
+
+    return () => clearInterval(pollInterval);
+  }
+
+  createLocalAdminChat(chatData) {
+    const chatId = 'admin_chat_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    const adminChat = {
+      ...chatData,
+      id: chatId,
+      createdAt: Date.now(),
+      lastActivity: Date.now(),
+      messages: {}
+    };
+
+    const adminChats = this.getLocalAdminChats();
+    adminChats.push(adminChat);
+    localStorage.setItem('custompc_admin_chats', JSON.stringify(adminChats));
+    
+    return chatId;
+  }
+
+  getLocalAdminChats() {
+    try {
+      const stored = localStorage.getItem('custompc_admin_chats');
+      return stored ? JSON.parse(stored) : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  listenForLocalUserMessages(username, callback) {
+    const pollInterval = setInterval(() => {
+      const userChats = this.getLocalUserChatHistory(username);
+      const allMessages = [];
+      
+      userChats.forEach(chat => {
+        if (chat.messages) {
+          chat.messages.forEach(msg => {
+            allMessages.push({
+              ...msg,
+              chatId: chat.chatId,
+              read: false
+            });
+          });
+        }
+      });
+      
+      callback(allMessages);
+    }, 2000);
+
+    return () => clearInterval(pollInterval);
+  }
 }
 
 // Global instance
