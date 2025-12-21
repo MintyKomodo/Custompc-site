@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visitor Analytics | CustomPC.tech Admin</title>
+  <style>
+    :root {
+      --space: 10px;
+      --space-sm: 6px;
+      --space-lg: 16px;
+      --bg: #0a0f1a;
+      --ink: #e9eefc;
+      --muted: #aeb9d4;
+      --panel: #111729;
+      --panel2: #0d1426;
+      --border: rgba(255, 255, 255, .08);
+      --accent1: #7db2ff;
+      --accent2: #7cf2e6;
+      --radius: 18px;
+      --shadow: 0 20px 40px rgba(0, 0, 0, .35);
+      --max: 1400px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, Segoe UI, Roboto, Inter, Arial;
+      color: var(--ink);
+      background: linear-gradient(#081021, #0a0f1a 40%, #0a0f1a);
+      line-height: 1.55;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: var(--space-lg);
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 32px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-lg);
+      margin-bottom: 40px;
+    }
+
+    .stat-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--accent1);
+      margin: 10px 0;
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .controls {
+      display: flex;
+      gap: var(--space-lg);
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 10px 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--panel);
+      color: var(--ink);
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+      background: rgba(125, 178, 255, 0.1);
+      border-color: var(--accent1);
+    }
+
+    .btn-primary {
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      color: #0b0f1a;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(125, 178, 255, 0.3);
+    }
+
+    .visitor-list {
+      display: grid;
+      gap: var(--space-lg);
+    }
+
+    .visitor-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      transition: all 0.2s ease;
+    }
+
+    .visitor-card:hover {
+      border-color: var(--accent1);
+      box-shadow: 0 8px 24px rgba(125, 178, 255, 0.1);
+    }
+
+    .visitor-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 15px;
+    }
+
+    .visitor-info {
+      flex: 1;
+    }
+
+    .visitor-id {
+      font-weight: 700;
+      color: var(--accent1);
+      margin-bottom: 4px;
+    }
+
+    .visitor-page {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .visitor-time {
+      color: var(--muted);
+      font-size: 14px;
+      text-align: right;
+    }
+
+    .visitor-details {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    .detail-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      background: rgba(125, 178, 255, 0.1);
+      border: 1px solid rgba(125, 178, 255, 0.2);
+      border-radius: 6px;
+      font-size: 12px;
+      color: var(--accent1);
+    }
+
+    .visitor-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .action-btn {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--panel2);
+      color: var(--ink);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    .action-btn:hover {
+      background: rgba(125, 178, 255, 0.1);
+      border-color: var(--accent1);
+    }
+
+    .action-btn.secondary {
+      background: transparent;
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .modal-content {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      max-width: 500px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-header h3 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: var(--ink);
+      font-size: 24px;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: opacity 0.2s ease;
+    }
+
+    .close-btn:hover {
+      opacity: 1;
+    }
+
+    .modal-body {
+      padding: 20px;
+    }
+
+    .modal-footer {
+      display: flex;
+      gap: 10px;
+      padding: 20px;
+      border-top: 1px solid var(--border);
+      justify-content: flex-end;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--panel2);
+      color: var(--ink);
+      font-family: inherit;
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .visitor-info-box {
+      background: var(--panel2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+    }
+
+    .visitor-info-box p {
+      margin: 8px 0;
+      font-size: 14px;
+    }
+
+    .visitor-info-box strong {
+      color: var(--accent1);
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .detail-item {
+      background: var(--panel2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    .detail-item strong {
+      display: block;
+      color: var(--accent1);
+      margin-bottom: 6px;
+      font-size: 12px;
+    }
+
+    .detail-item p {
+      margin: 0;
+      font-size: 14px;
+      word-break: break-all;
+    }
+
+    .pages-visited {
+      background: var(--panel2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 15px;
+    }
+
+    .pages-visited strong {
+      display: block;
+      color: var(--accent1);
+      margin-bottom: 10px;
+    }
+
+    .pages-visited ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .pages-visited li {
+      margin: 6px 0;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .btn-cancel {
+      padding: 10px 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--panel2);
+      color: var(--ink);
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .btn-cancel:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .btn-send {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      color: #0b0f1a;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .btn-send:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(125, 178, 255, 0.3);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+    }
+
+    .empty-state-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 768px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .details-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .visitor-actions {
+        flex-direction: column;
+      }
+
+      .modal-content {
+        width: 95%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>📊 Visitor Analytics</h1>
+      <button class="btn btn-primary" onclick="location.reload()">🔄 Refresh</button>
+    </header>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Active Visitors (30m)</div>
+        <div class="stat-number" id="visitor-count">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Visitors</div>
+        <div class="stat-number" id="total-visitors">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Returning Visitors</div>
+        <div class="stat-number" id="returning-visitors">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">New Visitors</div>
+        <div class="stat-number" id="new-visitors">0</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn" onclick="window.visitorDashboard.refreshVisitorCount()">🔄 Refresh Stats</button>
+      <button class="btn" onclick="exportVisitorData()">📥 Export Data</button>
+    </div>
+
+    <div id="visitor-list" class="visitor-list">
+      <div class="empty-state">
+        <div class="empty-state-icon">👥</div>
+        <p>Loading visitors...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js"></script>
+
+  <!-- Config and Managers -->
+  <script src="config/firebase-config.js"></script>
+  <script src="frontend/visitor-tracking.js"></script>
+  <script src="frontend/visitor-dashboard.js"></script>
+
+  <script>
+    /**
+     * Export visitor data as JSON
+     */
+    function exportVisitorData() {
+      if (!window.visitorDashboard || !window.visitorDashboard.activeVisitors) {
+        alert('No visitor data available');
+        return;
+      }
+
+      const data = {
+        exportDate: new Date().toISOString(),
+        totalVisitors: window.visitorDashboard.activeVisitors.length,
+        visitors: window.visitorDashboard.activeVisitors
+      };
+
+      const dataStr = JSON.stringify(data, null, 2);
+      const dataBlob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(dataBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `visitor-data-${Date.now()}.json`;
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    /**
+     * Update stats on page load
+     */
+    async function updateStats() {
+      try {
+        const visitors = window.visitorDashboard?.activeVisitors || [];
+        
+        document.getElementById('total-visitors').textContent = visitors.length;
+        
+        const returning = visitors.filter(v => v.isReturning).length;
+        const newVisitors = visitors.length - returning;
+        
+        document.getElementById('returning-visitors').textContent = returning;
+        document.getElementById('new-visitors').textContent = newVisitors;
+      } catch (error) {
+        console.error('Failed to update stats:', error);
+      }
+    }
+
+    // Update stats every 5 seconds
+    setInterval(updateStats, 5000);
+    
+    // Initial update
+    setTimeout(updateStats, 2000);
+  </script>
+</body>
+</html>

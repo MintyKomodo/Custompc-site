@@ -1,17 +1,21 @@
 @echo off
-echo Starting CustomPC.tech Payment Server...
+cd /d "%~dp0"
+echo Starting CustomPC.tech Website...
 echo.
 
+echo Installing Backend Dependencies...
 cd backend
-echo Installing dependencies...
+call npm install
+cd ..
+
+echo Installing Server Dependencies...
 call npm install
 
 echo.
-echo Starting server on http://localhost:3000
-echo Admin panel: http://localhost:3000/payments.html
-echo Messaging: http://localhost:3000/messaging.html
+echo Starting server on http://localhost:5000
+echo Access the site at: http://localhost:5000/
 echo.
 
-call npm start
+node server.js
 
 pause
