@@ -58,18 +58,6 @@ A complete custom PC building website with integrated Square payment processing,
 └── signup.html           # Signup page
 ```
 
-## 💳 Payment System
-
-- **Square Integration**: Production-ready payment processing
-- **Admin Only**: Secure payment interface with authentication
-- **Customer Management**: Save and reuse payment methods
-- **Transaction History**: Track all payments
-- **Real-time Validation**: Comprehensive form validation
-
-### Admin Credentials
-- Username: `Minty-Komodo`
-- Password: `hJ.?'0PcU0).1.0.1PCimA4%oU`
-- Email: `support@custompc.tech`
 
 ## 💬 Messaging System
 
