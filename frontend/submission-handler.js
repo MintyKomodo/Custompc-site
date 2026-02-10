@@ -10,9 +10,12 @@ class SubmissionHandler {
   }
 
   async init() {
+    console.log('🚀 SubmissionHandler initializing...');
+    
     // Wait for Firebase to be ready
     let attempts = 0;
-    while (!window.firebaseChatManager && attempts < 20) {
+    while ((!window.firebaseChatManager || !window.firebaseChatManager.isInitialized) && attempts < 30) {
+      console.log(`⏳ Waiting for Firebase... attempt ${attempts + 1}/30`);
       await new Promise(resolve => setTimeout(resolve, 500));
       attempts++;
     }
@@ -21,7 +24,9 @@ class SubmissionHandler {
       this.isReady = true;
       console.log('✅ SubmissionHandler ready - Firebase initialized');
     } else {
-      console.warn('⚠️ Firebase not available, submissions will use fallback');
+      console.warn('⚠️ Firebase not available after 15 seconds, submissions will use fallback');
+      // Set isReady to true anyway so we can try Firebase if it becomes available later
+      this.isReady = true;
     }
   }
 
@@ -112,7 +117,8 @@ class SubmissionHandler {
       hasDatabase: !!window.firebaseChatManager?.database
     });
     
-    if (!this.isReady || !window.firebaseChatManager || !window.firebaseChatManager.isInitialized) {
+    // Check if Firebase is actually available (don't rely only on this.isReady)
+    if (!window.firebaseChatManager || !window.firebaseChatManager.isInitialized || !window.firebaseChatManager.database) {
       console.warn('⚠️ Firebase not available, attempting to use fallback...');
       
       // Fallback: Store submission locally as backup
