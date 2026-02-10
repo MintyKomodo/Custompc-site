@@ -1154,6 +1154,16 @@
   <!-- Active Users & Notifications -->
   <script src="frontend/active-users.js"></script>
   <script src="frontend/message-notifications.js"></script>
+  <script src="frontend/admin-message-notifier.js"></script>
+  
+  <script>
+    // Clear unread count when user opens messaging page
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.AdminMessageNotifier) {
+        AdminMessageNotifier.clearUnreadCount();
+      }
+    });
+  </script>
   
   <!-- Kiro Update Notification System -->
   <div id="kiro-notification" style="
