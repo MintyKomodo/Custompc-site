@@ -142,6 +142,20 @@ class FirebaseChatManager {
     try {
       // Get current user info
       const currentUser = this.getCurrentUser();
+      
+      // Get email from user profile or session storage
+      let userEmail = chatData.userEmail || 'No email provided';
+      if (currentUser && currentUser.email) {
+        userEmail = currentUser.email;
+      } else {
+        const sessionEmail = sessionStorage.getItem('messaging_email');
+        if (sessionEmail) {
+          userEmail = sessionEmail;
+        }
+      }
+      
+      const userName = chatData.userName || currentUser?.username || 'Anonymous User';
+      
       if (!currentUser) {
         console.warn('No user logged in, creating anonymous chat');
       }
@@ -149,15 +163,18 @@ class FirebaseChatManager {
       const chatRef = this.database.ref('chats').push();
       const chatId = chatRef.key;
       
+      // Create chat with proper structure that admin expects
       const chatSession = {
-        ...chatData,
-        id: chatId,
-        userId: currentUser?.username || 'anonymous',
-        userEmail: currentUser?.email || null,
-        userName: chatData.userName || currentUser?.username || 'Anonymous User',
-        createdAt: firebase.database.ServerValue.TIMESTAMP,
-        lastActivity: firebase.database.ServerValue.TIMESTAMP,
-        status: 'active',
+        info: {
+          username: userName,
+          email: userEmail,
+          userId: currentUser?.username || 'anonymous',
+          createdAt: firebase.database.ServerValue.TIMESTAMP,
+          lastMessageTime: firebase.database.ServerValue.TIMESTAMP,
+          lastMessage: 'Chat started',
+          unreadCount: 0,
+          status: 'active'
+        },
         messages: {}
       };
 
@@ -165,10 +182,16 @@ class FirebaseChatManager {
       
       // Also save to user's chat history if logged in
       if (currentUser) {
-        await this.addChatToUserHistory(currentUser.username, chatId, chatSession);
+        await this.addChatToUserHistory(currentUser.username, chatId, {
+          chatId: chatId,
+          title: `Chat with ${userName}`,
+          createdAt: firebase.database.ServerValue.TIMESTAMP,
+          lastActivity: firebase.database.ServerValue.TIMESTAMP,
+          status: 'active'
+        });
       }
       
-      console.log('Chat session created in Firebase:', chatId);
+      console.log('✅ Chat session created in Firebase:', chatId, 'for user:', userName);
       return chatId;
 
     } catch (error) {
@@ -208,17 +231,24 @@ class FirebaseChatManager {
       const messageRef = messagesRef.push();
       
       const message = {
-        ...messageData,
-        id: messageRef.key,
-        timestamp: firebase.database.ServerValue.TIMESTAMP
+        text: messageData.content || messageData.text || '',
+        username: messageData.userId || messageData.username || 'User',
+        type: messageData.type || 'user',
+        timestamp: Date.now(),
+        id: messageRef.key
       };
 
       await messageRef.set(message);
 
-      // Update chat last activity
-      await this.database.ref(`chats/${chatId}/lastActivity`).set(firebase.database.ServerValue.TIMESTAMP);
+      // Update chat info with last message details
+      const messagePreview = message.text.length > 50 ? message.text.substring(0, 50) + '...' : message.text;
+      await this.database.ref(`chats/${chatId}/info`).update({
+        lastMessage: messagePreview,
+        lastMessageTime: Date.now(),
+        unreadCount: firebase.database.ServerValue.increment(1) // Increment unread count
+      });
 
-      console.log('Message sent to Firebase');
+      console.log('✅ Message sent to Firebase chat:', chatId);
       return message;
 
     } catch (error) {
