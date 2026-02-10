@@ -157,41 +157,28 @@ class SubmissionHandler {
     }
 
     try {
-      console.log('🔥 Firebase is ready, creating chat from submission...');
+      console.log('🔥 Firebase is ready, saving submission...');
       
-      // Create a chat session for this submission using the new structure
-      const chatData = {
-        userName: submission.name,
-        userEmail: submission.email,
-        startTime: new Date().toISOString(),
-        messages: [],
-        unreadCount: 1
+      // Save directly to submissions path (not as a chat)
+      const database = window.firebaseChatManager.database;
+      const submissionsRef = database.ref('submissions');
+      
+      // Add submission with all data
+      const submissionData = {
+        ...submission,
+        id: Date.now().toString(),
+        status: 'new',
+        read: false
       };
-
-      console.log('📝 Chat data prepared:', chatData);
       
-      const chatId = await window.firebaseChatManager.createChatSession(chatData);
-      console.log('✅ Chat session created with ID:', chatId);
-
-      // Send the submission as the first message
-      const messageContent = this.formatSubmissionMessage(submission);
-      console.log('💬 Preparing to send message...');
+      console.log('📝 Submission data prepared:', submissionData);
       
-      const messageData = {
-        content: messageContent,
-        text: messageContent,
-        type: 'user',
-        userId: submission.email,
-        username: submission.name
-      };
-
-      console.log('📨 Sending message to Firebase...');
-      await window.firebaseChatManager.sendMessage(chatId, messageData);
-      console.log('✅ Message sent successfully');
+      const result = await submissionsRef.push(submissionData);
+      console.log('✅ Submission saved to Firebase with ID:', result.key);
 
       return {
         success: true,
-        submissionId: chatId,
+        submissionId: result.key,
         message: 'Your submission has been received. We\'ll get back to you within 24-48 hours.'
       };
 
