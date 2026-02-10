@@ -39,11 +39,11 @@ header a:hover {
 
 /* Authentication-specific CSS variables */
 :root {
-  --auth-bg-start: #0a0f1f;
-  --auth-bg-end: #101b2d;
-  --auth-card-bg: rgba(20, 30, 45, 0.9);
-  --auth-input-bg: #111a24;
-  --auth-input-border: #2a3b4d;
+  --auth-bg-start: #0b1120;
+  --auth-bg-end: #0f1829;
+  --auth-card-bg: rgba(15, 25, 40, 0.95);
+  --auth-input-bg: #0d1520;
+  --auth-input-border: #1e2d3f;
   --auth-accent-blue: #7db2ff;
   --auth-accent-green: #7cf2e6;
   --auth-text-primary: #ffffff;
@@ -52,15 +52,15 @@ header a:hover {
   --auth-success-color: #51cf66;
   
   /* Spacing system */
-  --auth-container-padding: 2rem;
+  --auth-container-padding: 2.5rem;
   --auth-field-spacing: 0.75rem;
-  --auth-button-margin: 1rem;
+  --auth-button-margin: 1.25rem;
   --auth-link-spacing: 1rem;
   
   /* Border radius */
-  --auth-card-radius: 12px;
-  --auth-input-radius: 6px;
-  --auth-button-radius: 6px;
+  --auth-card-radius: 16px;
+  --auth-input-radius: 8px;
+  --auth-button-radius: 25px;
 }
 
 /* Base styles for authentication pages */
@@ -89,18 +89,18 @@ body.auth-page {
   padding: var(--auth-container-padding);
   border-radius: var(--auth-card-radius);
   width: 100%;
-  max-width: 320px;
+  max-width: 420px;
   text-align: center;
-  box-shadow: 0 0 20px rgba(0, 174, 239, 0.4);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(125, 178, 255, 0.2);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(125, 178, 255, 0.15);
   animation: slideInUp 0.6s ease-out;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .auth-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 0 30px rgba(0, 174, 239, 0.5);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(125, 178, 255, 0.3);
 }
 
 @keyframes slideInUp {
@@ -116,8 +116,8 @@ body.auth-page {
 
 /* Page title styling */
 .auth-card h2 {
-  margin: 0 0 1.5rem 0;
-  font-size: 1.8rem;
+  margin: 0 0 1.75rem 0;
+  font-size: 2rem;
   font-weight: 700;
   color: var(--auth-text-primary);
   letter-spacing: 0.5px;
@@ -157,12 +157,12 @@ body.auth-page {
   display: block;
   width: 100%;
   margin: var(--auth-field-spacing) 0;
-  padding: 0.75rem;
+  padding: 0.875rem 1rem;
   border-radius: var(--auth-input-radius);
   border: 1px solid var(--auth-input-border);
   background: var(--auth-input-bg);
   color: var(--auth-text-primary);
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-family: inherit;
   box-sizing: border-box;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -170,13 +170,13 @@ body.auth-page {
 }
 
 .auth-input:hover {
-  border-color: rgba(0, 174, 239, 0.5);
-  background: rgba(17, 26, 36, 0.9);
+  border-color: rgba(125, 178, 255, 0.4);
+  background: rgba(13, 21, 32, 0.9);
 }
 
 .auth-input::placeholder {
-  color: var(--auth-text-muted);
-  opacity: 0.8;
+  color: #6b7a94;
+  opacity: 0.9;
 }
 
 /* Input focus state with neon glow */
@@ -184,10 +184,9 @@ body.auth-page {
   outline: none;
   border-color: var(--auth-accent-blue);
   box-shadow: 
-    0 0 8px var(--auth-accent-blue),
-    0 0 16px rgba(0, 174, 239, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  background: rgba(17, 26, 36, 0.8);
+    0 0 0 2px rgba(125, 178, 255, 0.2),
+    0 2px 8px rgba(0, 0, 0, 0.3);
+  background: rgba(13, 21, 32, 0.95);
   transform: translateY(-1px);
 }
 
@@ -200,22 +199,22 @@ body.auth-page {
 /* Gradient button styling - matching "Get My Build Plan" style */
 .gradient-btn {
   width: 100%;
-  padding: 0.875rem 1.5rem;
+  padding: 0.95rem 1.5rem;
   margin-top: var(--auth-button-margin);
   border: none;
   border-radius: 25px;
   background: linear-gradient(135deg, #7db2ff 0%, #7cf2e6 100%);
   color: #0b0f1a;
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-family: inherit;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-transform: none;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 8px 25px rgba(125, 178, 255, 0.3);
+  box-shadow: 0 4px 16px rgba(125, 178, 255, 0.4);
 }
 
 .gradient-btn::before {
