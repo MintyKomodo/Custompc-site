@@ -6,16 +6,18 @@
 class SubmissionHandler {
   constructor() {
     this.isReady = false;
-    this.init();
+    this.initPromise = this.init();
   }
 
   async init() {
     console.log('🚀 SubmissionHandler initializing...');
     
-    // Wait for Firebase to be ready
+    // Wait for Firebase to be ready with longer timeout
     let attempts = 0;
-    while ((!window.firebaseChatManager || !window.firebaseChatManager.isInitialized) && attempts < 30) {
-      console.log(`⏳ Waiting for Firebase... attempt ${attempts + 1}/30`);
+    while ((!window.firebaseChatManager || !window.firebaseChatManager.isInitialized) && attempts < 40) {
+      if (attempts % 5 === 0) {
+        console.log(`⏳ Waiting for Firebase... attempt ${attempts + 1}/40`);
+      }
       await new Promise(resolve => setTimeout(resolve, 500));
       attempts++;
     }
@@ -24,10 +26,14 @@ class SubmissionHandler {
       this.isReady = true;
       console.log('✅ SubmissionHandler ready - Firebase initialized');
     } else {
-      console.warn('⚠️ Firebase not available after 15 seconds, submissions will use fallback');
-      // Set isReady to true anyway so we can try Firebase if it becomes available later
-      this.isReady = true;
+      console.warn('⚠️ Firebase not available after 20 seconds, submissions will use fallback');
+      this.isReady = false;
     }
+  }
+
+  async waitForReady() {
+    await this.initPromise;
+    return this.isReady;
   }
 
   /**
@@ -37,6 +43,9 @@ class SubmissionHandler {
    */
   async submitContact(data) {
     try {
+      // Wait for initialization to complete
+      await this.waitForReady();
+      
       const { name, email, message } = data;
 
       // Validate required fields
@@ -73,6 +82,9 @@ class SubmissionHandler {
    */
   async submitQuoteRequest(data) {
     try {
+      // Wait for initialization to complete
+      await this.waitForReady();
+      
       const { name, email, buildType, budget, message } = data;
 
       // Validate required fields
