@@ -128,23 +128,26 @@ class SubmissionHandler {
     }
 
     try {
-      // Create a chat session for this submission
+      // Create a chat session for this submission using the new structure
       const chatData = {
-        customerName: submission.name,
-        customerEmail: submission.email,
-        type: submission.type,
-        source: submission.source,
-        subject: this.generateSubject(submission)
+        userName: submission.name,
+        userEmail: submission.email,
+        startTime: new Date().toISOString(),
+        messages: [],
+        unreadCount: 1
       };
 
       const chatId = await window.firebaseChatManager.createChatSession(chatData);
 
       // Send the submission as the first message
+      const messageContent = this.formatSubmissionMessage(submission);
+      
       const messageData = {
+        content: messageContent,
+        text: messageContent,
         type: 'user',
-        content: this.formatSubmissionMessage(submission),
         userId: submission.email,
-        userName: submission.name
+        username: submission.name
       };
 
       await window.firebaseChatManager.sendMessage(chatId, messageData);

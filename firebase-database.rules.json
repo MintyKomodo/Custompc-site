@@ -3,55 +3,57 @@
     "chats": {
       ".read": true,
       ".write": true,
-      ".validate": "newData.hasChildren(['customerName', 'customerEmail', 'type', 'source', 'subject', 'createdAt', 'status'])",
       "$chatId": {
         ".read": true,
         ".write": true,
-        "customerName": {
-          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 100"
-        },
-        "customerEmail": {
-          ".validate": "newData.isString() && newData.val().matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$/)"
-        },
-        "type": {
-          ".validate": "newData.isString() && (newData.val() === 'contact' || newData.val() === 'quote_request' || newData.val() === 'message')"
-        },
-        "source": {
-          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 100"
-        },
-        "subject": {
-          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 200"
-        },
-        "createdAt": {
-          ".validate": "newData.isNumber()"
-        },
-        "lastActivity": {
-          ".validate": "newData.isNumber()"
-        },
-        "status": {
-          ".validate": "newData.isString() && (newData.val() === 'active' || newData.val() === 'closed' || newData.val() === 'archived')"
+        "info": {
+          ".read": true,
+          ".write": true,
+          "username": {
+            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 100"
+          },
+          "email": {
+            ".validate": "newData.isString()"
+          },
+          "userId": {
+            ".validate": "newData.isString()"
+          },
+          "createdAt": {
+            ".validate": "newData.isNumber()"
+          },
+          "lastMessageTime": {
+            ".validate": "newData.isNumber()"
+          },
+          "lastMessage": {
+            ".validate": "newData.isString()"
+          },
+          "unreadCount": {
+            ".validate": "newData.isNumber()"
+          },
+          "status": {
+            ".validate": "newData.isString()"
+          }
         },
         "messages": {
           ".read": true,
           ".write": true,
           "$messageId": {
             ".read": true,
-            ".write": "newData.child('timestamp').exists()",
-            ".validate": "newData.hasChildren(['type', 'content', 'userId', 'userName', 'timestamp'])",
+            ".write": true,
+            "text": {
+              ".validate": "newData.isString() && newData.val().length >= 0 && newData.val().length <= 5000"
+            },
+            "username": {
+              ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 100"
+            },
             "type": {
               ".validate": "newData.isString() && (newData.val() === 'user' || newData.val() === 'admin' || newData.val() === 'system')"
             },
-            "content": {
-              ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 5000"
-            },
-            "userId": {
-              ".validate": "newData.isString() && newData.val().length > 0"
-            },
-            "userName": {
-              ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 100"
-            },
             "timestamp": {
               ".validate": "newData.isNumber()"
+            },
+            "id": {
+              ".validate": "newData.isString()"
             }
           }
         },
@@ -96,8 +98,7 @@
       ".write": true,
       "$messageId": {
         ".read": true,
-        ".write": "newData.child('timestamp').exists()",
-        ".validate": "newData.hasChildren(['text', 'username', 'type', 'timestamp'])",
+        ".write": true,
         "text": {
           ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 5000"
         },
@@ -116,6 +117,22 @@
       ".read": true,
       ".write": true,
       "$submissionId": {
+        ".read": true,
+        ".write": true
+      }
+    },
+    "activeUsers": {
+      ".read": true,
+      ".write": true,
+      "$sessionId": {
+        ".read": true,
+        ".write": true
+      }
+    },
+    "adminChats": {
+      ".read": true,
+      ".write": true,
+      "$chatId": {
         ".read": true,
         ".write": true
       }
