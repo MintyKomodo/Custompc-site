@@ -1,156 +1,90 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8" />
-  <title>Sign Up – CustomPC.tech</title>
-  <meta name="description" content="Create your CustomPC.tech account to get personalized PC builds and save your preferences." />
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover" />
-  <link rel="icon" type="image/png" sizes="32x32" href="images/logo.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="images/logo.png" />
-  <link rel="shortcut icon" href="images/logo.png" />
-  <link rel="apple-touch-icon" href="images/logo.png" />
-  <link rel="stylesheet" href="frontend/auth-styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Create account | CustomPC.tech</title>
+  <meta name="description" content="Create your CustomPC.tech account." />
+  <meta name="theme-color" content="#101012" />
+  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="frontend/site.css" />
+  <link rel="stylesheet" href="frontend/navbar.css" />
 </head>
 
-<body class="auth-page">
-  <div class="auth-container">
-    <div class="auth-card" role="main" aria-labelledby="signup-title">
-      <div style="text-align: center; margin-bottom: 0.5rem; font-size: 0.75rem; color: #7db2ff; text-transform: uppercase; letter-spacing: 1px;">
-        WELCOME TO CUSTOMPC.TECH
-      </div>
-      <h2 id="signup-title">Sign Up</h2>
-      <form id="signup-form" class="auth-form" novalidate aria-describedby="form-instructions">
+<body>
+  <main class="auth-shell">
+    <div class="auth-card" aria-labelledby="signup-title">
+      <h1 id="signup-title">Create account</h1>
+      <p class="lead">Track every build you request, start to finish.</p>
+      <form id="signup-form" class="auth-form form" novalidate aria-describedby="form-instructions">
         <div id="form-instructions" class="sr-only">
           Please fill out all fields to create your new account. Password must be at least 8 characters with uppercase, lowercase, and numbers.
         </div>
-        
-        <div class="field-container">
-          <label for="username" class="sr-only">Username</label>
-          <input 
-            id="username" 
-            type="text" 
-            class="auth-input" 
-            placeholder="Username" 
-            required 
-            aria-label="Username"
-            aria-describedby="username-validation username-help"
-            autocomplete="username"
-            spellcheck="false"
-          />
-          <div id="username-help" class="sr-only">
-            Username must be 3-20 characters and contain only letters, numbers, and underscores.
-          </div>
+
+        <div class="field">
+          <label for="username">Username</label>
+          <input id="username" type="text" class="auth-input" required
+            aria-describedby="username-validation username-help" autocomplete="username" spellcheck="false" />
+          <div id="username-help" class="sr-only">Choose a unique username for your account.</div>
           <div class="field-validation hidden" id="username-validation" aria-live="polite"></div>
         </div>
-        
-        <div class="field-container">
-          <label for="email" class="sr-only">Email Address</label>
-          <input 
-            id="email" 
-            type="email" 
-            class="auth-input" 
-            placeholder="Email" 
-            required 
-            aria-label="Email Address"
-            aria-describedby="email-validation email-help"
-            autocomplete="email"
-            spellcheck="false"
-          />
-          <div id="email-help" class="sr-only">
-            Enter a valid email address for account verification and password recovery.
-          </div>
+
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" type="email" class="auth-input" required
+            aria-describedby="email-validation email-help" autocomplete="email" spellcheck="false" />
+          <div id="email-help" class="sr-only">Enter a valid email address.</div>
           <div class="field-validation hidden" id="email-validation" aria-live="polite"></div>
         </div>
-        
-        <div class="field-container">
-          <label for="password" class="sr-only">Password</label>
-          <input 
-            id="password" 
-            type="password" 
-            class="auth-input" 
-            placeholder="Password" 
-            required 
-            aria-label="Password"
-            aria-describedby="password-validation password-help password-strength"
-            autocomplete="new-password"
-          />
-          <div id="password-help" class="sr-only">
-            Password must be at least 8 characters with uppercase, lowercase, and numbers.
-          </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" type="password" class="auth-input" required
+            aria-describedby="password-validation password-help password-strength" autocomplete="new-password" />
+          <div id="password-help" class="sr-only">At least 8 characters with uppercase, lowercase, and numbers.</div>
           <div class="password-strength" id="password-strength" style="display: none;" aria-live="polite"></div>
           <div class="field-validation hidden" id="password-validation" aria-live="polite"></div>
         </div>
-        
-        <div class="field-container">
-          <label for="confirm-password" class="sr-only">Confirm Password</label>
-          <input 
-            id="confirm-password" 
-            type="password" 
-            class="auth-input" 
-            placeholder="Confirm Password" 
-            required 
-            aria-label="Confirm Password"
-            aria-describedby="confirm-password-validation confirm-password-help"
-            autocomplete="new-password"
-          />
-          <div id="confirm-password-help" class="sr-only">
-            Re-enter your password to confirm it matches.
-          </div>
+
+        <div class="field">
+          <label for="confirm-password">Confirm password</label>
+          <input id="confirm-password" type="password" class="auth-input" required
+            aria-describedby="confirm-password-validation confirm-password-help" autocomplete="new-password" />
+          <div id="confirm-password-help" class="sr-only">Re-enter your password to confirm.</div>
           <div class="field-validation hidden" id="confirm-password-validation" aria-live="polite"></div>
         </div>
-        
-        <div class="field-container" style="margin-top: 1rem;">
-          <label style="display: flex; align-items: flex-start; gap: 0.5rem; cursor: pointer; color: #aeb9d4; font-size: 0.85rem; line-height: 1.4;">
-            <input 
-              type="checkbox" 
-              id="terms-checkbox" 
-              required 
-              style="margin-top: 0.15rem; cursor: pointer; width: 16px; height: 16px; accent-color: #7db2ff; flex-shrink: 0;"
-              aria-describedby="terms-help"
-            />
-            <span>
-              I agree to the <a href="privacy-policy.html" target="_blank" style="color: #7db2ff; text-decoration: none;">Privacy Policy</a> and acknowledge that my information will be collected and stored.
-            </span>
+
+        <div>
+          <label class="check">
+            <input type="checkbox" id="terms-checkbox" required aria-describedby="terms-help" />
+            <span>I agree to the <a href="privacy-policy.html" target="_blank">Privacy Policy</a> and understand my information is stored.</span>
           </label>
-          <div id="terms-help" class="sr-only">
-            You must accept the Privacy Policy to create an account.
-          </div>
+          <div id="terms-help" class="sr-only">You must accept the Privacy Policy to create an account.</div>
           <div class="field-validation hidden" id="terms-validation" aria-live="polite"></div>
         </div>
-        
+
         <div class="error-message" id="error-display" role="alert" aria-live="assertive"></div>
         <div class="success-message" id="success-display" role="alert" aria-live="polite"></div>
-        
-        <button type="submit" class="gradient-btn" aria-describedby="submit-help">
-          <span>Create Account</span>
+
+        <button type="submit" class="btn btn--block gradient-btn" aria-describedby="submit-help">
+          <span>Create account</span>
         </button>
-        <div id="submit-help" class="sr-only">
-          Submit the form to create your new account.
-        </div>
-        
-        <div class="auth-links" role="navigation" aria-label="Authentication options">
-          <p class="switch-text">
-            Already have an account? 
-            <a href="login.html" aria-describedby="login-help">Log In</a>
-          </p>
-          <div id="login-help" class="sr-only">
-            Navigate to the login page to access your existing account.
-          </div>
-        </div>
+        <div id="submit-help" class="sr-only">Submit the form to create your new account.</div>
       </form>
+      <p class="auth-switch">Already have an account? <a href="login.html">Sign in</a></p>
     </div>
+  </main>
 
-    <!-- Footer with Legal Links -->
-    <footer style="position: fixed; bottom: 20px; left: 0; right: 0; text-align: center; color: #aeb9d4; font-size: 0.8rem;">
-      <p style="margin: 0 0 8px 0; color: #6b7a94;">&copy; 2026 CustomPC.tech. All rights reserved.</p>
-      <div>
-        <a href="privacy-policy.html" target="_blank" style="color: #7db2ff; text-decoration: none; margin: 0 10px;">Privacy Policy</a>
-        <a href="terms-of-service.html" target="_blank" style="color: #7db2ff; text-decoration: none; margin: 0 10px;">Terms of Service</a>
-      </div>
-    </footer>
-  </div>
+  <footer data-site-footer></footer>
 
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="frontend/firebase-app.js"></script>
+  <script src="frontend/navbar.js"></script>
   <script src="auth-validation.js"></script>
   <script>
     // Enhanced signup form with validation
@@ -250,7 +184,6 @@
       }
 
       async onSubmit(formData) {
-        // Check if Privacy Policy is accepted
         const termsCheckbox = document.getElementById('terms-checkbox');
         if (!termsCheckbox || !termsCheckbox.checked) {
           this.showError('You must accept the Privacy Policy to create an account.');
@@ -261,56 +194,22 @@
           }
           return;
         }
-        
-        // Check if user already exists
-        const existingUser = localStorage.getItem('custompc_user');
-        const existingUsername = localStorage.getItem('custompc_username');
-        
-        if (existingUser || existingUsername) {
-          try {
-            const userData = existingUser ? JSON.parse(existingUser) : { username: existingUsername };
-            if (userData.username === formData.username) {
-              this.showError('This username is already taken. Please login instead or choose a different username.');
-              return;
-            }
-          } catch (e) {
-            // Continue if parsing fails
-          }
-        }
-        
-        // Simulate signup process
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        // For demo purposes, accept any valid data
-        if (formData.username && formData.email && formData.password) {
-          // Store user data (compatible with main site)
-          const userData = {
-            username: formData.username,
-            email: formData.email,
-            signupTime: new Date().toISOString(),
-            termsAccepted: true,
-            termsAcceptedDate: new Date().toISOString()
-          };
-          
-          localStorage.setItem('custompc_user', JSON.stringify(userData));
-          
-          // Also set the legacy format for compatibility
-          localStorage.setItem('custompc_username', formData.username);
-          localStorage.setItem('custompc_user_hash', btoa(formData.username + ':' + formData.password));
-          
-          // Trigger auth state change for other tabs/windows
-          if (window.SharedAuth) {
-            SharedAuth.triggerAuthStateChange();
-          }
-          
-          this.showSuccess('Account created successfully! You are now logged in. Redirecting...');
-          
-          // Redirect to main page after short delay
-          setTimeout(() => {
-            window.location.href = 'index.html';
-          }, 2000);
-        } else {
-          throw new Error('Registration failed');
+
+        const messages = {
+          'auth/email-already-in-use': 'An account with that email already exists. Sign in instead.',
+          'auth/invalid-email': 'That email address is not valid.',
+          'auth/weak-password': 'Pick a stronger password.'
+        };
+
+        try {
+          const cred = await CPC.auth.createUserWithEmailAndPassword(formData.email.trim(), formData.password);
+          await cred.user.updateProfile({ displayName: formData.username.trim() });
+          try { await cred.user.sendEmailVerification(); } catch (e) {}
+          await cred.user.reload();
+          this.showSuccess('Account created. Check your inbox to verify your email.');
+          setTimeout(() => { window.location.href = 'account.html'; }, 1200);
+        } catch (e) {
+          throw new Error(messages[e.code] || e.message || 'Could not create the account.');
         }
       }
     }

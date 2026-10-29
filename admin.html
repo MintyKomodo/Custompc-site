@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Requests | CustomPC.tech Admin</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#101012" />
+  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="frontend/site.css" />
+  <link rel="stylesheet" href="frontend/navbar.css" />
+</head>
+<body>
+
+  <section class="page-head" style="text-align:left;padding-bottom:28px">
+    <div class="container">
+      <p class="eyebrow">Admin</p>
+      <h1 class="title">Requests</h1>
+      <p class="lead" style="margin:12px 0 0" id="summary">&nbsp;</p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="container">
+      <div class="card" id="gate" hidden>
+        <h3>Admin only</h3>
+        <p>Sign in with the verified admin account (<span id="admin-email"></span>) to manage requests.</p>
+      </div>
+
+      <div id="console" hidden>
+        <div class="admin-bar">
+          <div class="field">
+            <select id="f-type" aria-label="Type">
+              <option value="quote_request">Build requests</option>
+              <option value="contact">Contact messages</option>
+              <option value="all">Everything</option>
+            </select>
+          </div>
+          <div class="field">
+            <select id="f-status" aria-label="Status">
+              <option value="open">Open</option>
+              <option value="all">Any status</option>
+            </select>
+          </div>
+          <div class="field" style="flex:1;min-width:200px">
+            <input id="f-q" type="search" placeholder="Search name, email, build" aria-label="Search">
+          </div>
+        </div>
+        <div id="list" class="req-list"></div>
+      </div>
+    </div>
+  </section>
+
+  <footer data-site-footer></footer>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <script src="frontend/firebase-app.js"></script>
+  <script src="frontend/navbar.js"></script>
+  <script src="frontend/build-status.js"></script>
+  <script>
+    (function () {
+      const B = BuildStatus;
+      const list = document.getElementById('list');
+      const fType = document.getElementById('f-type');
+      const fStatus = document.getElementById('f-status');
+      const fQ = document.getElementById('f-q');
+      let data = {};
+      let off = null;
+      const drafts = {};
+
+      document.getElementById('admin-email').textContent = CPC.ADMIN_EMAIL;
+
+      // Status choices for the update form
+      const statusOptions = (current) => [...CPC.STATUSES, CPC.CLOSED]
+        .map(s => `<option value="${s.id}"${s.id === (current || 'new') ? ' selected' : ''}>${s.label}</option>`)
+        .join('');
+
+      function card(id, r) {
+        const isQuote = r.type === 'quote_request';
+        const title = isQuote
+          ? (r.buildType && r.buildType !== 'None' ? r.buildType : 'Custom build')
+          : 'Contact message';
+        return `
+          <article class="req-card card" data-id="${B.esc(id)}">
+            <header class="req-card__head">
+              <div>
+                <h3>${B.esc(r.name || 'No name')} <span class="muted" style="font-weight:500">· ${B.esc(title)}</span></h3>
+                <div class="admin-meta">
+                  <a href="mailto:${B.esc(r.email)}">${B.esc(r.email)}</a>
+                  <span>${B.date(r.timestamp, true)}</span>
+                  ${r.budget && r.budget !== 'Not specified' ? `<span>Budget ${B.esc(r.budget)}</span>` : ''}
+                  ${r.uid ? '<span class="tag">Has account</span>' : '<span class="tag">Guest</span>'}
+                  ${r.read ? '' : '<span class="tag tag--unread">Unread</span>'}
+                </div>
+              </div>
+              ${isQuote ? B.pill(r.status) : ''}
+            </header>
+            ${isQuote ? B.track(r.status) : ''}
+            <div class="req-card__body">
+              ${isQuote ? `<div><h4>Updates the customer sees</h4>${B.updates(r)}</div>` : ''}
+              <div><h4>Message</h4><p class="req-card__msg">${r.message ? B.esc(r.message).replace(/\n/g, '<br>') : '<span class="muted">No message</span>'}</p></div>
+            </div>
+            ${isQuote ? `
+            <form class="admin-post" data-post="${B.esc(id)}">
+              <div class="field"><select name="status" aria-label="New status">${statusOptions(r.status)}</select></div>
+              <div class="field"><textarea name="text" rows="2" placeholder="Update for the customer (optional)">${B.esc(drafts[id] || '')}</textarea></div>
+              <button class="btn" type="submit">Post update</button>
+            </form>` : `
+            <div class="btn-row" style="margin-top:20px">
+              <a class="btn btn--ghost" href="mailto:${B.esc(r.email)}?subject=${encodeURIComponent('Re: your message to CustomPC.tech')}">Reply by email</a>
+              ${r.read ? '' : `<button class="btn btn--ghost" type="button" data-read="${B.esc(id)}">Mark read</button>`}
+            </div>`}
+          </article>`;
+      }
+
+      function render() {
+        const type = fType.value;
+        const status = fStatus.value;
+        const q = fQ.value.trim().toLowerCase();
+        const items = Object.entries(data)
+          .filter(([, r]) => r && (type === 'all' || r.type === type))
+          .filter(([, r]) => status === 'all' || !['delivered', 'closed'].includes(r.status))
+          .filter(([, r]) => !q || [r.name, r.email, r.buildType, r.message].join(' ').toLowerCase().includes(q))
+          .sort((a, b) => (b[1].timestamp || 0) - (a[1].timestamp || 0));
+
+        const all = Object.values(data);
+        const openBuilds = all.filter(r => r.type === 'quote_request' && !['delivered', 'closed'].includes(r.status)).length;
+        const unread = all.filter(r => !r.read).length;
+        document.getElementById('summary').textContent = `${openBuilds} open build${openBuilds === 1 ? '' : 's'} · ${unread} unread`;
+
+        list.innerHTML = items.length
+          ? items.map(([id, r]) => card(id, r)).join('')
+          : '<div class="card empty"><h3>Nothing here</h3><p>No requests match these filters.</p></div>';
+      }
+
+      [fType, fStatus].forEach(el => el.addEventListener('change', render));
+      fQ.addEventListener('input', render);
+
+      // Keep half-typed updates when the live list re-renders
+      list.addEventListener('input', e => {
+        const form = e.target.closest('[data-post]');
+        if (form && e.target.name === 'text') drafts[form.dataset.post] = e.target.value;
+      });
+
+      list.addEventListener('submit', async e => {
+        const form = e.target.closest('[data-post]');
+        if (!form) return;
+        e.preventDefault();
+        const id = form.dataset.post;
+        const status = form.status.value;
+        const text = form.text.value.trim();
+        const current = data[id] || {};
+        if (!text && status === (current.status || 'new')) {
+          form.text.focus();
+          return;
+        }
+        const btn = form.querySelector('button');
+        btn.disabled = true;
+        try {
+          const ref = CPC.db.ref('submissions/' + id);
+          await ref.child('updates').push({ text, status, at: firebase.database.ServerValue.TIMESTAMP });
+          await ref.update({ status, read: true });
+          delete drafts[id];
+        } catch (err) {
+          alert('Could not post the update: ' + err.message);
+          btn.disabled = false;
+        }
+      });
+
+      list.addEventListener('click', async e => {
+        const id = e.target.dataset && e.target.dataset.read;
+        if (!id) return;
+        await CPC.db.ref('submissions/' + id).update({ read: true });
+      });
+
+      CPC.onUser(user => {
+        if (off) { off(); off = null; }
+        if (!user) {
+          location.replace('login.html?next=admin.html');
+          return;
+        }
+        const ok = CPC.isAdmin(user);
+        document.getElementById('gate').hidden = ok;
+        document.getElementById('console').hidden = !ok;
+        if (!ok) return;
+
+        const q = CPC.db.ref('submissions').orderByChild('timestamp').limitToLast(500);
+        const cb = snap => { data = snap.val() || {}; render(); };
+        q.on('value', cb, err => {
+          list.innerHTML = `<div class="card"><h3>Could not load requests</h3><p>${B.esc(err.message)}</p></div>`;
+        });
+        off = () => q.off('value', cb);
+      });
+    })();
+  </script>
+</body>
+</html>

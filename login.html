@@ -1,199 +1,98 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Log In – CustomPC.tech</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
-  <style>
-    :root{
-      --space:15px;
-      --bg:#0a0f1a; --ink:#e9eefc; --muted:#aeb9d4;
-      --panel:#111729; --panel2:#0d1426; --border:rgba(255,255,255,.08);
-      --accent1:#7db2ff; --accent2:#7cf2e6; --radius:18px; --max:1200px;
-    }
-    .wrap{max-width:var(--max);margin:0 auto;padding:28px}
-    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space)}
-    .brand a{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;font-weight:700;letter-spacing:.3px;white-space:nowrap}
-    .topnav{display:flex;gap:var(--space);flex-wrap:wrap}
-    .pill{display:inline-block;padding:10px 14px;border-radius:999px;color:var(--ink);text-decoration:none;border:1px solid transparent}
-    .pill:hover{background:#0f1830}
-    .pill.active{background:linear-gradient(120deg,rgba(125,178,255,.15),rgba(124,242,230,.15));border-color:rgba(255,255,255,.08)}
-    
-    /* Login Form Styling */
-    .formwrap{
-      max-width:480px;
-      margin:60px auto;
-      padding:56px 48px;
-      background:rgba(17,23,41,0.6);
-      backdrop-filter:blur(20px);
-      border:1px solid rgba(125,178,255,0.15);
-      border-radius:24px;
-      box-shadow:0 20px 60px rgba(0,0,0,0.5);
-    }
-    .formwrap h1{
-      text-align:center;
-      font-size:36px;
-      margin:0 0 36px;
-      background:linear-gradient(135deg,var(--accent1),var(--accent2));
-      -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;
-      background-clip:text;
-    }
-    .formwrap label{
-      display:block;
-      margin:24px 0 10px;
-      font-weight:600;
-      color:var(--ink);
-      font-size:16px;
-    }
-    .formwrap input{
-      width:100%;
-      padding:16px 18px;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,0.1);
-      background:rgba(11,13,18,0.8);
-      color:#e5e7eb;
-      font-size:16px;
-      transition:all 0.2s;
-    }
-    .formwrap input:focus{
-      outline:none;
-      border-color:var(--accent1);
-      box-shadow:0 0 0 3px rgba(125,178,255,0.1);
-    }
-    .formwrap .err{
-      color:#f87171;
-      margin:12px 0;
-      font-size:15px;
-      min-height:20px;
-    }
-    .formwrap .row{
-      display:flex;
-      flex-direction:column;
-      gap:14px;
-      margin-top:32px;
-    }
-    .formwrap .btn{
-      width:100%;
-      padding:16px;
-      border-radius:12px;
-      font-weight:700;
-      font-size:15px;
-      cursor:pointer;
-      border:none;
-      transition:all 0.2s;
-    }
-    .formwrap .btn[type="submit"]{
-      background:linear-gradient(135deg,var(--accent1),var(--accent2));
-      color:#0a0f1a;
-      box-shadow:0 8px 24px rgba(125,178,255,0.3);
-    }
-    .formwrap .btn[type="submit"]:hover{
-      transform:translateY(-2px);
-      box-shadow:0 12px 32px rgba(125,178,255,0.4);
-    }
-    .formwrap a.btn{
-      background:rgba(31,41,55,0.8);
-      color:var(--ink);
-      text-decoration:none;
-      text-align:center;
-      border:1px solid rgba(255,255,255,0.1);
-    }
-    .formwrap a.btn:hover{
-      background:rgba(31,41,55,1);
-      border-color:rgba(255,255,255,0.2);
-    }
-    
-    /* Bottom CTA (shared) */
-    .cta-card{
-      text-align:center;
-      border:1px solid var(--border);
-      border-left:0;border-right:0;
-      border-radius:0;
-      box-shadow:none;
-      padding:34px 26px;
-      background:linear-gradient(135deg, rgba(125,178,255,.12), rgba(124,242,230,.12));
-      margin-left:calc(50% - 50vw);
-      margin-right:calc(50% - 50vw);
-      width:100vw;
-    }
-    .cta-title{font-size:26px;margin:0 0 var(--space)}
-    .cta-sub{color:var(--muted);margin:0 0 var(--space)}
-    .cta-actions{display:flex;gap:var(--space);justify-content:center;flex-wrap:wrap}
-    .cta-primary, .cta-secondary{display:inline-block;padding:12px 18px;border-radius:14px;font-weight:700;text-decoration:none}
-    .cta-primary{color:#0b0f1a;background:linear-gradient(90deg,var(--accent1,#7db2ff),var(--accent2,#7cf2e6));box-shadow:0 10px 26px rgba(117,194,255,.28)}
-    .cta-secondary{color:var(--ink);border:1px solid var(--border);background:#0f1830}
-  </style>
-  
+  <title>Sign in | CustomPC.tech</title>
+  <meta name="description" content="Sign in to track your CustomPC.tech build requests." />
+  <meta name="theme-color" content="#101012" />
+  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="frontend/site.css" />
+  <link rel="stylesheet" href="frontend/navbar.css" />
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div class="brand">
-        <a href="index.html"><img src="images/logo.png" alt="CustomPC.tech logo" style="height:24px;width:auto;display:inline-block" /> <span style="margin-left:8px">CustomPC.tech</span></a>
-      </div>
-      <nav class="topnav" role="navigation" aria-label="Primary">
-        <a class="pill" href="builds.html">Builds</a>
-        <a class="pill" href="index.html">Custom PC</a>
-        <a class="pill" href="about.html">About</a>
-        <a class="pill" href="contact.html">Contact</a>
-      </nav>
-    </header>
-    
-
-    <div class="formwrap">
-      <h1>Log In</h1>
-      <form id="login-form">
-        <label>Email</label>
-        <input id="email" type="email" required placeholder="you@example.com" />
-        <label>Password</label>
-        <input id="pass" type="password" required placeholder="••••••••" />
-        <div class="err" id="err"></div>
-        <div class="row">
-          <button class="btn" type="submit">Log In</button>
-          <a class="btn" style="background:#1f2937" href="signup.html">Need an account?</a>
+  <main class="auth-shell">
+    <div class="auth-card">
+      <h1>Sign in</h1>
+      <p class="lead">Track your build requests and updates.</p>
+      <form id="login-form" class="form" novalidate>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" type="email" required autocomplete="email" />
         </div>
+        <div class="field">
+          <label for="pass">Password</label>
+          <input id="pass" type="password" required autocomplete="current-password" />
+        </div>
+        <div class="err-text" id="err" role="alert"></div>
+        <button class="btn btn--block" type="submit">Sign in</button>
+        <button class="auth-link" type="button" id="reset">Forgot password?</button>
       </form>
+      <p class="auth-switch">New here? <a href="signup.html">Create an account</a></p>
     </div>
-    
-    <!-- Bottom CTA -->
-    <section class="cta-card" style="margin-top:var(--space)">
-      <div class="cta-title">Ready for a build that’s actually right for you?</div>
-      <p class="cta-sub">Tell us what you do—we’ll design, verify, and deliver a PC that fits your workload and budget.</p>
-      <div class="cta-actions">
-        <a class="cta-primary" href="index.html#request">Start a Custom PC →</a>
-        <a class="cta-secondary" href="contact.html">Just have a question?</a>
-      </div>
-    </section>
+  </main>
 
-    <!-- Footer with Legal Links -->
-    <footer style="margin-top: 60px; padding-top: 40px; border-top: 1px solid var(--border); text-align: center; color: var(--muted); font-size: 0.9rem;">
-      <p style="margin: 0 0 20px 0; color: var(--muted);">&copy; 2026 CustomPC.tech. All rights reserved.</p>
-      <div style="margin-bottom: 0;">
-        <a href="privacy-policy.html" style="color: var(--accent1); text-decoration: none; margin: 0 15px;">Privacy Policy</a>
-        <a href="terms-of-service.html" style="color: var(--accent1); text-decoration: none; margin: 0 15px;">Terms of Service</a>
-      </div>
-    </footer>
-  </div>
+  <footer data-site-footer></footer>
 
-  <script type="module" src="nav-auth.js"></script>
-  <script type="module">
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
-    const auth = getAuth();
-    const form = document.getElementById('login-form');
-    const err = document.getElementById('err');
-    form.addEventListener('submit', async (e)=>{
-      e.preventDefault();
-      err.textContent='';
-      const email = document.getElementById('email').value.trim();
-      const pass  = document.getElementById('pass').value;
-      try{
-        await signInWithEmailAndPassword(auth, email, pass);
-        window.location.href = "builds.html";
-      }catch(e){ err.textContent = e.message || "Login failed." }
-    });
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="frontend/firebase-app.js"></script>
+  <script src="frontend/navbar.js"></script>
+  <script>
+    (function () {
+      const params = new URLSearchParams(location.search);
+      const next = params.get('next');
+      const dest = next && /^[a-z0-9\-]+\.html([?#].*)?$/i.test(next) ? next : 'account.html';
+      const form = document.getElementById('login-form');
+      const err = document.getElementById('err');
+      const btn = form.querySelector('button[type="submit"]');
+
+      if (params.get('signout')) {
+        CPC.signOut().then(() => { location.replace('index.html'); });
+        return;
+      }
+
+      const messages = {
+        'auth/invalid-login-credentials': 'Email or password is wrong.',
+        'auth/invalid-credential': 'Email or password is wrong.',
+        'auth/wrong-password': 'Email or password is wrong.',
+        'auth/user-not-found': 'Email or password is wrong.',
+        'auth/too-many-requests': 'Too many attempts. Wait a minute and try again.',
+        'auth/invalid-email': 'That email address is not valid.'
+      };
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        err.textContent = '';
+        if (!form.checkValidity()) { form.reportValidity(); return; }
+        btn.disabled = true;
+        try {
+          await CPC.auth.signInWithEmailAndPassword(
+            document.getElementById('email').value.trim(),
+            document.getElementById('pass').value
+          );
+          location.href = dest;
+        } catch (e) {
+          err.textContent = messages[e.code] || e.message || 'Sign in failed.';
+          btn.disabled = false;
+        }
+      });
+
+      document.getElementById('reset').addEventListener('click', async () => {
+        const email = document.getElementById('email').value.trim();
+        err.textContent = '';
+        if (!email) { err.textContent = 'Enter your email above, then tap Forgot password.'; return; }
+        try {
+          await CPC.auth.sendPasswordResetEmail(email);
+        } catch (e) {}
+        err.style.color = 'var(--ok)';
+        err.textContent = 'If that email has an account, a reset link is on its way.';
+      });
+    })();
   </script>
 </body>
 </html>

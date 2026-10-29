@@ -271,7 +271,7 @@ class AdminAuth extends SharedAuth {
       sessionStorage.removeItem('admin_redirect_url');
       
       // Validate redirect URL for security
-      const allowedRedirects = ['index.html', 'builds.html', 'messaging.html'];
+      const allowedRedirects = ['index.html', 'builds.html'];
       let targetUrl = 'index.html'; // default (payments disabled)
       
       if (redirectUrl) {

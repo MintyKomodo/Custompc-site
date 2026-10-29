@@ -3,662 +3,296 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Custom PC Plans | CustomPC.tech</title>
-  <meta name="description" content="CustomPC.tech - Professional custom PC builds designed by engineers. Get workload-optimized gaming PCs, workstations, and creator builds with verified performance and thermals." />
+  <title>CustomPC.tech | Custom PCs built around your work</title>
+  <meta name="description" content="Tell us your games, apps and budget. CustomPC.tech sends a free parts list, expected performance and an upgrade path within 48 hours, then builds and stress-tests your PC." />
   <meta name="keywords" content="custom pc, gaming pc, workstation, pc builder, custom computer, gaming build, pc parts, computer build" />
-  <meta name="author" content="CustomPC.tech" />
-  <meta property="og:title" content="Custom PC Plans | CustomPC.tech" />
-  <meta property="og:description" content="Professional custom PC builds designed by engineers. Workload-optimized gaming PCs and workstations with verified performance." />
+  <meta property="og:title" content="CustomPC.tech | Custom PCs built around your work" />
+  <meta property="og:description" content="A free build plan in 24 to 48 hours: parts list, expected performance and an upgrade path." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://custompc.tech" />
-  <meta property="og:image" content="https://custompc.tech/images/logo.png" />
+  <meta property="og:image" content="https://custompc.tech/images/hero.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Custom PC Plans | CustomPC.tech" />
-  <meta name="twitter:description" content="Professional custom PC builds designed by engineers. Get your perfect gaming PC or workstation." />
+  <meta name="theme-color" content="#101012" />
   <link rel="canonical" href="https://custompc.tech" />
-  <link rel="icon" type="image/png" sizes="32x32" href="images/logo.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="images/logo.png" />
-  <link rel="shortcut icon" href="images/logo.png" />
-  <link rel="apple-touch-icon" href="images/logo.png" />
-  
-  <!-- Shared Navbar Styles -->
+  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="preload" as="image" href="images/hero.jpg" />
+  <link rel="stylesheet" href="frontend/site.css" />
   <link rel="stylesheet" href="frontend/navbar.css" />
-  
-  <style>
-    :root{
-      --space:10px; --space-sm:6px; --space-lg:16px;
-      --bg:#0a0f1a; --ink:#e9eefc; --muted:#aeb9d4;
-      --panel:#111729; --panel2:#0d1426; --border:rgba(255,255,255,.08);
-      --accent1:#7db2ff; --accent2:#7cf2e6;
-      --radius:18px; --shadow:0 20px 40px rgba(0,0,0,.35);
-      --max:1200px;
-    }
-    *{box-sizing:border-box}
-    html{scrollbar-gutter:stable}
-    body{
-      margin:0;font-family:system-ui,Segoe UI,Roboto,Inter,Arial;color:var(--ink);
-      background:
-        radial-gradient(1200px 600px at 50% -10%, #0f162b 8%, transparent 55%),
-        linear-gradient(#081021, #0a0f1a 40%, #0a0f1a);
-      line-height:1.55;
-      overflow-x:hidden;
-      min-height:100vh
-    }
-    .wrap{max-width:var(--max);margin:0 auto;padding:var(--space-lg);width:100%;box-sizing:border-box;overflow:visible}
-
-
-    
-
-    
-    @keyframes slideUp {
-      from {
-        transform: translateY(0);
-        opacity: 1;
-      }
-      to {
-        transform: translateY(-100%);
-        opacity: 0;
-      }
-    }
-
-    /* Value Proposition Hero */
-    .value-prop {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      min-height: 400px;
-      padding: 60px var(--space-lg);
-      border-bottom: 1px solid var(--border);
-      font-size: 32px;
-      font-weight: 700;
-      color: var(--ink);
-      letter-spacing: 0.5px;
-      line-height: 1.4;
-      max-width: 100%;
-      margin: 0 auto;
-      position: relative;
-      background-image: url('images/value-prop-bg.png');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      overflow: hidden;
-    }
-
-    .value-prop::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background:
-        radial-gradient(1200px 600px at 50% 50%, rgba(125, 178, 255, 0.12), transparent),
-        linear-gradient(135deg, rgba(125, 178, 255, 0.06), rgba(124, 242, 230, 0.06)),
-        linear-gradient(to bottom, rgba(10, 15, 26, 0.4), rgba(10, 15, 26, 0.6));
-      z-index: 1;
-    }
-
-    .value-prop > * {
-      position: relative;
-      z-index: 2;
-    }
-
-    @media (max-width: 700px) {
-      .value-prop {
-        font-size: 24px;
-        min-height: 300px;
-        padding: 40px var(--space);
-      }
-    }
-
-    /* Header (shared) - Now Sticky */
-    header{
-      display:flex;align-items:center;justify-content:space-between;
-      padding:16px var(--space);
-      max-width:var(--max);margin-left:auto;margin-right:auto;width:100%;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      background: rgba(10, 15, 26, 0.95);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--border);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-      transition: all 0.3s ease;
-    }
-    
-    header.scrolled {
-      padding: 12px var(--space);
-      box-shadow: 0 6px 30px rgba(0,0,0,0.4);
-    }
-    .brand a{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;font-weight:700;letter-spacing:.3px;white-space:nowrap}
-    nav{display:flex;gap:var(--space);flex-wrap:wrap}
-    .pill{display:inline-block;padding:10px 14px;border-radius:999px;color:var(--ink);text-decoration:none;border:1px solid transparent;position:relative}
-    .pill:hover{background:#0f1830}
-    .pill.active{background:linear-gradient(120deg,rgba(125,178,255,.15),rgba(124,242,230,.15));border-color:rgba(255,255,255,.08)}
-
-    /* Custom PC Hover Dropdown */
-    .custom-pc-nav {
-      position: relative;
-      display: inline-block;
-    }
-    
-    .custom-pc-dropdown {
-      position: absolute;
-      top: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      box-shadow: 0 20px 40px rgba(0,0,0,.4);
-      min-width: 280px;
-      z-index: 1000;
-      opacity: 0;
-      visibility: hidden;
-      transform: translateX(-50%) translateY(-10px);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      margin-top: 8px;
-      overflow: hidden;
-    }
-    
-    .custom-pc-nav:hover .custom-pc-dropdown {
-      opacity: 1;
-      visibility: visible;
-      transform: translateX(-50%) translateY(0);
-    }
-    
-    .dropdown-item {
-      display: flex;
-      align-items: center;
-      padding: 16px 20px;
-      color: var(--ink);
-      text-decoration: none;
-      border-bottom: 1px solid var(--border);
-      transition: all 0.2s ease;
-      cursor: pointer;
-    }
-    
-    .dropdown-item:last-child {
-      border-bottom: none;
-    }
-    
-    .dropdown-item:hover {
-      background: rgba(125, 178, 255, 0.1);
-    }
-    
-    .dropdown-item-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 16px;
-      font-size: 18px;
-      flex-shrink: 0;
-    }
-    
-    .messaging-icon {
-      background: linear-gradient(135deg, #7cf2e6, #7db2ff);
-    }
-    
-    
-    .dropdown-item-content {
-      flex: 1;
-    }
-    
-    .dropdown-item-title {
-      font-weight: 600;
-      font-size: 15px;
-      margin-bottom: 4px;
-    }
-    
-    .dropdown-item-desc {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.3;
-    }
-    
-    .dropdown-item.disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-    
-    .dropdown-item.disabled:hover {
-      background: transparent;
-    }
-    
-    /* Live chat indicator */
-    .live-indicator {
-      width: 8px;
-      height: 8px;
-      background: #00ff88;
-      border-radius: 50%;
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      animation: pulse 2s infinite;
-    }
-    
-    @keyframes pulse {
-      0% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.7; transform: scale(1.2); }
-      100% { opacity: 1; transform: scale(1); }
-    }
-
-    /* Utilities */
-    .card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
-    .panel{background:var(--panel2);border:1px solid var(--border);border-radius:var(--radius)}
-    .pad{padding:var(--space)}
-    .muted{color:var(--muted)}
-    h1{margin:0 0 var(--space);font-size:28px}
-    h2{margin:0 0 var(--space);font-size:26px}
-    .section{margin-top:10px}
-
-    /* Request a PC */
-    .request{
-      background:linear-gradient(135deg, rgba(125,178,255,.16), rgba(124,242,230,.12)), var(--panel);
-      border:1px solid rgba(125,178,255,.25);
-      padding:16px 16px 60px 16px;
-      overflow:visible;
-      position:relative;
-      z-index:1;
-      margin-bottom:40px
-    }
-    form{display:grid;gap:8px;grid-template-columns:1fr 1fr;overflow:visible;position:relative}
-    form > div{position:relative;overflow:visible;z-index:auto}
-    
-    /* Specific fix for build type dropdown container */
-    form > div:has(select) {
-      overflow:visible !important;
-      z-index:100;
-      position:static !important
-    }
-    
-    /* Ensure all parent containers allow dropdown to show */
-    .request, .wrap, body {
-      overflow:visible !important
-    }
-    @media (max-width:700px){ form{grid-template-columns:1fr} }
-    .full{grid-column:1 / -1}
-    label{font-weight:600;margin-bottom:6px;display:block}
-    input, textarea, select{
-      width:100%;padding:16px;border-radius:12px;border:1px solid var(--border);
-      background:#0c1426;color:var(--ink);outline:none;font-size:1rem;
-      height:42px;box-sizing:border-box;line-height:1.2;vertical-align:middle
-    }
-    select{
-      position:relative;z-index:1000;
-      appearance:none;
-      background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23e9eefc' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-      background-position:right 12px center;
-      background-repeat:no-repeat;
-      background-size:16px;
-      padding-right:40px;
-      height:42px;
-      cursor:pointer
-    }
-    
-    /* Custom dropdown styling to ensure visibility */
-    select option{
-      background:#0c1426 !important;
-      color:var(--ink) !important;
-      padding:12px 16px !important;
-      border:none !important;
-      min-height:40px !important;
-      line-height:1.4 !important
-    }
-    
-    /* Force dropdown to render above everything */
-    select:focus, select:active, select:hover {
-      z-index:99999 !important;
-      position:relative !important
-    }
-    textarea{height:auto;min-height:100px;resize:vertical}
-    textarea{min-height:120px;resize:vertical}
-    .btn{
-      display:block;border:0;cursor:pointer;font-weight:800;padding:14px;border-radius:14px;width:100%;
-      color:#0b0f1a;background:linear-gradient(90deg,var(--accent1),var(--accent2));
-      box-shadow:0 8px 22px rgba(117,194,255,.24), inset 0 -2px 0 rgba(0,0,0,.2);
-      font-size:1.05rem;letter-spacing:.2px
-    }
-    .btn:active{transform:translateY(1px)}
-    .tiny{font-size:.95rem;color:var(--muted);margin-top:6px}
-    .alert{display:none;margin-top:10px;padding:12px 14px;border-radius:12px}
-    .ok{background:rgba(124,242,230,.12);border:1px solid rgba(124,242,230,.35)}
-    .err{background:rgba(255,99,132,.12);border:1px solid rgba(255,99,132,.35)}
-
-    /* Value props */
-    .badges{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
-    .badge{background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:6px;text-align:center}
-    .badge b{display:block;font-size:16px}
-
-    /* Sample builds (single-row scroll) */
-    .builds{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px}
-    .builds > .card{min-width:260px}
-    .builds::-webkit-scrollbar{height:8px}
-    .builds::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:8px}
-    .thumb{border-radius:12px;overflow:hidden;border:1px solid var(--border);height:500px;background:#0c1426}
-    .thumb img{width:100%;height:100%;object-fit:cover;display:block}
-    .t{font-weight:700;margin:8px 0 2px}
-    .spec{font-size:.95rem;color:var(--muted);margin:0}
-    .mini-btn{margin-top:8px;display:inline-block;padding:8px 12px;border-radius:12px;text-decoration:none;font-weight:700;color:#0b0f1a;background:linear-gradient(90deg,var(--accent1),var(--accent2));box-shadow:0 6px 18px rgba(117,194,255,.22)}
-
-    /* Compact link styles */
-    .inline-link{display:inline-block;margin-top:6px;text-decoration:none;font-weight:700;color:var(--ink);border-bottom:1px dashed rgba(255,255,255,.35)}
-
-    /* Bottom CTA (shared) */
-    .cta-card{ text-align:center;border:1px solid var(--border);border-radius:calc(var(--radius) + 6px);box-shadow:0 24px 50px rgba(0,0,0,.45);padding:18px 16px;background:linear-gradient(135deg, rgba(125,178,255,.12), rgba(124,242,230,.12)) }
-    .cta-title{font-size:26px;margin:0 0 var(--space)}
-    .cta-sub{color:var(--muted);margin:0 0 var(--space)}
-    .cta-actions{display:flex;gap:var(--space);justify-content:center;flex-wrap:wrap}
-    .cta-primary, .cta-secondary{display:inline-block;padding:12px 18px;border-radius:14px;font-weight:700;text-decoration:none}
-    .cta-primary{color:#0b0f1a;background:linear-gradient(90deg,var(--accent1),var(--accent2));box-shadow:0 10px 26px rgba(117,194,255,.28)}
-    .cta-secondary{color:var(--ink);border:1px solid var(--border);background:#0f1830}
-
-    /* Footer - always visible */
-    .scroll-footer {
-      position: relative;
-      width: 100%;
-      background: #001f3f;
-      border-top: 3px solid var(--accent1);
-      padding: 40px 20px 20px;
-      margin-top: 60px;
-      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
-    }
-
-    .scroll-footer-container {
-      max-width: 1400px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr 1fr;
-      gap: 40px;
-    }
-
-    .footer-section h3 {
-      color: var(--accent1);
-      font-size: 16px;
-      margin: 0 0 15px 0;
-      font-weight: 600;
-    }
-
-    .footer-section p {
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.6;
-      margin: 0 0 20px 0;
-    }
-
-    .footer-newsletter {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-
-    .footer-newsletter input {
-      flex: 1;
-      padding: 10px 14px;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      background: var(--panel);
-      color: var(--ink);
-      font-size: 14px;
-    }
-
-    .footer-newsletter button {
-      padding: 10px 20px;
-      background: linear-gradient(135deg, var(--accent1), var(--accent2));
-      color: #0b0f1a;
-      border: none;
-      border-radius: 6px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .footer-newsletter button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(125, 178, 255, 0.4);
-    }
-
-
-
-    .footer-links {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .footer-links a {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 14px;
-      transition: all 0.2s ease;
-    }
-
-    .footer-links a:hover {
-      color: var(--accent1);
-      padding-left: 5px;
-    }
-
-
-
-    @media (max-width: 1024px) {
-      .scroll-footer-container {
-        grid-template-columns: 1fr 1fr;
-        gap: 30px;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .scroll-footer {
-        padding: 30px 15px 15px;
-      }
-
-      .scroll-footer-container {
-        grid-template-columns: 1fr;
-        gap: 25px;
-      }
-
-      .footer-newsletter {
-        flex-direction: column;
-      }
-    }
-  </style>
 </head>
 <body>
-  <div class="value-prop">Custom, fast, and powerful PCs tailored to your needs.</div>
 
-  <div class="wrap">
-    <!-- Header -->
-    <!-- Header is now dynamically generated by navbar.js -->
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero__bg" style="background-image:url('images/hero.jpg')"></div>
+    <div class="container hero__inner">
+      <p class="eyebrow">Custom PCs, planned one at a time</p>
+      <h1 class="display">A PC built around what you actually do.</h1>
+      <p class="lead">Tell us your games, apps and budget. You get a parts list, expected performance and an upgrade path. Free.</p>
+      <div class="btn-row">
+        <a class="btn" href="#request">Get your free build plan</a>
+        <a class="btn btn--outline-light" href="builds.html">Browse builds</a>
+      </div>
+      <div class="hero-facts">
+        <div><b>24–48h</b><span>Build plan turnaround</span></div>
+        <div><b>$0</b><span>For the plan and quote</span></div>
+        <div><b>~1 week</b><span>Typical build time</span></div>
+      </div>
+    </div>
+  </section>
 
-    <!-- 1) Request a PC (posts directly to Formspree) -->
-    <section class="card request section" id="request">
-      <h2>Request a PC</h2>
-      <form id="rq_form">
-        <!-- honeypot -->
-        <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
-
-        <div>
-          <label for="rq_name">Name</label>
-          <input id="rq_name" name="name" type="text" required autocomplete="name">
+  <!-- How it works -->
+  <section class="section section--white" id="how">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="eyebrow">How it works</p>
+        <h2 class="title">From what you do to a tested machine.</h2>
+      </div>
+      <div class="grid grid--4">
+        <div class="card reveal">
+          <div class="step__num">1</div>
+          <h3>Consult</h3>
+          <p>Tell us your games, apps, resolution, noise tolerance and budget.</p>
         </div>
-
-        <div>
-          <label for="rq_email">Email</label>
-          <input id="rq_email" name="email" type="email" required autocomplete="email">
+        <div class="card reveal">
+          <div class="step__num">2</div>
+          <h3>Design</h3>
+          <p>We match your workload to parts using benchmarks, then check PSU headroom, thermals and bottlenecks.</p>
         </div>
-
-        <div>
-          <label for="rq_build">Build type</label>
-          <select id="rq_build" name="build">
-            <option value="None">None / Not sure</option>
-            <option>Esports 1080p/1440p</option>
-            <option>Creator 4K</option>
-            <option>CAD / AI Workstation</option>
-            <option>Small Form Factor (SFF)</option>
-            <option>Silence-Optimized</option>
-            <option>Streaming + Gaming</option>
-            <option>RGB Showcase</option>
-            <option>Photo Pro</option>
-          </select>
+        <div class="card reveal">
+          <div class="step__num">3</div>
+          <h3>Build and verify</h3>
+          <p>Assembly, cable management, burn-in and stress tests. You get the temperature and stability logs.</p>
         </div>
-
-        <div>
-          <label for="rq_budget">Budget</label>
-          <input id="rq_budget" name="budget" type="text" placeholder="$1500–$2500">
+        <div class="card reveal">
+          <div class="step__num">4</div>
+          <h3>Deliver and support</h3>
+          <p>Double-boxed with foam-in-case shipping, setup notes and ongoing email support.</p>
         </div>
+      </div>
+    </div>
+  </section>
 
-        <div class="full">
-          <label for="rq_msg">What do you want?</label>
-          <textarea id="rq_msg" name="message" placeholder="Tell us any specifics (games/apps, resolution, size/noise, etc.)" required></textarea>
+  <!-- Builds -->
+  <section class="section" id="builds">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="eyebrow">Builds</p>
+        <h2 class="title">Start from a proven build.</h2>
+        <p class="lead">Each one is a starting point. We tune the parts to your apps, games and budget.</p>
+      </div>
+      <div class="grid grid--4">
+        <article class="tile reveal">
+          <a class="tile__media" href="builds/esports-1080p-1440p.html"><img src="images/build_01.webp" alt="Esports gaming PC with RGB fans" loading="lazy" /></a>
+          <div class="tile__body">
+            <span class="tile__kicker">Gaming</span>
+            <h3 class="tile__title">Esports 1080p/1440p</h3>
+            <p class="tile__desc">High FPS for Valorant and CS2. Air-cooled and quiet.</p>
+            <div class="tile__foot"><a class="link-arrow" href="builds/esports-1080p-1440p.html">Learn more</a><a class="link-arrow" href="?build=Esports%201080p%2F1440p#request" data-build="Esports 1080p/1440p">Request</a></div>
+          </div>
+        </article>
+        <article class="tile reveal">
+          <a class="tile__media" href="builds/creator-4k.html"><img src="images/build_02.webp" alt="Creator workstation PC" loading="lazy" /></a>
+          <div class="tile__body">
+            <span class="tile__kicker">Creator</span>
+            <h3 class="tile__title">Creator 4K</h3>
+            <p class="tile__desc">Premiere, DaVinci and Lightroom. Quiet, with a fast scratch drive.</p>
+            <div class="tile__foot"><a class="link-arrow" href="builds/creator-4k.html">Learn more</a><a class="link-arrow" href="?build=Creator%204K#request" data-build="Creator 4K">Request</a></div>
+          </div>
+        </article>
+        <article class="tile reveal">
+          <a class="tile__media" href="builds/cad-ai-workstation.html"><img src="images/build_03.webp" alt="Green mesh workstation tower" loading="lazy" /></a>
+          <div class="tile__body">
+            <span class="tile__kicker">Workstation</span>
+            <h3 class="tile__title">CAD / AI Workstation</h3>
+            <p class="tile__desc">SolidWorks, Blender and local AI. Verified PSU and thermals.</p>
+            <div class="tile__foot"><a class="link-arrow" href="builds/cad-ai-workstation.html">Learn more</a><a class="link-arrow" href="?build=CAD%20%2F%20AI%20Workstation#request" data-build="CAD / AI Workstation">Request</a></div>
+          </div>
+        </article>
+        <article class="tile reveal">
+          <a class="tile__media" href="builds/small-form-factor.html"><img src="images/build_04.webp" alt="Compact small form factor PC" loading="lazy" /></a>
+          <div class="tile__body">
+            <span class="tile__kicker">Compact</span>
+            <h3 class="tile__title">Small Form Factor</h3>
+            <p class="tile__desc">Compact ITX with strong thermals and clean cable runs.</p>
+            <div class="tile__foot"><a class="link-arrow" href="builds/small-form-factor.html">Learn more</a><a class="link-arrow" href="?build=Small%20Form%20Factor%20(SFF)#request" data-build="Small Form Factor (SFF)">Request</a></div>
+          </div>
+        </article>
+        <article class="tile reveal">
+          <a class="tile__media" href="builds/silence-optimized.html"><img src="images/build_05.webp" alt="Silent PC in an acoustic case" loading="lazy" /></a>
+          <div class="tile__body">
+            <span class="tile__kicker">Quiet</span>
+            <h3 class="tile__title">Silence-Optimized</h3>
+            <p class="tile__desc">Damped case, tuned fan curves and zero-RPM profiles.</p>
+            <div class="tile__foot"><a class="link-arrow" href="builds/silence-optimized.html">Learn more</a><a class="link-arrow" href="?build=Silence-Optimized#request" data-build="Silence-Optimized">Request</a></div>
+          </div>
+        </article>
+        <article class="tile reveal">
+          <a class="tile__media" href="builds/streaming-gaming.html"><img src="images/build_06.webp" alt="Streaming and gaming PC" loading="lazy" /></a>
+          <div class="tile__body">
+            <span class="tile__kicker">Streaming</span>
+            <h3 class="tile__title">Streaming + Gaming</h3>
+            <p class="tile__desc">NVENC tuned, capture-friendly I/O and dual SSDs.</p>
+            <div class="tile__foot"><a class="link-arrow" href="builds/streaming-gaming.html">Learn more</a><a class="link-arrow" href="?build=Streaming%20%2B%20Gaming#request" data-build="Streaming + Gaming">Request</a></div>
+          </div>
+        </article>
+        <article class="tile reveal">
+          <a class="tile__media" href="builds/rgb-showcase.html"><img src="images/build_07.webp" alt="Glass panel PC with RGB lighting" loading="lazy" /></a>
+          <div class="tile__body">
+            <span class="tile__kicker">Showcase</span>
+            <h3 class="tile__title">RGB Showcase</h3>
+            <p class="tile__desc">Tempered glass and addressable RGB, with airflow still first.</p>
+            <div class="tile__foot"><a class="link-arrow" href="builds/rgb-showcase.html">Learn more</a><a class="link-arrow" href="?build=RGB%20Showcase#request" data-build="RGB Showcase">Request</a></div>
+          </div>
+        </article>
+        <article class="tile reveal">
+          <a class="tile__media" href="builds/photo-pro.html"><img src="images/build_08.webp" alt="Photo editing desktop PC" loading="lazy" /></a>
+          <div class="tile__body">
+            <span class="tile__kicker">Photo</span>
+            <h3 class="tile__title">Photo Pro</h3>
+            <p class="tile__desc">Snappy Lightroom and Photoshop previews for a calibrated workflow.</p>
+            <div class="tile__foot"><a class="link-arrow" href="builds/photo-pro.html">Learn more</a><a class="link-arrow" href="?build=Photo%20Pro#request" data-build="Photo Pro">Request</a></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why custom -->
+  <section class="section section--dark">
+    <div class="container">
+      <div class="section-head section-head--center reveal">
+        <p class="eyebrow">Why custom</p>
+        <h2 class="title">Your budget goes where your work needs it.</h2>
+        <p class="lead">Prebuilts spend on parts you won't use and cut corners on the ones you will. We do the opposite.</p>
+      </div>
+      <div class="grid grid--3">
+        <div class="card reveal">
+          <h3>Chosen for your workload</h3>
+          <p>A CAD rig gets the GPU and drivers it needs, not a pile of storage it doesn't. Every part earns its place.</p>
         </div>
+        <div class="card reveal">
+          <h3>Verified before it ships</h3>
+          <p>Burn-in, CPU and GPU stress tests, thermal validation and BIOS setup. The logs ship with your PC.</p>
+        </div>
+        <div class="card reveal">
+          <h3>Room to grow</h3>
+          <p>Every plan includes a clear upgrade path for GPU, RAM and storage, so the next step is already mapped.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-        <div class="full" style="margin-top: 12px;">
-          <label style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer; color: var(--ink); font-size: 0.95rem; line-height: 1.5; font-weight: normal;">
-            <input 
-              type="checkbox" 
-              id="terms-checkbox" 
-              required 
-              style="margin-top: 4px; cursor: pointer; width: 18px; height: 18px; accent-color: var(--accent1); flex-shrink: 0;"
-            />
-            <span>
-              I agree to the <a href="privacy-policy.html" target="_blank" style="color: var(--accent1); text-decoration: underline;">Privacy Policy</a> and acknowledge that my information will be collected and stored.
-            </span>
+  <!-- Request a PC -->
+  <section class="section section--white" id="request">
+    <div class="container split split--form">
+      <div class="reveal">
+        <p class="eyebrow">Free build plan</p>
+        <h2 class="title">Tell us what you do.</h2>
+        <p class="lead" style="margin-top:18px">We reply by email with a plan built for your work. No cost, no obligation.</p>
+        <ul class="checklist">
+          <li><span><b>Parts list</b> matched to your apps, games and budget.</span></li>
+          <li><span><b>Expected performance</b> at your resolution and settings.</span></li>
+          <li><span><b>Upgrade path</b> for GPU, RAM and storage.</span></li>
+          <li><span><b>A reply in 24–48 hours</b> from a real builder.</span></li>
+        </ul>
+      </div>
+
+      <div class="card card--shadow form-card reveal" style="background:var(--surface)">
+        <form id="rq_form" class="form" novalidate>
+          <input type="text" name="_gotcha" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+          <div class="field">
+            <label for="rq_name">Name</label>
+            <input id="rq_name" name="name" type="text" required autocomplete="name">
+          </div>
+          <div class="field">
+            <label for="rq_email">Email</label>
+            <input id="rq_email" name="email" type="email" required autocomplete="email">
+          </div>
+          <div class="field">
+            <label for="rq_build">Build type</label>
+            <select id="rq_build" name="build">
+              <option value="None">Not sure yet</option>
+              <option>Esports 1080p/1440p</option>
+              <option>Creator 4K</option>
+              <option>CAD / AI Workstation</option>
+              <option>Small Form Factor (SFF)</option>
+              <option>Silence-Optimized</option>
+              <option>Streaming + Gaming</option>
+              <option>RGB Showcase</option>
+              <option>Photo Pro</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="rq_budget">Budget</label>
+            <input id="rq_budget" name="budget" type="text" placeholder="$1,500 to $2,500">
+          </div>
+          <div class="field full">
+            <label for="rq_msg">What will you use it for?</label>
+            <textarea id="rq_msg" name="message" required placeholder="Games or apps, resolution, size or noise limits, anything you already own."></textarea>
+          </div>
+          <label class="check full">
+            <input type="checkbox" id="terms-checkbox" required>
+            <span>I agree to the <a href="privacy-policy.html" target="_blank">Privacy Policy</a> and understand my details are stored to answer this request.</span>
           </label>
-        </div>
-
-        <button class="btn full" type="submit">Get My Build Plan →</button>
-        <p class="tiny full">We’ll reply by email within 24–48 hours.</p>
-
-        <div class="alert ok full" id="rq_ok" aria-live="polite">Thanks! Your request was sent — we’ll reply within 24–48 hours.</div>
-        <div class="alert err full" id="rq_err" aria-live="polite">Something went wrong. Please try again or email us directly.</div>
-      </form>
-    </section>
-
-    <!-- 2) Get Your Perfect PC -->
-    <section class="card pad section">
-      <h1>Get Your Perfect PC — No Guesswork</h1>
-      <p class="muted">Tell us what you actually do. We’ll return a clean parts list, expected performance, and an upgrade path.</p>
-
-      <div class="badges">
-        <div class="badge"><b>24–48h</b><span class="muted">Turnaround</span></div>
-        <div class="badge"><b>+20%</b><span class="muted">Avg perf vs. prebuilts*</span></div>
-        <div class="badge"><b>$0</b><span class="muted">Quote cost</span></div>
+          <button class="btn btn--block full" type="submit">Get my build plan</button>
+          <p class="form-note full" id="rq_account">We reply by email within 24–48 hours. <a href="login.html?next=index.html%23request">Sign in</a> to track this build and see updates.</p>
+          <div class="alert ok full" id="rq_ok" aria-live="polite">Request sent. We'll reply within 24–48 hours.</div>
+          <div class="alert err full" id="rq_err" aria-live="polite">Something went wrong. Try again or email contact@custompc.tech.</div>
+        </form>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- 3) Sample Builds (photos kept, compact) -->
-    <section class="section">
-      <h3 style="margin:0 0 10px">Sample Builds</h3>
-      <div class="builds">
-        <div class="card pad">
-          <div class="thumb"><img src="images/build_01.png" alt="Esports build"></div>
-          <div class="t">Esports 1080p/1440p</div>
-          <div class="spec">High FPS for Valorant/CS2. Air-cooled, low noise.</div>
-          <a class="mini-btn" href="index.html?build=Esports%201080p%2F1440p&message=Interested%20in%20Esports%201080p%2F1440p%20build#request">Request this build</a>
-        </div>
-        <div class="card pad">
-          <div class="thumb"><img src="images/build_02.png" alt="Creator build"></div>
-          <div class="t">Creator 4K</div>
-          <div class="spec">Premiere/DaVinci & Lightroom. GPU-accelerated, quiet case.</div>
-          <a class="mini-btn" href="index.html?build=Creator%204K&message=Interested%20in%20Creator%204K%20build#request">Request this build</a>
-        </div>
-        <div class="card pad">
-          <div class="thumb"><img src="images/build_03.png" alt="Workstation build"></div>
-          <div class="t">CAD / AI Workstation</div>
-          <div class="spec">SolidWorks, Blender, SD inference. Verified PSU & thermals.</div>
-          <a class="mini-btn" href="index.html?build=CAD%20%2F%20AI%20Workstation&message=Interested%20in%20CAD%20%2F%20AI%20Workstation%20build#request">Request this build</a>
-        </div>
+  <!-- Questions -->
+  <section class="section section--tight">
+    <div class="container cta-band reveal">
+      <h2 class="subtitle">Have a question first?</h2>
+      <p class="lead">Ask about parts, timing or an existing build. We answer every message.</p>
+      <div class="btn-row">
+        <a class="btn btn--ghost" href="contact.html">Contact us</a>
+        <a class="link-arrow" href="about.html#faq">Read the FAQ</a>
       </div>
-    </section>
-    
-    <!-- Bottom CTA -->
-    <section class="cta-card" style="margin-top:var(--space)">
-      <div class="cta-title">Ready for a build that’s actually right for you?</div>
-      <p class="cta-sub">Tell us what you do—we’ll design, verify, and deliver a PC that fits your workload and budget.</p>
-      <div class="cta-actions">
-        <a class="cta-primary" href="index.html#request">Start a Custom PC →</a>
-        <a class="cta-secondary" href="contact.html">Just have a question?</a>
-      </div>
-    </section>
-  </div>
+    </div>
+  </section>
 
-
+  <footer data-site-footer></footer>
 
   <script>
-    // Prefill from query params: build, message
-    (function(){
-      try{
+    // Prefill from ?build= and ?message=, and handle in-page "Request" links
+    (function () {
+      const sel = document.getElementById('rq_build');
+      const ta = document.getElementById('rq_msg');
+
+      function selectBuild(build) {
+        if (!sel || !build) return;
+        const has = Array.from(sel.options).some(o => (o.value || o.textContent) === build);
+        if (!has) {
+          const opt = document.createElement('option');
+          opt.value = build; opt.textContent = build; sel.appendChild(opt);
+        }
+        sel.value = build;
+      }
+
+      try {
         const p = new URLSearchParams(location.search);
-        const build = p.get('build');
-        const msg = p.get('message');
-        const sel = document.getElementById('rq_build');
-        const ta  = document.getElementById('rq_msg');
-        if (sel && build){
-          // Try to set value to existing option; if not present, append one
-          const has = Array.from(sel.options).some(o => (o.value||o.textContent) === build);
-          if (!has){
-            const opt = document.createElement('option');
-            opt.value = build; opt.textContent = build; sel.appendChild(opt);
-          }
-          sel.value = build;
-        }
-        if (ta && msg){ ta.value = msg; }
-        if (build){ document.getElementById('request')?.scrollIntoView({ behavior:'smooth' }); }
-      }catch{}
-    })();
+        selectBuild(p.get('build'));
+        if (ta && p.get('message')) ta.value = p.get('message');
+      } catch (e) {}
 
-    // Fix dropdown visibility issue
-    (function() {
-      const select = document.getElementById('rq_build');
-      if (select) {
-        select.addEventListener('focus', function() {
-          // Ensure dropdown is fully visible
-          this.style.position = 'relative';
-          this.style.zIndex = '99999';
-          
-          // Temporarily increase container height
-          const container = this.closest('.request');
-          if (container) {
-            container.style.paddingBottom = '120px';
-            container.style.overflow = 'visible';
-          }
+      document.querySelectorAll('a[data-build]').forEach(a => {
+        a.addEventListener('click', e => {
+          e.preventDefault();
+          selectBuild(a.dataset.build);
+          document.getElementById('request').scrollIntoView({ behavior: 'smooth' });
+          setTimeout(() => document.getElementById('rq_name').focus({ preventScroll: true }), 500);
         });
-        
-        select.addEventListener('blur', function() {
-          // Reset container height
-          const container = this.closest('.request');
-          if (container) {
-            setTimeout(() => {
-              container.style.paddingBottom = '60px';
-            }, 200);
-          }
-        });
-      }
+      });
     })();
-
-    // Helper function to wait for Firebase to be ready
-    async function waitForFirebase(maxWait = 5000) {
-      const startTime = Date.now();
-      while (Date.now() - startTime < maxWait) {
-        if (typeof firebase !== 'undefined' && firebase.database && firebase.apps.length > 0) {
-          try {
-            // Test the connection
-            await firebase.database().ref('.info/connected').once('value');
-            return true;
-          } catch (e) {
-            // Connection test failed, wait a bit more
-            await new Promise(r => setTimeout(r, 100));
-          }
-        } else {
-          await new Promise(r => setTimeout(r, 100));
-        }
-      }
-      return false;
-    }
 
     // Submit to Firebase via SubmissionHandler
     (function () {
@@ -666,31 +300,27 @@
       const ok = document.getElementById('rq_ok');
       const err = document.getElementById('rq_err');
       const btn = form.querySelector('button[type="submit"]');
+      const defaultErr = err.textContent;
 
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
         ok.style.display = 'none';
         err.style.display = 'none';
+        err.textContent = defaultErr;
 
-        // Check if Privacy Policy is accepted
-        const termsCheckbox = document.getElementById('terms-checkbox');
-        if (!termsCheckbox || !termsCheckbox.checked) {
-          err.textContent = 'You must accept the Privacy Policy to submit this form.';
-          err.style.display = 'block';
-          err.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (!form.checkValidity()) {
+          form.reportValidity();
           return;
         }
 
         try {
           btn.disabled = true;
 
-          // Wait for submission handler to be ready
           let attempts = 0;
           while (!window.submissionHandler && attempts < 10) {
             await new Promise(resolve => setTimeout(resolve, 500));
             attempts++;
           }
-
           if (!window.submissionHandler) {
             throw new Error('Submission handler not available');
           }
@@ -704,226 +334,46 @@
           };
 
           const result = await window.submissionHandler.submitQuoteRequest(formData);
-          
           if (result.success) {
             form.reset();
+            ok.innerHTML = result.signedIn
+              ? 'Request sent. Follow it in <a href="account.html">My builds</a>.'
+              : 'Request sent. We\'ll reply within 24–48 hours. <a href="signup.html">Create an account</a> with this email to track it.';
             ok.style.display = 'block';
             ok.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            console.log('✅ Quote request submitted successfully to Firebase');
           } else {
             err.style.display = 'block';
-            console.error('❌ Quote request submission failed');
           }
         } catch (error) {
           err.style.display = 'block';
-          console.error('❌ Form submission error:', error);
+          console.error('Form submission error:', error);
         } finally {
           btn.disabled = false;
         }
       });
     })();
-
-
   </script>
-  
-  <script src="shared-auth.js"></script>
-  
-  <!-- Visitor Tracking -->
-  <script src="frontend/visitor-tracking.js"></script>
-  
-  <script>
-    // Global functions
-    function openLiveMessaging() {
-      // Redirect to dedicated messaging page
-      window.location.href = 'messaging.html';
-    }
-    
-
-
-    // Sticky header scroll effect
-    let lastScroll = 0;
-    window.addEventListener('scroll', function() {
-      const header = document.getElementById('main-header');
-      const currentScroll = window.pageYOffset;
-      
-      if (currentScroll > 50) {
-        header.classList.add('scrolled');
-      } else {
-        header.classList.remove('scrolled');
-      }
-      
-      lastScroll = currentScroll;
-    });
-
-    // Initialize on DOM load
-    document.addEventListener('DOMContentLoaded', function() {
-      // Page initialization complete
-    });
-    
-    // Add slide animations
-    const slideAnimations = document.createElement('style');
-    slideAnimations.textContent = `
-      @keyframes slideIn {
-        from { opacity: 0; transform: translateX(100%); }
-        to { opacity: 1; transform: translateX(0); }
-      }
-      @keyframes slideOut {
-        from { opacity: 1; transform: translateX(0); }
-        to { opacity: 0; transform: translateX(100%); }
-      }
-    `;
-    document.head.appendChild(slideAnimations);
-  </script>
-
-  </script>
-  
-  <!-- Kiro Update Notification System -->
-  <div id="kiro-notification" style="
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
-    padding: 12px 16px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    z-index: 10000;
-    font-family: system-ui, sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    display: none;
-    max-width: 300px;
-    animation: slideInRight 0.3s ease-out;
-  ">
-    <div id="kiro-message">🤖 Kiro update applied</div>
-    <button onclick="this.parentElement.style.display='none'" style="
-      position: absolute;
-      top: 4px;
-      right: 8px;
-      background: none;
-      border: none;
-      color: white;
-      cursor: pointer;
-      font-size: 16px;
-      opacity: 0.7;
-    ">×</button>
-  </div>
-
-  <style>
-    @keyframes slideInRight {
-      from {
-        transform: translateX(100%);
-        opacity: 0;
-      }
-      to {
-        transform: translateX(0);
-        opacity: 1;
-      }
-    }
-    
-    @keyframes slideOutRight {
-      from {
-        transform: translateX(0);
-        opacity: 1;
-      }
-      to {
-        transform: translateX(100%);
-        opacity: 0;
-      }
-    }
-  </style>
-
-  <script>
-    // Kiro notification system
-    function showKiroNotification(message, duration = 5000) {
-      const notification = document.getElementById('kiro-notification');
-      const messageDiv = document.getElementById('kiro-message');
-      
-      messageDiv.textContent = message;
-      notification.style.display = 'block';
-      
-      // Auto-hide after duration
-      setTimeout(() => {
-        notification.style.animation = 'slideOutRight 0.3s ease-in';
-        setTimeout(() => {
-          notification.style.display = 'none';
-          notification.style.animation = 'slideInRight 0.3s ease-out';
-        }, 300);
-      }, duration);
-    }
-
-    // Show notification when page loads (indicating Kiro updates are active)
-    window.addEventListener('load', function() {
-      setTimeout(() => {
-        showKiroNotification('🎉 Navbar + Login/Signup buttons updated! (Payments are currently disabled.)');
-      }, 1000);
-    });
-  </script>
-
-  <!-- Footer -->
-  <div class="scroll-footer" id="scroll-footer">
-    <div class="scroll-footer-container">
-      <div class="footer-section">
-        <h3>Join our community</h3>
-        <p>Stay updated with the latest PC builds, tech tips, and exclusive deals from CustomPC.tech</p>
-        <div class="footer-newsletter">
-          <input type="email" placeholder="Your Email" />
-          <button>JOIN US</button>
-        </div>
-      </div>
-      
-      <div class="footer-section">
-        <h3>Contact Us</h3>
-        <div class="footer-links">
-          <a href="mailto:support@custompc.tech">📧 support@custompc.tech</a>
-          <a href="messaging.html">💬 Live Chat</a>
-          <a href="about.html">ℹ️ About Us</a>
-        </div>
-      </div>
-      
-      <div class="footer-section">
-        <h3>Products</h3>
-        <div class="footer-links">
-          <a href="builds.html">PC Builds</a>
-          <a href="builds.html#gaming">Gaming PCs</a>
-          <a href="builds.html#workstation">Workstations</a>
-          <a href="builds.html#creator">Creator PCs</a>
-        </div>
-      </div>
-      
-      <div class="footer-section">
-        <h3>Resources</h3>
-        <div class="footer-links">
-          <a href="index.html">Home</a>
-          <a href="about.html">About</a>
-          <a href="contact.html">Contact</a>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Legal Links -->
-    <div style="border-top: 1px solid rgba(255,255,255,.08); margin-top: 30px; padding-top: 20px; text-align: center;">
-      <div style="margin-bottom: 15px;">
-        <a href="privacy-policy.html" style="color: var(--accent1); text-decoration: none; margin: 0 15px; font-size: 14px;">Privacy Policy</a>
-        <a href="terms-of-service.html" style="color: var(--accent1); text-decoration: none; margin: 0 15px; font-size: 14px;">Terms of Service</a>
-      </div>
-      <p style="margin: 0; color: var(--muted); font-size: 13px;">&copy; 2026 CustomPC.tech. All rights reserved.</p>
-    </div>
-  </div>
-
-  <!-- Shared Navigation Bar -->
-  <script src="frontend/navbar.js"></script>
-  
-  <!-- Admin Message Notifier -->
-  <script src="frontend/admin-message-notifier.js"></script>
 
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-  <script src="config/firebase-config.js"></script>
-  
-  <!-- Submission Handler -->
+  <script src="frontend/firebase-app.js"></script>
+  <script src="frontend/navbar.js"></script>
   <script src="frontend/submission-handler.js"></script>
-
+  <script src="frontend/visitor-tracking.js"></script>
+  <script>
+    // Signed in: prefill contact details and say where the request will show up
+    CPC.onUser(user => {
+      const note = document.getElementById('rq_account');
+      if (!user) return;
+      const name = document.getElementById('rq_name');
+      const email = document.getElementById('rq_email');
+      if (!name.value && user.displayName) name.value = user.displayName;
+      if (!email.value) email.value = user.email;
+      note.textContent = `Signed in as ${user.email}. This request will show in `;
+      note.insertAdjacentHTML('beforeend', '<a href="account.html">My builds</a> with every update.');
+    });
+  </script>
 </body>
 </html>

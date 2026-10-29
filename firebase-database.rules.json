@@ -1,141 +1,73 @@
 {
   "rules": {
-    "chats": {
-      ".read": true,
-      ".write": true,
-      "$chatId": {
-        ".read": true,
-        ".write": true,
-        "info": {
-          ".read": true,
-          ".write": true,
-          "username": {
-            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 100"
-          },
-          "email": {
-            ".validate": "newData.isString()"
-          },
-          "userId": {
-            ".validate": "newData.isString()"
-          },
-          "createdAt": {
-            ".validate": "newData.isNumber()"
-          },
-          "lastMessageTime": {
-            ".validate": "newData.isNumber()"
-          },
-          "lastMessage": {
-            ".validate": "newData.isString()"
-          },
-          "unreadCount": {
-            ".validate": "newData.isNumber()"
-          },
-          "status": {
-            ".validate": "newData.isString()"
-          }
-        },
-        "messages": {
-          ".read": true,
-          ".write": true,
-          "$messageId": {
-            ".read": true,
-            ".write": true,
-            "text": {
-              ".validate": "newData.isString() && newData.val().length >= 0 && newData.val().length <= 5000"
-            },
-            "username": {
-              ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 100"
-            },
-            "type": {
-              ".validate": "newData.isString() && (newData.val() === 'user' || newData.val() === 'admin' || newData.val() === 'system')"
-            },
-            "timestamp": {
-              ".validate": "newData.isNumber()"
-            },
-            "id": {
-              ".validate": "newData.isString()"
-            }
-          }
-        },
-        "readBy": {
-          ".read": true,
-          ".write": true,
-          "$userId": {
-            ".validate": "newData.isNumber()"
-          }
-        }
-      }
-    },
-    "userChats": {
-      ".read": true,
-      ".write": true,
-      "$username": {
-        ".read": true,
-        ".write": true,
-        "$chatId": {
-          ".read": true,
-          ".write": true,
-          "chatId": {
-            ".validate": "newData.isString()"
-          },
-          "title": {
-            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 200"
-          },
-          "createdAt": {
-            ".validate": "newData.isNumber()"
-          },
-          "lastActivity": {
-            ".validate": "newData.isNumber()"
-          },
-          "status": {
-            ".validate": "newData.isString() && (newData.val() === 'active' || newData.val() === 'closed' || newData.val() === 'archived')"
-          }
-        }
-      }
-    },
-    "globalChat": {
-      ".read": true,
-      ".write": true,
-      "$messageId": {
-        ".read": true,
-        ".write": true,
-        "text": {
-          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 5000"
-        },
-        "username": {
-          ".validate": "newData.isString() && newData.val().length > 0"
-        },
-        "type": {
-          ".validate": "newData.isString() && (newData.val() === 'user' || newData.val() === 'admin' || newData.val() === 'system')"
-        },
-        "timestamp": {
-          ".validate": "newData.isNumber()"
-        }
-      }
-    },
     "submissions": {
-      ".read": true,
-      ".write": true,
-      "$submissionId": {
-        ".read": true,
+      ".read": "(auth != null && auth.token.email == 'support@custompc.tech' && auth.token.email_verified == true) || (auth != null && query.orderByChild == 'uid' && query.equalTo == auth.uid) || (auth != null && auth.token.email_verified == true && query.orderByChild == 'email' && query.equalTo == auth.token.email)",
+      ".indexOn": [
+        "uid",
+        "email",
+        "timestamp"
+      ],
+      "$id": {
+        ".read": "(auth != null && auth.token.email == 'support@custompc.tech' && auth.token.email_verified == true) || (auth != null && data.child('uid').val() == auth.uid) || (auth != null && auth.token.email_verified == true && data.child('email').val() == auth.token.email)",
+        ".write": "(auth != null && auth.token.email == 'support@custompc.tech' && auth.token.email_verified == true) || (!data.exists() && newData.exists())",
+        ".validate": "newData.hasChildren(['type', 'name', 'email', 'timestamp'])",
+        "type": {
+          ".validate": "newData.val() == 'quote_request' || newData.val() == 'contact'"
+        },
+        "name": {
+          ".validate": "newData.isString() && newData.val().length <= 200"
+        },
+        "email": {
+          ".validate": "newData.isString() && newData.val().length <= 320"
+        },
+        "message": {
+          ".validate": "newData.isString() && newData.val().length <= 5000"
+        },
+        "uid": {
+          ".validate": "(auth != null && auth.token.email == 'support@custompc.tech' && auth.token.email_verified == true) || (auth != null && newData.val() == auth.uid)"
+        },
+        "status": {
+          ".validate": "(auth != null && auth.token.email == 'support@custompc.tech' && auth.token.email_verified == true) || newData.val() == 'new'"
+        },
+        "read": {
+          ".validate": "newData.isBoolean() && ((auth != null && auth.token.email == 'support@custompc.tech' && auth.token.email_verified == true) || newData.val() == false)"
+        },
+        "updates": {
+          ".validate": "(auth != null && auth.token.email == 'support@custompc.tech' && auth.token.email_verified == true)"
+        }
+      }
+    },
+    "visitors": {
+      ".read": "(auth != null && auth.token.email == 'support@custompc.tech' && auth.token.email_verified == true)",
+      "$visitorId": {
+        ".write": true
+      }
+    },
+    "events": {
+      ".read": "(auth != null && auth.token.email == 'support@custompc.tech' && auth.token.email_verified == true)",
+      "$visitorId": {
         ".write": true
       }
     },
     "activeUsers": {
-      ".read": true,
-      ".write": true,
-      "$sessionId": {
-        ".read": true,
-        ".write": true
-      }
+      ".read": "(auth != null && auth.token.email == 'support@custompc.tech' && auth.token.email_verified == true)",
+      ".write": "(auth != null && auth.token.email == 'support@custompc.tech' && auth.token.email_verified == true)"
+    },
+    "chats": {
+      ".read": "(auth != null && auth.token.email == 'support@custompc.tech' && auth.token.email_verified == true)",
+      ".write": "(auth != null && auth.token.email == 'support@custompc.tech' && auth.token.email_verified == true)"
+    },
+    "userChats": {
+      ".read": "(auth != null && auth.token.email == 'support@custompc.tech' && auth.token.email_verified == true)",
+      ".write": "(auth != null && auth.token.email == 'support@custompc.tech' && auth.token.email_verified == true)"
+    },
+    "globalChat": {
+      ".read": "(auth != null && auth.token.email == 'support@custompc.tech' && auth.token.email_verified == true)",
+      ".write": "(auth != null && auth.token.email == 'support@custompc.tech' && auth.token.email_verified == true)"
     },
     "adminChats": {
-      ".read": true,
-      ".write": true,
-      "$chatId": {
-        ".read": true,
-        ".write": true
-      }
+      ".read": "(auth != null && auth.token.email == 'support@custompc.tech' && auth.token.email_verified == true)",
+      ".write": "(auth != null && auth.token.email == 'support@custompc.tech' && auth.token.email_verified == true)"
     }
   }
 }

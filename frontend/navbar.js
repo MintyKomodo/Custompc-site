@@ -1,346 +1,229 @@
 /**
- * Shared Navigation Bar Component
- * Consistent navbar across all pages with dynamic active states
+ * Shared site chrome: global nav + footer.
+ * Nav is inserted at the top of <body>. The footer fills any element
+ * marked [data-site-footer]. Links resolve from the site root, so the
+ * same script works from /builds/*.html.
  */
+
+const SITE_ROOT = (function () {
+  const src = document.currentScript && document.currentScript.src;
+  return src ? new URL('../', src).href : new URL('./', location.href).href;
+})();
+
+const SITE_BUILDS = [
+  ['esports-1080p-1440p', 'Esports 1080p/1440p'],
+  ['creator-4k', 'Creator 4K'],
+  ['cad-ai-workstation', 'CAD / AI Workstation'],
+  ['small-form-factor', 'Small Form Factor'],
+  ['silence-optimized', 'Silence-Optimized'],
+  ['streaming-gaming', 'Streaming + Gaming'],
+  ['rgb-showcase', 'RGB Showcase'],
+  ['photo-pro', 'Photo Pro']
+];
 
 class NavigationBar {
   constructor() {
     this.currentPage = this.getCurrentPage();
-    this.init();
+    this.createNavbar();
+    this.createFooter();
+    this.setupScrollEffects();
+  }
+
+  url(path) {
+    return SITE_ROOT + path;
   }
 
   getCurrentPage() {
     const path = window.location.pathname;
-    const page = path.split('/').pop() || 'index.html';
-    return page.replace('.html', '');
+    if (path.includes('/builds/')) return 'builds';
+    const page = path.split('/').pop() || 'index';
+    return page.replace('.html', '') || 'index';
   }
 
-  init() {
-    this.createAnnouncementBar();
-    this.createNavbar();
-    this.setupScrollEffects();
+  isActive(page) {
+    return this.currentPage === page ? ' is-active' : '';
   }
 
-  createAnnouncementBar() {
-    const announcementBar = document.createElement('div');
-    announcementBar.className = 'announcement-bar';
-    announcementBar.id = 'announcement-bar';
-    announcementBar.innerHTML = `
-      <span>🎉 <strong>New!</strong> User chat history now saves across devices! <a href="messaging">Try it now →</a></span>
-      <button onclick="window.navigationBar.closeAnnouncementBar()" style="
-        position: absolute;
-        right: 20px;
-        top: 50%;
-        transform: translateY(-50%);
-        background: none;
-        border: none;
-        color: white;
-        font-size: 20px;
-        cursor: pointer;
-        opacity: 0.8;
-        padding: 0;
-        line-height: 1;
-      ">×</button>
-    `;
-
-    // Check if previously closed
-    const wasClosed = localStorage.getItem('announcementBarClosed');
-    if (wasClosed === 'true') {
-      announcementBar.style.display = 'none';
+  getCurrentUser() {
+    if (window.sharedAuth && window.sharedAuth.currentUser) {
+      return window.sharedAuth.currentUser;
     }
+    try {
+      const userData = localStorage.getItem('custompc_user');
+      if (userData) {
+        const user = JSON.parse(userData);
+        return { username: user.username, email: user.email || null };
+      }
+      const legacyUser = localStorage.getItem('custompc_username');
+      if (legacyUser) return { username: legacyUser, email: null };
+    } catch (error) {
+      console.error('Error getting current user:', error);
+    }
+    return null;
+  }
 
-    document.body.insertBefore(announcementBar, document.body.firstChild);
+  escape(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  buildAuth() {
+    const user = this.getCurrentUser();
+    if (user && user.username) {
+      return `
+        <a class="gnav-link${this.isActive('account')}" href="${this.url('account.html')}" title="Signed in as ${this.escape(user.username)}">My builds</a>
+        <button type="button" class="gnav-link gnav-btnlink" data-logout>Sign out</button>`;
+    }
+    return `<a class="gnav-link${this.isActive('login')}" href="${this.url('login.html')}">Sign in</a>`;
   }
 
   createNavbar() {
     const header = document.createElement('header');
     header.id = 'main-header';
-    
-    // Check if user is logged in
-    const currentUser = this.getCurrentUser();
-    const isLoggedIn = currentUser && currentUser.username;
-    
-    // Build Custom PC dropdown menu
-    const customPCDropdown = this.buildCustomPCDropdown();
-    
-    // Build auth buttons
-    const authButtons = this.buildAuthButtons(isLoggedIn, currentUser);
-    
+    header.className = 'gnav';
     header.innerHTML = `
-      <div class="brand">
-        <a href="index">
-          <span class="brand-text">CustomPC</span>
-          <img src="images/logo.png" alt="CustomPC.tech logo"
-            style="height:60px;width:60px;display:inline-block;vertical-align:middle;object-fit:contain;border-radius:50%;" />
+      <div class="gnav-inner">
+        <a class="gnav-brand" href="${this.url('index.html')}" aria-label="CustomPC home">
+          <img src="${this.url('images/logo-mark.png')}" alt="" width="28" height="28" />
+          <span>CustomPC</span>
         </a>
-      </div>
+        <button class="gnav-toggle" type="button" aria-expanded="false" aria-controls="gnav-menu" aria-label="Menu">
+          <span></span><span></span>
+        </button>
+        <nav class="gnav-menu" id="gnav-menu" aria-label="Primary">
+          <a class="gnav-link${this.isActive('builds')}" href="${this.url('builds.html')}">Builds</a>
+          <a class="gnav-link" href="${this.url('index.html#how')}">How it works</a>
+          <a class="gnav-link${this.isActive('about')}" href="${this.url('about.html')}">About</a>
+          <a class="gnav-link${this.isActive('contact')}" href="${this.url('contact.html')}">Contact</a>
+          <span class="gnav-sep" aria-hidden="true"></span>
+          ${this.buildAuth()}
+          <a class="gnav-cta" href="${this.url('index.html#request')}">Get a build plan</a>
+        </nav>
+      </div>`;
 
-      <nav style="display: flex; align-items: center; gap: var(--space);">
-        <a class="pill ${this.isActive('builds')}" href="builds">Builds</a>
-        ${customPCDropdown}
-        <a class="pill ${this.isActive('about')}" href="about">About</a>
-        <a class="pill ${this.isActive('contact')}" href="contact">Contact</a>
-        ${authButtons}
-      </nav>
-    `;
+    document.body.insertBefore(header, document.body.firstChild);
 
-    // Insert after announcement bar
-    const announcementBar = document.getElementById('announcement-bar');
-    if (announcementBar) {
-      announcementBar.insertAdjacentElement('afterend', header);
-    } else {
-      document.body.insertBefore(header, document.body.firstChild);
-    }
+    const toggle = header.querySelector('.gnav-toggle');
+    toggle.addEventListener('click', () => {
+      const open = header.classList.toggle('is-open');
+      toggle.setAttribute('aria-expanded', String(open));
+    });
+    header.querySelectorAll('.gnav-menu a').forEach(a =>
+      a.addEventListener('click', () => {
+        header.classList.remove('is-open');
+        toggle.setAttribute('aria-expanded', 'false');
+      })
+    );
+    const logoutBtn = header.querySelector('[data-logout]');
+    if (logoutBtn) logoutBtn.addEventListener('click', () => this.logout());
   }
 
-  buildAuthButtons(isLoggedIn, currentUser) {
-    if (isLoggedIn) {
-      // Show username and logout button
-      return `
-        <div class="auth-section">
-          <span class="username-display">👤 ${currentUser.username}</span>
-          <button onclick="window.navigationBar.logout()" class="btn-logout">Logout</button>
+  createFooter() {
+    const slot = document.querySelector('[data-site-footer]');
+    if (!slot) return;
+    const builds = SITE_BUILDS
+      .map(([slug, name]) => `<a href="${this.url(`builds/${slug}.html`)}">${name}</a>`)
+      .join('');
+    slot.classList.add('gfoot');
+    slot.innerHTML = `
+      <div class="gfoot-inner">
+        <div class="gfoot-cols">
+          <div class="gfoot-col">
+            <h4>Builds</h4>
+            ${builds}
+          </div>
+          <div class="gfoot-col">
+            <h4>Get a PC</h4>
+            <a href="${this.url('index.html#request')}">Request a build plan</a>
+            <a href="${this.url('index.html#how')}">How it works</a>
+            <a href="${this.url('builds.html')}">All builds</a>
+          </div>
+          <div class="gfoot-col">
+            <h4>Company</h4>
+            <a href="${this.url('about.html')}">About</a>
+            <a href="${this.url('contact.html')}">Contact</a>
+            <a href="mailto:contact@custompc.tech">contact@custompc.tech</a>
+          </div>
+          <div class="gfoot-col">
+            <h4>Account</h4>
+            <a href="${this.url('account.html')}">My builds</a>
+            <a href="${this.url('login.html')}">Sign in</a>
+            <a href="${this.url('signup.html')}">Create account</a>
+          </div>
         </div>
-      `;
-    } else {
-      // Show login/signup buttons
-      return `
-        <div class="auth-section">
-          <a href="login" class="btn-login">Login</a>
-          <a href="signup" class="btn-signup">Sign Up</a>
+        <div class="gfoot-legal">
+          <span>&copy; ${new Date().getFullYear()} CustomPC.tech. All rights reserved.</span>
+          <span class="gfoot-legal-links">
+            <a href="${this.url('privacy-policy.html')}">Privacy Policy</a>
+            <a href="${this.url('terms-of-service.html')}">Terms of Service</a>
+          </span>
         </div>
-      `;
-    }
+      </div>`;
   }
 
-  getCurrentUser() {
-    // Check if shared auth is available
-    if (window.sharedAuth && window.sharedAuth.currentUser) {
-      return window.sharedAuth.currentUser;
+  async logout() {
+    // Firebase holds the real session; pages without the SDK hand off to login.html
+    if (!window.CPC) {
+      window.location.href = this.url('login.html?signout=1');
+      return;
     }
-    
-    // Fallback to localStorage - use same keys as shared auth system
-    try {
-      // Check new format first (same as shared auth)
-      const userData = localStorage.getItem('custompc_user');
-      if (userData) {
-        const user = JSON.parse(userData);
-        return {
-          username: user.username,
-          email: user.email || null,
-          loginTime: user.loginTime || user.signupTime || null
-        };
-      }
-      
-      // Check legacy format
-      const legacyUser = localStorage.getItem('custompc_username');
-      if (legacyUser) {
-        return {
-          username: legacyUser,
-          email: null,
-          loginTime: null
-        };
-      }
-      
-      // Check old currentUser format for backward compatibility
-      const oldUser = localStorage.getItem('currentUser');
-      if (oldUser) {
-        return JSON.parse(oldUser);
-      }
-    } catch (error) {
-      console.error('Error getting current user:', error);
+    await window.CPC.signOut();
+    localStorage.removeItem('currentUser');
+    if (window.sharedAuth) window.sharedAuth.currentUser = null;
+    if (['account', 'admin'].includes(this.currentPage)) {
+      window.location.href = this.url('index.html');
     }
-    
-    return null;
-  }
-
-  logout() {
-    // Clear user data - use same keys as shared auth system
-    localStorage.removeItem('custompc_user');
-    localStorage.removeItem('custompc_username');
-    localStorage.removeItem('currentUser'); // backward compatibility
-    
-    // Clear shared auth if available
-    if (window.sharedAuth && typeof window.sharedAuth.logout === 'function') {
-      window.sharedAuth.logout();
-    } else {
-      // If shared auth not available, manually trigger auth state change
-      window.dispatchEvent(new CustomEvent('authStateChanged'));
-    }
-    
-    // Show notification
-    if (window.showKiroNotification) {
-      showKiroNotification('👋 Logged out successfully!');
-    }
-  }
-
-  buildCustomPCDropdown(isAdmin) {
-    const isCustomPCActive = this.isActive(['index', '']);
-    const isMessagingActive = this.isActive('messaging');
-    
-    const activeClass = isCustomPCActive || isMessagingActive ? 'active' : '';
-    
-    // Build dropdown items - Messages only
-    const unreadCount = this.getUnreadMessageCount();
-    const unreadBadge = unreadCount > 0 ? `<span class="nav-badge">${unreadCount}</span>` : '';
-    
-    let dropdownItems = `
-      <a href="messaging" class="dropdown-item">
-        <div class="dropdown-item-icon">💬${unreadBadge}</div>
-        <div class="dropdown-item-content">
-          <div class="dropdown-item-title">Messages ${unreadCount > 0 ? `<span class="unread-indicator">${unreadCount} new</span>` : ''}</div>
-          <div class="dropdown-item-desc">Live chat support</div>
-        </div>
-      </a>
-    `;
-    
-    return `
-      <div class="custom-pc-nav">
-        <a class="pill ${activeClass}" href="index">Custom PC</a>
-        <div class="custom-pc-dropdown">
-          ${dropdownItems}
-        </div>
-      </div>
-    `;
-  }
-
-  checkIfAdmin() {
-    // Admin credentials for validation
-    const adminCredentials = {
-      username: "Minty-Komodo",
-      email: "support@custompc.tech"
-    };
-    
-    // Check if shared auth is available and has currentUser loaded
-    if (window.sharedAuth && typeof window.sharedAuth.isCurrentUserAdmin === 'function' && window.sharedAuth.currentUser) {
-      return window.sharedAuth.isCurrentUserAdmin();
-    }
-    
-    // Fallback: check localStorage with correct key
-    try {
-      const currentUser = localStorage.getItem('custompc_user');
-      if (currentUser) {
-        const user = JSON.parse(currentUser);
-        // Primary check: username and email must match admin credentials
-        // This matches the logic in shared-auth.js isCurrentUserAdmin()
-        return user.username === adminCredentials.username &&
-               user.email === adminCredentials.email;
-      }
-    } catch (error) {
-      console.error('Error checking admin status:', error);
-    }
-    
-    return false;
-  }
-
-  isActive(pages) {
-    if (Array.isArray(pages)) {
-      return pages.includes(this.currentPage) ? 'active' : '';
-    }
-    return this.currentPage === pages ? 'active' : '';
-  }
-
-  getUnreadMessageCount() {
-    try {
-      // Get current user
-      const currentUser = window.sharedAuth?.getCurrentUser();
-      if (!currentUser || !currentUser.username) {
-        return 0;
-      }
-
-      // Get unread count from localStorage
-      const unreadKey = `unread_messages_${currentUser.username}`;
-      const unreadCount = parseInt(localStorage.getItem(unreadKey) || '0');
-      
-      return unreadCount;
-    } catch (error) {
-      console.error('Error getting unread count:', error);
-      return 0;
-    }
-  }
-
-  updateUnreadBadge() {
-    const unreadCount = this.getUnreadMessageCount();
-    const badge = document.querySelector('.nav-badge');
-    const unreadIndicator = document.querySelector('.unread-indicator');
-    
-    if (badge) {
-      if (unreadCount > 0) {
-        badge.textContent = unreadCount;
-        badge.style.display = 'inline-block';
-      } else {
-        badge.style.display = 'none';
-      }
-    }
-    
-    if (unreadIndicator) {
-      if (unreadCount > 0) {
-        unreadIndicator.textContent = `${unreadCount} new`;
-        unreadIndicator.style.display = 'inline';
-      } else {
-        unreadIndicator.style.display = 'none';
-      }
-    }
-  }
-
-  closeAnnouncementBar() {
-    const bar = document.getElementById('announcement-bar');
-    bar.style.animation = 'slideUp 0.3s ease-out';
-    setTimeout(() => {
-      bar.style.display = 'none';
-      localStorage.setItem('announcementBarClosed', 'true');
-    }, 300);
   }
 
   setupScrollEffects() {
-    let lastScroll = 0;
-    window.addEventListener('scroll', function() {
+    const onScroll = () => {
       const header = document.getElementById('main-header');
-      if (!header) return;
-      
-      const currentScroll = window.pageYOffset;
-      
-      if (currentScroll > 50) {
-        header.classList.add('scrolled');
-      } else {
-        header.classList.remove('scrolled');
-      }
-      
-      lastScroll = currentScroll;
-    });
+      if (header) header.classList.toggle('scrolled', window.pageYOffset > 8);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
   }
 
-
-
-  // Method to refresh navbar when auth state changes
   refreshNavbar() {
     const oldHeader = document.getElementById('main-header');
-    if (oldHeader) {
-      oldHeader.remove();
-    }
+    if (oldHeader) oldHeader.remove();
     this.createNavbar();
+    this.setupScrollEffects();
   }
 }
 
-// Initialize navbar when DOM is ready (but not on auth pages)
-document.addEventListener('DOMContentLoaded', function() {
-  // Don't add navbar to login/signup pages - they have their own design
-  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-  const authPages = ['login.html', 'signup.html', 'login', 'signup'];
-  
-  if (!authPages.includes(currentPage.replace('.html', ''))) {
-    window.navigationBar = new NavigationBar();
-    
-    // Listen for auth state changes to refresh navbar
-    window.addEventListener('authStateChanged', function() {
-      if (window.navigationBar) {
-        window.navigationBar.refreshNavbar();
+// Reveal-on-scroll for any .reveal element
+function setupReveal() {
+  const items = document.querySelectorAll('.reveal');
+  if (!items.length) return;
+  if (!('IntersectionObserver' in window)) {
+    items.forEach(el => el.classList.add('is-in'));
+    return;
+  }
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-in');
+        io.unobserve(entry.target);
       }
     });
-  }
-});
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  items.forEach(el => io.observe(el));
+}
 
-// Export for use in other modules
+function initSiteChrome() {
+  window.navigationBar = new NavigationBar();
+  window.addEventListener('authStateChanged', () => window.navigationBar.refreshNavbar());
+  setupReveal();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initSiteChrome);
+} else {
+  initSiteChrome();
+}
+
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = NavigationBar;
 }

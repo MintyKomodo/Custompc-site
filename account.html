@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My builds | CustomPC.tech</title>
+  <meta name="robots" content="noindex" />
+  <meta name="theme-color" content="#101012" />
+  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="frontend/site.css" />
+  <link rel="stylesheet" href="frontend/navbar.css" />
+</head>
+<body>
+
+  <section class="page-head" style="text-align:left">
+    <div class="container">
+      <p class="eyebrow">My builds</p>
+      <h1 class="title" id="hello">Your builds.</h1>
+      <p class="lead" style="margin:14px 0 0" id="who">&nbsp;</p>
+      <div class="btn-row" style="margin-top:28px">
+        <a class="btn" href="index.html#request">Request a new build</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="container">
+      <div class="notice" id="verify" hidden>
+        <div>
+          <b>Verify your email</b>
+          <p>Verified accounts also see requests sent with this email before signing up.</p>
+        </div>
+        <button class="btn btn--ghost" type="button" id="resend">Resend email</button>
+      </div>
+
+      <div id="list" class="req-list" aria-live="polite">
+        <div class="card muted">Loading your builds…</div>
+      </div>
+    </div>
+  </section>
+
+  <footer data-site-footer></footer>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <script src="frontend/firebase-app.js"></script>
+  <script src="frontend/navbar.js"></script>
+  <script src="frontend/build-status.js"></script>
+  <script>
+    (function () {
+      const list = document.getElementById('list');
+      const found = { byUid: {}, byEmail: {} };
+      const listeners = [];
+
+      function render() {
+        const all = { ...found.byEmail, ...found.byUid };
+        const items = Object.entries(all)
+          .filter(([, r]) => r && r.type === 'quote_request')
+          .sort((a, b) => (b[1].timestamp || 0) - (a[1].timestamp || 0));
+
+        if (!items.length) {
+          list.innerHTML = `
+            <div class="card empty">
+              <h3>No build requests yet</h3>
+              <p>Request a free build plan and it will show up here with every update.</p>
+              <a class="btn" href="index.html#request" style="margin-top:20px">Get a build plan</a>
+            </div>`;
+          return;
+        }
+        list.innerHTML = items.map(([id, r]) => BuildStatus.requestCard(id, r)).join('');
+      }
+
+      function watch(query, bucket) {
+        const cb = snap => { found[bucket] = snap.val() || {}; render(); };
+        query.on('value', cb, err => {
+          console.error('Could not load builds:', err);
+          list.innerHTML = '<div class="card"><h3>Could not load your builds</h3><p>Refresh the page, or email contact@custompc.tech.</p></div>';
+        });
+        listeners.push(() => query.off('value', cb));
+      }
+
+      CPC.onUser(user => {
+        listeners.splice(0).forEach(off => off());
+        if (!user) {
+          location.replace('login.html?next=account.html');
+          return;
+        }
+        const name = user.displayName || user.email.split('@')[0];
+        document.getElementById('hello').textContent = `Hi, ${name}.`;
+        document.getElementById('who').textContent = `Signed in as ${user.email}. Every update on your builds shows here.`;
+        document.getElementById('verify').hidden = user.emailVerified;
+
+        const ref = CPC.db.ref('submissions');
+        watch(ref.orderByChild('uid').equalTo(user.uid), 'byUid');
+        if (user.emailVerified) {
+          watch(ref.orderByChild('email').equalTo(user.email.toLowerCase()), 'byEmail');
+        }
+      });
+
+      document.getElementById('resend').addEventListener('click', async (e) => {
+        const btn = e.currentTarget;
+        btn.disabled = true;
+        try {
+          await CPC.auth.currentUser.sendEmailVerification();
+          btn.textContent = 'Sent. Check your inbox';
+        } catch (err) {
+          btn.textContent = 'Try again in a minute';
+          btn.disabled = false;
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

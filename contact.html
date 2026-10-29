@@ -4,218 +4,139 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Contact | CustomPC.tech</title>
-  <meta name="description" content="Contact CustomPC.tech for custom PC builds, technical support, or questions about our engineering process. Get expert help from PC building professionals." />
-  <meta name="keywords" content="contact custompc, pc support, custom pc help, pc building questions" />
-  <meta property="og:title" content="Contact CustomPC.tech - Get Expert PC Help" />
-  <meta property="og:description" content="Contact our PC engineering team for custom builds, support, or technical questions. Professional help from experienced builders." />
+  <meta name="description" content="Questions about a custom PC build, parts or support. Email CustomPC.tech. Replies within 24 to 48 hours." />
+  <meta property="og:title" content="Contact CustomPC.tech" />
+  <meta property="og:description" content="Questions about a build, parts or support. Replies within 24 to 48 hours." />
   <meta property="og:url" content="https://custompc.tech/contact.html" />
+  <meta name="theme-color" content="#101012" />
   <link rel="canonical" href="https://custompc.tech/contact.html" />
-  <link rel="icon" type="image/png" sizes="32x32" href="images/logo.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="images/logo.png" />
-  <link rel="shortcut icon" href="images/logo.png" />
-  <link rel="apple-touch-icon" href="images/logo.png" />
-  <style>
-    :root{
-      --space:10px; --space-sm:6px; --space-lg:16px;
-      --bg:#0a0f1a; --ink:#e9eefc; --muted:#aeb9d4;
-      --panel:#111729; --panel2:#0d1426; --border:rgba(255,255,255,.08);
-      --accent1:#7db2ff; --accent2:#7cf2e6;
-      --radius:18px; --shadow:0 20px 40px rgba(0,0,0,.35);
-      --max:1200px;
-    }
-    *{box-sizing:border-box}
-    html{scrollbar-gutter:stable}
-    body{
-      margin:0;font-family:system-ui,Segoe UI,Roboto,Inter,Arial;color:var(--ink);
-      background:radial-gradient(1200px 600px at 50% -10%, #0f162b 8%, transparent 55%), linear-gradient(#081021, #0a0f1a 40%, #0a0f1a);
-      line-height:1.55;overflow-x:hidden
-    }
-    .wrap{max-width:var(--max);margin:0 auto;padding:var(--space-lg);width:100%;box-sizing:border-box}
-
-    /* HEADER — exact match with other pages */
-    header{
-      display:flex;align-items:center;justify-content:space-between;
-      margin-bottom:var(--space-lg);padding:0 var(--space);
-      max-width:var(--max);margin-left:auto;margin-right:auto;width:100%
-    }
-    .brand a{
-      display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;
-      font-weight:700;letter-spacing:.3px;white-space:nowrap
-    }
-    nav{display:flex;gap:var(--space);flex-wrap:wrap}
-    .pill{
-      display:inline-block;padding:10px 14px;border-radius:999px;
-      color:var(--ink);text-decoration:none;border:1px solid transparent
-    }
-    .pill:hover{background:#0f1830}
-    .pill.active{background:linear-gradient(120deg,rgba(125,178,255,.15),rgba(124,242,230,.15));border-color:rgba(255,255,255,.08)}
-
-    /* PAGE TITLE — same as others */
-    h1{margin:0 0 var(--space);font-size:32px}
-    .lead{color:var(--muted);margin:0 0 var(--space)}
-
-    /* FORM CARD */
-    .card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:var(--space)}
-    form{display:grid;gap:var(--space);margin-top:6px}
-    label{display:block;font-weight:600;margin:0 0 6px}
-    input, textarea{
-      width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--border);
-      background:var(--panel2);color:var(--ink);outline:none
-    }
-    textarea{min-height:160px;resize:vertical}
-    .btn{
-      display:inline-block;border:0;cursor:pointer;font-weight:700;padding:10px 14px;border-radius:12px;
-      color:#0b0f1a;background:linear-gradient(90deg,var(--accent1),var(--accent2));box-shadow:0 8px 22px rgba(117,194,255,.25)
-    }
-    .alert{display:none;margin-top:10px;padding:12px 14px;border-radius:12px}
-    .ok{background:rgba(124,242,230,.12);border:1px solid rgba(124,242,230,.35)}
-    .err{background:rgba(255,99,132,.12);border:1px solid rgba(255,99,132,.35)}
-    .note{font-size:.9rem;color:var(--muted);margin-top:10px}
-
-    /* Bottom CTA (shared) */
-    .cta-card{ text-align:center;border:1px solid var(--border);border-radius:calc(var(--radius) + 6px);box-shadow:0 28px 60px rgba(0,0,0,.45);padding:34px 26px;background:linear-gradient(135deg, rgba(125,178,255,.12), rgba(124,242,230,.12)) }
-    .cta-title{font-size:26px;margin:0 0 var(--space)}
-    .cta-sub{color:var(--muted);margin:0 0 var(--space)}
-    .cta-actions{display:flex;gap:var(--space);justify-content:center;flex-wrap:wrap}
-    .cta-primary, .cta-secondary{display:inline-block;padding:12px 18px;border-radius:14px;font-weight:700;text-decoration:none}
-    .cta-primary{color:#0b0f1a;background:linear-gradient(90deg,var(--accent1),var(--accent2));box-shadow:0 10px 26px rgba(117,194,255,.28)}
-    .cta-secondary{color:var(--ink);border:1px solid var(--border);background:#0f1830}
-  </style>
-  <link rel="stylesheet" href="frontend/navbar.css">
+  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="frontend/site.css" />
+  <link rel="stylesheet" href="frontend/navbar.css" />
 </head>
 <body>
-  <div class="wrap">
-    <!-- Header is now dynamically generated by navbar.js -->
-    <!-- Hero image strip -->
-    <section class="hero-strip" style="margin:0 0 var(--space)">
-      <div style="height:220px;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:#0c1426">
-        <img src="images/build_05.png" alt="Custom PC banner" style="width:100%;height:100%;object-fit:cover;display:block" />
-      </div>
-    </section>
 
-    <h1>Contact us</h1>
-    <p class="lead">Questions or support—send a message and we’ll reply fast.</p>
+  <section class="page-head">
+    <div class="container">
+      <p class="eyebrow">Contact</p>
+      <h1 class="display" style="font-size:clamp(40px,6vw,72px)">Talk to a builder.</h1>
+      <p class="lead">Questions about parts, timing or a build you already have. We reply within 24–48 hours.</p>
+    </div>
+  </section>
 
-    <section class="card">
-      <h3 style="margin:0 0 8px">Send a message</h3>
-      <form id="contactForm">
-        <!-- honeypot -->
-        <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
-
-        <div>
-          <label for="name">Your Name</label>
-          <input id="name" name="name" type="text" required autocomplete="name">
+  <section class="section" style="padding-top:0">
+    <div class="container split split--form">
+      <div class="reveal">
+        <div class="card" style="margin-bottom:20px">
+          <h3>Email</h3>
+          <p><a href="mailto:contact@custompc.tech">contact@custompc.tech</a></p>
+          <p class="small" style="margin-top:6px">Help with a PC we built: <a href="mailto:support@custompc.tech">support@custompc.tech</a></p>
         </div>
-
-        <div>
-          <label for="email">Email</label>
-          <input id="email" name="email" type="email" required autocomplete="email">
+        <div class="card">
+          <h3>Want a full build plan?</h3>
+          <p style="margin-bottom:14px">Use the request form instead. It asks for the details we need to spec your PC.</p>
+          <a class="link-arrow" href="index.html#request">Request a build plan</a>
         </div>
-
-        <div>
-          <label for="message">Message</label>
-          <textarea id="message" name="message" placeholder="How can we help?" required></textarea>
-        </div>
-
-        <button class="btn" type="submit">Send</button>
-
-        <div class="alert ok" id="ok">Thanks! Your message was sent — we’ll get back within 24–48 hours.</div>
-        <div class="alert err" id="err">Something went wrong. Please try again or email us directly.</div>
-      </form>
-
-      <div class="note">We never share your email. Prefer text? Call or text 615 544 5715. Replies usually within 24–48 hours.</div>
-    </section>
-    
-    <!-- Bottom CTA -->
-    <section class="cta-card" style="margin-top:var(--space)">
-      <div class="cta-title">Ready for a build that’s actually right for you?</div>
-      <p class="cta-sub">Tell us what you do—we’ll design, verify, and deliver a PC that fits your workload and budget.</p>
-      <div class="cta-actions">
-        <a class="cta-primary" href="index.html#request">Start a Custom PC →</a>
-        <a class="cta-secondary" href="contact.html">Just have a question?</a>
       </div>
-    </section>
 
-    <!-- Footer with Legal Links -->
-    <footer style="margin-top: 60px; padding-top: 40px; border-top: 1px solid var(--border); text-align: center; color: var(--muted); font-size: 0.9rem;">
-      <p style="margin: 0 0 20px 0; color: var(--muted);">&copy; 2026 CustomPC.tech. All rights reserved.</p>
-      <div style="margin-bottom: 0;">
-        <a href="privacy-policy.html" style="color: var(--accent1); text-decoration: none; margin: 0 15px;">Privacy Policy</a>
-        <a href="terms-of-service.html" style="color: var(--accent1); text-decoration: none; margin: 0 15px;">Terms of Service</a>
+      <div class="card card--shadow form-card reveal">
+        <form id="contactForm" class="form" novalidate>
+          <input type="text" name="_gotcha" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <div class="field">
+            <label for="name">Name</label>
+            <input id="name" name="name" type="text" required autocomplete="name">
+          </div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" required autocomplete="email">
+          </div>
+          <div class="field full">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" placeholder="How can we help?" required style="min-height:260px"></textarea>
+          </div>
+          <button class="btn btn--block full" type="submit">Send message</button>
+          <p class="form-note full">We never share your email.</p>
+          <div class="alert ok full" id="ok" aria-live="polite">Message sent. We'll get back to you within 24–48 hours.</div>
+          <div class="alert err full" id="err" aria-live="polite">Something went wrong. Try again or email contact@custompc.tech.</div>
+        </form>
       </div>
-    </footer>
-  </div>
+    </div>
+  </section>
+
+  <footer data-site-footer></footer>
 
   <script>
-    // Prefill from query params (name, email, message)
+    // Prefill name and email from query params
     (function () {
       const p = new URLSearchParams(location.search);
-      
-      // Regular prefill functionality
-      const map = { name:'name', email:'email', message:'message' };
-      for (const [q,id] of Object.entries(map)) {
-        const v = p.get(q);
+      ['name', 'email'].forEach(id => {
+        const v = p.get(id);
         const el = document.getElementById(id);
-        if (v && el && id !== 'message') el.value = v; // Don't override build message
-      }
+        if (v && el) el.value = v;
+      });
     })();
 
     // Submit to Firebase via SubmissionHandler
-    const form = document.getElementById('contactForm');
-    const ok = document.getElementById('ok');
-    const err = document.getElementById('err');
+    (function () {
+      const form = document.getElementById('contactForm');
+      const ok = document.getElementById('ok');
+      const err = document.getElementById('err');
+      const btn = form.querySelector('button[type="submit"]');
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      ok.style.display = 'none';
-      err.style.display = 'none';
-      
-      try {
-        // Wait for submission handler to be ready
-        let attempts = 0;
-        while (!window.submissionHandler && attempts < 10) {
-          await new Promise(resolve => setTimeout(resolve, 500));
-          attempts++;
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        ok.style.display = 'none';
+        err.style.display = 'none';
+
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
         }
 
-        if (!window.submissionHandler) {
-          throw new Error('Submission handler not available');
-        }
+        try {
+          btn.disabled = true;
+          let attempts = 0;
+          while (!window.submissionHandler && attempts < 10) {
+            await new Promise(resolve => setTimeout(resolve, 500));
+            attempts++;
+          }
+          if (!window.submissionHandler) {
+            throw new Error('Submission handler not available');
+          }
 
-        const formData = {
-          name: document.getElementById('name').value,
-          email: document.getElementById('email').value,
-          message: document.getElementById('message').value
-        };
+          const result = await window.submissionHandler.submitContact({
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            message: document.getElementById('message').value
+          });
 
-        const result = await window.submissionHandler.submitContact(formData);
-        
-        if (result.success) {
-          form.reset();
-          ok.style.display = 'block';
-          ok.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        } else {
+          if (result.success) {
+            form.reset();
+            ok.style.display = 'block';
+            ok.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          } else {
+            err.style.display = 'block';
+          }
+        } catch (error) {
+          console.error('Submission error:', error);
           err.style.display = 'block';
+        } finally {
+          btn.disabled = false;
         }
-      } catch (error) {
-        console.error('Submission error:', error);
-        err.style.display = 'block';
-      }
-    });
+      });
+    })();
   </script>
+
   <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
-  
-  <!-- Firebase Chat Manager -->
-  <script src="config/firebase-config.js"></script>
-  
-  <!-- Submission Handler -->
-  <script src="frontend/submission-handler.js"></script>
-  
-  <script src="shared-auth.js"></script>
-  
-  <!-- Shared Navigation Bar -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <script src="frontend/firebase-app.js"></script>
   <script src="frontend/navbar.js"></script>
+  <script src="frontend/submission-handler.js"></script>
 </body>
 </html>

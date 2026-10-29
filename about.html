@@ -1,543 +1,129 @@
 <!doctype html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>About | CustomPC.tech</title>
-  <meta name="description" content="Learn about CustomPC.tech - Engineers who design custom PCs the right way. Performance-first builds with verified thermals, no upsells, just the parts you need." />
-  <meta name="keywords" content="about custompc, pc engineers, custom pc company, pc building service" />
-  <meta property="og:title" content="About CustomPC.tech - Engineers Who Build PCs Right" />
-  <meta property="og:description" content="Meet the engineers behind CustomPC.tech. We design custom PCs from workload first - verified performance, thermals, and reliability." />
+  <meta name="description" content="Why CustomPC.tech exists, how a build goes from consult to delivery, and answers to common questions about verification, upgrades and shipping." />
+  <meta property="og:title" content="About CustomPC.tech" />
+  <meta property="og:description" content="Custom PCs designed around your workload, verified before they ship." />
   <meta property="og:url" content="https://custompc.tech/about.html" />
+  <meta name="theme-color" content="#101012" />
   <link rel="canonical" href="https://custompc.tech/about.html" />
-  <link rel="icon" type="image/png" sizes="32x32" href="images/logo.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="images/logo.png" />
-  <link rel="shortcut icon" href="images/logo.png" />
-  <link rel="apple-touch-icon" href="images/logo.png" />
-  <style>
-    :root {
-      --space: 10px;
-      --space-sm: 6px;
-      --space-lg: 16px;
-      --bg: #0a0f1a;
-      --ink: #e9eefc;
-      --muted: #aeb9d4;
-      --panel: #111729;
-      --panel2: #0d1426;
-      --border: rgba(255, 255, 255, .08);
-      --accent1: #7db2ff;
-      --accent2: #7cf2e6;
-      --radius: 18px;
-      --radius-sm: 12px;
-      --shadow: 0 20px 40px rgba(0, 0, 0, .35);
-      --max: 1200px;
-    }
-
-    * {
-      box-sizing: border-box
-    }
-
-    html {
-      scrollbar-gutter: stable
-    }
-
-    body {
-      margin: 0;
-      font-family: system-ui, Segoe UI, Roboto, Inter, Arial;
-      color: var(--ink);
-      background: radial-gradient(1200px 600px at 50% -10%, #0f162b 8%, transparent 55%), linear-gradient(#081021, #0a0f1a 40%, #0a0f1a);
-      line-height: 1.55;
-      overflow-x: hidden
-    }
-
-    .wrap {
-      max-width: var(--max);
-      margin: 0 auto;
-      padding: var(--space-lg);
-      width: 100%;
-      box-sizing: border-box
-    }
-
-    /* Shared header (matches index/builds) */
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: var(--space-lg);
-      padding: 0 var(--space);
-      max-width: var(--max);
-      margin-left: auto;
-      margin-right: auto;
-      width: 100%
-    }
-
-    .brand a {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-      color: inherit;
-      font-weight: 700;
-      letter-spacing: .3px;
-      white-space: nowrap
-    }
-
-    nav {
-      display: flex;
-      gap: var(--space);
-      flex-wrap: wrap
-    }
-
-    .pill {
-      display: inline-block;
-      padding: 10px 14px;
-      border-radius: 999px;
-      color: var(--ink);
-      text-decoration: none;
-      border: 1px solid transparent
-    }
-
-    .pill:hover {
-      background: #0f1830
-    }
-
-    .pill.active {
-      background: linear-gradient(120deg, rgba(125, 178, 255, .15), rgba(124, 242, 230, .15));
-      border-color: rgba(255, 255, 255, .08)
-    }
-
-    /* Utilities */
-    .card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow)
-    }
-
-    .panel {
-      background: var(--panel2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius)
-    }
-
-    .pad {
-      padding: var(--space)
-    }
-
-    .muted {
-      color: var(--muted)
-    }
-
-    h1 {
-      margin: 0 0 var(--space);
-      font-size: 32px
-    }
-
-    .grid {
-      display: grid;
-      gap: var(--space)
-    }
-
-    /* Columns */
-    .cols {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space)
-    }
-
-    @media (max-width:900px) {
-      .cols {
-        grid-template-columns: 1fr
-      }
-    }
-
-    .chiplist {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: var(--space)
-    }
-
-    @media (max-width:900px) {
-      .chiplist {
-        grid-template-columns: 1fr
-      }
-    }
-
-    .chip {
-      background: var(--panel2);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 10px
-    }
-
-    .step {
-      background: var(--panel2);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 10px
-    }
-
-    /* FAQ */
-    details {
-      background: var(--panel2);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 10px
-    }
-
-    summary {
-      cursor: pointer;
-      font-weight: 600
-    }
-
-    /* Big CTA */
-    .cta-card {
-      text-align: center;
-      border: 1px solid var(--border);
-      border-radius: calc(var(--radius) + 6px);
-      box-shadow: 0 28px 60px rgba(0, 0, 0, .45);
-      padding: 34px 26px;
-      background: linear-gradient(135deg, rgba(125, 178, 255, .12), rgba(124, 242, 230, .12));
-    }
-
-    .cta-title {
-      font-size: 26px;
-      margin: 0 0 var(--space)
-    }
-
-    .cta-sub {
-      color: var(--muted);
-      margin: 0 0 var(--space)
-    }
-
-    .cta-actions {
-      display: flex;
-      gap: var(--space);
-      justify-content: center;
-      flex-wrap: wrap
-    }
-
-    .cta-primary,
-    .cta-secondary {
-      display: inline-block;
-      padding: 12px 18px;
-      border-radius: 14px;
-      font-weight: 700;
-      text-decoration: none
-    }
-
-    .cta-primary {
-      color: #0b0f1a;
-      background: linear-gradient(90deg, var(--accent1), var(--accent2));
-      box-shadow: 0 10px 26px rgba(117, 194, 255, .28)
-    }
-
-    .cta-secondary {
-      color: var(--ink);
-      border: 1px solid var(--border);
-      background: #0f1830
-    }
-
-    /* Scroll Reveal Animation */
-    .scroll-reveal {
-      opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-    }
-
-    .scroll-reveal.revealed {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* Footer - always visible */
-    .scroll-footer {
-      position: relative;
-      width: 100%;
-      background: #001f3f;
-      border-top: 3px solid var(--accent1);
-      padding: 40px 20px 20px;
-      margin-top: 60px;
-      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
-    }
-
-    .scroll-footer-container {
-      max-width: 1400px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr 1fr;
-      gap: 40px;
-    }
-
-    .footer-section h3 {
-      color: var(--accent1);
-      font-size: 16px;
-      margin: 0 0 15px 0;
-      font-weight: 600;
-    }
-
-    .footer-section p {
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.6;
-      margin: 0 0 20px 0;
-    }
-
-    .footer-newsletter {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-
-    .footer-newsletter input {
-      flex: 1;
-      padding: 10px 14px;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      background: var(--panel);
-      color: var(--ink);
-      font-size: 14px;
-    }
-
-    .footer-newsletter button {
-      padding: 10px 20px;
-      background: linear-gradient(135deg, var(--accent1), var(--accent2));
-      color: #0b0f1a;
-      border: none;
-      border-radius: 6px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .footer-newsletter button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(125, 178, 255, 0.4);
-    }
-
-
-
-    .footer-links {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .footer-links a {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 14px;
-      transition: all 0.2s ease;
-    }
-
-    .footer-links a:hover {
-      color: var(--accent1);
-      padding-left: 5px;
-    }
-
-
-
-    @media (max-width: 1024px) {
-      .scroll-footer-container {
-        grid-template-columns: 1fr 1fr;
-        gap: 30px;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .scroll-footer {
-        padding: 30px 15px 15px;
-      }
-
-      .scroll-footer-container {
-        grid-template-columns: 1fr;
-        gap: 25px;
-      }
-
-      .footer-newsletter {
-        flex-direction: column;
-      }
-    }
-  </style>
-  <link rel="stylesheet" href="frontend/navbar.css">
+  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="frontend/site.css" />
+  <link rel="stylesheet" href="frontend/navbar.css" />
 </head>
-
 <body>
-  <div class="wrap">
-    <!-- Header is now dynamically generated by navbar.js -->
 
-    <!-- Hero image strip -->
-    <section class="hero-strip" style="margin:0 0 var(--space)">
-      <div
-        style="height:220px;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:#0c1426">
-        <img src="images/value-prop-bg.png" alt="Custom PC banner"
-          style="width:100%;height:100%;object-fit:cover;display:block" />
+  <section class="hero" style="padding-bottom:clamp(88px,12vw,140px)">
+    <div class="hero__bg" style="background-image:url('images/hero.jpg')"></div>
+    <div class="container hero__inner">
+      <p class="eyebrow">About</p>
+      <h1 class="display" style="font-size:clamp(40px,6.4vw,76px)">No compromises you didn't choose.</h1>
+      <p class="lead">Every build starts with what you do, not with what's on the shelf.</p>
+    </div>
+  </section>
+
+  <!-- Story -->
+  <section class="section section--white">
+    <div class="container split">
+      <div class="reveal">
+        <p class="eyebrow">Our story</p>
+        <h2 class="title">It started with a first build at nine.</h2>
       </div>
-    </section>
-
-    <!-- Hero -->
-    <section class="card pad" style="margin-bottom:32px">
-      <h1>About page</h1>
-      <p class="muted">About us, FAQ, and our process.</p>
-    </section>
-
-    <!-- Our Story -->
-    <section>
-      <h3 style="margin:0 0 var(--space)">Our Story</h3>
-      <div class="card pad scroll-reveal">
-        <p class="muted">My journey began with a shared passion for building, that sparked at the age of nine, when I constructed my first PC with my brother. That initial experience revealed the profound satisfaction of crafting a machine tuned exactly to personal requirements. This is a feeling that factory made pre-builts simply cannot replicate. After, I realized that the off-the-shelf markets and sales, forces customers into compromises, often leading to overspending on features they don't need, or under-powering critical components. For example, a professional needing a high-performance CAD system might find a pre-built that allocates too much budget to excessive storage while bottlenecking the crucial drivers and graphics card. My core thoughts are built on delivering maximum value: I empower you to customize your rig, allocating power precisely where you need it most. This ensures you gain superior performance in your essential specs, be it processing, rendering, or specific I/O, without paying for extraneous features. Your investment will be perfectly aligned with your unique goals.</p>
+      <div class="prose reveal">
+        <p>I built my first PC with my brother when I was nine. It showed me how good a machine feels when it's tuned exactly to what you need, something a factory prebuilt can't give you.</p>
+        <p>Off-the-shelf PCs force compromises. You overspend on features you'll never use and end up short on the parts that matter. A CAD professional buys a prebuilt with too much storage and a graphics card that bottlenecks the work.</p>
+        <p>CustomPC.tech fixes that. You tell us what you do, and we put the budget where it counts: processing, rendering, graphics or I/O. Nothing extra, nothing missing.</p>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Process -->
-    <section class="grid">
-      <h3 style="margin:0">Our Process</h3>
-      <div class="cols">
-        <div class="step"><b>1) Consult</b>
-          <p class="muted">Tell us what you do: games, apps, resolution, noise preferences.</p>
+  <!-- Process -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head reveal">
+        <p class="eyebrow">Our process</p>
+        <h2 class="title">Four steps, fully documented.</h2>
+      </div>
+      <div class="grid grid--4">
+        <div class="card reveal">
+          <div class="step__num">1</div>
+          <h3>Consult</h3>
+          <p>Tell us what you do: games, apps, resolution and noise preferences.</p>
         </div>
-        <div class="step"><b>2) Design</b>
-          <p class="muted">We map your workload to parts using benchmarks. We sanity-check PSU, thermals, and
-            bottlenecks.</p>
+        <div class="card reveal">
+          <div class="step__num">2</div>
+          <h3>Design</h3>
+          <p>We map your workload to parts using benchmarks and check PSU, thermals and bottlenecks.</p>
         </div>
-        <div class="step"><b>3) Build & Verify</b>
-          <p class="muted">Assembly, cable management, burn-in, stress tests. Every build gets temp + stability
-            documentation.</p>
+        <div class="card reveal">
+          <div class="step__num">3</div>
+          <h3>Build and verify</h3>
+          <p>Assembly, cable management, burn-in and stress tests, with temperature and stability documentation.</p>
         </div>
-        <div class="step"><b>4) Deliver & Support</b>
-          <p class="muted">Foam-in-case shipping, setup notes, and ongoing email support.</p>
+        <div class="card reveal">
+          <div class="step__num">4</div>
+          <h3>Deliver and support</h3>
+          <p>Foam-in-case shipping, setup notes and ongoing email support.</p>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-
-    <!-- FAQ -->
-    <section class="grid">
-      <h3 style="margin:0">FAQ</h3>
-      <details>
-        <summary>Do you really design around my workload?</summary>
-        <p class="muted">Yes. We start with your real use cases (apps, games, resolution, noise tolerance) and select
-          hardware based on reliable benchmarks.</p>
-      </details>
-      <details>
-        <summary>How do you validate performance?</summary>
-        <p class="muted">We run standardized stress tests (CPU, GPU, thermals, noise) and provide a report with your
-          system.</p>
-      </details>
-      <details>
-        <summary>What’s included in build verification?</summary>
-        <p class="muted">Cable management, thermal validation, burn-in, BIOS settings, and stability logs.</p>
-      </details>
-      <details>
-        <summary>Can I upgrade later?</summary>
-        <p class="muted">Absolutely. We design with clear upgrade paths for GPU, RAM, and storage.</p>
-      </details>
-      <details>
-        <summary>Do you ship safely?</summary>
-        <p class="muted">Yes — double-boxed, with expanding foam to protect internal components.</p>
-      </details>
-      </details>
-      <summary>How long does it take to build?</summary>
-        <p class="muted">About a week, depending on the build.</p>
-      </details>
-    </section>
-
-    <!-- Bigger CTA -->
-    <section class="cta-card" style="margin-top:calc(var(--space) * 2)">
-      <div class="cta-title">Ready for a build that’s actually right for you?</div>
-      <p class="cta-sub">Tell us what you do—we’ll design, verify, and deliver a PC that fits your workload and budget.
-      </p>
-      <div class="cta-actions">
-        <a class="cta-primary" href="index.html">Start a Custom PC →</a>
-        <a class="cta-secondary" href="contact.html">Just have a question?</a>
+  <!-- FAQ -->
+  <section class="section section--white" id="faq">
+    <div class="container container--narrow">
+      <div class="section-head reveal">
+        <p class="eyebrow">FAQ</p>
+        <h2 class="title">Questions, answered.</h2>
       </div>
-    </section>
-  </div>
-  
-  <script src="shared-auth.js"></script>
-  
-  <!-- Shared Navigation Bar -->
+      <div class="faq reveal">
+        <details>
+          <summary>Do you really design around my workload?</summary>
+          <p>Yes. We start with your real use cases: apps, games, resolution and noise tolerance. Then we choose hardware based on reliable benchmarks.</p>
+        </details>
+        <details>
+          <summary>How do you validate performance?</summary>
+          <p>We run standardized stress tests for CPU, GPU, thermals and noise, and include the report with your system.</p>
+        </details>
+        <details>
+          <summary>What's included in build verification?</summary>
+          <p>Cable management, thermal validation, burn-in, BIOS settings and stability logs.</p>
+        </details>
+        <details>
+          <summary>Can I upgrade later?</summary>
+          <p>Yes. Every build is designed with a clear upgrade path for GPU, RAM and storage.</p>
+        </details>
+        <details>
+          <summary>How do you ship?</summary>
+          <p>Double-boxed, with expanding foam inside the case to protect the components.</p>
+        </details>
+        <details>
+          <summary>How long does a build take?</summary>
+          <p>About a week, depending on the build and part availability.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="container cta-band reveal">
+      <h2 class="subtitle">Ready for a PC that fits?</h2>
+      <p class="lead">Tell us what you do. The build plan is free.</p>
+      <div class="btn-row">
+        <a class="btn" href="index.html#request">Get a build plan</a>
+        <a class="link-arrow" href="contact.html">Ask a question</a>
+      </div>
+    </div>
+  </section>
+
+  <footer data-site-footer></footer>
   <script src="frontend/navbar.js"></script>
-  
-  <script>
-    // Scroll Reveal Animation
-    (function() {
-      const revealElements = document.querySelectorAll('.scroll-reveal');
-      
-      const revealObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('revealed');
-            // Optionally stop observing after reveal
-            revealObserver.unobserve(entry.target);
-          }
-        });
-      }, {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-      });
-
-      revealElements.forEach(element => {
-        revealObserver.observe(element);
-      });
-    })();
-  </script>
-
-  <!-- Footer -->
-  <div class="scroll-footer" id="scroll-footer">
-    <div class="scroll-footer-container">
-      <div class="footer-section">
-        <h3>Join our community</h3>
-        <p>Stay updated with the latest PC builds, tech tips, and exclusive deals from CustomPC.tech</p>
-        <div class="footer-newsletter">
-          <input type="email" placeholder="Your Email" />
-          <button>JOIN US</button>
-        </div>
-      </div>
-      
-      <div class="footer-section">
-        <h3>Contact Us</h3>
-        <div class="footer-links">
-          <a href="mailto:support@custompc.tech">📧 support@custompc.tech</a>
-          <a href="messaging.html">💬 Live Chat</a>
-          <a href="about.html">ℹ️ About Us</a>
-        </div>
-      </div>
-      
-      <div class="footer-section">
-        <h3>Products</h3>
-        <div class="footer-links">
-          <a href="builds.html">PC Builds</a>
-          <a href="builds.html#gaming">Gaming PCs</a>
-          <a href="builds.html#workstation">Workstations</a>
-          <a href="builds.html#creator">Creator PCs</a>
-        </div>
-      </div>
-      
-      <div class="footer-section">
-        <h3>Resources</h3>
-        <div class="footer-links">
-          <a href="index.html">Home</a>
-          <a href="about.html">About</a>
-          <a href="contact.html">Contact</a>
-          <a href="privacy-policy.html">Privacy Policy</a>
-          <a href="terms-of-service.html">Terms of Service</a>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Legal Links -->
-    <div style="border-top: 1px solid rgba(255,255,255,.08); margin-top: 30px; padding-top: 20px; text-align: center;">
-      <div style="margin-bottom: 15px;">
-        <a href="privacy-policy.html" style="color: var(--accent1); text-decoration: none; margin: 0 15px; font-size: 14px;">Privacy Policy</a>
-        <a href="terms-of-service.html" style="color: var(--accent1); text-decoration: none; margin: 0 15px; font-size: 14px;">Terms of Service</a>
-      </div>
-      <p style="margin: 0; color: var(--muted); font-size: 13px;">&copy; 2026 CustomPC.tech. All rights reserved.</p>
-    </div>
-  </div>
-
-  
 </body>
-
 </html>
